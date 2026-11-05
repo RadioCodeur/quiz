@@ -1,0 +1,484 @@
+{
+  "themeId": "evaluation-recherche",
+  "title": "Construire une expérience qui répond à la bonne question",
+  "subtitle": "Des données réservées aux conclusions mesurées, apprendre à défendre un résultat.",
+  "intro": [
+    "Un bon résultat commence avant le premier entraînement : il faut savoir à quelle situation on veut généraliser et ce que l’on accepte comme preuve. Nous allons construire ce raisonnement à partir de tâches audio concrètes.",
+    "Chaque score est une observation liée à un protocole. Le but est de comprendre ce qu’il autorise à conclure, quels biais peuvent le gonfler et quelles expériences rendent une comparaison plus utile."
+  ],
+  "prerequisites": [
+    "pytorch",
+    "audio-ml"
+  ],
+  "objectives": [
+    "Construire des splits cohérents avec l’usage et éviter les fuites.",
+    "Calculer et interpréter les métriques de classification et de génération.",
+    "Organiser ablations, écoutes et analyses d’incertitude.",
+    "Rédiger des conclusions proportionnées aux observations et au budget."
+  ],
+  "chapters": [
+    {
+      "id": "splits-et-fuites",
+      "title": "Réserver les données selon la généralisation visée",
+      "summary": "Séparer apprentissage, sélection et mesure finale sans laisser les groupes se traverser.",
+      "questionIds": [
+        "eval-001",
+        "eval-002",
+        "eval-017",
+        "eval-019",
+        "eval-025"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Supposons que tu veuilles reconnaître un instrument joué par de nouveaux interprètes. Le résultat intéressant porte sur ces personnes inconnues, pas seulement sur de nouvelles fenêtres des personnes déjà rencontrées. Le split doit refléter cette ambition. Regrouper les prises par interprète avant de les répartir évite que des habitudes de jeu ou une même prise de son facilitent artificiellement le test."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le train apprend les paramètres. La validation aide à choisir architecture, taux d’apprentissage, seuil ou époque retenue. Le test sert ensuite à estimer la performance du système choisi. Cette séparation porte sur les décisions : on peut contaminer un test en consultant ses scores pour modifier le modèle, même sans calculer le moindre gradient sur ses fichiers. Un nom de dossier ne protège pas son indépendance."
+        },
+        {
+          "type": "figure",
+          "kind": "split",
+          "caption": "La séparation s’effectue au niveau des sources pertinentes, puis les extraits restent avec leur groupe."
+        },
+        {
+          "type": "example",
+          "title": "Des milliers d’extraits, mais seulement cent sources",
+          "text": "Cent enregistrements sont découpés en vingt fenêtres chacun. Un mélange aléatoire des 2 000 fenêtres peut placer deux passages presque identiques de part et d’autre du split. Attribuer les cent enregistrements à des ensembles avant le découpage évite cette fuite. Si l’objectif porte sur de nouveaux interprètes, il faut encore monter d’un niveau et réunir leurs différents enregistrements."
+        },
+        {
+          "type": "paragraph",
+          "text": "Les transformations apprises sur les données doivent suivre la même discipline. Un StandardScaler estime moyenne et dispersion. Les calculer sur tout le corpus avant la séparation utilise déjà des observations du futur test. On ajuste le scaler sur le train, puis on applique exactement la même transformation à validation et test. Les pipelines facilitent ce respect, notamment dans une validation croisée."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "scaler.fit(X_train)\nX_train_scaled = scaler.transform(X_train)\nX_valid_scaled = scaler.transform(X_valid)\nX_test_scaled = scaler.transform(X_test)",
+          "caption": "L’ajustement utilise le train ; la transformation est partagée entre ensembles."
+        },
+        {
+          "type": "callout",
+          "label": "Le test a été consulté trop souvent",
+          "tone": "pitfall",
+          "text": "Si ses résultats ont guidé les choix, présente-le comme un ensemble ayant participé au développement. Pour une nouvelle estimation indépendante, réserve d’autres données ou une procédure externe appropriée. Ignorer cette histoire donne une confiance excessive dans le score annoncé."
+        },
+        {
+          "type": "paragraph",
+          "text": "Avant de lancer le calcul, garde une table reliant chaque extrait à son enregistrement, son interprète et sa date. Elle permet de vérifier l’absence de chevauchement au bon niveau. Cette petite décision de préparation peut compter davantage qu’un changement d’architecture pour la crédibilité du résultat."
+        }
+      ],
+      "takeaways": [
+        "L’unité du split dépend de la généralisation revendiquée.",
+        "Le test reste réservé aux décisions finales.",
+        "Les prétraitements appris se règlent sur le train seulement."
+      ],
+      "sourceIds": [
+        "gr-cv",
+        "gr-groups",
+        "gr-pitfalls"
+      ]
+    },
+    {
+      "id": "metriques-et-seuils",
+      "title": "Lire une métrique à partir des erreurs",
+      "summary": "Calculer précision, rappel et moyennes sans oublier les classes rares.",
+      "questionIds": [
+        "eval-003",
+        "eval-005",
+        "eval-007",
+        "eval-008",
+        "eval-009",
+        "eval-011"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Un détecteur prend des décisions qui peuvent réussir ou échouer de plusieurs façons. Une sirène présente mais manquée est un faux négatif ; une alerte sur un bruit sans sirène est un faux positif. La métrique choisie donne un poids particulier à ces erreurs. Il faut donc définir la classe positive et la tâche avant de calculer un pourcentage."
+        },
+        {
+          "type": "example",
+          "title": "Une accuracy élevée sans détection utile",
+          "text": "Dans 1 000 extraits, 950 appartiennent à A et 50 à B. Prédire A partout donne 950 bonnes réponses, donc 95 % d’accuracy, mais aucun rappel pour B. Une baseline majoritaire rend cette limite visible. Le score ne ment pas : c’est la conclusion générale qu’on voudrait lui faire porter qui dépasse ce qu’il mesure."
+        },
+        {
+          "type": "paragraph",
+          "text": "La précision positive vaut TP/(TP + FP) : parmi les alertes produites, quelle proportion est correcte ? Avec vingt alertes dont quinze vraies, elle vaut 75 %. Le rappel vaut TP/(TP + FN) : parmi les événements présents, quelle proportion a été trouvée ? Il ne peut pas être déduit de ces seules vingt alertes sans connaître les événements manqués."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "cm = [[40, 10],\n      [20, 30]]\n# Lignes = vraies classes [0, 1]\n# Colonnes = classes prédites [0, 1]",
+          "caption": "Pour la classe 1 : TP = 30, FN = 20, FP = 10. Son rappel est 30/50 = 60 %."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le F1 est la moyenne harmonique de précision et rappel : 2PR/(P + R), quand le dénominateur est non nul. En multiclasses, le F1 macro calcule un F1 par classe puis une moyenne non pondérée. La petite classe pèse autant que la grande. Une moyenne pondérée par les effectifs répond à une autre question et peut masquer davantage les difficultés sur des classes rares."
+        },
+        {
+          "type": "paragraph",
+          "text": "La balanced accuracy moyenne les rappels par classe. En binaire, 90 % de rappel positif et 50 % de rappel négatif donnent (90 + 50)/2 = 70 %. Elle ne doit pas être confondue avec le F1 macro. Le seuil du détecteur peut déplacer précision et rappel : on le choisit sur une validation selon le critère métier, puis on le fixe avant la mesure finale."
+        },
+        {
+          "type": "paragraph",
+          "text": "Si rater une sirène est particulièrement coûteux, on peut préférer un réglage à plus fort rappel malgré davantage de fausses alertes. La métrique ne choisit pas cette priorité à notre place. Elle traduit une décision d’usage qui doit être annoncée avant de comparer les systèmes."
+        },
+        {
+          "type": "callout",
+          "label": "Un score doit avoir un contrat",
+          "tone": "tip",
+          "text": "Annonce la définition des classes, le seuil, la moyenne utilisée et le traitement des cas sans positif prédit. Une même liste de probabilités peut donner des résultats très différents si ces décisions changent après observation du test."
+        }
+      ],
+      "takeaways": [
+        "Précision et rappel utilisent des dénominateurs différents.",
+        "Macro-F1 et balanced accuracy ne sont pas interchangeables.",
+        "Le seuil fait partie du système sélectionné avant le test."
+      ],
+      "sourceIds": [
+        "gr-dummy",
+        "gr-precision",
+        "gr-recall",
+        "gr-confusion",
+        "gr-f1",
+        "gr-metrics",
+        "gr-threshold"
+      ]
+    },
+    {
+      "id": "boucle-evaluation-et-surapprentissage",
+      "title": "Mesurer avec une boucle d’évaluation correcte",
+      "summary": "Séparer mode du modèle, gradients, moyenne des losses et évolution des courbes.",
+      "questionIds": [
+        "eval-004",
+        "eval-010",
+        "eval-012"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Une métrique ne devient utile que si le calcul correspond au comportement que l’on veut mesurer. Avec PyTorch, model.eval() configure les modules sensibles au mode, notamment dropout et certaines normalisations. torch.no_grad() désactive la construction du graphe pour ce bloc. Les deux opérations répondent à des besoins différents ; utiliser l’une ne remplace pas automatiquement l’autre."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "model.eval()\nloss_sum = 0.0\nn_examples = 0\nwith torch.no_grad():\n    for x, y in valid_loader:\n        pred = model(x)\n        loss = criterion(pred, y)\n        loss_sum += loss.item() * len(x)\n        n_examples += len(x)\nmean_loss = loss_sum / n_examples",
+          "caption": "On suppose ici que criterion renvoie une moyenne par exemple et que chaque exemple a le même poids."
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans cette boucle, aucun pas d’optimiseur n’a lieu. Si l’apprentissage reprend ensuite, on rétablit model.train() avant les prochains batches. Cette alternance explicite évite de laisser du dropout actif pendant la validation ou, à l’inverse, de poursuivre un entraînement avec un comportement destiné à l’inférence. Un encodeur gelé peut demander une décision particulière selon les modules qu’il contient."
+        },
+        {
+          "type": "example",
+          "title": "Le dernier petit batch ne vaut pas un grand batch",
+          "text": "Deux batches contiennent huit puis deux exemples. Leurs losses moyennes sont 1 et 3. La moyenne des dix exemples vaut (8 × 1 + 2 × 3)/10 = 1,4. Faire (1 + 3)/2 = 2 donne trop de poids au petit batch. Pour des séquences masquées et une moyenne par token valide, ce sont les nombres de tokens valides qui doivent servir de poids."
+        },
+        {
+          "type": "paragraph",
+          "text": "On suit ensuite train et validation au fil des époques. Si la loss du train baisse mais que celle de validation augmente durablement, le modèle s’ajuste davantage aux exemples connus sans améliorer les données réservées. C’est un signal de surapprentissage. Avant d’invoquer ce diagnostic, vérifie que les prétraitements, réductions de loss et conditions d’évaluation sont cohérents ; des courbes incompatibles peuvent aussi venir d’un protocole différent."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une comparaison de courbes doit aussi tenir compte de l’augmentation : le train peut recevoir des entrées plus difficiles que la validation. Une loss de validation ponctuellement plus basse que celle du train n’est donc pas forcément une anomalie. En revanche, changer d’augmentation ou de métrique en cours d’expérience doit être documenté avant d’interpréter les tendances."
+        },
+        {
+          "type": "callout",
+          "label": "Choisir une époque",
+          "tone": "tip",
+          "text": "Un arrêt anticipé peut retenir l’époque ayant la meilleure validation selon un critère annoncé. Cette époque fait partie des choix du modèle : le test ne doit pas servir à décider à quel moment s’arrêter. Une petite loss train seule ne suffit pas à montrer la généralisation."
+        }
+      ],
+      "takeaways": [
+        "eval et no_grad ont des fonctions distinctes.",
+        "La moyenne suit l’unité réellement pondérée : exemple ou token.",
+        "La divergence train/validation appelle un diagnostic de surapprentissage."
+      ],
+      "sourceIds": [
+        "gr-module",
+        "gr-metrics",
+        "gr-curves"
+      ]
+    },
+    {
+      "id": "baselines-et-ablations",
+      "title": "Attribuer un gain à la bonne modification",
+      "summary": "Construire des comparaisons où une différence peut réellement être interprétée.",
+      "questionIds": [
+        "eval-013",
+        "eval-029"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Une nouvelle méthode associe souvent plusieurs idées : un autre décodeur, un conditionnement mélodique et une augmentation de données. Si le système final est meilleur que l’ancien, on sait seulement que cet ensemble de changements fonctionne mieux dans ce protocole. On ne sait pas encore quelle idée explique le gain. Une baseline claire et des ablations permettent de poser cette question de façon testable."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une ablation retire ou remplace un composant en gardant les autres conditions aussi comparables que possible. Pour tester le conditionnement, on compare avec et sans ce conditionnement à décodeur fixé. On conserve les données, la métrique et la stratégie de sélection. Selon le composant, on peut avoir besoin de réentraîner : couper brutalement une entrée seulement au test peut créer une situation jamais vue plutôt qu’isoler proprement sa contribution."
+        },
+        {
+          "type": "example",
+          "title": "Deux composants peuvent se renforcer",
+          "text": "Supposons des scores comparables où plus grand est meilleur : base = 70, base+A = 72, base+B = 71, base+A+B = 76. A apporte 2 points sans B, mais 5 points avec B. Le gain combiné de 6 points n’est pas la somme des gains séparés de 2 et 1. Ce plan à quatre configurations révèle une interaction possible, à confirmer avec la variabilité des expériences."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le plan complet permet aussi de trouver une redondance : deux composants peuvent corriger la même faiblesse et peu s’ajouter. Une comparaison base contre modèle complet ne distinguerait pas cette situation d’une contribution utile de chacun. Le but n’est pas d’obtenir un tableau aussi grand que possible ; on choisit les variantes qui répondent à l’hypothèse annoncée."
+        },
+        {
+          "type": "callout",
+          "label": "Le contrôle du budget fait partie du contrôle",
+          "tone": "pitfall",
+          "text": "Un composant testé avec trois fois plus de recherche d’hyperparamètres bénéficie aussi de cet effort supplémentaire. Décris ce budget et, si nécessaire, présente une comparaison à budget comparable. Sinon une amélioration de sélection peut être attribuée au composant architectural."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une baseline simple est aussi un outil de débogage. Si un système complexe ne dépasse pas un classifieur majoritaire ou une tête linéaire sur des embeddings fixes, on examine d’abord les données, les étiquettes et la boucle d’apprentissage. La complexité d’un modèle ne constitue pas une preuve de valeur ajoutée."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour une expérience de composition, annonce précisément le résultat attendu : mieux respecter une mélodie, réduire les artefacts ou améliorer les deux. Garde les mêmes conditions musicales et évalue ces dimensions séparément. Une amélioration d’adhérence accompagnée d’une perte acoustique constitue un compromis à décrire, pas un gain général à déclarer sans nuance."
+        }
+      ],
+      "takeaways": [
+        "Une ablation teste une hypothèse, avec des conditions communes.",
+        "Quatre configurations distinguent effets séparés et interaction.",
+        "Les budgets de recherche peuvent aussi expliquer un écart."
+      ],
+      "sourceIds": [
+        "gr-musicgen",
+        "gr-reporting",
+        "gr-dummy",
+        "gr-transfer"
+      ]
+    },
+    {
+      "id": "ecoute-et-jugement-perceptif",
+      "title": "Faire écouter sans orienter la réponse",
+      "summary": "Choisir une tâche perceptive et contrôler sa présentation avant de moyenner les notes.",
+      "questionIds": [
+        "eval-014",
+        "eval-016",
+        "eval-020"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Un son peut être propre mais ne pas respecter le texte demandé. Un autre peut suivre la mélodie tout en présentant des artefacts. Si l’on demande seulement « est-ce bon ? », chaque auditeur choisit implicitement son propre mélange de critères. Une expérience utile précise la tâche : qualité acoustique, naturel, préférence ou respect d’une condition. Ces dimensions peuvent être recueillies séparément sur les mêmes exemples."
+        },
+        {
+          "type": "paragraph",
+          "text": "On réduit ensuite les biais de présentation. Cacher l’identité des systèmes évite qu’un nom ou une réputation influence les attentes. Randomiser ou contrebalancer l’ordre limite un effet de première écoute. Pour comparer des artefacts, on décrit les niveaux et l’environnement d’écoute ; un système simplement plus fort peut paraître plus convaincant. La gestion du niveau dépend toutefois de l’objectif : si la dynamique est précisément étudiée, la normaliser sans réflexion pourrait supprimer une partie du phénomène."
+        },
+        {
+          "type": "example",
+          "title": "Deux questions pour une même sortie",
+          "text": "Le texte demande « flûte seule, mélodie calme ». Une sortie très nette contenant une batterie peut recevoir une bonne note acoustique et une mauvaise note d’adéquation. Une sortie de flûte conforme mais saturée montre le cas inverse. Un formulaire avec deux critères explicites rend ce compromis visible ; une seule moyenne globale pourrait le masquer."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour une tâche de reconstruction avec une référence disponible, MUSHRA est un protocole de comparaison multi-stimuli avec référence cachée et ancres. L’auditeur peut comparer plusieurs traitements d’un même passage à une référence et à des versions dégradées. Les ancres donnent des repères inférieurs dans l’essai ; elles ne sont pas un mécanisme qui prouve à lui seul la supériorité statistique d’un système."
+        },
+        {
+          "type": "paragraph",
+          "text": "MUSHRA n’est pas automatiquement le protocole approprié à une musique entièrement libre sans référence unique. Il faut choisir une méthode compatible avec ce qui peut être jugé. Un entraînement des auditeurs, des consignes claires, une sélection d’extraits représentative et des critères d’exclusion définis en amont contribuent à rendre l’écoute interprétable. Sélectionner seulement les meilleurs exemples du nouveau système fausse la question avant même le début du test."
+        },
+        {
+          "type": "callout",
+          "label": "Les notes gardent leur contexte",
+          "tone": "tip",
+          "text": "Conserve les identifiants d’auditeur, d’extrait, de système et de condition. Les mêmes personnes écoutent souvent plusieurs versions des mêmes sons ; leurs observations ne sont donc pas toutes indépendantes. Cette structure sera nécessaire pour l’analyse d’incertitude, pas seulement pour l’organisation des fichiers."
+        }
+      ],
+      "takeaways": [
+        "Le critère demandé doit être explicite et distinct des autres.",
+        "Identité, ordre et niveaux peuvent orienter les jugements.",
+        "MUSHRA suppose un cadre de comparaison adapté à la référence."
+      ],
+      "sourceIds": [
+        "gr-mushra",
+        "gr-audioldm"
+      ]
+    },
+    {
+      "id": "fad-et-limites-des-proxies",
+      "title": "Une métrique audio regarde à travers une représentation",
+      "summary": "Comprendre ce que la FAD compare et pourquoi une amélioration reste partielle.",
+      "questionIds": [
+        "eval-015",
+        "eval-028"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Comparer deux ondes échantillon par échantillon peut pénaliser des variations pourtant acceptables à l’écoute. Une métrique fondée sur un embedding commence par transformer chaque son en vecteur de caractéristiques. Elle juge ensuite la proximité dans cet espace. Ce choix rend certains aspects perceptifs plus visibles, mais peut aussi rendre d’autres différences presque invisibles. La métrique hérite donc des propriétés de sa représentation."
+        },
+        {
+          "type": "paragraph",
+          "text": "La Fréchet Audio Distance compare des statistiques d’embeddings d’un ensemble évalué à celles d’un corpus de référence. Dans sa construction classique, elle utilise leurs moyennes et covariances, avec une approximation gaussienne. Plus petit signifie plus proche selon ce calcul. Ce n’est pas une mesure qui vérifie chaque sortie contre un audio cible unique, ni une preuve que tous les sons du jeu sont bons."
+        },
+        {
+          "type": "paragraph",
+          "text": "La moyenne situe le nuage de vecteurs. La covariance décrit sa dispersion et comment les composantes varient ensemble. Deux ensembles peuvent partager une moyenne avec des dispersions différentes : la comparaison ne se réduit donc pas à rapprocher un seul vecteur moyen."
+        },
+        {
+          "type": "example",
+          "title": "Une meilleure distribution peut encore manquer la consigne",
+          "text": "Un modèle reçoit dix descriptions d’instruments mais produit toujours des sons de piano très propres. Si le corpus de référence est dominé par le piano, certaines statistiques peuvent être proches. Cela ne prouve pas que les neuf autres consignes sont respectées. Il faut évaluer l’adéquation conditionnelle en plus de la proximité globale du jeu généré."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour comparer des valeurs de FAD, on garde une extraction d’embeddings, un corpus de référence et une préparation cohérents. La durée et le nombre d’extraits influencent l’estimation des statistiques. Un petit ensemble peut produire une valeur instable. Des nombres calculés avec des extracteurs différents ne s’interprètent donc pas automatiquement sur la même échelle, même si leur nom générique reste FAD."
+        },
+        {
+          "type": "callout",
+          "label": "Une cible d’optimisation devient une faiblesse possible",
+          "tone": "pitfall",
+          "text": "Si toute la méthode est sélectionnée pour améliorer cet évaluateur, elle peut favoriser ce qu’il détecte en négligeant ses angles morts. Renommer la même métrique ne crée pas une vérification indépendante. Ajoute des écoutes aveugles et d’autres critères correspondant aux propriétés réellement recherchées."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une distance globale peut également cacher une catégorie rare mal représentée. On peut donc inspecter des sous-ensembles définis avant l’analyse : instruments, durées ou conditions acoustiques. Ces analyses demandent des effectifs suffisants et un compte rendu complet, afin de ne pas sélectionner après coup uniquement les sous-groupes favorables."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un résultat convaincant articule plusieurs observations : qualité acoustique, diversité, respect des contrôles et éventuelle ressemblance au corpus. Aucune valeur unique ne garantit l’absence de mémorisation ou une préférence universelle. La formulation rigoureuse est locale : sur ce protocole fixé, les distributions d’embeddings sont plus proches. On construit ensuite des expériences pour les autres dimensions de la qualité."
+        }
+      ],
+      "takeaways": [
+        "L’embedding détermine les différences visibles par la métrique.",
+        "La FAD résume des ensembles dans un protocole donné.",
+        "Des contrôles indépendants testent ce que le proxy ne mesure pas."
+      ],
+      "sourceIds": [
+        "gr-fad",
+        "gr-audioldm"
+      ]
+    },
+    {
+      "id": "variabilite-et-incertitude",
+      "title": "Combien de preuves derrière un petit écart ?",
+      "summary": "Distinguer graines, exemples indépendants et mesures appariées.",
+      "questionIds": [
+        "eval-018",
+        "eval-021",
+        "eval-022",
+        "eval-026"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Un score varie pour plusieurs raisons : données tirées, initialisation, ordre des batches ou conditions d’écoute. Répéter l’entraînement avec plusieurs graines examine une partie de cet aléa. Cela ne mesure pas automatiquement l’incertitude due au choix des enregistrements. Inversement, rééchantillonner le test d’un seul modèle ne révèle pas toute la variabilité d’entraînement. On commence donc par préciser la source d’incertitude que l’on souhaite étudier."
+        },
+        {
+          "type": "example",
+          "title": "Un point moyen n’est pas forcément une victoire stable",
+          "text": "Sur trois graines, A obtient 79, 81 et 83 %, et B obtient 77, 82 et 87 %. Les moyennes valent 81 et 82 %. L’écart d’un point coexiste avec des variations plus grandes entre essais. Il faut montrer les répétitions et limiter la conclusion ; ni une supériorité établie ni une égalité exacte ne découle des seules moyennes."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le bootstrap construit de nouveaux jeux en rééchantillonnant avec remise les unités observées, puis recalcule une statistique. Sa pertinence dépend de l’unité rééchantillonnée. Avec vingt enregistrements indépendants contenant chacun cent extraits corrélés, tirer les 2 000 extraits comme s’ils étaient indépendants donne une impression excessive d’information. Un bootstrap par enregistrement conserve ensemble les cent extraits du groupe."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "drawn_groups = rng.choice(recording_ids, size=len(recording_ids), replace=True)\n# Pour chaque groupe tiré, reprendre tous ses extraits.\n# Recalculer le score ; recommencer pour former une distribution.",
+          "caption": "Schéma conceptuel : une source tirée deux fois doit contribuer deux fois au jeu rééchantillonné."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une comparaison d’écoute est souvent appariée : un même auditeur note les deux systèmes sur le même extrait. Comparer les différences au sein des paires conserve une information importante. Mais les paires partageant le même auditeur ou le même extrait restent liées. Selon le plan, une analyse hiérarchique ou tenant compte de ces facteurs est plus appropriée que traiter toutes les lignes comme indépendantes."
+        },
+        {
+          "type": "callout",
+          "label": "Ce que signifie l’intervalle",
+          "tone": "pitfall",
+          "text": "Un intervalle bootstrap dépend du rééchantillonnage choisi et des hypothèses du protocole. Il n’est ni une garantie sur tous les futurs domaines ni la probabilité que toute conclusion soit vraie. Un intervalle étroit construit avec de mauvaises unités peut être très trompeur."
+        },
+        {
+          "type": "paragraph",
+          "text": "Enfin, une petite valeur p éventuelle et une différence utile en pratique sont deux choses distinctes. Un écart acoustiquement imperceptible peut être mesuré avec précision sur beaucoup de données. Il faut donc annoncer aussi l’amplitude de l’effet et discuter ce qu’elle change pour la tâche de composition ou de reconnaissance."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour comparer deux systèmes sur les mêmes enregistrements, rééchantillonne les mêmes groupes pour les deux et calcule leur différence à chaque tirage. Tu conserves ainsi l’appariement du test. Rapporte l’effectif réellement indépendant, les répétitions et la méthode employée : ces informations permettent d’évaluer la force du résultat au lieu de se fier uniquement à ses décimales."
+        },
+        {
+          "type": "example",
+          "title": "Lire un intervalle bootstrap",
+          "text": "Dans une construction percentile à 95 %, on prend les quantiles 2,5 % et 97,5 % des différences rééchantillonnées. Un intervalle de −0,4 à 1,6 point inclut zéro : les données restent compatibles avec une différence nulle selon cette analyse."
+        }
+      ],
+      "takeaways": [
+        "Graines et données décrivent des sources d’incertitude différentes.",
+        "Le bootstrap respecte les unités indépendantes et les groupes.",
+        "L’appariement doit être conservé dans la comparaison."
+      ],
+      "sourceIds": [
+        "gr-bootstrap",
+        "gr-groups",
+        "gr-mushra",
+        "gr-reporting"
+      ]
+    },
+    {
+      "id": "generalisation-et-compte-rendu",
+      "title": "Défendre la portée réelle d’un résultat",
+      "summary": "Relier validation imbriquée, changement de domaine, temps et budget expérimental.",
+      "questionIds": [
+        "eval-006",
+        "eval-023",
+        "eval-024",
+        "eval-027",
+        "eval-030"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Une méthode n’est jamais évaluée dans le vide : elle répond à un usage et à une distribution de données. Un classifieur excellent en studio peut échouer sur un téléphone à cause du bruit, de la compression ou du microphone. Le score studio reste une observation valide dans son cadre ; il ne garantit pas ce nouveau domaine. Pour revendiquer cette robustesse, il faut une évaluation qui la vise explicitement."
+        },
+        {
+          "type": "paragraph",
+          "text": "Si l’usage concerne des événements futurs avec des appareils qui évoluent, le split doit respecter le temps : apprendre sur une période passée et mesurer sur une période ultérieure réservée. Mélanger les dates peut placer les mêmes conditions techniques des deux côtés et masquer la dérive. Il faut aussi tenir compte des groupes et des éventuels chevauchements temporels ; la chronologie ne résout pas automatiquement toutes les fuites."
+        },
+        {
+          "type": "example",
+          "title": "Sélectionner dans un petit corpus",
+          "text": "Supposons cinq plis externes. Pour chacun, quatre plis servent au développement et le dernier reste réservé. À l’intérieur des quatre premiers, une autre validation choisit les hyperparamètres. On entraîne alors la configuration choisie sans regarder le pli externe, puis on l’évalue dessus. La moyenne externe estime la procédure complète de sélection. Rapporter seulement son meilleur score interne serait plus optimiste."
+        },
+        {
+          "type": "paragraph",
+          "text": "La reproductibilité demande code, versions, configurations, graines, splits et provenance des données. Fixer une graine aide à contrôler l’aléa, sans garantir une identité bit à bit entre versions, matériels ou opérations différentes. Conserver les réglages d’échantillonnage d’un générateur est aussi nécessaire que ses poids pour comprendre quelles sorties ont été évaluées."
+        },
+        {
+          "type": "figure",
+          "kind": "evaluation",
+          "caption": "Une conclusion relie le protocole, les observations, leur variabilité et les situations auxquelles elles s’appliquent."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le budget fait partie de la méthode. Décris l’entraînement, la recherche d’hyperparamètres et l’inférence : matériel, durée des entrées, batch et nombre d’étapes lorsqu’ils comptent. Un meilleur score après cent essais ne représente pas le même coût de recherche qu’un score obtenu avec cinq essais. Pour un outil de composition interactif, latence et mémoire peuvent compter autant qu’un gain moyen de qualité."
+        },
+        {
+          "type": "callout",
+          "label": "Une conclusion qui tient debout",
+          "tone": "tip",
+          "text": "Professeur Squoinks propose cette trame : sur telles données réservées, avec tel budget, la méthode améliore tel critère, avec telle variabilité ; telles dimensions restent à examiner. Cette précision laisse de la place à une vraie contribution sans transformer une expérience limitée en promesse universelle."
+        }
+      ],
+      "takeaways": [
+        "La généralisation revendiquée décide du test pertinent.",
+        "La sélection et son évaluation restent séparées, même en validation croisée.",
+        "Protocole, variabilité et calcul donnent son sens au score."
+      ],
+      "sourceIds": [
+        "gr-cv",
+        "gr-timesplit",
+        "gr-nested",
+        "gr-randomness",
+        "gr-reporting"
+      ]
+    }
+  ]
+}

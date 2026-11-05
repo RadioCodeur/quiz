@@ -1,0 +1,583 @@
+{
+  "themeId": "generation-controle",
+  "title": "Générer des sons, garder la main sur la musique",
+  "subtitle": "Du latent aux contrôles musicaux, comprendre ce que chaque choix rend possible.",
+  "intro": [
+    "On va suivre le trajet d’un son : sa représentation, le modèle qui invente une suite, puis les conditions qui orientent cette invention. Chaque mécanisme répond à un problème concret de composition.",
+    "Les exemples sont volontairement petits pour permettre les calculs de tête. Les architectures citées servent de repères scientifiques ; ces cours et ces questions sont une préparation indépendante à la recherche en audio."
+  ],
+  "prerequisites": [
+    "pytorch",
+    "audio-ml"
+  ],
+  "objectives": [
+    "Distinguer représentation, modèle génératif et décodeur.",
+    "Expliquer les mécanismes des VAE, des modèles autorégressifs et de la diffusion.",
+    "Choisir des conditions adaptées à une intention musicale et vérifier leurs limites.",
+    "Raisonner sur l’adaptation, le coût de calcul et les expériences de diagnostic."
+  ],
+  "chapters": [
+    {
+      "id": "representation-et-reconstruction",
+      "title": "D’abord, décider ce que le modèle représente",
+      "summary": "Séparer les rôles du codec et du générateur avant de chercher à améliorer le son.",
+      "questionIds": [
+        "gen-001",
+        "gen-006",
+        "gen-008",
+        "gen-028"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Imagine que tu veuilles composer dix secondes de percussion. Une onde mono à 32 000 Hz contient déjà 320 000 valeurs. Un générateur peut travailler sur ces valeurs, mais aussi sur un spectrogramme ou sur une représentation compressée. Ce choix décide quelles informations sont disponibles et combien de positions le modèle devra traiter. Il précède donc le choix de la famille générative."
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans un autoencodeur, l’encodeur convertit l’entrée x en un latent z. Le décodeur transforme z en reconstruction. On entraîne généralement cette chaîne pour réduire un écart entre entrée et sortie. Le latent n’est pas nécessairement une partition : une coordonnée peut mêler plusieurs propriétés acoustiques. Une reconstruction précise ne suffit donc pas à prouver un contrôle séparé de la hauteur ou du timbre."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un codec neuronal comme EnCodec ajoute une compression avec quantification. Au lieu de garder toutes les valeurs continues, il transmet des indices de dictionnaires. Pour entendre le son, il faut encore décoder ces indices. Le générateur apprend ensuite à produire des indices plausibles. Il ne remplace pas automatiquement le codec et ne récupère pas une information exacte qui aurait disparu pendant sa compression."
+        },
+        {
+          "type": "figure",
+          "kind": "generative-families",
+          "caption": "Représenter et reconstruire sont deux opérations distinctes du choix d’une nouvelle séquence."
+        },
+        {
+          "type": "example",
+          "title": "Une cymbale abîmée : quel composant examiner ?",
+          "text": "Écoute trois versions du même passage : l’original, la reconstruction de ses vrais codes et la sortie obtenue avec des codes générés. Si la reconstruction perd déjà les aigus fins, le codec contribue au problème. Si elle est convaincante mais que la génération présente un rythme incohérent, le modèle de séquences est un autre suspect. Les deux limites peuvent coexister."
+        },
+        {
+          "type": "paragraph",
+          "text": "Changer de représentation change aussi les erreurs faciles à mesurer. Une faible erreur moyenne sur les amplitudes peut cacher une attaque émoussée, alors qu’un spectrogramme proche peut ignorer certaines différences de phase. Il faut relier le critère de reconstruction au son recherché, puis vérifier à l’écoute ce que ce critère laisse passer."
+        },
+        {
+          "type": "callout",
+          "label": "Réflexe de diagnostic",
+          "tone": "tip",
+          "text": "Fixe le taux d’échantillonnage, le niveau d’écoute et le passage comparé. Sinon une différence de préparation peut être prise pour une différence de modèle. Le codec est une référence pratique pour son système, pas une borne absolue de toute qualité perceptive possible."
+        }
+      ],
+      "takeaways": [
+        "L’encodeur représente ; le décodeur reconstruit.",
+        "Des tokens audio ne sont pas nécessairement des notes.",
+        "Tester les vrais codes sépare deux sources de dégradation."
+      ],
+      "sourceIds": [
+        "gr-vae",
+        "gr-encodec"
+      ]
+    },
+    {
+      "id": "vae-et-echantillonnage",
+      "title": "Le VAE : encoder une distribution",
+      "summary": "Comprendre moyenne, dispersion et reparamétrisation avant de lire une loss de VAE.",
+      "questionIds": [
+        "gen-002",
+        "gen-009",
+        "gen-010"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Avec un autoencodeur déterministe, chaque entrée donne un seul code. Pour générer, on aimerait aussi savoir où tirer de nouveaux codes. Le VAE organise cette question avec un modèle probabiliste. Son encodeur approxime une distribution q(z|x), c’est-à-dire des codes compatibles avec l’entrée. Un prior p(z), souvent une normale standard, définit la distribution depuis laquelle on souhaite pouvoir générer."
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans le cas gaussien diagonal, l’encodeur donne une moyenne mu et une variance pour chaque dimension latente. On prédit souvent logvar, le logarithme de la variance, afin de représenter une quantité positive après exponentiation. Attention à la racine carrée : exp(logvar) est la variance ; exp(0,5 × logvar) est l’écart-type. C’est ce dernier qui multiplie un bruit normal standard."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "eps = torch.randn_like(mu)\nstd = torch.exp(0.5 * logvar)\nz = mu + std * eps\nx_hat = decoder(z)",
+          "caption": "mu, logvar et eps ont ici la forme (B, D). Le bruit est tiré indépendamment des paramètres de l’encodeur."
+        },
+        {
+          "type": "paragraph",
+          "text": "Cette écriture s’appelle reparamétrisation. On ne demande pas de différencier le tirage aléatoire lui-même : pour un bruit eps donné, z est une fonction différentiable de mu et de std. Le gradient de la reconstruction peut ainsi apprendre à modifier l’encodeur. Le hasard reste présent, mais il est placé dans une variable auxiliaire indépendante des paramètres appris."
+        },
+        {
+          "type": "example",
+          "title": "Un calcul à une dimension",
+          "text": "Prenons mu = 2 et une variance égale à 4. logvar vaut ln(4), std vaut 2. Si eps vaut −0,5, alors z = 2 + 2 × (−0,5) = 1. Multiplier eps par la variance aurait donné 0, une dispersion différente de celle annoncée. Le tirage ne doit pas être confondu avec la moyenne de la distribution."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour créer un nouvel exemple sans audio d’entrée, on peut tirer z dans le prior et le passer au décodeur. Pour reconstruire une entrée, on tire plutôt depuis q(z|x). Cette distinction explique l’intérêt d’organiser les distributions encodées près du prior : les codes tirés en génération doivent ressembler à des zones que le décodeur a appris à traiter."
+        },
+        {
+          "type": "callout",
+          "label": "Deux objectifs à concilier",
+          "tone": "analogy",
+          "text": "Le VAE cherche à reconstruire chaque exemple tout en organisant les distributions encodées près d’un prior commun. La KL joue le rôle d’une pénalité de désaccord avec ce prior ; elle ne mesure ni directement la qualité musicale ni une distance entre deux fichiers particuliers."
+        }
+      ],
+      "takeaways": [
+        "L’encodeur produit une distribution conditionnelle.",
+        "Le bruit est multiplié par l’écart-type, pas la variance.",
+        "Reconstruction et rapprochement du prior ont des rôles différents."
+      ],
+      "sourceIds": [
+        "gr-vae"
+      ]
+    },
+    {
+      "id": "kl-et-latent-inutilise",
+      "title": "La KL : un compromis, pas un score de qualité",
+      "summary": "Lire les axes de réduction et reconnaître un latent que le décodeur ignore.",
+      "questionIds": [
+        "gen-029",
+        "gen-030"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "La divergence KL compare deux distributions et dépend de leur ordre. Ici, KL(q(z|x) || p(z)) pénalise le désaccord entre le posterior approché et le prior. Elle est positive ou nulle, et vaut zéro lorsque les distributions coïncident presque partout dans le cadre habituel. Une petite KL ne signifie donc pas que la reconstruction est excellente : elle décrit une autre partie du problème."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour une gaussienne diagonale face à une normale standard, la contribution de chaque dimension s’écrit 0,5 × (mu² + variance − 1 − logvariance). Avec un tenseur (B, D), on obtient une contribution par exemple et par dimension. Si la convention est une KL moyenne par exemple, on additionne D contributions puis on moyenne sur B. Le nom de la variable loss ne précise pas cette convention à lui seul."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "kl_dim = -0.5 * (1 + logvar - mu.square() - logvar.exp())\nkl_per_example = kl_dim.sum(dim=1)\nkl = kl_per_example.mean()\nloss = reconstruction_loss + beta * kl",
+          "caption": "La reconstruction doit elle aussi avoir une réduction explicitée pour que beta garde un sens."
+        },
+        {
+          "type": "example",
+          "title": "Le facteur caché dans une moyenne",
+          "text": "Si B = 2 et D = 4, et que chacune des huit contributions vaut 0,5, chaque exemple a une KL de 2. La moyenne par exemple vaut donc 2. Une moyenne sur les huit cases vaut 0,5 : elle est quatre fois plus petite. Garder beta identique ne conserve alors pas le même compromis d’apprentissage."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un décodeur très puissant peut apprendre à produire des sorties sans exploiter le latent. Si q rejoint le prior, que la KL devient presque nulle et que changer z modifie très peu les sorties, l’ensemble suggère un posterior collapse. Mais une seule courbe ne suffit pas : on doit examiner les reconstructions et la sensibilité au code. Réduire la pression KL, l’introduire progressivement ou modifier le décodeur sont des pistes expérimentales, pas des remèdes universels."
+        },
+        {
+          "type": "paragraph",
+          "text": "Avec beta = 1 et les termes probabilistes appropriés, reconstruction et KL correspondent à la minimisation de l’opposé d’une borne variationnelle sur la log-vraisemblance. Utiliser une MSE arbitrairement normalisée ou changer beta peut rester utile, mais il faut alors décrire précisément l’objectif optimisé plutôt que supposer une équivalence automatique."
+        },
+        {
+          "type": "callout",
+          "label": "La bonne question",
+          "tone": "tip",
+          "text": "Quand une loss change, demande d’abord ce qui a été sommé ou moyenné. Professeur Squoinks rappelle que comparer deux nombres sans leurs unités et leurs axes revient souvent à comparer deux expériences différentes."
+        }
+      ],
+      "takeaways": [
+        "La KL est directionnelle et distincte de la reconstruction.",
+        "Une réduction différente change le poids effectif du terme.",
+        "Une KL faible et un latent ignoré doivent être diagnostiqués ensemble."
+      ],
+      "sourceIds": [
+        "gr-vae",
+        "gr-vqvae"
+      ]
+    },
+    {
+      "id": "quantification-et-tokens",
+      "title": "Des vecteurs aux indices : la tokenisation audio",
+      "summary": "Compter les codes et comprendre pourquoi un dictionnaire peut être mal utilisé.",
+      "questionIds": [
+        "gen-014",
+        "gen-027",
+        "gen-038"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Pour employer un modèle de séquences discret, on convertit une représentation acoustique en indices. Dans la quantification vectorielle, l’encodeur produit un vecteur continu et on l’associe à une entrée d’un dictionnaire, souvent la plus proche selon une distance euclidienne. On transmet son indice, puis le décodeur retrouve le vecteur associé. Un indice représente ainsi un élément appris, sans obligation de correspondre à une note ou à un phonème."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un VQ-VAE apprend des représentations discrètes de cette manière. Les codecs audio peuvent utiliser plusieurs dictionnaires par trame, par exemple avec une quantification résiduelle : un étage représente une partie du vecteur, puis le suivant code ce qui reste. Il faut distinguer la cadence temporelle des trames, le nombre d’indices par trame et la taille de chaque vocabulaire. Ces trois quantités ne disent pas la même chose."
+        },
+        {
+          "type": "example",
+          "title": "Compter sans confondre les axes",
+          "text": "Avec 50 trames par seconde et quatre indices par trame, dix secondes contiennent 500 trames et 2 000 indices. Si chaque dictionnaire possède 1 024 entrées, dix bits suffisent théoriquement à représenter un indice à longueur fixe. Cela donne 20 000 bits avant en-têtes ou codage supplémentaire. Le nombre de pas autorégressifs dépend encore de l’entrelacement choisi : quatre flux parallèles ne sont pas une seule séquence aplatie."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un grand dictionnaire n’assure pas une représentation riche. Si cinq codes seulement apparaissent sur 1 024, l’utilisation est très concentrée. Un histogramme sur de nombreux exemples indique quels indices sont actifs, à quelle fréquence et avec quelle stabilité. On peut alors comparer cette utilisation à la qualité de reconstruction et rechercher un problème d’apprentissage ou une représentation trop peu expressive pour le corpus."
+        },
+        {
+          "type": "callout",
+          "label": "Ne pas surinterpréter un histogramme",
+          "tone": "pitfall",
+          "text": "Un corpus volontairement très simple peut légitimement utiliser peu de codes. La faible utilisation est un signal à examiner, surtout si les reconstructions sont mauvaises, mais elle ne prouve pas à elle seule la cause du problème."
+        },
+        {
+          "type": "paragraph",
+          "text": "On distingue enfin le dictionnaire du modèle qui prédit ses indices. Agrandir le vocabulaire augmente les choix possibles, mais aussi les besoins d’apprentissage du prior. Plus de codes n’apporte rien si l’encodeur ne les utilise pas ou si le corpus est trop réduit pour apprendre des transitions fiables entre eux."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour préparer un entretien, décris toujours le trajet complet : onde, encodeur, indices, modèle de séquences, décodeur, onde. Cette chaîne explique pourquoi une bonne prédiction d’indices et un bon son final constituent deux niveaux de vérification liés mais distincts."
+        }
+      ],
+      "takeaways": [
+        "Une quantification choisit des vecteurs dans un dictionnaire.",
+        "Trames, indices et vocabulaire ont des unités différentes.",
+        "L’utilisation effective du dictionnaire se mesure sur les données."
+      ],
+      "sourceIds": [
+        "gr-vqvae",
+        "gr-encodec",
+        "gr-musicgen"
+      ]
+    },
+    {
+      "id": "autoregression-et-causalite",
+      "title": "Apprendre à prédire la suite",
+      "summary": "Comprendre le décalage des cibles, le teacher forcing et le masque causal.",
+      "questionIds": [
+        "gen-003",
+        "gen-011",
+        "gen-012",
+        "gen-025"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Un modèle autorégressif représente une séquence par une succession de décisions. Pour trois tokens, la probabilité jointe s’écrit p(x1) × p(x2|x1) × p(x3|x1,x2). À chaque étape, il prédit une distribution sur le prochain token. WaveNet applique cette idée à l’audio brut ; des modèles comme MusicGen l’emploient sur des représentations audio discrètes compressées. La factorisation porte sur l’ordre choisi pour ces éléments."
+        },
+        {
+          "type": "paragraph",
+          "text": "À l’entraînement, on connaît toute la séquence réelle. Le teacher forcing fournit son vrai préfixe au modèle. Pour un tableau (B, T), les entrées prennent les positions de 0 à T−2 et les cibles celles de 1 à T−1. Le token à la position suivante est la cible du contexte précédent. Décaler l’axe B associerait des morceaux indépendants au lieu de représenter cette succession."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "inputs = tokens[:, :-1]\ntargets = tokens[:, 1:]\nlogits = model(inputs, causal=True)\n# Chaque position de logits prédit la cible correspondante.",
+          "caption": "causal=True illustre ici le contrat attendu ; l’API exacte dépend du modèle utilisé."
+        },
+        {
+          "type": "example",
+          "title": "Voir le décalage sur une suite courte",
+          "text": "Pour [début, do, mi, sol], l’entrée est [début, do, mi] et la cible [do, mi, sol]. Le modèle apprend donc à proposer do après début, mi après le préfixe début-do, puis sol après début-do-mi. Une cible identique à l’entrée lui demanderait plutôt de recopier le token déjà présent."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un Transformer peut traiter les positions en parallèle pendant l’apprentissage, mais son attention ne doit pas regarder les positions futures. Sinon il peut voir la réponse recherchée, obtenir une petite loss et échouer en génération, lorsque cette réponse n’existe pas encore. Le masque causal n’interdit pas le contexte passé : il impose simplement le sens de l’information."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le masque dépend de ce que la position d’entrée contient déjà. Dans notre exemple décalé, la position courante contient le token précédent de sa cible : regarder cette position est autorisé. Ce sont les positions situées après elle qui révèlent des tokens futurs. Écrire une petite séquence à la main permet de vérifier ce contrat sans mémoriser une orientation de matrice de masque."
+        },
+        {
+          "type": "callout",
+          "label": "L’écart entre apprentissage et usage",
+          "tone": "pitfall",
+          "text": "Pendant la génération, les préfixes sont les sorties du modèle, pas les vrais tokens du corpus. Une petite erreur peut donc déplacer les contextes suivants hors des exemples rencontrés. C’est une raison de tester des continuations complètes, et pas seulement la prédiction supervisée sur des préfixes réels."
+        }
+      ],
+      "takeaways": [
+        "La probabilité jointe se factorise dans un ordre causal.",
+        "Entrées et cibles sont décalées sur l’axe temporel.",
+        "Le masque empêche l’accès à une information future indisponible."
+      ],
+      "sourceIds": [
+        "gr-wavenet",
+        "gr-musicgen"
+      ]
+    },
+    {
+      "id": "echantillonnage-contexte-et-cout",
+      "title": "Choisir une suite sans perdre le contexte",
+      "summary": "Relier température, mémoire temporelle, attention et informations autorisées.",
+      "questionIds": [
+        "gen-013",
+        "gen-026",
+        "gen-035",
+        "gen-039"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Prédire une distribution ne décide pas encore quelle sortie produire. Prendre toujours le token le plus probable donne une décision déterministe pour un contexte donné. Échantillonner laisse plusieurs suites possibles. La température transforme les logits avant le softmax : on les divise par un nombre positif. Une petite température accentue les préférences déjà présentes ; elle ne change pas leur ordre."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "logits = torch.tensor([0.0, 2.0])\np1 = torch.softmax(logits / 1.0, dim=-1)\np2 = torch.softmax(logits / 0.5, dim=-1)",
+          "caption": "La probabilité du deuxième token passe approximativement de 0,881 à 0,982."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une température basse ne garantit pourtant ni originalité ni cohérence. Elle concentre la distribution locale, tandis que la forme musicale longue dépend aussi du contexte accessible. Avec deux secondes d’historique, le modèle peut suivre une texture immédiate sans disposer directement d’un motif entendu une minute auparavant. Une mémoire, une hiérarchie ou des conditions longues peuvent apporter cette information ; elles demandent ensuite une évaluation adaptée."
+        },
+        {
+          "type": "example",
+          "title": "Le coût d’un contexte allongé",
+          "text": "Une attention dense compare chaque position à chaque autre. Pour L = 500, elle représente 250 000 paires de positions par tête ; à L = 1 000, elle en représente 1 000 000. Doubler la séquence multiplie donc ce compte par quatre. Le calcul total contient aussi projections et couches intermédiaires : ce facteur décrit cette composante, pas nécessairement tout le temps mesuré."
+        },
+        {
+          "type": "paragraph",
+          "text": "L’historique pertinent doit aussi respecter le protocole. Si le système est censé continuer seulement les trois premières secondes, un embedding extrait du morceau entier peut déjà contenir des informations sur sa suite. Le fait de ne pas fournir directement les échantillons futurs ne suffit pas à rendre cette condition légitime. Il faut retracer la provenance de chaque entrée du modèle."
+        },
+        {
+          "type": "callout",
+          "label": "Une expérience honnête",
+          "tone": "tip",
+          "text": "Écris la liste des informations disponibles au moment réel de la génération. Préfixe, texte et durée peuvent être autorisés ; une analyse de la cible future ne l’est pas si l’objectif est une continuation sans accès à cette cible."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le temps de génération dépend aussi du nombre de décisions successives. Réduire la cadence des tokens peut raccourcir cette chaîne, tandis qu’une représentation plus fine peut préserver davantage de détails. On compare donc les options à durée audio identique et en tenant compte de la reconstruction, pas seulement au nombre de tokens."
+        },
+        {
+          "type": "paragraph",
+          "text": "En pratique, compare plusieurs sorties par condition et documente température, stratégie d’échantillonnage et longueur du contexte. Sinon un changement de décodage peut être attribué par erreur à une meilleure architecture. Une suite convaincante reste un résultat individuel ; la conclusion doit porter sur un ensemble de cas."
+        }
+      ],
+      "takeaways": [
+        "La température règle la concentration des probabilités.",
+        "La longueur du contexte limite l’information directe disponible.",
+        "Le coût et la validité du contexte se vérifient séparément."
+      ],
+      "sourceIds": [
+        "gr-softmax",
+        "gr-wavenet",
+        "gr-transformer",
+        "gr-pitfalls"
+      ]
+    },
+    {
+      "id": "conditions-et-intention-musicale",
+      "title": "Transformer une intention en condition exploitable",
+      "summary": "Distinguer style global, événements symboliques et contrôles alignés dans le temps.",
+      "questionIds": [
+        "gen-005",
+        "gen-007",
+        "gen-015",
+        "gen-016",
+        "gen-017",
+        "gen-037"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Partons d’une demande : un piano doux, un accord à trois secondes, puis une accélération progressive. Elle contient trois types d’information. Le caractère doux est global, l’accord est un événement local, l’accélération est une trajectoire temporelle. Un texte peut exprimer les trois verbalement, mais il ne fournit pas nécessairement au modèle une représentation qui fixe chaque instant avec précision."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une condition influence une distribution de sorties. Ce n’est pas automatiquement une contrainte dure. Pour des hauteurs et débuts de notes précis, une séquence symbolique horodatée est plus directement structurée. Elle doit encore être traduite dans un format connu du modèle et celui-ci doit avoir appris à la suivre. Une représentation détaillée n’annule donc pas le besoin de vérifier le résultat acoustique."
+        },
+        {
+          "type": "figure",
+          "kind": "conditioning",
+          "caption": "Une condition globale décrit l’ensemble ; une condition locale doit correspondre aux positions qu’elle contrôle."
+        },
+        {
+          "type": "example",
+          "title": "Aligner une courbe de tempo",
+          "text": "Supposons dix secondes découpées en 100 positions de contrôle. Une valeur toutes les 0,1 seconde décrit le tempo visé à cette position. Si l’audio est décalé de deux secondes mais pas la courbe, le modèle reçoit un appariement incohérent. Remplacer la courbe par sa moyenne de 100 BPM perd aussi la différence entre une accélération de 80 à 120 BPM et un tempo stable de 100 BPM."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une chroma regroupe l’énergie selon douze classes de hauteur en réunissant les octaves. Elle apporte un repère harmonique utile, notamment dans des systèmes de conditionnement mélodique, mais ne distingue pas directement un do grave d’un do aigu. Elle ne spécifie pas non plus tout le timbre ou toutes les voix. En revanche, une partition de notes peut conserver registre et timing si ces champs sont réellement représentés."
+        },
+        {
+          "type": "paragraph",
+          "text": "MusicGen fournit un exemple de génération audio conditionnée par texte et, dans certaines configurations, par une information mélodique extraite de l’audio. Music Transformer illustre le travail sur des événements musicaux symboliques. Ces exemples montrent des niveaux de représentation différents ; ils ne constituent pas une promesse que n’importe quelle consigne sera suivie exactement."
+        },
+        {
+          "type": "callout",
+          "label": "Le contrôle se mesure à son échelle",
+          "tone": "pitfall",
+          "text": "Un tempo moyen correct peut cacher des attaques en avance puis en retard. Pour juger un accord à trois secondes, inspecte cet événement et son voisinage ; pour une accélération, inspecte la trajectoire. La moyenne globale seule peut faire disparaître la dérive que la composition cherchait justement à éviter."
+        }
+      ],
+      "takeaways": [
+        "Une intention peut demander plusieurs niveaux de conditionnement.",
+        "Un contrôle local exige une correspondance temporelle explicite.",
+        "La chroma conserve les classes de hauteur, pas les octaves."
+      ],
+      "sourceIds": [
+        "gr-musicgen",
+        "gr-symbolic"
+      ]
+    },
+    {
+      "id": "diffusion-et-bruit",
+      "title": "La diffusion : apprendre à retirer une corruption connue",
+      "summary": "Suivre un exemple du bruit d’entraînement à la génération dans le latent.",
+      "questionIds": [
+        "gen-004",
+        "gen-022",
+        "gen-023",
+        "gen-024"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "La diffusion apprend un trajet inverse. Pendant l’entraînement, on prend une donnée propre x0, on tire un bruit eps et on construit une version corrompue xt à un niveau t. Le réseau apprend à utiliser cette observation et ce niveau pour estimer une quantité liée au signal propre. Pendant la génération, on part généralement d’un bruit et on applique plusieurs étapes apprises pour obtenir une donnée structurée."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une paramétrisation courante demande au réseau de prédire le bruit eps qui a servi à construire xt. On écrit xt = sqrt(alpha_bar) × x0 + sqrt(1 − alpha_bar) × eps, avec alpha_bar entre zéro et un. Les deux racines règlent les contributions du signal et du bruit. La cible de la MSE est alors eps, et non xt, un zéro ou alpha_bar."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "eps = torch.randn_like(x0)\nxt = alpha_bar.sqrt() * x0 + (1 - alpha_bar).sqrt() * eps\npred_eps = model(xt, t)\nloss = torch.nn.functional.mse_loss(pred_eps, eps)",
+          "caption": "x0 et eps ont la même forme. Ici alpha_bar est un scalaire ; un batch avec plusieurs t demande un broadcasting explicite."
+        },
+        {
+          "type": "example",
+          "title": "Lire les coefficients",
+          "text": "Si alpha_bar vaut 0,64, le coefficient du signal vaut 0,8 et celui du bruit vaut 0,6. On obtient xt = 0,8 x0 + 0,6 eps. Si alpha_bar diminue vers zéro, le bruit domine. Fournir t indique au réseau le niveau à traiter : une faible perturbation et une observation presque entièrement bruitée ne demandent pas la même estimation."
+        },
+        {
+          "type": "paragraph",
+          "text": "Prédire un bruit pendant l’apprentissage ne signifie pas que la génération consiste à soustraire ce bruit une seule fois. Le sampler applique une mise à jour définie par le modèle de diffusion et son calendrier, puis recommence. Il existe aussi des paramétrisations prédisant le signal propre ou d’autres quantités : la cible ne peut être changée sans adapter les équations correspondantes."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour l’audio, débruiter chaque échantillon peut coûter cher. La diffusion latente travaille sur une représentation compressée, puis un décodeur reconstruit le son. AudioLDM illustre cette approche. Si la longueur temporelle est réduite, chaque appel du débruiteur traite moins de positions ; la qualité reste dépendante du codec latent, de l’apprentissage et du nombre d’étapes."
+        },
+        {
+          "type": "paragraph",
+          "text": "Durant l’apprentissage, on peut tirer un niveau t différent pour chaque exemple et calculer directement sa version corrompue. Il n’est pas nécessaire de dérouler toutes les étapes précédentes pour construire cet exemple. Cette possibilité rend l’apprentissage différent du processus itératif employé ensuite pour échantillonner un son complet."
+        },
+        {
+          "type": "callout",
+          "label": "Deux index à distinguer",
+          "tone": "tip",
+          "text": "Le niveau de bruit t n’est pas forcément le temps musical du son. Un événement à trois secondes et une étape de diffusion numérotée 50 décrivent deux axes conceptuellement différents."
+        }
+      ],
+      "takeaways": [
+        "À l’entraînement, la corruption et sa cible sont connues.",
+        "Le niveau de bruit est une entrée utile du débruiteur.",
+        "La diffusion latente réduit la représentation traitée, puis décode."
+      ],
+      "sourceIds": [
+        "gr-ddpm",
+        "gr-audioldm"
+      ]
+    },
+    {
+      "id": "guidance-et-zones-connues",
+      "title": "Guider la génération et conserver ce qui existe",
+      "summary": "Comprendre la guidance sans classifieur et distinguer préférence et contrainte exacte.",
+      "questionIds": [
+        "gen-031",
+        "gen-032",
+        "gen-036",
+        "gen-040"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Un générateur conditionnel peut produire un son propre mais trop peu fidèle au texte. La guidance amplifie l’influence de la condition pendant l’échantillonnage. Dans la guidance sans classifieur, on combine une prédiction conditionnelle et une prédiction inconditionnelle. On ne demande pas nécessairement à un classifieur externe de noter chaque résultat : le débruiteur fournit lui-même les deux branches nécessaires."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour apprendre cette double utilisation, on retire la condition sur une fraction des exemples d’entraînement, en la remplaçant par la représentation d’absence prévue. Le modèle voit ainsi des cas avec et sans condition. Retirer le texte seulement au test sans avoir prévu cette situation ne garantit pas une prédiction inconditionnelle correctement apprise."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "eps_guided = eps_u + s * (eps_c - eps_u)",
+          "caption": "Convention de ce cours : eps_u est inconditionnelle, eps_c est conditionnelle, s est l’échelle de guidance."
+        },
+        {
+          "type": "example",
+          "title": "Le calcul évite une confusion de convention",
+          "text": "Si eps_u vaut 2 et eps_c vaut 5 dans une composante, s = 0 donne 2, s = 1 donne 5 et s = 2 donne 8. On extrapole au-delà de la branche conditionnelle lorsque s dépasse 1. Certains articles paramètrent cette combinaison autrement : il faut lire la formule avant de déduire ce que signifie une valeur numérique du réglage."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une forte guidance peut améliorer l’adhérence mesurée et réduire la diversité, ou créer des artefacts. Ce compromis dépend du modèle et des conditions. On compare donc plusieurs échelles en gardant les consignes et le budget communs. Le meilleur réglage ne se déduit pas uniquement d’un exemple spectaculaire ni de l’idée intuitive que davantage de contrôle serait toujours meilleur."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le comblement d’un trou pose une autre exigence : conserver les échantillons extérieurs. Un masque représente explicitement la région connue et la région à compléter. Si l’exigence est une conservation exactement identique des échantillons de sortie, on réimpose les valeurs connues dans cette région. Le sampler peut également les intégrer selon une méthode adaptée au niveau de bruit ; une simple préférence textuelle ne constitue pas cette garantie."
+        },
+        {
+          "type": "callout",
+          "label": "Préserver et raccorder",
+          "tone": "pitfall",
+          "text": "Réimposer la zone connue assure ses valeurs, mais ne garantit pas une frontière sans clic ni un raccord musical convaincant. Il faut examiner les transitions et le contexte. Une contrainte exacte sur certaines valeurs ne règle pas à elle seule la qualité de la zone inventée."
+        }
+      ],
+      "takeaways": [
+        "La guidance combine deux prédictions dont la convention doit être lue.",
+        "Une branche sans condition se prépare pendant l’apprentissage.",
+        "Un masque explicite convient aux contraintes sur une zone connue."
+      ],
+      "sourceIds": [
+        "gr-cfg",
+        "gr-audioldm"
+      ]
+    },
+    {
+      "id": "adaptation-lora-et-petit-corpus",
+      "title": "Adapter sans tout réapprendre",
+      "summary": "Relier gel des poids, rang de mise à jour, gradients et budget réel.",
+      "questionIds": [
+        "gen-018",
+        "gen-019",
+        "gen-020",
+        "gen-021",
+        "gen-033",
+        "gen-034"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Sur un petit corpus, entraîner tous les poids d’un grand modèle demande de la mémoire et peut favoriser la mémorisation. Geler une base préentraînée puis apprendre une petite adaptation réduit le nombre de paramètres mis à jour et les états d’optimisation associés. Le forward de la base reste nécessaire et la généralisation doit être validée sur des données séparées."
+        },
+        {
+          "type": "paragraph",
+          "text": "Avec PyTorch, requires_grad_(False) empêche le calcul de nouveaux gradients pour les paramètres concernés. On construit ensuite l’optimiseur sur les seuls paramètres à entraîner. Ce gel ne place pas automatiquement les modules en mode eval : dropout et normalisations ont leur propre comportement. Il ne rend pas non plus la sortie indépendante de l’entrée, et n’efface pas magiquement d’anciens gradients déjà accumulés."
+        },
+        {
+          "type": "figure",
+          "kind": "lora",
+          "caption": "Une matrice de base reste fixe tandis qu’une petite paire de facteurs apprend une mise à jour."
+        },
+        {
+          "type": "paragraph",
+          "text": "LoRA écrit une mise à jour sous la forme B A. Si W0 est de forme (d_out, d_in), on choisit B de forme (d_out, r) et A de forme (r, d_in). Leur produit peut être ajouté à W0. Le rang du produit est au plus r ; cela ne signifie pas que la matrice finale W0 + B A a elle-même un petit rang. On contraint la modification, pas toute la base."
+        },
+        {
+          "type": "example",
+          "title": "Compter ce qui est entraîné",
+          "text": "Une matrice 1 024 × 1 024 possède 1 048 576 poids. Avec r = 8, les facteurs comportent 1 024 × 8 + 8 × 1 024 = 16 384 paramètres, soit 64 fois moins pour cette adaptation. Ce compte ignore biais et facteurs d’échelle, et ne décrit pas nécessairement la réduction de mémoire totale du modèle."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "for p in base.parameters():\n    p.requires_grad_(False)\n# W0 : (d_out, d_in), B : (d_out, r), A : (r, d_in)\nh = W0 @ x + B @ A @ x",
+          "caption": "Schéma sans biais ni facteur d’échelle pour rendre les dimensions explicites."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une initialisation courante met B à zéro et A aléatoire : l’adaptation commence sans changer la base. Au premier backward, le gradient vers A passe par B et est nul, tandis que celui de B peut être non nul via A x. Mettre les deux facteurs à zéro bloquerait les deux gradients dans cette branche. Ce détail s’explique par la règle de dérivation du produit, sans connaître toute l’implémentation."
+        },
+        {
+          "type": "callout",
+          "label": "Pour un petit corpus musical",
+          "tone": "tip",
+          "text": "Compare une base gelée, une adaptation légère et éventuellement un ajustement plus large sous un budget décrit. Garde des morceaux réellement réservés et écoute les ressemblances excessives au corpus. Une réduction du nombre de paramètres entraînés n’est pas une preuve d’absence de mémorisation."
+        }
+      ],
+      "takeaways": [
+        "Geler réduit les mises à jour sans supprimer tous les calculs.",
+        "LoRA contraint le rang de la modification, pas celui de la base.",
+        "L’initialisation des facteurs détermine leurs premiers gradients."
+      ],
+      "sourceIds": [
+        "gr-lora",
+        "gr-module",
+        "gr-transfer"
+      ]
+    }
+  ]
+}

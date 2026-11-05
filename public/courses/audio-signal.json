@@ -1,0 +1,172 @@
+{
+  "themeId": "audio-signal",
+  "title": "Comprendre le signal audio",
+  "subtitle": "Des échantillons au spectrogramme, avec les unités toujours en vue.",
+  "intro": [
+    "Un fichier son contient des nombres, mais ces nombres prennent leur sens avec une cadence, des canaux et une convention de représentation. Nous allons suivre un enregistrement depuis sa forme d’onde jusqu’aux caractéristiques utilisées par un modèle, en vérifiant ce que chaque étape conserve ou retire.",
+    "Lis les chapitres dans l’ordre si ces notions sont nouvelles. Les exemples utilisent de petites valeurs et des axes explicitement nommés : tu peux raisonner sur le code sans l’exécuter. Les calculs servent à comprendre les choix, puis à reconnaître les bonnes hypothèses dans les QCM."
+  ],
+  "prerequisites": [],
+  "objectives": [
+    "Relier nombre d’échantillons, fréquence d’échantillonnage et durée.",
+    "Expliquer le repliement et choisir un rééchantillonnage cohérent.",
+    "Lire les axes d’une FFT, d’une STFT et d’un spectrogramme mel.",
+    "Distinguer amplitude, puissance, décibels et phase.",
+    "Anticiper les limites de reconstruction et les contraintes du streaming."
+  ],
+  "chapters": [
+    {
+      "id": "echantillons-duree-canaux",
+      "title": "Un son, des nombres et une horloge",
+      "summary": "Identifier la cadence et les axes avant tout calcul évite les erreurs de durée et de lecture.",
+      "questionIds": ["sig-001", "sig-004", "sig-012"],
+      "blocks": [
+        {"type":"paragraph","text":"Imagine un microphone qui mesure régulièrement une pression. Le signal numérique conserve une suite de valeurs, les échantillons. La fréquence d’échantillonnage indique combien de mesures correspondent à une seconde : 16 kHz signifie 16 000 échantillons par seconde. Elle ne donne ni le volume, ni le nombre de notes jouées. C’est une information sur la grille temporelle utilisée pour décrire le son."},
+        {"type":"paragraph","text":"Si un canal contient N échantillons et que sa fréquence d’échantillonnage vaut sr hertz, sa durée de fichier est N / sr secondes. Avec 48 000 échantillons à 16 000 Hz, on obtient trois secondes. L’instant du dernier échantillon est légèrement antérieur à trois secondes, puisque le premier porte l’indice zéro ; cela ne change pas la convention de durée N / sr utilisée pour le fichier."},
+        {"type":"example","title":"Deux oreilles, une même durée","text":"Avec la convention (canaux, échantillons), un tableau de forme (2, 96 000) à 48 kHz représente deux secondes en stéréo. Les deux canaux couvrent la même période. On stocke davantage de nombres qu’en mono, mais on n’écoute pas d’abord tout le canal gauche puis tout le canal droit. La durée ne se multiplie donc pas par deux."},
+        {"type":"callout","label":"L’image de Squoinks","tone":"analogy","text":"Le professeur Squoinks compare la fréquence d’échantillonnage à la cadence d’un projecteur : garder les mêmes images et les projeter plus lentement allonge la scène. La comparaison concerne le temps ; elle ne signifie pas qu’un échantillon sonore ressemble à une photographie complète du son."},
+        {"type":"paragraph","text":"Changer seulement la cadence de lecture de 48 à 24 kHz fait durer la même suite deux fois plus longtemps. Les oscillations deviennent deux fois plus lentes et les fréquences entendues sont divisées par deux. Un vrai rééchantillonnage poursuit un autre objectif : calculer de nouveaux échantillons pour décrire la même durée physique avec une autre grille temporelle."},
+        {"type":"code","language":"python","code":"# Convention : (canaux, echantillons)\n# stereo.shape == (2, 96000), sr en Hz\nsr = 48000\nchannels, samples = stereo.shape\nduration_seconds = samples / sr  # 2.0\nleft = stereo[0]  # premier canal, pas premiere seconde","caption":"Les noms d’axes expliquent le calcul. Compter tous les éléments du tableau donnerait ici une durée fausse."},
+        {"type":"paragraph","text":"Avant une transformation, annonce donc la convention de forme et l’unité. Certaines bibliothèques placent les canaux ailleurs. Une forme seule ne suffit pas : (2, N) pourrait aussi désigner un batch de deux signaux mono si le contexte le précise. La discipline consiste à nommer les dimensions plutôt qu’à deviner leur rôle à partir de leur taille."}
+      ],
+      "takeaways": ["Durée en secondes = nombre d’échantillons par canal / fréquence en hertz.","Les canaux simultanés augmentent le stockage, pas la durée.","Changer la fréquence de lecture n’est pas rééchantillonner le signal."],
+      "sourceIds": ["audio-load", "audio-mono", "audio-resample"]
+    },
+    {
+      "id": "nyquist-repliement-reechantillonnage",
+      "title": "Ce que la cadence permet de représenter",
+      "summary": "Nyquist et le filtrage expliquent pourquoi certaines fréquences disparaissent ou se déguisent.",
+      "questionIds": ["sig-002", "sig-003", "sig-020", "sig-025", "sig-026"],
+      "blocks": [
+        {"type":"paragraph","text":"Une suite de mesures espacées ne décrit pas toutes les variations imaginables entre deux mesures. Pour reconstruire sans ambiguïté un signal idéal limité en bande, sa fréquence maximale doit rester strictement sous la moitié de la fréquence d’échantillonnage. Cette moitié est appelée fréquence de Nyquist. À 44 100 Hz, elle vaut 22 050 Hz ; à 16 000 Hz, elle vaut 8 000 Hz."},
+        {"type":"figure","kind":"sampling","caption":"Une même oscillation est décrite différemment selon la densité des échantillons. Une cadence insuffisante peut la faire paraître plus lente."},
+        {"type":"paragraph","text":"Le repliement, ou aliasing, apparaît quand une variation trop rapide produit les mêmes mesures qu’une variation de fréquence plus basse. Par exemple, une sinusoïde à 6 kHz échantillonnée à 8 kHz se replie à 2 kHz dans la bande positive. Les échantillons seuls ne permettent plus de décider laquelle des deux oscillations était présente à l’origine. Augmenter leur volume ou leur précision numérique ne résout pas cette ambiguïté."},
+        {"type":"paragraph","text":"Pour passer de 48 à 16 kHz, conserver simplement un échantillon sur trois est risqué. Il faut d’abord atténuer les fréquences qui dépassent la nouvelle bande utile, avec un filtre passe-bas adapté à la limite de 8 kHz. Un filtre pratique possède une transition progressive : on prévoit une marge plutôt qu’une coupure idéale infiniment raide. Ensuite seulement, on réduit la cadence des échantillons."},
+        {"type":"code","language":"python","code":"from scipy.signal import resample_poly\n\n# x : signal mono de forme (N,), initialement a 48000 Hz\n# N divisible par 3 pour comparer exactement les durees\ny = resample_poly(x, up=1, down=3)\nsr_y = 16000\n# len(y) == len(x) // 3 : meme duree physique","caption":"Le rapport up/down règle la nouvelle cadence. La fonction associe le changement de grille à un filtrage passe-bas."},
+        {"type":"example","title":"Une décision qui retire de l’information","text":"Un classifieur distingue deux techniques instrumentales grâce à une texture située entre 10 et 12 kHz. Un rééchantillonnage propre à 16 kHz supprime cette bande. Aucun choix ultérieur de réseau ne recrée les mesures perdues ; le modèle pourrait exploiter des indices corrélés ailleurs, mais ce serait une autre information."},
+        {"type":"callout","label":"Le réflexe utile","tone":"tip","text":"Demande toujours quelle bande la tâche utilise avant de choisir une fréquence d’entrée. Une cadence plus faible peut réduire le calcul, mais ce bénéfice vient avec une limite physique explicite sur les fréquences conservées."}
+      ],
+      "takeaways": ["La fréquence de Nyquist vaut sr / 2.","Le repliement rend des fréquences différentes indiscernables dans les échantillons.","Réduire la cadence exige un filtrage anti-repliement et peut retirer une information utile."],
+      "sourceIds": ["audio-resample", "audio-scipy-signal"]
+    },
+    {
+      "id": "amplitude-puissance-decibels",
+      "title": "Mesurer une intensité sans confondre les grandeurs",
+      "summary": "Le carré, la moyenne et le logarithme répondent à des questions différentes.",
+      "questionIds": ["sig-007", "sig-008", "sig-010", "sig-022"],
+      "blocks": [
+        {"type":"paragraph","text":"Les échantillons d’une forme d’onde peuvent être positifs ou négatifs. Leur moyenne simple n’est donc pas une bonne mesure de leur importance : une oscillation forte peut avoir une moyenne nulle. Pour résumer son amplitude, la RMS prend la racine de la moyenne des carrés. Le carré retire le signe, la moyenne tient compte de toute la portion observée, puis la racine ramène à une grandeur de même unité que l’amplitude."},
+        {"type":"example","title":"Un signal énergique de moyenne nulle","text":"Pour [1, -1, 1, -1], la moyenne des échantillons vaut zéro. Les carrés valent tous un ; leur moyenne vaut un et la RMS vaut donc un. Cela ne signifie pas que le signal est constant : la RMS résume son amplitude sur la fenêtre, sans conserver l’ordre précis des valeurs."},
+        {"type":"paragraph","text":"Dans une représentation fréquentielle complexe D, le module abs(D) décrit une amplitude par coefficient. Son carré abs(D) ** 2 donne un spectrogramme de puissance non normalisé. Selon les conventions de FFT et de fenêtre, des facteurs supplémentaires sont nécessaires pour une puissance physique ou une densité spectrale correctement calibrée. Dans les QCM, l’expression non normalisé indique que l’on compare ici les opérations de base, pas un étalonnage acoustique complet."},
+        {"type":"code","language":"python","code":"import numpy as np\n\nx = np.array([1., -1., 1., -1.])\nrms = np.sqrt(np.mean(x ** 2))  # 1.0\n# D : coefficients complexes de STFT\namplitude = np.abs(D)\npower = amplitude ** 2\nlog_power = np.log(np.maximum(power, 1e-10))","caption":"La dernière ligne choisit un plancher positif pour éviter le logarithme de zéro ; elle ne calcule pas une phase."},
+        {"type":"paragraph","text":"Les décibels comparent une grandeur à une référence. Pour une amplitude positive A, on utilise 20 log10(A / Aref). Pour une puissance P, on utilise 10 log10(P / Pref). Doubler une amplitude ajoute environ 6 dB ; doubler une puissance ajoute environ 3 dB. Quand une amplitude double, sa puissance est multipliée par quatre, ce qui rend les deux formules cohérentes."},
+        {"type":"paragraph","text":"Un logarithme compresse les écarts entre grandes et petites valeurs, mais log(0) n’est pas fini. Un epsilon strictement positif ou un seuil minimal rend le calcul utilisable. Le choix de ce plancher influence les régions très faibles. Une normalisation par le maximum de chaque extrait change aussi la référence : elle retire l’information de niveau absolu entre fichiers, ce qui peut aider certaines tâches et en gêner d’autres."},
+        {"type":"callout","label":"Trois opérations, trois effets","tone":"pitfall","text":"Passer au logarithme ne standardise pas automatiquement les données. Cela ne force ni une moyenne nulle, ni un écart-type égal à un. Il faut distinguer la représentation logarithmique, le choix de référence et une éventuelle standardisation statistique."}
+      ],
+      "takeaways": ["La RMS mesure une amplitude globale sans annulation entre signes opposés.","Puissance non normalisée = module au carré.","Les décibels utilisent une référence ; un plancher positif évite log(0)."],
+      "sourceIds": ["audio-rms", "audio-features", "audio-amplitude-db"]
+    },
+    {
+      "id": "fourier-coefficients-frequences",
+      "title": "Lire les coordonnées d’une transformée de Fourier",
+      "summary": "Un indice de tableau devient une fréquence seulement avec la cadence et la taille de FFT.",
+      "questionIds": ["sig-013", "sig-014", "sig-024"],
+      "blocks": [
+        {"type":"paragraph","text":"La transformée de Fourier décrit un signal comme une combinaison d’oscillations. Chaque coefficient indique une contribution à une fréquence de la grille. Il est complexe : on peut le voir comme une flèche avec une longueur, le module, et une orientation, la phase. Cette image aide à séparer deux informations qui vivent dans le même nombre ; elle ne transforme pas chaque coefficient en un événement musical unique."},
+        {"type":"paragraph","text":"Pour une FFT de N points à une cadence sr, deux bins voisins sont séparés de sr / N hertz. L’indice zéro correspond à la composante continue, liée à la moyenne. Si sr = 16 000 et N = 160, l’écart vaut 100 Hz. Le bin d’indice 10 représente donc 1 000 Hz, et non 10 Hz. Un axe fréquentiel doit être calculé à partir de ces paramètres."},
+        {"type":"code","language":"python","code":"import numpy as np\n\nsr = 16000  # Hz\nN = 160     # echantillons de la fenetre\nfrequencies = np.fft.rfftfreq(N, d=1 / sr)\n# frequencies[0] == 0, frequencies[10] == 1000\nx = np.zeros(1024)  # signal reel\nz = np.fft.rfft(x)\n# z.shape == (513,) : 1024 // 2 + 1","caption":"rfftfreq utilise un intervalle temporel d en secondes, et non directement une fréquence en hertz."},
+        {"type":"paragraph","text":"Pour un signal réel, les coefficients des fréquences négatives sont les conjugués de ceux des fréquences positives. On peut donc éviter de stocker cette partie redondante. La FFT réelle rfft produit N // 2 + 1 coefficients. Pour N pair, ce résultat inclut la fréquence nulle et celle de Nyquist ; pour N impair, il n’y a pas de bin exactement placé à Nyquist. Cette formule explique la longueur 513 pour une entrée réelle de 1 024 valeurs."},
+        {"type":"paragraph","text":"Le module d’un coefficient a + ib vaut sqrt(a² + b²). Calculer la racine de D.real ** 2 + D.imag ** 2 retrouve donc le module, pas la phase ni une puissance en décibels. La phase est obtenue par l’angle du coefficient. Pour un coefficient nul, cet angle n’apporte pas d’information physique exploitable ; sa contribution est nulle quelle que soit l’orientation imaginée."},
+        {"type":"example","title":"Une note ne remplit pas une seule case","text":"Une note de piano contient une fondamentale, des harmoniques et un transitoire. Sa représentation répartit donc l’information sur plusieurs fréquences, et dépend de la portion observée. Même une sinusoïde isolée peut se répartir sur plusieurs bins si elle n’est pas alignée avec la grille. Un grand coefficient ne signifie pas automatiquement une note séparée."},
+        {"type":"callout","label":"Le premier contrôle","tone":"tip","text":"Devant un tableau fréquentiel, vérifie successivement l’axe transformé, la taille de FFT, la cadence et le caractère réel ou complexe de l’entrée. Ces quatre éléments suffisent souvent à résoudre une confusion de dimension ou d’unité."}
+      ],
+      "takeaways": ["L’écart entre bins vaut sr / N hertz.","Une FFT réelle contient N // 2 + 1 coefficients.","Le module résume une amplitude complexe ; il ne contient pas la phase."],
+      "sourceIds": ["audio-rfft", "audio-rfftfreq", "audio-stft"]
+    },
+    {
+      "id": "stft-fenetres-hop-trames",
+      "title": "Suivre le son au fil du temps avec la STFT",
+      "summary": "La STFT répète une analyse locale ; fenêtre, hop et nombre de trames ont chacun leur rôle.",
+      "questionIds": ["sig-005", "sig-006", "sig-015"],
+      "blocks": [
+        {"type":"paragraph","text":"Une FFT sur toute une pièce indique quelles fréquences sont présentes globalement, mais explique mal quand elles apparaissent. La STFT découpe l’écoute en portions courtes, les pondère avec une fenêtre et calcule une FFT pour chacune. En juxtaposant les résultats, on obtient une représentation temps-fréquence. Pour un signal mono selon la convention (fréquences, trames), chaque colonne décrit le contenu fréquentiel d’une portion temporelle."},
+        {"type":"figure","kind":"stft","caption":"Des fenêtres glissent sur la forme d’onde. Chaque analyse fournit une colonne ; le hop mesure le déplacement entre deux fenêtres successives."},
+        {"type":"paragraph","text":"La longueur de fenêtre indique combien de temps contribue réellement à une analyse. Le hop, ou pas, indique de combien on avance entre deux analyses. À 16 kHz, un hop de 160 échantillons correspond à 10 millisecondes. Une fenêtre de 400 échantillons couvre 25 millisecondes. Les analyses se recouvrent donc ; une trame toutes les 10 millisecondes ne signifie pas une fenêtre de seulement 10 millisecondes."},
+        {"type":"paragraph","text":"Sans centrage ni padding, une fenêtre doit tenir entièrement dans le signal. Avec N échantillons, une taille d’analyse L et un hop H, le nombre de trames complètes vaut 1 + floor((N - L) / H), si N est au moins L. Pour N = 16 000, L = 400 et H = 160, on obtient 98 trames. Le floor retire la fraction de trame finale qui dépasserait le fichier."},
+        {"type":"code","language":"python","code":"import librosa\n\n# y : mono, forme (16000,), cadence 16000 Hz\nD = librosa.stft(\n    y, n_fft=400, win_length=400,\n    hop_length=160, center=False\n)\n# D.shape == (201, 98)\n# 201 bins = 400 // 2 + 1 ; 98 trames completes","caption":"Ici n_fft et win_length coïncident et center=False évite le padding de centrage. Ces hypothèses sont essentielles pour compter les trames."},
+        {"type":"paragraph","text":"Un hop plus petit ajoute des colonnes et accroît le recouvrement. Il rend le suivi temporel plus densément échantillonné, mais n’allonge pas la portion observée par chaque fenêtre. Il augmente aussi le calcul et le stockage. Pour comparer deux expériences, il faut donc distinguer le nombre de trames, l’intervalle entre trames et la capacité de la fenêtre à séparer deux phénomènes proches."},
+        {"type":"example","title":"Une attaque de piano","text":"Au début d’une note, plusieurs fréquences apparaissent presque ensemble. Le spectrogramme montre cette attaque comme une structure localisée dans le temps. Les colonnes suivantes montrent ensuite une décroissance différente selon les fréquences. L’image permet de suivre cette évolution, mais sa précision dépend toujours de la durée des fenêtres utilisées."}
+      ],
+      "takeaways": ["Une colonne STFT correspond à une analyse temporelle locale.","Le hop règle l’espacement ; la fenêtre règle la portion observée.","Le compte des trames dépend explicitement du padding et du centrage."],
+      "sourceIds": ["audio-stft", "audio-rfft"]
+    },
+    {
+      "id": "resolution-fuite-zero-padding",
+      "title": "Choisir ce que l’analyse distingue",
+      "summary": "Une grille plus fine ne remplace pas une observation plus longue, et toute fenêtre impose un compromis.",
+      "questionIds": ["sig-016", "sig-017", "sig-018"],
+      "blocks": [
+        {"type":"paragraph","text":"Suppose que deux sinusoïdes très proches jouent en même temps. Pour distinguer leurs oscillations, il faut les observer assez longtemps. Une fenêtre plus longue améliore généralement la séparation fréquentielle, mais mélange davantage les changements qui surviennent pendant son observation. Inversement, une fenêtre courte localise mieux un événement bref, tout en donnant une description fréquentielle moins sélective. C’est le compromis de localisation temps-fréquence."},
+        {"type":"example","title":"Accorder ou repérer une attaque","text":"Pour comparer deux notes graves presque à l’unisson, une observation longue peut être utile. Pour repérer précisément le début d’un coup de caisse claire, une observation courte est souvent plus appropriée. Ces buts ne conduisent pas nécessairement à la même configuration. Une représentation à plusieurs résolutions peut être envisagée, mais elle ajoute du calcul et demande un protocole de comparaison."},
+        {"type":"paragraph","text":"Il faut aussi distinguer durée observée et taille de FFT. On peut prendre une fenêtre de 512 échantillons, puis la compléter avec des zéros pour calculer une FFT de 2 048 points. Les bins deviennent quatre fois plus serrés sur l’axe fréquentiel. Pourtant, on n’a pas enregistré un instant supplémentaire du signal. On échantillonne plus densément le spectre de la même portion, sans garantir la séparation de deux composantes que cette observation ne distinguait pas."},
+        {"type":"code","language":"python","code":"import numpy as np\n\n# frame : 512 echantillons reels, cadence sr en Hz\nwindowed = frame * np.hanning(512)\nspectrum = np.fft.rfft(windowed, n=2048)\n# 1025 coefficients, mais seulement 512 echantillons observes\nfrequency_spacing = sr / 2048","caption":"Le zero-padding densifie la grille des fréquences ; la durée réellement observée reste 512 / sr secondes."},
+        {"type":"paragraph","text":"Découper brutalement un signal avec une fenêtre rectangulaire peut introduire une rupture aux bords. Une sinusoïde qui n’est pas alignée avec la grille répartit alors son énergie autour de sa fréquence : c’est la fuite spectrale. La fenêtre de Hann adoucit les bords et réduit les lobes secondaires. En contrepartie, elle élargit le lobe principal : elle ne supprime donc pas gratuitement toute fuite en conservant la même finesse de séparation."},
+        {"type":"paragraph","text":"Dans un entretien, une bonne réponse relie ainsi le réglage à la tâche. Augmenter n_fft avec la même fenêtre réelle améliore la densité d’affichage. Augmenter la durée réelle de fenêtre modifie le compromis de localisation. Diminuer le hop densifie les analyses temporelles. Ces trois gestes peuvent produire une image plus grande, mais ils n’apportent pas le même type d’information."},
+        {"type":"callout","label":"Une image plus détaillée ?","tone":"pitfall","text":"Le mot résolution peut désigner l’espacement de la grille ou la capacité de distinguer deux composantes. Précise le sens employé : davantage de pixels ou de bins ne signifie pas automatiquement davantage d’information mesurée."}
+      ],
+      "takeaways": ["Une fenêtre longue favorise le détail fréquentiel au prix de la localisation temporelle.","Le zero-padding densifie les bins sans allonger l’observation.","Hann réduit les lobes secondaires et élargit le lobe principal."],
+      "sourceIds": ["audio-scipy-signal", "audio-stft", "audio-rfft"]
+    },
+    {
+      "id": "mel-representation-compressee",
+      "title": "Passer du spectre linéaire aux bandes mel",
+      "summary": "Le mel regroupe des fréquences ; le logarithme et la normalisation sont des décisions supplémentaires.",
+      "questionIds": ["sig-011", "sig-021"],
+      "blocks": [
+        {"type":"paragraph","text":"Un spectrogramme linéaire réserve des bins régulièrement espacés en hertz. Un banc de filtres mel regroupe ces bins dans des bandes dont l’espacement suit une échelle inspirée de la perception des hauteurs. Les bandes sont généralement plus serrées dans le grave que dans l’aigu. Cette organisation offre une représentation compacte utile à de nombreuses tâches audio, sans constituer une copie complète du fonctionnement de l’oreille humaine."},
+        {"type":"figure","kind":"mel","caption":"Des poids fréquentiels regroupent plusieurs bins linéaires dans chaque bande mel. Le temps reste le même axe de trames."},
+        {"type":"paragraph","text":"Concrètement, chaque bande est une somme pondérée de coefficients de puissance pour chaque trame. Si S a la forme (257, 100), avec 257 bins fréquentiels et 100 trames, un banc de 64 filtres produit M de forme (64, 100). La transformation agit sur les fréquences, pas sur le nombre de trames. Les bandes mel ne deviennent pas 64 canaux de microphone : elles restent des caractéristiques calculées à partir du même signal."},
+        {"type":"code","language":"python","code":"import librosa\nimport numpy as np\n\n# y : mono ; sr : sa cadence en Hz\nD = librosa.stft(y, n_fft=512, hop_length=160)\nS = np.abs(D) ** 2  # (257, nombre_trames)\nM = librosa.feature.melspectrogram(\n    S=S, sr=sr, n_fft=512, n_mels=64\n)\nlog_M = np.log(np.maximum(M, 1e-10))\n# M et log_M : (64, nombre_trames)","caption":"Quand S est fourni, il est ici déjà en puissance. On évite de le mettre une seconde fois au carré par erreur."},
+        {"type":"paragraph","text":"Réduire 257 valeurs à 64 bandes perd généralement de l’information. Plusieurs répartitions de puissance peuvent donner les mêmes sommes pondérées. La phase avait déjà disparu lors du calcul du module au carré ; la projection mel ne la restaure pas. Une inversion exacte vers la forme d’onde originale n’est donc pas garantie. Un vocodeur peut apprendre à produire une forme d’onde plausible à partir de mel, mais plausible ne veut pas dire identique au signal qui a fourni les caractéristiques."},
+        {"type":"paragraph","text":"Le terme log-mel ajoute une autre étape : prendre un logarithme ou une conversion en décibels avec un plancher numérique. Puis une standardisation peut encore être appliquée. Pour réutiliser un modèle préentraîné, il faut respecter toutes ces conventions : cadence, FFT, hop, nombre de bandes, limites fréquentielles, formule mel et normalisation. Deux tableaux de même forme peuvent avoir des valeurs et un sens différents si leur préparation change."},
+        {"type":"example","title":"Une entrée compacte pour classifier","text":"Un classifieur de sirènes peut apprendre sur une image log-mel moins coûteuse qu’un spectre très fin. Le compromis paraît intéressant si les motifs utiles restent visibles. Pour mesurer des écarts extrêmement fins entre sinusoïdes, cette réduction pourrait gêner. On choisit donc la représentation en fonction de ce que la sortie doit distinguer, puis on valide ce choix expérimentalement."}
+      ],
+      "takeaways": ["Le mel remplace l’axe des bins par un axe de bandes pondérées.","Une réduction fréquentielle ne conserve généralement pas toute l’information.","Mel, logarithme et standardisation constituent trois étapes distinctes."],
+      "sourceIds": ["audio-mel", "audio-features", "audio-amplitude-db"]
+    },
+    {
+      "id": "phase-canaux-annulations",
+      "title": "La phase compte même quand on ne l’affiche pas",
+      "summary": "Deux modules identiques peuvent cacher des formes d’onde différentes ; une moyenne stéréo peut même annuler le son.",
+      "questionIds": ["sig-009", "sig-019", "sig-029"],
+      "blocks": [
+        {"type":"paragraph","text":"Le module indique la longueur d’un coefficient complexe ; la phase indique son angle. Si deux oscillations de même fréquence arrivent avec le même décalage temporel, elles peuvent s’additionner fortement. Si elles sont en opposition de phase et de même amplitude, elles peuvent s’annuler. La phase n’est donc pas un ornement numérique. Elle participe à la manière dont les contributions se combinent pour former le signal temporel."},
+        {"type":"paragraph","text":"Prenons un signal réel x et son opposé -x, analysés avec les mêmes paramètres. Par linéarité, STFT(-x) = -STFT(x). Leurs modules sont identiques. Sur chaque coefficient non nul, multiplier par -1 change la phase de π radians, modulo un tour complet. Les deux formes d’onde ne sont pourtant pas identiques. Cet exemple suffit à prouver que le module seul ne détermine pas de manière unique la forme d’onde originale."},
+        {"type":"example","title":"Une information retirée, pas un calcul raté","text":"Si un système ne conserve que abs(D), il ne peut plus distinguer x de -x grâce à cette représentation seule. Pour certaines classifications, cette invariance est acceptable. Pour une reconstruction exacte, elle pose un problème. Le bon choix dépend de la sortie attendue, et non d’une règle affirmant que la phase est toujours inutile ou toujours nécessaire à chaque modèle."},
+        {"type":"paragraph","text":"Une conversion stéréo vers mono effectue souvent la moyenne des canaux à chaque instant. Si le canal droit est exactement l’opposé du gauche, la moyenne vaut zéro. Cette situation peut venir d’une inversion de polarité ; des annulations partielles apparaissent aussi avec des décalages entre prises. Avant de réduire les canaux, il est donc utile d’écouter la conversion et de vérifier qu’elle ne retire pas un contenu important pour la tâche."},
+        {"type":"code","language":"python","code":"import numpy as np\n\nleft = np.array([0.2, -0.4, 0.1])\nright = -left\nstereo = np.stack([left, right])  # (canaux=2, temps=3)\nmono = stereo.mean(axis=0)       # forme (3,)\n# mono vaut [0., 0., 0.] a la precision numerique pres","caption":"La moyenne s’effectue sur l’axe des canaux. Une moyenne sur l’axe du temps produirait un autre objet."},
+        {"type":"paragraph","text":"Écarter la phase d’une STFT ne supprime ni ses colonnes, ni son axe fréquentiel. On retire un type d’information attaché aux coefficients. De même, sommer deux canaux ne revient pas à les mettre bout à bout. Ces distinctions paraissent simples, mais elles permettent de diagnostiquer un spectrogramme correct en apparence dont la reconstruction ou la conversion mono sonne pourtant très mal."},
+        {"type":"callout","label":"Avant de jeter un axe","tone":"tip","text":"Demande ce que représente l’axe et quelle information la réduction doit préserver. Une opération compacte et rapide peut être mathématiquement correcte tout en étant mal adaptée à l’objectif musical ou perceptif."}
+      ],
+      "takeaways": ["Un module ne contient pas l’angle complexe des coefficients.","x et -x ont le même module de STFT, mais des phases différentes.","Une moyenne de canaux opposés peut annuler tout le signal."],
+      "sourceIds": ["audio-stft", "audio-rfft", "audio-mono", "audio-griffinlim"]
+    },
+    {
+      "id": "reconstruction-streaming-limites",
+      "title": "Revenir au son et respecter le temps réel",
+      "summary": "Une reconstruction fidèle demande des paramètres compatibles ; une analyse en direct doit aussi payer son besoin de contexte.",
+      "questionIds": ["sig-023", "sig-027", "sig-028", "sig-030"],
+      "blocks": [
+        {"type":"paragraph","text":"La STFT transforme une forme d’onde en analyses locales, et son inverse recompose des portions temporelles qui se recouvrent. Avec des coefficients complexes non modifiés, une fenêtre et un hop compatibles, une couverture correcte et une bonne gestion des bords, on peut viser une reconstruction très fidèle. Dans un aller-retour librosa.stft puis librosa.istft, reprendre les conventions d’analyse constitue le point de départ cohérent."},
+        {"type":"paragraph","text":"Les portions reconstruites ne sont pas simplement collées : elles sont additionnées dans leurs zones de recouvrement puis normalisées. Une formulation courante divise chaque échantillon par la somme des fenêtres au carré qui le couvrent. Si cette somme est nulle, la normalisation locale échoue. Le choix de fenêtre, le hop et les bords doivent donc assurer une couverture non nulle des positions à reconstruire. Avoir conservé la phase ne corrige pas un échantillon jamais couvert."},
+        {"type":"code","language":"python","code":"import librosa\n\n# y : signal mono reel ; n : sa longueur originale\nn = len(y)\nD = librosa.stft(y, n_fft=512, hop_length=128, center=True)\ny_hat = librosa.istft(\n    D, n_fft=512, hop_length=128,\n    window='hann', center=True, length=n\n)\n# Meme convention d'analyse et de synthese ; longueur explicite","caption":"Les bords et la longueur de sortie font partie du problème de reconstruction, au même titre que la fenêtre et le hop."},
+        {"type":"paragraph","text":"Si l’on n’a conservé que le module, il faut estimer une phase ou recourir à un modèle de synthèse. Griffin-Lim initialise une phase puis alterne reconstruction temporelle et nouvelle analyse, en réimposant le module voulu. Il cherche une solution compatible, sans garantir de retrouver la phase originale ni d’éviter les artefacts. Il ne recrée pas non plus les bandes qui auraient été supprimées en amont."},
+        {"type":"paragraph","text":"Enfin, une fenêtre centrée à un instant utilise des échantillons avant et après cet instant. En lecture de fichier, tout le contexte existe déjà. En streaming, les échantillons futurs doivent arriver avant que cette analyse soit complète : cela ajoute de la latence. Une convention non centrée permet un autre alignement, mais une fenêtre doit encore être suffisamment remplie pour être traitée. La latence totale comprend aussi le réseau et les buffers audio."},
+        {"type":"example","title":"Une aide musicale jouée en direct","text":"Un système qui transforme une note pendant une performance doit annoncer combien de contexte il attend et à quel instant sa sortie se rapporte. Une très belle reconstruction hors ligne ne garantit pas un résultat utilisable sur scène. La qualité sonore et le délai se mesurent donc ensemble dans le scénario réel d’utilisation."},
+        {"type":"callout","label":"La bonne conclusion","tone":"tip","text":"Demande séparément si l’information est conservée, si la synthèse la couvre correctement et si les données nécessaires sont déjà disponibles. Ces trois questions distinguent perte d’information, erreur de paramètres et contrainte de causalité."}
+      ],
+      "takeaways": ["Une STFT complexe s’inverse avec une analyse et une synthèse compatibles.","Une couverture nulle empêche la normalisation par recouvrement-addition.","Griffin-Lim estime une phase ; le centrage exige du contexte futur en streaming."],
+      "sourceIds": ["audio-istft", "audio-stft", "audio-griffinlim"]
+    }
+  ]
+}

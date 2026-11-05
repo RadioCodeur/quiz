@@ -3,6 +3,7 @@ import { loadBank } from './bank.js';
 import { filterQuestions, availableCounts, defaultCount, createSession, prepareOptions, answerQuestion, advance, retryQuestions } from './quiz.js';
 import { calculateStats } from './stats.js';
 import { createStorage, bankSignature, STORAGE_KEY, SETTINGS_KEY } from './storage.js';
+import { courseHref } from './course-model.js';
 
 const root = document.querySelector('#app');
 const storage = createStorage();
@@ -13,7 +14,7 @@ let selected = [], count = 50;
 
 function themeLabel(id) { return themes.find(t => t.id === id)?.label ?? id; }
 function sourceList(q) {
-  return `<details class="sources"><summary>Consulter les références</summary><ul>${q.sourceIds.map(id => sources.find(s => s.id === id)).filter(Boolean).map(s => `<li><a href="${escape(s.url)}" target="_blank" rel="noopener noreferrer">${escape(s.title)} ↗</a></li>`).join('')}</ul></details>`;
+  return `<details class="sources"><summary>Consulter les références</summary><ul>${q.sourceIds.map(id => sources.find(s => s.id === id)).filter(Boolean).map(s => `<li><a href="${escape(s.url)}" target="_blank" rel="noopener noreferrer">${escape(s.title)} ↗</a></li>`).join('')}</ul></details><a class="course-reference" href="${courseHref(q.primaryTheme, null, q.id)}">Comprendre cette notion dans le cours <span aria-hidden="true">↗</span></a>`;
 }
 function tags(q) { return q.themes.map(id => `<span class="tag">${escape(themeLabel(id))}</span>`).join(''); }
 function code(q) { return q.code ? `<div class="code-label">PYTHON</div><pre><code>${escape(q.code)}</code></pre><p class="code-conventions">Imports usuels supposés : <code>torch</code> pour PyTorch, <code>np</code> pour NumPy. Le code est à lire, sans exécution.</p>` : ''; }

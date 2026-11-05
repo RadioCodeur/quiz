@@ -4,12 +4,16 @@ import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 import { readFile, mkdir } from 'node:fs/promises';
 import { readBank } from './read-bank.mjs';
+import { readCourses } from './validate-courses.mjs';
+import { buildCoverage, courseHref, COURSE_STORAGE_KEY } from '../src/course-model.js';
 import { STORAGE_KEY } from '../src/storage.js';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 process.chdir(fileURLToPath(new URL('../', import.meta.url)));
 const { bank } = await readBank();
+const courses = await readCourses();
+const coverage = buildCoverage(courses);
 const byId = new Map(bank.map(q => [q.id,q]));
 const base = 'http://127.0.0.1:4188';
 const vite = spawn(process.execPath,['node_modules/vite/bin/vite.js','--host','127.0.0.1','--port','4188','--strictPort'],{stdio:'pipe',windowsHide:true});
@@ -151,8 +155,76 @@ try {
     assert.equal(await page.locator('.feedback').count(),1);
     assert.equal(await page.locator('.feedback').evaluate(el=>el===document.activeElement),true);
   });
+  let quizSnapshot, currentCourse, currentChapter;
+  await check('quiz → cours : lien vers le bon chapitre et session conservée',async()=>{
+    quizSnapshot=await getSession();
+    const id=quizSnapshot.questionIds[quizSnapshot.index];
+    const expected=coverage.get(id);
+    currentCourse=courses.find(c=>c.themeId===expected.themeId);
+    currentChapter=currentCourse.chapters.find(ch=>ch.id===expected.chapterId);
+    await page.locator('.course-reference').click();
+    await page.locator('#lesson-title').waitFor();
+    assert.equal(await page.locator('#lesson-title').innerText(),currentChapter.title);
+    assert.ok((await page.locator('.question-context').innerText()).includes(byId.get(id).prompt));
+    assert.deepEqual(await getSession(),quizSnapshot);
+    await page.setViewportSize({width:1440,height:1000});
+    await page.screenshot({path:'test-results/courses-desktop-chapter.png',fullPage:true});
+  });
+  await check('cours : lecture enregistrée, texte agrandi, mode lecture et reprise après rafraîchissement',async()=>{
+    // Use a chapter with a successor: the quiz can randomly point to the end of the entire course path.
+    await page.evaluate(url=>{history.pushState(null,'',url);dispatchEvent(new PopStateEvent('popstate'));},courseHref(courses[0].themeId,courses[0].chapters[0].id));
+    await page.locator('#mark-read').check();
+    await page.locator('#large-text').click();
+    assert.equal(await page.locator('#large-text').getAttribute('aria-pressed'),'true');
+    await page.locator('#reading-mode').click();
+    assert.equal(await page.locator('.course-sidebar').isVisible(),false);
+    await page.reload();await page.locator('#lesson-title').waitFor();
+    assert.equal(await page.locator('#mark-read').isChecked(),true);
+    assert.equal(await page.locator('#reading-mode').getAttribute('aria-pressed'),'true');
+    assert.equal(await page.locator('#large-text').getAttribute('aria-pressed'),'true');
+    await page.locator('#reading-mode').click();await page.locator('#large-text').click();
+    const before=await page.locator('#lesson-title').innerText();
+    await page.locator('.chapter-next').click();
+    assert.notEqual(await page.locator('#lesson-title').innerText(),before);
+    await page.goBack();
+    await page.waitForFunction(title=>document.querySelector('#lesson-title')?.textContent===title,before);
+    assert.deepEqual(await getSession(),quizSnapshot);
+    await page.locator('.course-breadcrumb a').click();
+    assert.equal(await page.locator('.course-card').count(),6);
+    assert.equal(await page.locator('.reading-resume').count(),1);
+    await page.screenshot({path:'test-results/courses-desktop-overview.png',fullPage:true});
+    await page.locator('.header-nav a').first().click();await page.locator('#next').waitFor();
+    assert.deepEqual(await getSession(),quizSnapshot);
+  });
+  await check('cours mobile : les 57 chapitres se rendent sans débordement de page',async()=>{
+    await page.setViewportSize({width:360,height:800});
+    await page.locator('.header-nav a').last().click();await page.locator('.course-card').first().waitFor();
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    await page.screenshot({path:'test-results/courses-mobile-overview.png',fullPage:true});
+    for(const course of courses)for(const chapter of course.chapters){
+      await page.evaluate(url=>{history.pushState(null,'',url);dispatchEvent(new PopStateEvent('popstate'));},courseHref(course.themeId,chapter.id));
+      assert.equal(await page.locator('#lesson-title').innerText(),chapter.title);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`Débordement : ${course.themeId}/${chapter.id}`);
+      assert.equal(await page.locator('.lesson-figure').count(),chapter.blocks.filter(b=>b.type==='figure').length);
+    }
+    const illustrated=courses.find(c=>c.themeId==='audio-signal');
+    const chapter=illustrated.chapters.find(ch=>ch.blocks.some(b=>b.type==='figure'));
+    await page.evaluate(url=>{history.pushState(null,'',url);dispatchEvent(new PopStateEvent('popstate'));},courseHref(illustrated.themeId,chapter.id));
+    await page.screenshot({path:'test-results/courses-mobile-chapter.png',fullPage:true});
+  });
+  await check('cours : stockage bloqué et liens périmés restent utilisables',async()=>{
+    const ctx=await browser.newContext({viewport:{width:360,height:800}});
+    await ctx.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw new DOMException('Blocked','SecurityError');}}));
+    const p=await ctx.newPage();await p.goto(`${base}/cours.html?theme=python-scientifique#ancien-chapitre`);await p.locator('#lesson-title').waitFor();
+    assert.equal(await p.locator('#lesson-title').innerText(),courses[0].chapters[0].title);
+    assert.equal(await p.locator('.notice').count(),1);
+    await p.locator('#mark-read').check();
+    assert.ok((await p.locator('.read-status').innerText()).includes('mémoire'));
+    await p.locator('.chapter-next').click();assert.equal(await p.locator('.lesson').count(),1);
+    await ctx.close();
+  });
   await check('construction servie sous /qr-entretien/ : JSON, assets et quiz fonctionnels',async()=>{
-    const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml'};
+    const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.json':'application/json','.svg':'image/svg+xml','.png':'image/png'};
     staticServer=createServer(async(req,res)=>{
       try{
         const url=new URL(req.url,'http://localhost');
@@ -171,6 +243,13 @@ try {
     assert.equal(await p.locator('#available-count').innerText(),'200');
     await p.locator('#start').click();await p.locator('.answer').first().click();
     assert.equal(await p.locator('.feedback').count(),1);
+    await p.locator('.course-reference').click();await p.locator('#lesson-title').waitFor();
+    assert.ok(p.url().includes('/qr-entretien/cours.html?theme='));
+    assert.equal(await p.locator('.question-context').count(),1);
+    await p.locator('.header-nav a').last().click();await p.locator('.course-card').first().waitFor();
+    assert.equal(await p.locator('.course-card').count(),6);
+    await p.locator('.professor-hero img').evaluate(img=>img.decode());
+    await p.locator('.header-nav a').first().click();await p.locator('#next').waitFor();
     assert.deepEqual(failed,[]);await p.close();
   });
   assert.deepEqual(errors,[],'Aucune exception navigateur');

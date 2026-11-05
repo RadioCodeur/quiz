@@ -1,0 +1,449 @@
+{
+  "themeId": "python-scientifique",
+  "title": "Python scientifique, en comprenant ce que fait le code",
+  "subtitle": "Des objets Python aux calculs vectorisés : lire, prévoir et expliquer.",
+  "intro": [
+    "Vous allez suivre le trajet des données, ligne après ligne. Chaque chapitre relie une petite règle à un exemple que vous pouvez expliquer à voix haute. Aucun extrait n’est exécuté dans cette application ; les résultats sont présentés pour vous permettre de raisonner.",
+    "Le Professeur Squoinks vous propose une habitude : avant de chercher la bonne réponse, racontez ce qui change, ce qui reste partagé et quelle forme doit sortir. Dans les extraits scientifiques, np désigne NumPy. Vous pouvez lire un chapitre, puis essayer les questions correspondantes."
+  ],
+  "prerequisites": [],
+  "objectives": [
+    "Suivre les valeurs retournées, les références et les effets de bord.",
+    "Lire une boucle, une compréhension et un générateur sans les confondre.",
+    "Déduire les axes et les formes d’une opération NumPy.",
+    "Choisir une réduction, une standardisation et une précision adaptées."
+  ],
+  "chapters": [
+    {
+      "id": "lire-fonctions-objets",
+      "title": "Lire une fonction comme un trajet de données",
+      "summary": "Comprendre ce qui entre, ce qui est renvoyé et où l’état d’un objet est conservé.",
+      "questionIds": [
+        "py-002",
+        "py-003",
+        "py-007"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Une fonction reçoit des objets, effectue des instructions, puis peut renvoyer un résultat. Pour lire un appel, commencez par remplacer mentalement les paramètres par les arguments. Dans centrer(8, 3), x désigne 8 et moyenne désigne 3. La soustraction donne 5. Le mot return transmet cette valeur à l’appelant ; l’affectation y = centrer(8, 3) associe donc y à 5."
+        },
+        {
+          "type": "paragraph",
+          "text": "La définition ne lance pas le calcul. Elle prépare une opération réutilisable. L’indentation délimite son corps : les lignes décalées appartiennent à la fonction. Quand return est rencontré, cet appel se termine. Si aucun return ne fournit de valeur, le résultat est None. Afficher un nombre avec print et le renvoyer sont donc deux actions différentes."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "def centrer(x, moyenne):\n    return x - moyenne\n\ny = centrer(8, 3)\n# y vaut 5",
+          "caption": "Les noms des paramètres servent à comprendre le rôle des arguments."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un dictionnaire conserve des associations entre clés et valeurs. Pour un fichier sonore, nom, durée et fréquence d’échantillonnage peuvent être des clés. meta.get(\"duree\", 0) cherche la clé duree et renvoie 0 si elle manque. Il ne crée pas cette clé. À l’inverse, meta[\"duree\"] exige sa présence et déclenche une KeyError lorsqu’elle est absente. Le choix dépend de votre contrat : donnée facultative ou absence à traiter comme un problème."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une classe regroupe un état et des opérations. Chaque appel à Reglage() crée une instance. Dans __init__, self représente cette nouvelle instance. L’instruction self.gain = 1 lui attache son propre attribut gain. Deux instances initialisées ainsi ont chacune leur valeur. Affecter 4 à a.gain ne change pas b.gain. Cela vous servira ensuite à lire les classes de modèles ou de jeux de données."
+        },
+        {
+          "type": "example",
+          "title": "Deux réglages indépendants",
+          "text": "Après a = Reglage() puis b = Reglage(), leurs gains valent tous deux 1. Après a.gain = 4, a.gain vaut 4 et b.gain vaut encore 1. On a changé l’état d’un objet précis, sans redéfinir la classe."
+        },
+        {
+          "type": "callout",
+          "label": "Lire dans le bon ordre",
+          "tone": "tip",
+          "text": "Repérez l’objet concerné par une instruction : variable locale d’une fonction, entrée d’un dictionnaire ou attribut d’une instance. Cette question simple évite de donner une portée globale à un changement local."
+        }
+      ],
+      "takeaways": [
+        "return transmet une valeur à l’appelant.",
+        "get permet une valeur de repli sans ajouter de clé.",
+        "Un attribut créé sur self appartient à cette instance."
+      ],
+      "sourceIds": [
+        "python-functions",
+        "python-structures",
+        "python-classes"
+      ]
+    },
+    {
+      "id": "references-et-copies",
+      "title": "Les noms, les objets et les copies",
+      "summary": "Prévoir quand une modification sera visible depuis plusieurs variables.",
+      "questionIds": [
+        "py-001",
+        "py-012"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Une affectation Python associe un nom à un objet. Elle ne copie pas systématiquement cet objet. Si a contient une liste et que vous écrivez b = a, vous obtenez deux noms qui désignent la même liste. Un ajout effectué avec b.append(3) est visible en lisant a. La liste a changé ; aucun mécanisme ne réserve une version différente à chaque nom."
+        },
+        {
+          "type": "paragraph",
+          "text": "C’est utile lorsque plusieurs parties d’un programme doivent manipuler le même état. Cela devient gênant lorsque vous pensiez garder un original intact. La bonne question est donc : cette instruction crée-t-elle un autre objet, ou un autre accès au même objet ? Pour une liste mutable, append, extend et l’affectation à un indice modifient son contenu."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "a = [1, 2]\nb = a\nb.append(3)\n# a et b valent [1, 2, 3]\n\nb = a.copy()\nb.append(4)\n# a vaut [1, 2, 3]\n# b vaut [1, 2, 3, 4]",
+          "caption": "La copie de la liste extérieure suffit ici car les éléments sont des entiers."
+        },
+        {
+          "type": "paragraph",
+          "text": "La méthode copy crée une nouvelle liste extérieure. Mais ses éléments restent les objets déjà référencés par l’ancienne liste. On parle de copie superficielle. Si les éléments sont des sous-listes, ces sous-listes restent partagées. Copier le contenant ne signifie donc pas copier toute une structure imbriquée. Pour comprendre un cas concret, dessinez deux boîtes extérieures pointant vers les mêmes boîtes intérieures."
+        },
+        {
+          "type": "example",
+          "title": "La sous-liste reste commune",
+          "text": "Prenez a = [[1], [2]] puis b = a.copy(). Après b[0].append(3), a et b se lisent tous deux [[1, 3], [2]]. En revanche, remplacer b[0] par une nouvelle liste changerait seulement le premier élément de b, car les listes extérieures sont distinctes."
+        },
+        {
+          "type": "paragraph",
+          "text": "Ce raisonnement compte dans un pipeline de recherche. Une liste de configurations peut contenir des dictionnaires ; une copie superficielle de la liste laisse ces dictionnaires partagés. Une augmentation appliquée en place peut alors modifier des données que vous vouliez réutiliser. Avant une modification, déterminez la profondeur à laquelle une indépendance est nécessaire. Une copie profonde peut être adaptée, mais coûte davantage et ne remplace pas l’analyse du partage."
+        },
+        {
+          "type": "callout",
+          "label": "Un test mental rapide",
+          "tone": "analogy",
+          "text": "Distinguez modifier le contenu d’un objet et remplacer une référence par une autre. Dans b[0].append(3), vous modifiez l’objet intérieur ; dans b[0] = [3], vous changez une case du contenant b."
+        }
+      ],
+      "takeaways": [
+        "b = a partage l’objet, sans copie implicite.",
+        "Une copie superficielle sépare seulement le contenant.",
+        "Modifier un objet et remplacer une référence sont deux actions distinctes."
+      ],
+      "sourceIds": [
+        "python-structures",
+        "python-classes"
+      ]
+    },
+    {
+      "id": "valeurs-par-defaut",
+      "title": "Les arguments par défaut et l’état caché",
+      "summary": "Comprendre pourquoi une liste peut survivre entre deux appels.",
+      "questionIds": [
+        "py-013"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Une fonction semble souvent être une petite machine repartant de zéro à chaque appel. C’est vrai pour les variables locales créées dans son corps. Cela ne l’est pas pour tous les objets accessibles à la fonction. Une valeur par défaut est évaluée lorsque Python exécute la définition de la fonction. Elle reste ensuite disponible pour les appels qui ne fournissent pas cet argument."
+        },
+        {
+          "type": "paragraph",
+          "text": "Considérez def ajouter(x, stock=[]). La liste vide est créée une fois, lors de cette définition. Le premier appel ajouter(2) réutilise cette liste et la modifie en [2]. Le second appel ajouter(5) récupère le même stock, devenu [2], puis le transforme en [2, 5]. Le problème vient du partage d’un objet mutable, pas du nombre de paramètres ni du mot append."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "def ajouter(x, stock=None):\n    if stock is None:\n        stock = []\n    stock.append(x)\n    return stock\n\na = ajouter(2)\nb = ajouter(5)\n# a vaut [2] ; b vaut [5]",
+          "caption": "None sert de sentinelle ; la liste est créée à l’intérieur de chaque appel concerné."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le motif corrigé sépare deux intentions. Si l’appelant ne fournit aucun stock, la fonction crée une liste propre à cet appel. S’il fournit une liste existante, elle l’utilise et la modifie. Cette deuxième possibilité est volontaire ; il faut la documenter. None n’est pas une liste spéciale : c’est un objet permettant de reconnaître le cas où aucune collection n’a été fournie."
+        },
+        {
+          "type": "example",
+          "title": "Un stock fourni explicitement",
+          "text": "Avec stock = [10], l’appel ajouter(2, stock) renvoie [10, 2] et stock devient aussi [10, 2]. La version corrigée ne promet donc pas l’absence de tout effet de bord. Elle empêche le partage involontaire entre les appels qui utilisent l’argument par défaut."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pourquoi ne pas seulement renvoyer stock.copy() ? Parce que la liste par défaut a déjà été modifiée avant la copie. Les appels suivants retrouveraient encore son contenu accumulé. Remplacer append par extend ne change pas non plus le moment où la liste est créée. Pour déboguer ce type de problème, cherchez l’origine de l’objet et sa durée de vie, plutôt que de changer l’instruction de retour."
+        },
+        {
+          "type": "callout",
+          "label": "Des résultats qui dépendent du passé",
+          "tone": "pitfall",
+          "text": "Si un test fonctionne seul et échoue après un autre test, recherchez un état partagé : argument mutable par défaut, variable globale ou attribut de classe mutable. L’ordre d’exécution peut révéler ce partage."
+        }
+      ],
+      "takeaways": [
+        "Une valeur par défaut est créée lors de la définition.",
+        "Un argument mutable peut conserver des modifications entre appels.",
+        "Le motif None puis création locale évite ce partage implicite."
+      ],
+      "sourceIds": [
+        "python-functions",
+        "python-classes"
+      ]
+    },
+    {
+      "id": "parcourir-et-filtrer",
+      "title": "Parcourir, associer et consommer des données",
+      "summary": "Distinguer une liste construite immédiatement d’un parcours consommé progressivement.",
+      "questionIds": [
+        "py-004",
+        "py-005",
+        "py-006",
+        "py-014"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Une boucle visite les éléments d’un itérable dans l’ordre qu’il fournit. Elle ne manipule pas forcément des indices. Pour lire une compréhension, repérez trois parties : les éléments parcourus, le filtre éventuel et l’expression construite. Dans [x * x for x in [-2, 0, 3] if x > 0], le filtre garde seulement 3. La transformation produit ensuite 9, et le résultat est la liste [9]."
+        },
+        {
+          "type": "paragraph",
+          "text": "Quand vous avez besoin d’un numéro en plus de l’élément, enumerate fournit les deux ensemble. Par défaut, son compteur commence à zéro ; start=1 le fait commencer à un. Avec deux noms de fichiers, la dernière paire est alors (2, \"b.wav\"). Ce compteur est une étiquette de parcours : il ne modifie pas les noms, et il n’impose pas une numérotation particulière aux données sources."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "noms = [\"a.wav\", \"b.wav\"]\nfor numero, nom in enumerate(noms, start=1):\n    paire = (numero, nom)\n# dernière paire : (2, \"b.wav\")\n\npaires = list(zip([1, 2, 3], [\"a\", \"b\"]))\n# [(1, \"a\"), (2, \"b\")]",
+          "caption": "enumerate ajoute un compteur ; zip associe des éléments de plusieurs parcours."
+        },
+        {
+          "type": "paragraph",
+          "text": "zip avance simultanément dans ses itérables. Sans option particulière, il s’arrête au plus court. Le troisième entier n’est donc associé à rien dans l’exemple. Cela ne produit ni None ajouté automatiquement ni erreur par défaut. Pour des signaux et des étiquettes, un décalage de longueur peut ainsi supprimer silencieusement des éléments. Vérifiez les tailles lorsque leur égalité fait partie du contrat."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une expression génératrice ressemble à une compréhension avec des parenthèses. Elle produit les valeurs au moment du parcours, au lieu de construire immédiatement toute une liste. Cette économie peut être utile pour traiter beaucoup de données. En échange, le générateur avance et se consomme. Après list(g), il est généralement épuisé ; appeler list(g) une seconde fois donne une liste vide."
+        },
+        {
+          "type": "example",
+          "title": "Suivre l’épuisement",
+          "text": "Pour g = (i * 2 for i in range(3)), les valeurs successives sont 0, 2 et 4. Le premier list(g) les récupère toutes. Le second n’a plus rien à récupérer. Pour recommencer, il faut créer un nouveau générateur ou conserver les valeurs dans une collection réutilisable."
+        },
+        {
+          "type": "callout",
+          "label": "Ne pas confondre le récipient et le trajet",
+          "tone": "analogy",
+          "text": "Une liste garde des éléments que l’on peut reparcourir. Un générateur garde surtout l’état du parcours en cours. Demandez-vous si le code veut conserver les valeurs ou seulement les visiter."
+        }
+      ],
+      "takeaways": [
+        "Une compréhension filtre puis transforme les éléments retenus.",
+        "zip s’arrête au plus court par défaut.",
+        "Un générateur épuisé ne repart pas automatiquement."
+      ],
+      "sourceIds": [
+        "python-structures",
+        "python-classes"
+      ]
+    },
+    {
+      "id": "tableaux-et-indexation",
+      "title": "Lire un tableau NumPy et ses sélections",
+      "summary": "Passer des valeurs aux axes, puis distinguer vues, copies et indices de tri.",
+      "questionIds": [
+        "py-008",
+        "py-010",
+        "py-011",
+        "py-015"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Un tableau NumPy regroupe des valeurs d’un même dtype et porte une forme. La forme décrit la taille de chaque axe. Un tableau (4, 6, 2) comporte quatre éléments sur son premier axe, six sur son deuxième et deux sur son troisième. Les axes n’ont pas de sens physique automatique : c’est votre convention qui en fait des exemples, des positions temporelles ou des canaux."
+        },
+        {
+          "type": "paragraph",
+          "text": "Les opérations numériques usuelles agissent souvent élément par élément. Avec x = np.array([1., 2., 3.]), 2 * x donne [2., 4., 6.]. Avec une liste Python, 2 * [1, 2, 3] répète la liste. Le type de l’objet change donc le sens d’un opérateur familier. Quand vous lisez du code, identifiez d’abord si vous avez une liste ou un tableau."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "import numpy as np\nX = np.zeros((4, 6, 2))\nY = X[:, 1:5:2, 0]\n# Y.shape vaut (4, 2)\n\nx = np.array([1, 2, 3])\ny = x[[0, 2]]\ny[0] = 9\n# x reste [1, 2, 3]",
+          "caption": "Les slices et les listes d’indices ne créent pas les mêmes relations mémoire."
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans un slice debut:fin:pas, la borne finale est exclue. Le slice 1:5:2 visite donc 1 et 3. Un deux-points seul conserve l’axe entier. Un indice entier sélectionne une position et retire cet axe du résultat. Ainsi X[:, 1:5:2, 0] conserve quatre éléments, puis deux positions, et supprime le dernier axe : sa forme est (4, 2)."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une sélection par slices produit habituellement une vue NumPy partageant les données. Une indexation avancée, par exemple x[[0, 2]], crée une copie. Modifier le premier élément de cette copie ne change pas x[0]. Ne déduisez donc pas le partage mémoire du seul fait que deux tableaux contiennent initialement les mêmes nombres."
+        },
+        {
+          "type": "example",
+          "title": "Trier des positions",
+          "text": "Pour les scores [0.4, 0.9, 0.1], np.argsort renvoie [2, 0, 1], les indices du plus petit au plus grand. Ajouter [::-1] inverse cet ordre et donne [1, 0, 2]. Les valeurs triées seraient [0.9, 0.4, 0.1] ; argsort renvoie leurs positions, ce qui permet de réordonner des métadonnées associées."
+        },
+        {
+          "type": "callout",
+          "label": "Vérifier une sélection",
+          "tone": "tip",
+          "text": "Écrivez une forme intermédiaire après chaque indice. Une fois la forme comprise, demandez séparément si le résultat partage les données. La forme et le partage mémoire répondent à deux questions différentes."
+        }
+      ],
+      "takeaways": [
+        "La forme décrit des tailles, pas leur signification physique.",
+        "Un indice entier retire un axe ; un slice le conserve.",
+        "L’indexation avancée copie et argsort renvoie des positions."
+      ],
+      "sourceIds": [
+        "numpy-indexing",
+        "numpy-copies",
+        "numpy-argsort",
+        "numpy-broadcast"
+      ]
+    },
+    {
+      "id": "reduire-les-bons-axes",
+      "title": "Réduire le bon axe : moyennes, centrage et RMS",
+      "summary": "Choisir ce que l’on agrège et ce que l’on souhaite conserver.",
+      "questionIds": [
+        "py-009",
+        "py-016"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Une réduction transforme plusieurs valeurs en une seule selon une règle : somme, moyenne, maximum. L’axe choisi indique les valeurs que l’on rassemble. Pour un tableau (observations, caractéristiques), mean(axis=0) calcule une moyenne par caractéristique en parcourant les observations. mean(axis=1) calcule une moyenne par observation en parcourant ses caractéristiques. Avant de mémoriser un numéro d’axe, dites à voix haute ce que vous voulez moyenner."
+        },
+        {
+          "type": "paragraph",
+          "text": "Prenez deux observations [1, 3] et [5, 7]. La moyenne par colonne est [3, 5]. La première colonne est centrée en soustrayant 3, la seconde en soustrayant 5. Le résultat comporte les lignes [-2, -2] et [2, 2]. Soustraire une unique moyenne globale, ici 4, ne centre pas individuellement chaque caractéristique."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "X = np.array([[1., 3.], [5., 7.]])\nmu = X.mean(axis=0, keepdims=True)\nY = X - mu\n# mu.shape : (1, 2), valeurs [[3., 5.]]\n# Y : [[-2., -2.], [2., 2.]]",
+          "caption": "keepdims conserve l’axe réduit avec une taille de 1."
+        },
+        {
+          "type": "paragraph",
+          "text": "keepdims=True ne change pas les nombres calculés. Il conserve seulement une dimension de taille un à la place de l’axe réduit. Cela rend explicite la manière de réutiliser le résultat avec broadcasting. Si X est (8, 5), sa moyenne par colonne devient (1, 5) et se soustrait aux huit lignes. La moyenne par ligne deviendrait (8, 1), adaptée à une autre intention."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le RMS sert notamment à résumer l’amplitude d’un signal. On élève les valeurs au carré, on calcule leur moyenne, puis on prend la racine carrée. Pour [-3, 3], la moyenne signée est nulle, mais le RMS vaut 3. Cette mesure évite que les alternances positives et négatives s’annulent. Elle n’est pas la moyenne des valeurs absolues : pour [0, 4], cette dernière vaut 2 et le RMS vaut la racine de 8, environ 2,83."
+        },
+        {
+          "type": "example",
+          "title": "Un RMS par fichier",
+          "text": "Si X est (B, T), une ligne correspond à un signal et les colonnes au temps. np.sqrt(np.mean(X ** 2, axis=1)) renvoie B RMS. Réduire axis=0 comparerait les signaux à chaque position temporelle ; cela répondrait à une autre question."
+        },
+        {
+          "type": "callout",
+          "label": "Trois opérations, dans cet ordre",
+          "tone": "tip",
+          "text": "Pour le RMS, conservez la chaîne carré, moyenne, racine. Permuter la racine et la moyenne change la mesure. On suppose ici des signaux réels flottants et des calculs sans débordement."
+        }
+      ],
+      "takeaways": [
+        "L’axe de réduction désigne ce que l’on rassemble.",
+        "keepdims préserve un axe de taille un.",
+        "Le RMS est la racine de la moyenne des carrés."
+      ],
+      "sourceIds": [
+        "numpy-mean",
+        "numpy-broadcast"
+      ]
+    },
+    {
+      "id": "broadcasting-et-algebre",
+      "title": "Broadcasting et produit matriciel",
+      "summary": "Reconnaître une diffusion élémentaire, une contraction et une comparaison par paires.",
+      "questionIds": [
+        "py-017",
+        "py-019"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Le broadcasting permet d’appliquer une opération élémentaire à des tableaux de formes différentes. Comparez les dimensions en partant de la droite. Deux tailles sont compatibles si elles sont égales ou si l’une vaut un. Un axe manquant à gauche se comporte comme un axe de taille un. La diffusion décrit une répétition logique ; elle n’impose pas de copier physiquement toutes les valeurs du petit tableau."
+        },
+        {
+          "type": "paragraph",
+          "text": "Ainsi (8, 5) et (5,) sont compatibles : les cinq valeurs sont utilisées pour chacune des huit lignes. Les formes (8, 5) et (8,) ne le sont pas, car la comparaison commence par 5 et 8. Pour appliquer une valeur par ligne, donnez au second tableau la forme (8, 1). Le dernier axe peut alors passer de 1 à 5. Cette règle reste la même avec trois axes ou davantage."
+        },
+        {
+          "type": "figure",
+          "kind": "broadcast",
+          "caption": "Aligner les dimensions depuis la droite permet de prévoir la forme avant le calcul."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le produit matriciel répond à une autre règle. Pour A de forme (3, 4) et B de forme (4, 2), A @ B contracte les deux dimensions de taille quatre. Chaque sortie est une somme de quatre produits. Le résultat est (3, 2). Si A et B ne contiennent que des uns, toutes les sorties valent 4. A * B tenterait une multiplication élémentaire et échouerait ici sur les formes."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "X = np.array([[0., 0.], [1., 0.]])\nY = np.array([[0., 0.], [0., 2.], [2., 0.]])\ndiff = X[:, None, :] - Y[None, :, :]\ndist2 = (diff ** 2).sum(axis=-1)\n# diff.shape : (2, 3, 2)\n# dist2 : [[0., 4., 4.], [1., 5., 1.]]",
+          "caption": "Chaque paire de points produit un vecteur différence, puis une distance au carré."
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans la comparaison par paires, X[:, None, :] ajoute un axe entre les points et leurs coordonnées. Ses tailles sont (N, 1, D). Y[None, :, :] devient (1, M, D). Leur différence a donc la forme (N, M, D). En sommant les carrés sur le dernier axe, vous obtenez (N, M). La position [i, j] contient la distance euclidienne au carré entre le point i de X et le point j de Y."
+        },
+        {
+          "type": "callout",
+          "label": "Vérifier le coût avant de diffuser",
+          "tone": "pitfall",
+          "text": "Cette formule est lisible, mais son intermédiaire peut contenir N × M × D valeurs. Pour de grands ensembles, raisonnez aussi sur la mémoire et envisagez un calcul par blocs. Une expression vectorisée peut créer un résultat très volumineux."
+        }
+      ],
+      "takeaways": [
+        "Le broadcasting aligne les formes depuis la droite.",
+        "@ effectue un produit matriciel, différent de *.",
+        "Des axes de taille un peuvent construire toutes les paires."
+      ],
+      "sourceIds": [
+        "numpy-broadcast",
+        "numpy-matmul"
+      ]
+    },
+    {
+      "id": "standardiser-et-preserver-precision",
+      "title": "Standardiser sans fuite et calculer avec assez de précision",
+      "summary": "Relier une formule correcte à des statistiques et à une précision adaptées.",
+      "questionIds": [
+        "py-018",
+        "py-020"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Standardiser une caractéristique consiste souvent à soustraire sa moyenne, puis à diviser par son écart-type. On cherche ainsi une échelle plus comparable entre caractéristiques. Les statistiques doivent correspondre aux mêmes axes que les valeurs traitées. Si X est (observations, caractéristiques), mu et sigma peuvent chacun avoir une valeur par colonne, donc une forme (D,). Le broadcasting applique chaque statistique à sa colonne."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une caractéristique constante a un écart-type nul. Une division directe produirait des valeurs invalides. Une convention simple impose un plancher strictement positif au dénominateur, par exemple np.maximum(sigma, 1e-8). Ce choix évite la division par zéro, mais ne rend pas automatiquement toutes les données saines : des valeurs non finies ou une mauvaise unité doivent encore être recherchées."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "mu = np.array([2., 10.])\nsigma = np.array([2., 0.])\nX = np.array([[4., 10.], [0., 10.]])\nZ = (X - mu) / np.maximum(sigma, 1e-8)\n# Z : [[1., 0.], [-1., 0.]]",
+          "caption": "Une colonne constante est ici centrée en zéro et reste finie."
+        },
+        {
+          "type": "paragraph",
+          "text": "Lors d’une évaluation, apprenez ces statistiques sur l’entraînement, puis réutilisez-les telles quelles pour la validation et le test. Sinon, le prétraitement exploite des informations provenant des données censées rester inconnues. Cela concerne aussi le choix d’un seuil ou d’un vocabulaire : une opération sans réseau neuronal peut tout de même transmettre une information indue à l’expérience."
+        },
+        {
+          "type": "paragraph",
+          "text": "La précision numérique est une autre question. Un float32 représente approximativement un réel avec un nombre limité de chiffres significatifs. Lorsqu’on additionne beaucoup de valeurs, des arrondis s’accumulent et de petits termes peuvent être mal représentés face à de grands termes. NumPy permet de choisir une précision d’accumulation pour mean. np.mean(x, dtype=np.float64) effectue l’accumulation dans un type plus précis, même si x reste stocké en float32."
+        },
+        {
+          "type": "example",
+          "title": "La conversion arrive-t-elle assez tôt ?",
+          "text": "Si une moyenne a déjà perdu une information pendant une accumulation en float32, convertir ensuite ce résultat en float64 ne la recrée pas. C’est comme recopier un total arrondi avec davantage de décimales : le papier devient plus précis, mais le calcul passé ne change pas."
+        },
+        {
+          "type": "callout",
+          "label": "Choisir selon le problème",
+          "tone": "tip",
+          "text": "Un type plus précis augmente souvent le coût mémoire ou calcul. Avant de l’imposer partout, distinguez un souci de précision d’accumulation, une mauvaise formule et une donnée erronée. Choisissez ensuite le changement qui cible la cause."
+        }
+      ],
+      "takeaways": [
+        "Une standardisation utilise moyenne et écart-type par caractéristique.",
+        "Les statistiques d’évaluation proviennent du train.",
+        "Une accumulation plus précise doit être choisie avant la réduction."
+      ],
+      "sourceIds": [
+        "numpy-broadcast",
+        "numpy-mean"
+      ]
+    }
+  ]
+}

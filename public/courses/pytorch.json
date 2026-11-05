@@ -1,0 +1,753 @@
+{
+  "themeId": "pytorch",
+  "title": "PyTorch, du tenseur à une expérience fiable",
+  "subtitle": "Comprendre les formes, les gradients et les données avant d’entraîner.",
+  "intro": [
+    "Un programme PyTorch fait circuler des tenseurs, construit un calcul et ajuste des paramètres. Nous allons séparer ces opérations pour pouvoir expliquer chaque ligne. Les exemples sont à lire : cette application n’exécute aucun code Python. On suppose torch importé et, lorsque c’est précisé, un modèle déjà défini.",
+    "Le Professeur Squoinks garde trois questions au tableau : quelle forme, quel rôle, quel effet ? Les chapitres suivent cet ordre, puis réunissent les pièces dans une boucle d’entraînement. Les résultats numériques sont donnés pour vérifier votre raisonnement, sans avoir besoin de lancer les extraits."
+  ],
+  "prerequisites": [
+    "python-scientifique"
+  ],
+  "objectives": [
+    "Prévoir les formes, les axes, les types et les déplacements de tenseurs.",
+    "Distinguer le calcul des gradients, leur accumulation et le pas d’optimiseur.",
+    "Choisir une perte cohérente avec la tâche et les cibles.",
+    "Regrouper des séquences variables sans compter le padding dans les moyennes.",
+    "Séparer entraînement, validation, journalisation et reprise d’expérience."
+  ],
+  "chapters": [
+    {
+      "id": "tenseur-forme-type-device",
+      "title": "Un tenseur a une forme, un type et un lieu",
+      "summary": "Identifier les trois propriétés nécessaires avant tout calcul.",
+      "questionIds": [
+        "pt-001",
+        "pt-002",
+        "pt-003",
+        "pt-004",
+        "pt-031",
+        "pt-043"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Un tenseur est un tableau de valeurs. Sa forme indique la taille de chaque axe, son dtype la manière de représenter chaque valeur, et son device l’endroit où il est stocké. Ces propriétés sont indépendantes. Deux tenseurs peuvent avoir la même forme et des types différents, ou le même type et des devices différents. Une erreur peut venir de l’une de ces trois propriétés."
+        },
+        {
+          "type": "paragraph",
+          "text": "torch.zeros(3, 2, 5) crée trois axes, dans cet ordre, et contient 30 éléments. La forme reste (3, 2, 5), pas (30,). Un indice entier retire l’axe sélectionné : dans un tenseur (6, 4, 9), x[2] conserve les quatre éléments du deuxième axe et les neuf du troisième. Le résultat a la forme (4, 9). Les axes ne sont pas automatiquement nommés batch ou temps ; leur sens vient de la convention du programme."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "import torch\nx = torch.zeros(6, 4, 9)\ny = x[2]\n# y.shape : (4, 9)\n\ncaracteristiques = torch.tensor([1., 2., 3.])\nindices = torch.tensor([0, 2, 1], dtype=torch.long)\nok = torch.isfinite(caracteristiques).all()\n# ok est un tenseur booléen scalaire contenant True",
+          "caption": "Des caractéristiques continues et des indices de classe n’ont pas le même rôle."
+        },
+        {
+          "type": "paragraph",
+          "text": "Les caractéristiques d’un réseau sont généralement flottantes. Les indices de classe sont souvent de type long et les masques de type bool. Le calcul de gradients exige des variables flottantes ou complexes : un indice entier n’est pas une quantité continue à ajuster par une petite variation. Choisir float32 permet donc requires_grad=True dans les situations usuelles ; choisir int64 ne le permet pas."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le device peut être le CPU ou un accélérateur disponible. Pour déplacer un tenseur, conservez le résultat de to : x = x.to(device). Écrire seulement x.to(device) ne remplace pas la variable x. Pour calculer une perte de classification sur des logits CUDA, les cibles doivent aussi être placées sur CUDA, en gardant leur dtype d’indice."
+        },
+        {
+          "type": "example",
+          "title": "Un diagnostic concret",
+          "text": "Si un calcul échoue, lisez d’abord x.shape, x.dtype et x.device. Si la loss devient NaN, torch.isfinite(x).all() vérifie les données : un tenseur float32 peut tout de même contenir NaN ou une valeur infinie. Le type seul ne garantit jamais des nombres valides."
+        },
+        {
+          "type": "callout",
+          "label": "Trois contrôles avant une formule",
+          "tone": "tip",
+          "text": "Notez la forme attendue, le rôle du dtype et le device commun. Cette courte vérification explique beaucoup d’erreurs sans toucher à l’architecture du réseau."
+        }
+      ],
+      "takeaways": [
+        "La forme, le dtype et le device répondent à trois questions différentes.",
+        "Un indice entier retire un axe.",
+        "to renvoie le tenseur déplacé ; isfinite contrôle ses valeurs."
+      ],
+      "sourceIds": [
+        "torch-tensors",
+        "torch-autograd",
+        "torch-isfinite"
+      ]
+    },
+    {
+      "id": "organiser-les-axes",
+      "title": "Organiser les axes sans mélanger les données",
+      "summary": "Distinguer concaténation, nouvel axe, réorganisation et disposition mémoire.",
+      "questionIds": [
+        "pt-005",
+        "pt-006",
+        "pt-007",
+        "pt-008",
+        "pt-020",
+        "pt-021",
+        "pt-044"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Avant de changer une forme, dites ce que signifie chaque axe. Pour un audio brut, (B, T) peut désigner B signaux de T échantillons. Une Conv1d attend généralement (B, C, T), avec C canaux. Pour des signaux mono, unsqueeze(1) ajoute un axe canal de taille un. Aucune valeur n’est créée par ce simple ajout de dimension ; la même organisation devient plus explicite."
+        },
+        {
+          "type": "paragraph",
+          "text": "squeeze effectue l’opération inverse sur les dimensions de taille un. Utilisez de préférence l’axe voulu : squeeze(1) retire le canal mono. squeeze() sans précision retire tous les axes de taille un, y compris le batch lorsqu’il ne contient qu’un exemple. Une forme qui change uniquement sur le dernier petit batch est souvent liée à ce raccourci."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "a = torch.zeros(2, 3)\nb = torch.ones(4, 3)\nc = torch.cat([a, b], dim=0)\n# c.shape : (6, 3)\n\nu = torch.zeros(3, 5)\nv = torch.ones(3, 5)\nw = torch.stack([u, v], dim=0)\n# w.shape : (2, 3, 5)\n\nx = torch.arange(6).reshape(2, 3)\nr = x.reshape(3, 2)\nt = x.transpose(0, 1)\n# r : [[0, 1], [2, 3], [4, 5]]\n# t : [[0, 3], [1, 4], [2, 5]]",
+          "caption": "reshape et transposition donnent la même forme ici, mais pas les mêmes valeurs aux mêmes positions."
+        },
+        {
+          "type": "paragraph",
+          "text": "cat réunit des tenseurs le long d’un axe existant. Les autres tailles doivent correspondre : (2, 3) et (4, 3) donnent (6, 3) sur l’axe zéro. stack crée un nouvel axe et exige des formes identiques : deux tenseurs (3, 5) donnent (2, 3, 5) avec dim=0. Demandez donc si vous allongez un axe ou si vous ajoutez une catégorie d’axe."
+        },
+        {
+          "type": "paragraph",
+          "text": "reshape redistribue une séquence logique d’éléments selon une nouvelle forme compatible avec leur nombre. permute change l’ordre des axes et transpose en échange deux. Pour passer de (batch, temps, fréquences) à (batch, fréquences, temps), utilisez permute(0, 2, 1). Un reshape de mêmes tailles de sortie ne préserve pas cette correspondance sémantique."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une transposition peut produire un tenseur non contigu : l’ordre logique des coordonnées ne suit plus un parcours contigu de la mémoire. view impose une compatibilité de disposition et peut échouer. reshape peut alors copier les données si nécessaire. Il faut donc distinguer une opération sur les axes de la décision de partager ou recopier le stockage."
+        },
+        {
+          "type": "callout",
+          "label": "Un bon contre-exemple",
+          "tone": "pitfall",
+          "text": "Pour comparer reshape et permute, utilisez des valeurs différentes, comme arange. Un tenseur entièrement nul peut cacher une mauvaise réorganisation : toutes les positions ont alors la même valeur."
+        }
+      ],
+      "takeaways": [
+        "cat allonge un axe ; stack en ajoute un.",
+        "permute réordonne les axes ; reshape change leur découpage.",
+        "Une vue peut être non contiguë et reshape peut copier."
+      ],
+      "sourceIds": [
+        "torch-tensors",
+        "torch-views",
+        "torch-conv1d"
+      ]
+    },
+    {
+      "id": "selection-diffusion-reduction",
+      "title": "Sélectionner, diffuser puis réduire",
+      "summary": "Lire les règles qui conservent des dimensions ou les font disparaître.",
+      "questionIds": [
+        "pt-019",
+        "pt-022",
+        "pt-023",
+        "pt-024"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Les opérations élémentaires peuvent diffuser des tenseurs de tailles différentes. Comparez les dimensions depuis la droite : elles doivent être égales, ou l’une doit valoir un. Un axe manquant à gauche est assimilé à un axe de taille un. Ainsi x de forme (4, 3, 7) peut être additionné à b de forme (3, 1). Les trois valeurs de b sont utilisées sur les sept positions et les quatre exemples."
+        },
+        {
+          "type": "paragraph",
+          "text": "Cette règle est mécanique, mais le sens du calcul reste votre responsabilité. Un tenseur de moyennes par canal peut avoir la forme (1, C, 1). Il se diffuse alors sur le batch et le temps. Une moyenne de forme (C,) s’alignerait d’abord sur le dernier axe, ce qui pourrait provoquer une erreur ou un calcul compatible mais sémantiquement faux si les tailles coïncident."
+        },
+        {
+          "type": "figure",
+          "kind": "tensor-axes",
+          "caption": "Une taille compatible ne suffit pas : chaque axe doit représenter la bonne quantité."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "x = torch.tensor([-1., 2., 0., 5.])\ny = x[x > 0]\n# y contient [2., 5.]\n\nscores = torch.tensor([[0.2, 1.4, -0.1], [3., 1., 2.]])\nclasses = scores.argmax(dim=1)\n# classes contient [1, 0], forme (2,)\n\nz = torch.zeros(4, 6, 100)\nm = z.mean(dim=-1, keepdim=True)\n# m.shape : (4, 6, 1)",
+          "caption": "Le masque choisit des valeurs ; argmax choisit une position ; mean calcule une valeur agrégée."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un masque booléen est un tableau de décisions vraies ou fausses. x > 0 crée le masque, puis x[x > 0] sélectionne les valeurs vraies. Le zéro n’est pas retenu, puisque la comparaison est stricte. La sélection peut changer le nombre d’éléments et perdre l’organisation initiale ; ne la confondez pas avec une multiplication par un masque, qui conserve la forme."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une réduction, comme mean, rassemble un axe. Pour (B, C, T), mean(dim=-1) moyenne le temps et renvoie (B, C). Avec keepdim=True, la forme est (B, C, 1). Cette dimension conservée permet de réutiliser la moyenne sur toutes les positions temporelles sans ajouter manuellement un axe."
+        },
+        {
+          "type": "example",
+          "title": "Quelle direction comparer ?",
+          "text": "Pour des scores (B, C), argmax(dim=1) cherche la meilleure classe dans chaque ligne et donne B indices. argmax(dim=0) cherche le meilleur exemple dans chaque colonne et donne C indices. argmax() sans axe cherche une seule position dans le tenseur aplati : trois questions différentes."
+        },
+        {
+          "type": "callout",
+          "label": "Raconter la sortie",
+          "tone": "tip",
+          "text": "Complétez cette phrase avant de calculer : je veux une valeur par… Puis nommez les axes qui restent. Le numéro d’axe devient alors la conséquence du sens recherché."
+        }
+      ],
+      "takeaways": [
+        "Le broadcasting aligne les dimensions depuis la droite.",
+        "Un masque sélectionne des valeurs, pas nécessairement des axes entiers.",
+        "L’axe d’argmax ou de mean détermine ce que la sortie représente."
+      ],
+      "sourceIds": [
+        "torch-broadcast",
+        "torch-tensors",
+        "torch-buildmodel"
+      ]
+    },
+    {
+      "id": "construire-un-module",
+      "title": "Construire un module et retrouver ses paramètres",
+      "summary": "Comprendre les couches, leur enregistrement et les états fixes du modèle.",
+      "questionIds": [
+        "pt-014",
+        "pt-015",
+        "pt-016",
+        "pt-027",
+        "pt-034",
+        "pt-035"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Un modèle PyTorch est généralement une sous-classe de nn.Module. Son initialisation prépare les couches ; sa méthode forward décrit le calcul. L’appel model(x) déclenche ce calcul avec la gestion prévue par le module. Les paramètres sont des tenseurs enregistrés que l’on souhaite ajuster pendant l’entraînement. L’optimiseur les reçoit avec model.parameters(), puis utilise leurs gradients lors de ses mises à jour."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une couche Linear(12, 5) transforme la dernière dimension de 12 valeurs en 5 sorties. Pour un batch (8, 12), la sortie est (8, 5). Le batch n’est pas contracté avec les poids : la même transformation est appliquée à chaque exemple. Une activation comme ReLU introduit ensuite une non-linéarité. Elle remplace les valeurs négatives par zéro et garde les autres ; [-2, 0, 3] devient [0, 0, 3]."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "class PetitModele(torch.nn.Module):\n    def __init__(self):\n        super().__init__()\n        self.layers = torch.nn.ModuleList([\n            torch.nn.Linear(8, 8),\n            torch.nn.Linear(8, 3),\n        ])\n        self.register_buffer(\"mean\", torch.zeros(8))\n\n    def forward(self, x):\n        x = x - self.mean\n        x = torch.relu(self.layers[0](x))\n        return self.layers[1](x)\n# entrée (B, 8), sortie (B, 3)",
+          "caption": "ModuleList enregistre les couches ; le buffer mean suit le modèle sans devenir un paramètre."
+        },
+        {
+          "type": "paragraph",
+          "text": "L’enregistrement est essentiel. Une couche directement affectée à un attribut du module est suivie par PyTorch. Une liste Python ordinaire contenant plusieurs couches ne suffit pas à les enregistrer comme sous-modules. ModuleList assure cet enregistrement tout en permettant de les parcourir. Les paramètres deviennent visibles pour parameters(), et les déplacements de device se propagent correctement."
+        },
+        {
+          "type": "paragraph",
+          "text": "Certaines valeurs doivent suivre le modèle sans être optimisées. Une moyenne de normalisation fixe est un bon exemple. register_buffer l’enregistre comme buffer : elle suit model.to(device) et entre par défaut dans state_dict, mais reste absente de parameters(). Un nn.Parameter aurait un autre rôle, celui d’une valeur susceptible d’être ajustée par l’optimiseur."
+        },
+        {
+          "type": "example",
+          "title": "La forme d’une convolution audio",
+          "text": "Conv1d(1, 8, kernel_size=5), avec stride=1, padding=0 et dilation=1, reçoit (4, 1, 100). Le noyau peut commencer aux positions 0 à 95 : il y a 96 positions valides. La sortie est donc (4, 8, 96). Les huit canaux de sortie sont huit réponses de filtres, pas huit nouveaux exemples."
+        },
+        {
+          "type": "callout",
+          "label": "Compter sans tout calculer",
+          "tone": "tip",
+          "text": "Pour une couche, séparez trois questions : quels axes sont conservés, quelle taille change et quelles valeurs entraînables sont enregistrées ? Cela permet de contrôler une architecture sans connaître tous ses poids."
+        }
+      ],
+      "takeaways": [
+        "Linear transforme la dernière dimension et préserve le batch.",
+        "ModuleList enregistre les sous-modules contenus.",
+        "Un buffer suit l’état du modèle sans figurer dans parameters()."
+      ],
+      "sourceIds": [
+        "torch-buildmodel",
+        "torch-module",
+        "torch-conv1d"
+      ]
+    },
+    {
+      "id": "autograd-et-derivees",
+      "title": "Autograd : calculer une dérivée ne change pas un poids",
+      "summary": "Suivre le graphe et comprendre l’accumulation dans grad.",
+      "questionIds": [
+        "pt-009",
+        "pt-010",
+        "pt-041"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Une dérivée mesure comment une sortie varie lorsqu’une entrée change légèrement. Pour y = x au carré, la dérivée est 2x. Au point x = 3, elle vaut 6 : une petite hausse de x entraîne approximativement une hausse six fois plus grande de y. Cette dérivée est une information de sensibilité. Ce n’est ni la valeur y, qui vaut 9, ni une nouvelle valeur choisie pour x."
+        },
+        {
+          "type": "paragraph",
+          "text": "Lorsque requires_grad=True est actif sur un tenseur flottant, PyTorch peut enregistrer les opérations qui contribuent à un résultat. Ces opérations forment un graphe de calcul. backward parcourt ce graphe en sens inverse et applique la règle de dérivation en chaîne. Pour une perte scalaire, le point de départ correspond à une dérivée de la perte par rapport à elle-même égale à un."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "x = torch.tensor(3., requires_grad=True)\ny = x ** 2\ny.backward()\n# y vaut 9 ; x vaut encore 3 ; x.grad vaut 6\n\nw = torch.tensor(2., requires_grad=True)\n(w * 3).backward()\n(w * 4).backward()\n# w vaut encore 2 ; w.grad vaut 7",
+          "caption": "Deux graphes distincts apportent respectivement les gradients 3 et 4."
+        },
+        {
+          "type": "paragraph",
+          "text": "Les paramètres feuilles d’un modèle stockent leurs gradients dans l’attribut grad après backward. Un tenseur intermédiaire peut participer au calcul sans conserver automatiquement son propre grad. Pour lire les exercices, suivez surtout le paramètre ou le tenseur feuille explicitement créé avec requires_grad. Cela évite de supposer que chaque variable du programme reçoit un gradient stocké de la même manière."
+        },
+        {
+          "type": "paragraph",
+          "text": "Les contributions s’additionnent dans grad. Dans l’exemple avec w, la dérivée de 3w est 3 et celle de 4w est 4. Deux backward, sans remise à zéro entre eux, donnent donc 7. Chaque expression crée ici un nouveau graphe : il n’est pas nécessaire de conserver le premier graphe pour calculer la seconde contribution."
+        },
+        {
+          "type": "paragraph",
+          "text": "La modification des poids est une étape distincte. Un optimiseur lit les gradients et applique sa règle de mise à jour lors de step. Sans ce pas, backward laisse x ou w à leur valeur initiale. Cette séparation permet l’accumulation volontaire, le clipping et l’inspection des gradients avant de changer les paramètres."
+        },
+        {
+          "type": "callout",
+          "label": "Si vous ne voyez aucun apprentissage",
+          "tone": "pitfall",
+          "text": "Vérifiez séparément la présence du graphe, l’appel backward, la présence de gradients sur les bons paramètres et l’appel optimizer.step. Un nombre de loss affiché ne prouve pas que ces quatre étapes ont eu lieu."
+        }
+      ],
+      "takeaways": [
+        "backward applique la dérivation en chaîne dans le graphe.",
+        "Les gradients s’accumulent dans grad.",
+        "Seul un pas d’optimiseur applique la mise à jour prévue."
+      ],
+      "sourceIds": [
+        "torch-autograd",
+        "torch-optimization"
+      ]
+    },
+    {
+      "id": "detacher-geler-journaliser",
+      "title": "Détacher, geler et journaliser sans garder le graphe",
+      "summary": "Choisir précisément ce qui doit continuer à être différentiable.",
+      "questionIds": [
+        "pt-032",
+        "pt-033",
+        "pt-040",
+        "pt-045"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Les mêmes valeurs peuvent servir à entraîner un modèle, à calculer une métrique ou à remplir un historique. Ces usages n’ont pas besoin du même lien avec autograd. Si vous conservez chaque prédiction différentiable dans une liste, vous pouvez conserver aussi son graphe de calcul et augmenter la mémoire occupée. Pour une simple inspection, ce graphe ne sert généralement plus."
+        },
+        {
+          "type": "paragraph",
+          "text": "detach renvoie un tenseur séparé du suivi autograd de l’objet d’origine. Il ne crée pas une copie indépendante des données. Si vous modifiez ce tenseur détaché en place, les valeurs originales peuvent changer, puisqu’elles partagent le stockage. Pour conserver un instantané que vous pourrez modifier, detach().clone() réalise à la fois la séparation du graphe et la copie."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "x = torch.tensor([1., 2.], requires_grad=True)\ny = x.detach()\ny[0] = 9.\n# x contient maintenant [9., 2.]\n\ninstantane = x.detach().clone()\ninstantane[0] = 0.\n# x reste [9., 2.]",
+          "caption": "Aucune rétropropagation n’est effectuée ici ; l’exemple montre seulement le partage des données."
+        },
+        {
+          "type": "paragraph",
+          "text": "Si une prédiction est sur CUDA, pred.detach().cpu() fournit une version CPU sans graphe. C’est une forme pratique pour mémoriser des valeurs hors accélérateur. pred.clone() seul ne convient pas pour couper le graphe : la copie reste elle-même une opération différentiable. Pour une loss scalaire, item extrait directement un nombre Python. Ce nombre peut être journalisé, mais ne permet plus de remonter le calcul pour entraîner."
+        },
+        {
+          "type": "paragraph",
+          "text": "Geler des paramètres répond à une autre intention. Avec p.requires_grad_(False), on désactive le calcul de nouveaux gradients pour ce paramètre. Cela sert, par exemple, à entraîner une petite tête au-dessus d’un encodeur préentraîné. Cette instruction ne sélectionne pas le mode évaluation et ne remet pas automatiquement tous les états précédents à zéro. Il faut aussi gérer l’optimiseur et les éventuels gradients déjà présents de manière cohérente."
+        },
+        {
+          "type": "example",
+          "title": "Une tête entraînable, un encodeur fixé",
+          "text": "Vous pouvez désactiver requires_grad sur les paramètres de l’encodeur, garder ceux de la tête actifs et construire l’optimiseur avec les paramètres voulus. Si vous souhaitez un comportement d’inférence dans l’encodeur, sélectionnez aussi son mode eval. Les deux décisions ont des objectifs distincts."
+        },
+        {
+          "type": "callout",
+          "label": "La question utile",
+          "tone": "tip",
+          "text": "Demandez si vous souhaitez supprimer le lien au graphe, copier les données, déplacer le tenseur ou empêcher de nouveaux gradients. detach, clone, cpu et requires_grad ne sont pas interchangeables."
+        }
+      ],
+      "takeaways": [
+        "detach coupe le graphe mais peut partager les données.",
+        "item transforme un tenseur scalaire en nombre Python.",
+        "requires_grad=False et eval règlent des propriétés différentes."
+      ],
+      "sourceIds": [
+        "torch-autograd",
+        "torch-views",
+        "torch-tensors",
+        "torch-module"
+      ]
+    },
+    {
+      "id": "choisir-la-perte",
+      "title": "Une perte doit correspondre à la tâche",
+      "summary": "Aligner logits, cibles et réduction pour une ou plusieurs étiquettes.",
+      "questionIds": [
+        "pt-017",
+        "pt-025",
+        "pt-026",
+        "pt-030"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "La perte traduit ce que le modèle doit réussir. Commencez par définir la tâche : une seule classe exclusive par exemple, ou plusieurs étiquettes pouvant coexister ? Pour reconnaître un instrument principal parmi quatre possibilités exclusives, chaque exemple possède un indice. Pour détecter la présence simultanée de voix, batterie et guitare, plusieurs réponses positives peuvent être correctes. Ces deux tâches n’imposent pas la même normalisation des sorties."
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans le cas exclusif habituel, CrossEntropyLoss reçoit des logits flottants de forme (B, C). Les logits sont des scores bruts : ils peuvent être négatifs et ne somment pas à un. La cible contient B indices de classe de type long, compris entre zéro et C moins un. La perte combine la normalisation logarithmique nécessaire et la comparaison à la classe cible. Il faut donc lui fournir les scores avant softmax."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "logits = torch.tensor([[2., 0., -1.], [0., 3., 1.]])\nlabels = torch.tensor([0, 1], dtype=torch.long)\npertes = torch.nn.CrossEntropyLoss(reduction=\"none\")(logits, labels)\n# pertes.shape : (2,)\n# environ [0.170, 0.170]\n\n# Pour plusieurs étiquettes indépendantes :\nlogits_multi = torch.zeros(2, 3)\ncibles_multi = torch.tensor([[1., 0., 1.], [0., 1., 0.]])\nloss_multi = torch.nn.BCEWithLogitsLoss()(logits_multi, cibles_multi)\n# loss_multi vaut environ 0.693",
+          "caption": "La première tâche choisit une classe ; la seconde traite chaque étiquette comme une décision binaire."
+        },
+        {
+          "type": "paragraph",
+          "text": "argmax choisit une classe, mais supprime les autres scores et n’est pas l’entrée adaptée à cette perte. Il sert à prendre une décision pour une métrique. De même, convertir des indices flottants comme [0., 2., 1.] avec long() produit les cibles entières attendues ; les remplacer par une softmax ne leur donnerait pas le bon rôle."
+        },
+        {
+          "type": "paragraph",
+          "text": "reduction=\"none\" conserve une perte par exemple dans le cas (B, C) avec des indices de forme (B,). mean les moyenne et sum les additionne. Cette distinction change la taille de sortie et l’échelle des gradients. Les pondérations de classes et les cibles ignorées peuvent modifier le dénominateur d’une moyenne ; vérifiez toujours les hypothèses de l’énoncé."
+        },
+        {
+          "type": "example",
+          "title": "Plusieurs étiquettes présentes",
+          "text": "BCEWithLogitsLoss reçoit directement les logits (B, C) et des cibles flottantes de même forme, souvent zéro ou un. Elle intègre une sigmoid de manière numériquement stable. Une softmax entre classes imposerait à tort une somme de un alors que plusieurs étiquettes peuvent être présentes."
+        },
+        {
+          "type": "callout",
+          "label": "Partir des cibles",
+          "tone": "tip",
+          "text": "Décrivez d’abord ce qu’un exemple peut avoir comme annotation. Choisissez ensuite la représentation de sortie et la perte. Le nom classification ne suffit pas à départager une tâche exclusive et une tâche multi-étiquette."
+        }
+      ],
+      "takeaways": [
+        "CrossEntropyLoss prend des logits et, dans le cas étudié, des indices long.",
+        "BCEWithLogitsLoss convient aux étiquettes binaires indépendantes.",
+        "La réduction détermine le nombre de pertes conservées et leur échelle."
+      ],
+      "sourceIds": [
+        "torch-ce",
+        "torch-bce"
+      ]
+    },
+    {
+      "id": "dataset-et-batches",
+      "title": "Du Dataset au batch de séquences variables",
+      "summary": "Garder les annotations associées et construire un batch de forme explicite.",
+      "questionIds": [
+        "pt-018",
+        "pt-028",
+        "pt-038",
+        "pt-039"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Le Dataset décrit comment obtenir un exemple. Pour un jeu indexable, __len__ renvoie le nombre d’exemples et __getitem__(indice) fournit celui qui correspond à cet indice. En audio, il peut renvoyer un signal, une étiquette et une longueur. Le nombre d’exemples n’est ni la durée totale des enregistrements ni le nombre de minibatches : ce sont des mesures différentes."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le DataLoader choisit des indices, récupère les exemples et les regroupe. Avec shuffle=True, il mélange leur ordre de visite. Si chaque exemple contient un couple (signal, étiquette), ce couple reste intact. On ne mélange ni les échantillons temporels dans le signal ni les étiquettes indépendamment. Ce mélange peut être utile pour l’entraînement, sans remplacer une séparation correcte entre train, validation et test."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "from torch.nn.utils.rnn import pad_sequence\n\na = torch.ones(30, 6)\nb = torch.ones(20, 6)\nbatch = pad_sequence([a, b], batch_first=True)\n# batch.shape : (2, 30, 6)\n# batch[1, 20:] contient des zéros de padding\nlongueurs = torch.tensor([30, 20])\nmask = torch.arange(30)[None, :] < longueurs[:, None]\n# mask.shape : (2, 30), avec 30 puis 20 valeurs True",
+          "caption": "Le temps est le premier axe de chaque exemple, puis le deuxième axe du batch."
+        },
+        {
+          "type": "paragraph",
+          "text": "L’empilement par défaut suppose des exemples dont les formes peuvent être regroupées. Deux audios de durées différentes n’ont pas la même longueur temporelle. Vous pouvez les compléter jusqu’à la plus grande longueur du batch, puis conserver les longueurs réelles. pad_sequence reçoit ici deux séquences (temps, caractéristiques), de formes (30, 6) et (20, 6). batch_first=True produit (2, 30, 6)."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le remplissage rend les formes compatibles. Il ne dit pas au modèle quelles positions sont artificielles. Les longueurs et les masques transportent cette information. Une valeur nulle peut aussi être une véritable donnée ; retrouver les positions valides en cherchant les valeurs non nulles n’est donc pas une méthode fiable. Ce contrat doit être conservé après les transformations qui changent la longueur du signal."
+        },
+        {
+          "type": "example",
+          "title": "Le rôle de collate_fn",
+          "text": "Une fonction de regroupement personnalisée reçoit la liste d’exemples du minibatch. Elle peut extraire les signaux, appliquer pad_sequence, empiler les étiquettes et construire un masque. On la fournit avec collate_fn=assembler_batch. Changer seulement num_workers ou shuffle ne définit pas cette logique."
+        },
+        {
+          "type": "callout",
+          "label": "Un contrat à écrire",
+          "tone": "tip",
+          "text": "Précisez la forme d’un exemple avant le DataLoader, puis celle de chaque sortie de collate_fn. Indiquez également si True signifie valide ou masqué : certaines interfaces emploient des conventions opposées."
+        }
+      ],
+      "takeaways": [
+        "Dataset fournit des exemples ; DataLoader organise leur parcours et regroupement.",
+        "shuffle conserve l’association entre un signal et son annotation.",
+        "Le padding doit être accompagné de longueurs ou d’un masque explicite."
+      ],
+      "sourceIds": [
+        "torch-data",
+        "torch-loader",
+        "torch-padding"
+      ]
+    },
+    {
+      "id": "moyennes-masquees",
+      "title": "Le padding ne doit pas voter dans une moyenne",
+      "summary": "Compter exactement les positions et les valeurs que l’on agrège.",
+      "questionIds": [
+        "pt-029",
+        "pt-048"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Après padding, un batch a une longueur temporelle commune, mais tous les exemples n’ont pas cette quantité de données réelles. Si vous calculez mean sur tout le temps, les zéros ajoutés participent au dénominateur. Les séquences courtes se trouvent alors diluées davantage. Pour une moyenne représentant le vrai signal, il faut masquer le numérateur et compter les positions valides au dénominateur."
+        },
+        {
+          "type": "paragraph",
+          "text": "Supposons x de forme (B, T, D) et mask de forme (B, T), vrai aux positions valides. mask.unsqueeze(-1) donne (B, T, 1) et se diffuse sur D caractéristiques. Multiplier x par ce masque met à zéro les positions artificielles tout en conservant la forme. La somme selon le temps donne (B, D). Le nombre de temps valides, gardé sous forme (B, 1), permet de diviser chaque exemple correctement."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "x = torch.tensor([[[2., 4.], [4., 8.], [0., 0.]]])\nmask = torch.tensor([[True, True, False]])\nm = mask.unsqueeze(-1)\npooled = (x * m).sum(1) / m.sum(1)\n# pooled : [[3., 6.]], forme (1, 2)\n\ntarget = torch.zeros_like(x)\nerr = (x - target).pow(2)\nnum = (err * m).sum()\nloss = num / (mask.sum() * x.shape[-1])\n# num vaut 100 ; 4 valeurs valides ; loss vaut 25",
+          "caption": "Le pooling produit un vecteur par exemple ; la MSE produit ici une moyenne sur toutes les valeurs valides du batch."
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans la MSE, chaque position valide porte D erreurs au carré. Si le masque contient L positions valides au total, le numérateur additionne donc L × D valeurs. Diviser seulement par L donnerait une somme moyenne des erreurs par position, pas une moyenne par valeur. Diviser par B × T × D compterait le padding, ce qui ferait dépendre la mesure de la quantité de remplissage."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une moyenne globale sur les valeurs valides et une moyenne des pertes de chaque séquence ne donnent pas le même poids aux exemples. La première donne davantage de poids aux séquences longues. La seconde peut donner le même poids à chaque séquence, après une réduction séparée. Aucune formule ne doit être choisie au hasard : annoncez ce que vous souhaitez pondérer."
+        },
+        {
+          "type": "example",
+          "title": "Les hypothèses à garder",
+          "text": "Le pooling suppose au moins une position valide par exemple ; la MSE globale suppose au moins une valeur valide. Les données utilisées dans cette multiplication sont finies. Multiplier NaN par zéro ne supprime pas NaN : pour des données non finies, il faut traiter explicitement leur validité."
+        },
+        {
+          "type": "callout",
+          "label": "La formule se lit en mots",
+          "tone": "tip",
+          "text": "Sommer les erreurs retenues, puis diviser par leur nombre. En nommant précisément ce nombre, vous retrouvez le dénominateur sans mémoriser une expression isolée."
+        }
+      ],
+      "takeaways": [
+        "Un masque corrige aussi le dénominateur, pas seulement le numérateur.",
+        "Pour D caractéristiques, L positions représentent L × D valeurs.",
+        "Une moyenne par valeur et une moyenne par séquence pondèrent différemment."
+      ],
+      "sourceIds": [
+        "torch-padding",
+        "torch-broadcast",
+        "torch-mse"
+      ]
+    },
+    {
+      "id": "une-iteration-entrainement",
+      "title": "Une itération d’entraînement, dans le bon ordre",
+      "summary": "Relier remise à zéro, prédiction, dérivation et mise à jour.",
+      "questionIds": [
+        "pt-011",
+        "pt-049"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Une itération d’entraînement utilise un minibatch pour calculer une perte et ajuster les paramètres. Chaque instruction a une tâche précise. On place d’abord le modèle en mode train pour sélectionner son comportement d’entraînement. On réinitialise les gradients de l’optimiseur, on calcule les prédictions, puis la perte. backward calcule les gradients ; step les utilise pour modifier les paramètres."
+        },
+        {
+          "type": "paragraph",
+          "text": "La remise à zéro est nécessaire parce que grad accumule les contributions. Si vous l’oubliez entre des minibatches indépendants, le second pas utilise aussi les gradients antérieurs. Ce n’est pas simplement une perte plus grande : c’est une autre règle de mise à jour. Une accumulation volontaire est possible, mais elle doit être organisée et mise à l’échelle explicitement."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "model.train()\nfor x, y in loader:\n    x = x.to(device)\n    y = y.to(device)\n    optimizer.zero_grad()\n    logits = model(x)\n    loss = loss_fn(logits, y)\n    loss.backward()\n    torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)\n    optimizer.step()\n    valeur_affichee = loss.item()",
+          "caption": "Ordre pour une précision ordinaire, sans accumulation : le clipping intervient après backward et avant step."
+        },
+        {
+          "type": "figure",
+          "kind": "training-loop",
+          "caption": "La prédiction construit le calcul, backward produit les gradients et step applique la mise à jour."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le clipping limite la norme des gradients avant leur utilisation. clip_grad_norm_ considère leur norme globale comme si les gradients des paramètres formaient un seul grand vecteur. Il les modifie en place si cette norme dépasse le seuil. Avec un gradient scalaire 3 et un seuil 1, sa valeur devient approximativement 1 ; ce n’est pas la valeur du poids que l’on bloque à 1."
+        },
+        {
+          "type": "paragraph",
+          "text": "Placer le clipping avant backward ne limite pas les nouveaux gradients puisqu’ils n’existent pas encore. Le placer après step arrive trop tard pour le pas effectué. Modifier loss avec clamp n’est pas équivalent : cela change la fonction dont on cherche la dérivée. Le clipping agit sur la dérivée calculée, pas sur le nombre affiché de perte."
+        },
+        {
+          "type": "example",
+          "title": "Un pas de SGD",
+          "text": "Pour un unique poids w = 2, un gradient 3 et un taux d’apprentissage 0,1, SGD sans autre terme propose 2 − 0,1 × 3 = 1,7. Si l’on limite d’abord ce gradient à 1, le poids devient environ 1,9. La différence apparaît lors de step, jamais lors de l’affichage de la loss."
+        },
+        {
+          "type": "callout",
+          "label": "Repérer le bon objet",
+          "tone": "tip",
+          "text": "zero_grad et step concernent l’optimiseur ; backward concerne la perte différentiable ; le clipping reçoit les paramètres portant les gradients. Cette distinction permet de remettre chaque action à sa place."
+        }
+      ],
+      "takeaways": [
+        "Une itération ordinaire remet les gradients à zéro pour chaque minibatch.",
+        "backward calcule ; step met à jour.",
+        "Le clipping se place après backward et avant step."
+      ],
+      "sourceIds": [
+        "torch-optimization",
+        "torch-clipping",
+        "torch-autograd"
+      ]
+    },
+    {
+      "id": "entrainer-ou-evaluer",
+      "title": "Évaluer : deux interrupteurs différents",
+      "summary": "Séparer le comportement des couches et le suivi des gradients.",
+      "questionIds": [
+        "pt-012",
+        "pt-013",
+        "pt-042"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Un modèle peut se comporter différemment en entraînement et en évaluation. Le Dropout standard supprime aléatoirement certaines activations pendant l’entraînement. En mode évaluation, cette suppression est désactivée. BatchNorm change également de comportement : dans le fonctionnement standard avec statistiques suivies, l’entraînement utilise et met à jour des statistiques de batch, tandis que l’évaluation utilise les statistiques accumulées."
+        },
+        {
+          "type": "paragraph",
+          "text": "model.train() et model.eval() sélectionnent ces comportements pour le module et ses sous-modules enregistrés. Ils ne disent pas à autograd d’arrêter d’enregistrer les opérations. Un modèle en mode eval peut toujours produire une sortie différentiable et permettre un backward. Cela peut être utile pour étudier la sensibilité d’une prédiction, mais inutilement coûteux pour calculer une simple métrique de validation."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "model.eval()\nwith torch.no_grad():\n    logits = model(x)\n    classes = logits.argmax(dim=1)\n# aucun step : les paramètres ne sont pas optimisés ici\n\n# Plus tard, pour reprendre l’entraînement :\nmodel.train()",
+          "caption": "eval règle les couches ; no_grad règle l’enregistrement du calcul."
+        },
+        {
+          "type": "paragraph",
+          "text": "torch.no_grad() désactive le suivi des gradients pour les opérations de son contexte, dans le cas usuel. Il réduit les besoins de mémoire liés au graphe. Il ne sélectionne pas le mode d’évaluation des couches. Avec model.train() suivi seulement de no_grad, le Dropout peut donc rester aléatoire et BatchNorm peut continuer à actualiser son état. L’absence de backward ne suffit pas à empêcher toute modification d’un buffer."
+        },
+        {
+          "type": "example",
+          "title": "Deux expériences qui se ressemblent",
+          "text": "Deux passages sur le même x avec Dropout en mode train peuvent donner des sorties différentes, même sans pas d’optimiseur. En mode eval, ce Dropout devient une identité. Cela ne garantit pas à lui seul une reproductibilité absolue de toutes les opérations du programme : cela fixe seulement le comportement prévu de cette couche."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour une validation ordinaire, le duo model.eval() et no_grad est donc cohérent. Les cibles servent à calculer la métrique, sans optimizer.step. Après la validation, pensez à restaurer model.train() avant de poursuivre l’apprentissage. Charger un state_dict ne remplace pas cette décision : les poids sauvegardés et le mode du modèle sont deux aspects distincts."
+        },
+        {
+          "type": "callout",
+          "label": "Deux questions à poser",
+          "tone": "analogy",
+          "text": "Voulez-vous le comportement entraînement ou évaluation ? Avez-vous besoin de gradients pour ce calcul ? Répondez séparément à ces questions au lieu de chercher un unique appel qui ferait tout."
+        }
+      ],
+      "takeaways": [
+        "eval change le comportement des couches sensibles au mode.",
+        "no_grad désactive le suivi des gradients dans son contexte.",
+        "Une validation ordinaire combine les deux et n’applique aucun pas d’optimiseur."
+      ],
+      "sourceIds": [
+        "torch-module",
+        "torch-autograd",
+        "torch-optimization"
+      ]
+    },
+    {
+      "id": "moyennes-et-microbatches",
+      "title": "Pondérer les moyennes et accumuler volontairement",
+      "summary": "Préserver la même quantité quand la taille des batches change.",
+      "questionIds": [
+        "pt-046",
+        "pt-047"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Une moyenne décrit une somme divisée par un effectif. Quand vous réunissez plusieurs moyennes, conservez cet effectif. Sinon, chaque groupe reçoit le même poids, même si ses tailles diffèrent. Cette erreur apparaît facilement sur le dernier minibatch d’une époque, souvent plus petit que les autres. Une moyenne de losses moyennes par batch n’est pas nécessairement une moyenne par exemple."
+        },
+        {
+          "type": "example",
+          "title": "Huit exemples puis deux",
+          "text": "Le premier batch contient huit exemples et sa loss moyenne vaut 2. Il apporte donc une somme de 16. Le second contient deux exemples et sa moyenne vaut 5, soit une somme de 10. Sur dix exemples, la moyenne correcte vaut (16 + 10) / 10 = 2,6. Faire (2 + 5) / 2 donnerait 3,5 et surpondérerait le petit groupe."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour journaliser une époque dans ce cas, additionnez loss.item() multiplié par le nombre d’exemples du batch, puis divisez par l’effectif total. Cette formule suppose une loss moyenne par exemple avec des poids compatibles. Si vous avez une perte par valeur temporelle ou une entropie croisée pondérée, l’effectif pertinent peut être différent. Identifiez la quantité que la loss a déjà moyennée."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "optimizer.zero_grad()\nfor x, y in quatre_microbatches:\n    loss = loss_fn(model(x), y)\n    # loss est une moyenne par exemple\n    (loss / 4).backward()\noptimizer.step()",
+          "caption": "Quatre microbatches de même taille : un seul pas d’optimiseur après l’accumulation."
+        },
+        {
+          "type": "paragraph",
+          "text": "L’accumulation de gradients permet de traiter une grande réunion d’exemples en plusieurs morceaux. Pour quatre microbatches de même taille, la moyenne globale est la somme de leurs quatre moyennes divisée par quatre. La dérivation étant linéaire, on peut rétropropager chaque loss divisée par quatre puis effectuer un unique step. Les gradients sont réinitialisés avant le groupe, pas entre les quatre contributions."
+        },
+        {
+          "type": "paragraph",
+          "text": "L’équivalence exige que chaque exemple soit traité indépendamment et de façon déterministe, et que la loss soit la moyenne arithmétique annoncée. BatchNorm, Dropout ou des pertes comparant les exemples entre eux peuvent changer le calcul lorsque vous découpez le batch. Pour des microbatches inégaux, le coefficient devient leur proportion d’exemples, pas toujours un quart."
+        },
+        {
+          "type": "callout",
+          "label": "Ne pas confondre deux mécanismes",
+          "tone": "pitfall",
+          "text": "Quatre backward suivis d’un step ne sont pas quatre steps. Avec quatre mises à jour, les poids changent entre les calculs de gradients et la trajectoire de l’optimiseur devient différente, même en divisant le taux d’apprentissage."
+        }
+      ],
+      "takeaways": [
+        "Une moyenne de groupes se pondère par leur effectif pertinent.",
+        "Des microbatches égaux contribuent à parts égales à la moyenne globale.",
+        "L’équivalence d’accumulation dépend du modèle et de la réduction."
+      ],
+      "sourceIds": [
+        "torch-optimization",
+        "torch-autograd"
+      ]
+    },
+    {
+      "id": "sauvegarder-et-reprendre",
+      "title": "Sauvegarder un modèle ou reprendre une expérience",
+      "summary": "Distinguer les poids d’inférence de l’état nécessaire à la continuité d’entraînement.",
+      "questionIds": [
+        "pt-036",
+        "pt-037",
+        "pt-050"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Le state_dict d’un modèle associe des noms à ses paramètres et à ses buffers persistants. Il contient par exemple les poids d’une couche Linear et les statistiques suivies d’une BatchNorm. Il ne contient pas le code Python complet de la classe ni les données d’entraînement. Pour recharger cet état, vous devez recréer une architecture compatible, puis lui fournir le dictionnaire avec load_state_dict."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un fichier de poids peut suffire pour faire de l’inférence avec cette architecture. Après le chargement, choisissez le mode eval pour les couches qui en dépendent et utilisez no_grad si vous n’avez pas besoin de dérivées. Le placement sur CPU ou accélérateur doit aussi être cohérent avec les entrées. Sauvegarder les valeurs ne dispense pas de reconstruire ce contexte de calcul."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "code": "# model et optimizer ont déjà été construits\ncheckpoint = {\n    \"model\": model.state_dict(),\n    \"optimizer\": optimizer.state_dict(),\n    \"epoch\": 7,\n}\ntorch.save(checkpoint, \"reprise.pt\")\n\n# Plus tard, sur une architecture et un optimiseur compatibles :\netat = torch.load(\"reprise.pt\", map_location=\"cpu\", weights_only=True)\nmodel.load_state_dict(etat[\"model\"])\noptimizer.load_state_dict(etat[\"optimizer\"])\n# L’époque enregistrée vaut 7 ; le choix train/eval reste explicite.",
+          "caption": "Le dictionnaire de reprise conserve plusieurs composants, chacun avec son rôle."
+        },
+        {
+          "type": "paragraph",
+          "text": "Reprendre un entraînement demande davantage que les poids. Adam garde des estimations des premier et second moments des gradients, ainsi qu’un état de progression. Si vous recréez Adam sans charger optimizer.state_dict(), vous repartez avec un nouvel historique d’optimisation. Vous utilisez les anciens poids, mais ne poursuivez pas le même état d’optimiseur. Sauvegarder seulement le taux d’apprentissage ne conserve pas ces moments."
+        },
+        {
+          "type": "paragraph",
+          "text": "Selon l’expérience, il faut également conserver l’état du scheduler, le nombre de pas, les états des générateurs aléatoires, un éventuel scaler de précision mixte et la position dans le parcours des données. L’architecture, les transformations, la séparation des jeux et la configuration doivent rester identifiables. Un checkpoint pratique et une reprise exactement reproductible ne promettent donc pas la même chose."
+        },
+        {
+          "type": "example",
+          "title": "Deux objectifs de sauvegarde",
+          "text": "Pour tester une tête déjà entraînée, vous pouvez reconstruire le modèle et charger ses paramètres et buffers. Pour continuer l’apprentissage d’Adam au pas suivant, chargez aussi son état. Dans les deux cas, choisissez ensuite train ou eval en fonction de ce que vous allez faire, pas du nom du fichier."
+        },
+        {
+          "type": "callout",
+          "label": "Décrire ce que vous pourrez refaire",
+          "tone": "tip",
+          "text": "Annoncez l’objectif du fichier : produire des prédictions, redémarrer l’apprentissage ou reproduire précisément une expérience. Cette formulation indique quels états et quelles métadonnées doivent être conservés."
+        }
+      ],
+      "takeaways": [
+        "state_dict contient les paramètres et buffers persistants, pas la classe complète.",
+        "Reprendre Adam nécessite aussi son état d’optimiseur.",
+        "Le mode, le device et les autres états d’expérience restent des décisions explicites."
+      ],
+      "sourceIds": [
+        "torch-saving",
+        "torch-checkpoints",
+        "torch-module"
+      ]
+    }
+  ]
+}
