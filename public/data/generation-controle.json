@@ -1,0 +1,1310 @@
+[
+  {
+    "id": "gen-001",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Quel est le rôle du décodeur dans un autoencodeur audio ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Reconstruire une représentation audio à partir de son code latent"
+      },
+      {
+        "id": "b",
+        "text": "Compresser l’entrée pour produire le latent"
+      },
+      {
+        "id": "c",
+        "text": "Fournir la distribution a priori des codes latents"
+      },
+      {
+        "id": "d",
+        "text": "Calculer seulement une mesure de qualité perceptive"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "L’encodeur transforme l’entrée en latent et le décodeur tente de reconstruire l’entrée à partir de ce latent. Une bonne reconstruction ne garantit pas que les coordonnées du latent correspondent à des concepts musicaux interprétables.",
+    "sourceIds": [
+      "gr-vae"
+    ]
+  },
+  {
+    "id": "gen-002",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Dans un VAE continu, que produit typiquement l’encodeur pour une entrée ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Un latent déterministe sans aucune dispersion"
+      },
+      {
+        "id": "b",
+        "text": "Les paramètres d’une distribution latente"
+      },
+      {
+        "id": "c",
+        "text": "La distribution marginale exacte de tout le corpus"
+      },
+      {
+        "id": "d",
+        "text": "Les paramètres d’une classe d’instrument supervisée"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "L’encodeur approxime une distribution conditionnelle q(z|x), souvent gaussienne. Il produit alors une moyenne et une information de dispersion, plutôt qu’un simple code déterministe.",
+    "sourceIds": [
+      "gr-vae"
+    ]
+  },
+  {
+    "id": "gen-003",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Que signifie « autorégressif » pour un générateur de tokens audio ordonnés dans le temps ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Prédire les tokens indépendamment et les concaténer"
+      },
+      {
+        "id": "b",
+        "text": "Prédire chaque token à partir des tokens futurs seuls"
+      },
+      {
+        "id": "c",
+        "text": "Prédire chaque token à partir des tokens qui le précèdent dans la séquence"
+      },
+      {
+        "id": "d",
+        "text": "Reconstruire le signal à partir d’un latent sans ordre"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "La distribution jointe est factorisée en probabilités conditionnelles successives. À la génération, les tokens précédemment produits servent donc de contexte pour le suivant.",
+    "sourceIds": [
+      "gr-wavenet"
+    ]
+  },
+  {
+    "id": "gen-004",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Dans une diffusion standard apprise par débruitage, de quoi part généralement la génération ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "D’un audio propre auquel on ajoute du bruit jusqu’à la fin"
+      },
+      {
+        "id": "b",
+        "text": "D’un spectrogramme cible déjà entièrement connu"
+      },
+      {
+        "id": "c",
+        "text": "D’un seul token que l’on répète sur toute la durée"
+      },
+      {
+        "id": "d",
+        "text": "D’un bruit progressivement transformé"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Le processus inverse transforme progressivement un échantillon bruité en donnée structurée. À l’entraînement, le modèle apprend à débruiter différents niveaux de corruption.",
+    "sourceIds": [
+      "gr-ddpm"
+    ]
+  },
+  {
+    "id": "gen-005",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Un modèle reçoit une description « piano lent et doux ». Quel rôle joue ce texte ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Une information qui conditionne la distribution des sons que le modèle génère"
+      },
+      {
+        "id": "b",
+        "text": "Une contrainte dure qui fixe toutes les hauteurs de notes"
+      },
+      {
+        "id": "c",
+        "text": "Une cible de reconstruction exacte pour chaque échantillon"
+      },
+      {
+        "id": "d",
+        "text": "Un filtre appliqué après la génération sans rôle pour le modèle"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Le conditionnement oriente la génération vers des propriétés associées à la description. Il ne constitue pas à lui seul une contrainte dure sur chaque détail musical.",
+    "sourceIds": [
+      "gr-musicgen"
+    ]
+  },
+  {
+    "id": "gen-006",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Quel est l’intérêt central de tokens issus d’un codec neuronal pour un modèle de séquences audio ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Conserver chaque valeur de l’onde sans aucune perte possible"
+      },
+      {
+        "id": "b",
+        "text": "Réduire l’audio à une séquence discrète compacte"
+      },
+      {
+        "id": "c",
+        "text": "Obtenir une représentation dont le décodage est inutile"
+      },
+      {
+        "id": "d",
+        "text": "Convertir nécessairement tout son en partition musicale"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Un encodeur et une quantification transforment l’audio en codes discrets compacts. Un décodeur reste nécessaire et la compression peut éliminer des détails du signal.",
+    "sourceIds": [
+      "gr-encodec"
+    ]
+  },
+  {
+    "id": "gen-007",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Pour imposer précisément les hauteurs et les débuts de notes, quelle condition est la plus directement structurée ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Une seule description textuelle du style recherché"
+      },
+      {
+        "id": "b",
+        "text": "Un embedding global de la couleur timbrale du morceau"
+      },
+      {
+        "id": "c",
+        "text": "Une séquence symbolique de notes avec hauteurs et débuts explicitement horodatés"
+      },
+      {
+        "id": "d",
+        "text": "La seule enveloppe moyenne d’intensité sur le morceau"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Des notes avec hauteurs et positions temporelles décrivent explicitement les événements visés. Le modèle doit encore avoir appris à exploiter cette condition pour produire l’audio correspondant.",
+    "sourceIds": [
+      "gr-symbolic"
+    ]
+  },
+  {
+    "id": "gen-008",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle",
+      "evaluation-recherche"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Un codec neuronal compressif reconstruit mal les cymbales. Quel constat est justifié avant même d’entraîner un générateur sur ses tokens ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Le prior génératif sera seul responsable de toute perte"
+      },
+      {
+        "id": "b",
+        "text": "Un meilleur échantillonnage des codes restaurera exactement toute information perdue"
+      },
+      {
+        "id": "c",
+        "text": "La reconstruction du codec est inutile pour analyser le générateur"
+      },
+      {
+        "id": "d",
+        "text": "Le codec limite déjà la reconstruction"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Si des détails disparaissent à l’encodage puis au décodage, un modèle sur ces codes ne reçoit pas leur représentation exacte. Évaluer la reconstruction du codec aide à séparer cette limite de celle du générateur.",
+    "sourceIds": [
+      "gr-encodec"
+    ]
+  },
+  {
+    "id": "gen-009",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle",
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "mu et logvar ont la forme (B, D), et logvar est le logarithme de la variance. Quel complément réalise la reparamétrisation gaussienne ?",
+    "code": "eps = torch.randn_like(mu)\nz = ...",
+    "options": [
+      {
+        "id": "a",
+        "text": "mu + torch.exp(0.5 * logvar) * eps"
+      },
+      {
+        "id": "b",
+        "text": "mu + logvar * eps"
+      },
+      {
+        "id": "c",
+        "text": "mu + torch.exp(logvar) + eps"
+      },
+      {
+        "id": "d",
+        "text": "mu.detach() + eps"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "La racine carrée de la variance est exp(0,5 × logvar). Multiplier un bruit normal standard par cet écart-type puis ajouter mu permet de différencier l’échantillon par rapport aux paramètres.",
+    "sourceIds": [
+      "gr-vae"
+    ]
+  },
+  {
+    "id": "gen-010",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Dans un VAE avec prior normal standard, quel est le rôle du terme KL(q(z|x) || p(z)) ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Maximiser systématiquement la distance entre deux morceaux"
+      },
+      {
+        "id": "b",
+        "text": "Rapprocher le posterior approché du prior choisi"
+      },
+      {
+        "id": "c",
+        "text": "Forcer la reconstruction à être identique bit à bit"
+      },
+      {
+        "id": "d",
+        "text": "Rendre le nombre de paramètres égal à zéro"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "La KL pénalise un écart entre la distribution encodée et le prior. Elle se combine au terme de reconstruction ; augmenter son poids modifie ce compromis.",
+    "sourceIds": [
+      "gr-vae"
+    ]
+  },
+  {
+    "id": "gen-011",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle",
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "tokens a la forme (B, T), avec T >= 2. Pour entraîner la prédiction du token suivant à chaque position, quel couple entrée/cible convient ?",
+    "code": "inputs = ...\ntargets = ...",
+    "options": [
+      {
+        "id": "a",
+        "text": "tokens, tokens"
+      },
+      {
+        "id": "b",
+        "text": "tokens[:-1, :], tokens[1:, :]"
+      },
+      {
+        "id": "c",
+        "text": "tokens[:, :-1], tokens[:, 1:]"
+      },
+      {
+        "id": "d",
+        "text": "tokens[:, 1:], tokens[:, :-1]"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Le décalage d’une position associe chaque contexte à son prochain token. Décaler l’axe du batch mélangerait des exemples indépendants au lieu d’apprendre la succession temporelle.",
+    "sourceIds": [
+      "gr-wavenet"
+    ]
+  },
+  {
+    "id": "gen-012",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Un Transformer prédit le prochain token à partir du préfixe. À l’entraînement, pourquoi masquer les positions futures dans l’auto-attention ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Forcer chaque prédiction à ignorer aussi tout le préfixe"
+      },
+      {
+        "id": "b",
+        "text": "Réduire la longueur de la cible à un seul token par morceau"
+      },
+      {
+        "id": "c",
+        "text": "Empêcher l’apprentissage des dépendances entre voisins"
+      },
+      {
+        "id": "d",
+        "text": "Éviter une fuite vers les tokens futurs"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Un token futur peut révéler directement la cible et donner une perte artificiellement faible. Le masque causal maintient la même contrainte d’information qu’au décodage.",
+    "sourceIds": [
+      "gr-musicgen"
+    ]
+  },
+  {
+    "id": "gen-013",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle",
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Les logits sont [0, 2]. Quel effet a le passage de temperature=1 à temperature=0.5 dans ce calcul ?",
+    "code": "probs = torch.softmax(logits / temperature, dim=-1)",
+    "options": [
+      {
+        "id": "a",
+        "text": "La distribution se concentre davantage sur le second token"
+      },
+      {
+        "id": "b",
+        "text": "Les deux tokens deviennent équiprobables"
+      },
+      {
+        "id": "c",
+        "text": "L’ordre des deux probabilités est inversé"
+      },
+      {
+        "id": "d",
+        "text": "La somme des probabilités devient 0.5"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Diviser les logits par une température positive plus petite augmente leur écart avant le softmax. Le token le plus probable reste le même mais sa probabilité augmente.",
+    "sourceIds": [
+      "gr-softmax"
+    ]
+  },
+  {
+    "id": "gen-014",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Un codec émet 50 trames par seconde et 4 indices par trame, sans décalage ni token spécial. Combien d’indices représentent 10 secondes ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "20 000"
+      },
+      {
+        "id": "b",
+        "text": "2 000"
+      },
+      {
+        "id": "c",
+        "text": "500"
+      },
+      {
+        "id": "d",
+        "text": "200"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Il y a 50 × 10 = 500 positions temporelles. Avec quatre indices à chaque position, le total est de 2 000 ; le nombre de pas d’un générateur dépend ensuite de leur agencement.",
+    "sourceIds": [
+      "gr-encodec"
+    ]
+  },
+  {
+    "id": "gen-015",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Un modèle reçoit une courbe de tempo changeante en plus de l’audio cible. Quelle préparation est nécessaire pour apprendre un contrôle temporel cohérent ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Conserver seulement la valeur moyenne de chaque courbe"
+      },
+      {
+        "id": "b",
+        "text": "Décaler chaque courbe d’une durée indépendante aléatoire"
+      },
+      {
+        "id": "c",
+        "text": "Faire correspondre chaque segment de la courbe aux mêmes positions temporelles de l’audio"
+      },
+      {
+        "id": "d",
+        "text": "Apparier les courbes par tempo moyen sans tenir compte des morceaux"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Un contrôle local doit correspondre aux moments qu’il décrit. Un décalage ou un appariement arbitraire rend l’association entre la condition et l’audio incohérente.",
+    "sourceIds": [
+      "gr-musicgen"
+    ]
+  },
+  {
+    "id": "gen-016",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Le cahier des charges exige un accord précis à 3 secondes. Pourquoi une seule description textuelle globale est-elle insuffisante pour garantir cette contrainte ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Un texte global empêche de générer les accords demandés"
+      },
+      {
+        "id": "b",
+        "text": "Un texte global spécifie déjà une grille temporelle exacte"
+      },
+      {
+        "id": "c",
+        "text": "Le seul ajout du mot « précisément » garantit ce contrôle"
+      },
+      {
+        "id": "d",
+        "text": "Le texte global ne fixe pas chaque instant"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Une description globale peut orienter le style sans spécifier un calendrier exact. Pour cette exigence, des contrôles locaux horodatés et une évaluation de leur respect sont nécessaires.",
+    "sourceIds": [
+      "gr-musicgen"
+    ]
+  },
+  {
+    "id": "gen-017",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle",
+      "audio-signal"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Une condition chroma somme les énergies par classe de hauteur, en regroupant les octaves. Quelle information ne permet-elle pas de distinguer directement ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Un do grave d’un do aigu de même classe de hauteur"
+      },
+      {
+        "id": "b",
+        "text": "Un do d’un fa dièse"
+      },
+      {
+        "id": "c",
+        "text": "Une trame silencieuse d’une trame énergétique quelconque"
+      },
+      {
+        "id": "d",
+        "text": "Douze classes de hauteur différentes"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Le regroupement par classe de hauteur supprime la distinction d’octave. La chroma peut guider une organisation harmonique tout en laissant une ambiguïté de registre et de timbre.",
+    "sourceIds": [
+      "gr-musicgen"
+    ]
+  },
+  {
+    "id": "gen-018",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Vous adaptez un modèle préentraîné à un petit corpus et disposez de peu de mémoire pour les états d’optimisation. Quelle stratégie réduit directement le nombre de paramètres entraînés ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Garder tous les poids entraînables mais supprimer leur sauvegarde"
+      },
+      {
+        "id": "b",
+        "text": "Geler la base et entraîner une petite adaptation"
+      },
+      {
+        "id": "c",
+        "text": "Doubler la taille du batch en gardant tous les paramètres entraînés"
+      },
+      {
+        "id": "d",
+        "text": "Entraîner toutes les couches en limitant le vocabulaire de sortie"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "En gelant la base, ses poids ne nécessitent pas les mêmes états d’optimisation que des paramètres mis à jour. Cela réduit le coût de l’adaptation sans garantir à lui seul une bonne généralisation.",
+    "sourceIds": [
+      "gr-lora"
+    ]
+  },
+  {
+    "id": "gen-019",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle",
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Une mise à jour LoRA s’écrit ΔW = B A pour W de forme (d_out, d_in) et rang r. Quelles formes conviennent ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "B : (d_out, d_in), A : (r, r)"
+      },
+      {
+        "id": "b",
+        "text": "B : (d_in, r), A : (r, d_out)"
+      },
+      {
+        "id": "c",
+        "text": "B : (d_out, r), A : (r, d_in)"
+      },
+      {
+        "id": "d",
+        "text": "B : (r, d_out), A : (d_in, r)"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Les dimensions internes r se contractent dans B A. Le résultat possède ainsi la même forme que W et peut lui être ajouté.",
+    "sourceIds": [
+      "gr-lora"
+    ]
+  },
+  {
+    "id": "gen-020",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Une couche linéaire sans biais de taille 1 024 × 1 024 reçoit une adaptation LoRA de rang 8. Combien de paramètres contient la paire de matrices LoRA ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "8 192"
+      },
+      {
+        "id": "b",
+        "text": "1 048 576"
+      },
+      {
+        "id": "c",
+        "text": "64"
+      },
+      {
+        "id": "d",
+        "text": "16 384"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "La paire contient 1 024 × 8 + 8 × 1 024 paramètres. Les poids de base gelés existent encore mais ne font pas partie de ce compte de paramètres d’adaptation.",
+    "sourceIds": [
+      "gr-lora"
+    ]
+  },
+  {
+    "id": "gen-021",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle",
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Le décodeur doit être réentraîné tandis que l’encodeur reste gelé. Quelle propriété est vraie après ce code, en supposant un optimiseur créé sur les seuls paramètres du décodeur ?",
+    "code": "for p in encoder.parameters():\n    p.requires_grad_(False)\nloss = criterion(decoder(encoder(x)), x)\nloss.backward()",
+    "options": [
+      {
+        "id": "a",
+        "text": "Le backward ne calcule pas de nouveaux gradients pour les paramètres gelés de l’encodeur"
+      },
+      {
+        "id": "b",
+        "text": "Le gel place aussi automatiquement tous ses modules en mode eval"
+      },
+      {
+        "id": "c",
+        "text": "Le gel empêche aussi le décodeur de recevoir des gradients"
+      },
+      {
+        "id": "d",
+        "text": "Le gel supprime toute dépendance de la sortie aux entrées"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "requires_grad_(False) gèle le calcul des gradients pour ces paramètres. Cela ne modifie pas automatiquement le mode train/eval ni la dépendance des sorties aux entrées.",
+    "sourceIds": [
+      "gr-module",
+      "gr-transfer"
+    ]
+  },
+  {
+    "id": "gen-022",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Quel avantage vise la diffusion dans un espace latent temporellement compressé plutôt que sur chaque échantillon audio ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Supprimer les pertes introduites par l’encodeur compressif"
+      },
+      {
+        "id": "b",
+        "text": "Débruiter une représentation plus petite"
+      },
+      {
+        "id": "c",
+        "text": "Supprimer le besoin de décoder la représentation obtenue"
+      },
+      {
+        "id": "d",
+        "text": "Garantir un échantillonnage en un seul appel du réseau"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "La compression réduit le nombre de positions traitées par le débruiteur. La qualité reste aussi dépendante de la représentation latente et de son décodeur.",
+    "sourceIds": [
+      "gr-audioldm"
+    ]
+  },
+  {
+    "id": "gen-023",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle",
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "On choisit une diffusion dont le réseau prédit le bruit ajouté eps. x0 et eps ont même forme, et alpha_bar est un scalaire dans ]0,1[. Quelle cible utiliser pour la MSE ?",
+    "code": "xt = alpha_bar.sqrt() * x0 + (1 - alpha_bar).sqrt() * eps\npred = model(xt, t)\nloss = torch.nn.functional.mse_loss(pred, ...)",
+    "options": [
+      {
+        "id": "a",
+        "text": "alpha_bar"
+      },
+      {
+        "id": "b",
+        "text": "torch.zeros_like(eps)"
+      },
+      {
+        "id": "c",
+        "text": "eps"
+      },
+      {
+        "id": "d",
+        "text": "x0 + eps"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Dans cette paramétrisation, le réseau estime le bruit normal qui a produit xt. D’autres paramétrisations existent, mais changer la cible exige de changer la définition de la prédiction.",
+    "sourceIds": [
+      "gr-ddpm"
+    ]
+  },
+  {
+    "id": "gen-024",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Pourquoi fournir l’indice de bruit t au réseau de diffusion ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Donner au modèle l’indice temporel des événements musicaux"
+      },
+      {
+        "id": "b",
+        "text": "Choisir directement la classe sémantique du son à produire"
+      },
+      {
+        "id": "c",
+        "text": "Remplacer l’information acoustique présente dans le latent"
+      },
+      {
+        "id": "d",
+        "text": "Indiquer le niveau de bruit à traiter"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Un même signal observé peut demander un traitement différent selon son niveau de bruit. Le réseau utilise t ou une autre représentation de ce niveau pour adapter son estimation.",
+    "sourceIds": [
+      "gr-ddpm"
+    ]
+  },
+  {
+    "id": "gen-025",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Dans le teacher forcing d’un modèle autorégressif, quel contexte est fourni à l’entraînement ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Les tokens précédents pris dans la séquence réelle, sans échantillonner les sorties du modèle"
+      },
+      {
+        "id": "b",
+        "text": "Les préfixes échantillonnés par le modèle à chaque pas"
+      },
+      {
+        "id": "c",
+        "text": "Les futurs tokens réels mais jamais les tokens précédents"
+      },
+      {
+        "id": "d",
+        "text": "Un même préfixe silencieux pour toutes les séquences"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Les préfixes réels permettent de calculer les prédictions supervisées sur une séquence connue. À la génération, le modèle doit au contraire utiliser ses propres sorties, ce qui peut entraîner une accumulation d’erreurs.",
+    "sourceIds": [
+      "gr-wavenet"
+    ]
+  },
+  {
+    "id": "gen-026",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Un générateur autorégressif n’utilise qu’un contexte de 2 secondes. Quel énoncé est défendable concernant une structure musicale de plusieurs minutes ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Un contexte local garantit à lui seul la forme complète du morceau"
+      },
+      {
+        "id": "b",
+        "text": "L’information directe de longue portée est restreinte"
+      },
+      {
+        "id": "c",
+        "text": "Le contexte contient toujours toute la structure musicale du corpus"
+      },
+      {
+        "id": "d",
+        "text": "Le contexte est sans effet dès lors que la loss converge"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Le modèle peut exploiter des régularités locales mais n’a pas directement accès à tout l’historique. Une mémoire ou des conditions de plus longue portée peuvent aider, sans constituer une garantie absolue.",
+    "sourceIds": [
+      "gr-wavenet"
+    ]
+  },
+  {
+    "id": "gen-027",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Dans un VQ-VAE, comment un latent continu de l’encodeur est-il typiquement associé à un code discret ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Arrondir séparément les amplitudes de l’onde au bit le plus proche"
+      },
+      {
+        "id": "b",
+        "text": "Utiliser la classe supervisée comme unique indice de dictionnaire"
+      },
+      {
+        "id": "c",
+        "text": "Associer le latent à un vecteur du dictionnaire appris selon une mesure de distance"
+      },
+      {
+        "id": "d",
+        "text": "Conserver le vecteur continu intact et le traiter comme un entier"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "La quantification vectorielle associe la sortie de l’encodeur à une entrée du dictionnaire appris. Les indices obtenus peuvent ensuite être modélisés par un prior discret.",
+    "sourceIds": [
+      "gr-vqvae"
+    ]
+  },
+  {
+    "id": "gen-028",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle",
+      "evaluation-recherche"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Vous ajoutez un générateur de codes à un codec préentraîné. Quel test distingue le mieux une limite du codec d’une limite du générateur ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Comparer seulement les générations aux originaux et attribuer tout écart au prior"
+      },
+      {
+        "id": "b",
+        "text": "Comparer seulement le nombre de paramètres du codec et du prior"
+      },
+      {
+        "id": "c",
+        "text": "Comparer uniquement des fichiers à des taux d’échantillonnage différents"
+      },
+      {
+        "id": "d",
+        "text": "Comparer originaux, reconstructions et générations"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "La reconstruction des vrais codes teste la chaîne de compression sans le prior génératif. Comparer ensuite les codes générés permet d’identifier une dégradation supplémentaire due au modèle de séquences.",
+    "sourceIds": [
+      "gr-encodec"
+    ]
+  },
+  {
+    "id": "gen-029",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "avance",
+    "prompt": "Un VAE présente une KL proche de zéro et des sorties peu sensibles à z ; son décodeur est très puissant. Quel diagnostic ces observations suggèrent-elles ensemble ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Un posterior collapse : le décodeur exploite peu le latent et le posterior se rapproche du prior"
+      },
+      {
+        "id": "b",
+        "text": "Une preuve que le latent code tous les détails sans redondance"
+      },
+      {
+        "id": "c",
+        "text": "Une preuve que le prior ne ressemble pas aux distributions encodées"
+      },
+      {
+        "id": "d",
+        "text": "Une reconstruction parfaite garantie par la seule KL presque nulle"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Une KL faible indique que le posterior se rapproche du prior, et l’insensibilité à z suggère que le décodeur ignore ce canal. L’association est compatible avec le posterior collapse ; la seule valeur de KL ne suffirait pas à prouver tout le diagnostic.",
+    "sourceIds": [
+      "gr-vqvae",
+      "gr-vae"
+    ]
+  },
+  {
+    "id": "gen-030",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle",
+      "pytorch"
+    ],
+    "difficulty": "avance",
+    "prompt": "On souhaite une KL moyenne par exemple, en sommant les D dimensions latentes. Quelle réduction convient à kl_dim de forme (B, D) ?",
+    "code": "kl_dim = -0.5 * (1 + logvar - mu.square() - logvar.exp())\nkl = ...",
+    "options": [
+      {
+        "id": "a",
+        "text": "kl_dim.mean(dim=0).sum() / D"
+      },
+      {
+        "id": "b",
+        "text": "kl_dim.sum(dim=1).mean()"
+      },
+      {
+        "id": "c",
+        "text": "kl_dim.mean()"
+      },
+      {
+        "id": "d",
+        "text": "kl_dim.sum()"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "La somme sur dim=1 rassemble les contributions latentes de chaque exemple, puis la moyenne porte sur le batch. La moyenne sur tous les éléments introduirait un facteur 1/D et modifierait le poids relatif de la KL.",
+    "sourceIds": [
+      "gr-vae"
+    ]
+  },
+  {
+    "id": "gen-031",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle",
+      "pytorch"
+    ],
+    "difficulty": "avance",
+    "prompt": "Dans cette convention de guidance sans classifieur, que donne s=1 ?",
+    "code": "eps_guided = eps_u + s * (eps_c - eps_u)",
+    "options": [
+      {
+        "id": "a",
+        "text": "La prédiction inconditionnelle eps_u"
+      },
+      {
+        "id": "b",
+        "text": "L’extrapolation 2 * eps_c - eps_u"
+      },
+      {
+        "id": "c",
+        "text": "La prédiction conditionnelle, puisque eps_u + eps_c - eps_u = eps_c"
+      },
+      {
+        "id": "d",
+        "text": "La moyenne (eps_u + eps_c) / 2"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "En remplaçant s par 1, eps_u s’annule et il reste eps_c. Cette convention doit être lue dans la formule, car les paramètres de guidance peuvent être définis autrement selon les travaux.",
+    "sourceIds": [
+      "gr-cfg"
+    ]
+  },
+  {
+    "id": "gen-032",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "avance",
+    "prompt": "On veut entraîner un même débruiteur pour les branches conditionnelle et inconditionnelle d’une guidance sans classifieur. Que faut-il prévoir ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Garder toujours la condition et la retirer seulement au test"
+      },
+      {
+        "id": "b",
+        "text": "Entraîner seulement un classifieur séparé sur les sorties propres"
+      },
+      {
+        "id": "c",
+        "text": "Remplacer les cibles de débruitage par les embeddings de condition"
+      },
+      {
+        "id": "d",
+        "text": "Retirer parfois la condition pendant l’entraînement"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Le modèle doit rencontrer une condition absente ou nulle pendant l’apprentissage. Il peut alors fournir les deux prédictions nécessaires à la combinaison de guidance.",
+    "sourceIds": [
+      "gr-cfg"
+    ]
+  },
+  {
+    "id": "gen-033",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle",
+      "pytorch"
+    ],
+    "difficulty": "avance",
+    "prompt": "W0 est gelée et l’on ignore tout facteur d’échelle. Quelle borne sur le rang de la mise à jour est garantie ?",
+    "code": "W0 = torch.empty(256, 512)\nB = torch.empty(256, 4)\nA = torch.empty(4, 512)\nW = W0 + B @ A",
+    "options": [
+      {
+        "id": "a",
+        "text": "rank(B @ A) <= 4"
+      },
+      {
+        "id": "b",
+        "text": "rank(B @ A) = 256 dans tous les cas"
+      },
+      {
+        "id": "c",
+        "text": "rank(B @ A) = 512 dans tous les cas"
+      },
+      {
+        "id": "d",
+        "text": "rank(B @ A) >= 256"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Le rang d’un produit ne dépasse pas le plus petit rang de ses facteurs, donc au plus 4 ici. La matrice W0 + B A peut néanmoins conserver un rang plein.",
+    "sourceIds": [
+      "gr-lora"
+    ]
+  },
+  {
+    "id": "gen-034",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle",
+      "pytorch"
+    ],
+    "difficulty": "avance",
+    "prompt": "Dans une branche LoRA h = B A x, B est initialisée à zéro et A aléatoirement. En supposant une perte différentiable sans autre usage de A, que peut-on dire au premier backward ?",
+    "code": "h = B @ A @ x\nloss = criterion(h, target)\nloss.backward()",
+    "options": [
+      {
+        "id": "a",
+        "text": "Les gradients de A et B sont nécessairement non nuls"
+      },
+      {
+        "id": "b",
+        "text": "Le gradient de A est nul ; celui de B peut être non nul"
+      },
+      {
+        "id": "c",
+        "text": "Le gradient de B est nul ; celui de A peut être non nul"
+      },
+      {
+        "id": "d",
+        "text": "Les deux gradients sont nécessairement nuls puisque h vaut zéro"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Le gradient vers A est multiplié par B, donc s’annule à cette initialisation. B peut recevoir un gradient via A x ; initialiser les deux facteurs à zéro bloquerait les deux au départ.",
+    "sourceIds": [
+      "gr-lora"
+    ]
+  },
+  {
+    "id": "gen-035",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle",
+      "evaluation-recherche"
+    ],
+    "difficulty": "avance",
+    "prompt": "On évalue un générateur censé continuer un préfixe audio sans connaître la suite. Quelle condition rendrait le protocole invalide ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Une description donnée avant la génération"
+      },
+      {
+        "id": "b",
+        "text": "Le taux d’échantillonnage fourni au décodeur"
+      },
+      {
+        "id": "c",
+        "text": "Un embedding calculé sur l’enregistrement entier, suite incluse"
+      },
+      {
+        "id": "d",
+        "text": "La durée connue du préfixe disponible"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Un embedding de l’enregistrement complet peut contenir des informations sur la cible future. Le protocole ne mesurerait plus une continuation à partir des seules informations autorisées.",
+    "sourceIds": [
+      "gr-wavenet",
+      "gr-pitfalls"
+    ]
+  },
+  {
+    "id": "gen-036",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "avance",
+    "prompt": "Pour combler un trou au milieu d’un signal en préservant exactement les échantillons extérieurs, quelle stratégie exprime directement la contrainte ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Pénaliser la zone connue à l’entraînement et supposer sa conservation exacte garantie"
+      },
+      {
+        "id": "b",
+        "text": "Débruiter tout le signal sans masque en supposant que l’extérieur restera identique"
+      },
+      {
+        "id": "c",
+        "text": "Réduire la température en supposant que toutes les valeurs connues seront conservées"
+      },
+      {
+        "id": "d",
+        "text": "Masquer le trou et réimposer les valeurs connues"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Le masque distingue la région à compléter de la région observée. Une contrainte explicite sur les valeurs connues permet de préserver cette région, alors qu’un guidage textuel seul ne le garantit pas.",
+    "sourceIds": [
+      "gr-audioldm"
+    ]
+  },
+  {
+    "id": "gen-037",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle",
+      "evaluation-recherche"
+    ],
+    "difficulty": "avance",
+    "prompt": "Un contrôle du tempo est bon en moyenne mais dérive localement de plusieurs secondes. Quel diagnostic distingue les deux propriétés ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Un résultat globalement conforme peut masquer des erreurs d’alignement entre événements locaux"
+      },
+      {
+        "id": "b",
+        "text": "Un tempo moyen correct implique des attaques toutes correctement placées"
+      },
+      {
+        "id": "c",
+        "text": "La dérive se corrige nécessairement en ajustant seulement le gain"
+      },
+      {
+        "id": "d",
+        "text": "Augmenter la guidance globale garantit l’alignement de tous les événements"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Une moyenne peut masquer des avances et des retards qui se compensent. Un contrôle temporel doit donc être évalué aussi sur des événements ou fenêtres locales.",
+    "sourceIds": [
+      "gr-musicgen"
+    ]
+  },
+  {
+    "id": "gen-038",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "avance",
+    "prompt": "Un VQ-VAE utilise 5 codes sur un dictionnaire de 1 024 et reconstruit mal. Quelle observation supplémentaire aide à diagnostiquer l’utilisation du dictionnaire ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "La seule moyenne des normes de poids du décodeur"
+      },
+      {
+        "id": "b",
+        "text": "L’histogramme des indices sur de nombreux latents"
+      },
+      {
+        "id": "c",
+        "text": "Le seul nombre théorique de codes dans le dictionnaire"
+      },
+      {
+        "id": "d",
+        "text": "La seule durée totale des fichiers sans examiner les codes"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "L’histogramme révèle les codes inutilisés et la concentration des affectations. Une faible utilisation peut signaler un problème de quantification, mais ne suffit pas seule à déterminer toute la cause des mauvaises reconstructions.",
+    "sourceIds": [
+      "gr-vqvae"
+    ]
+  },
+  {
+    "id": "gen-039",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle"
+    ],
+    "difficulty": "avance",
+    "prompt": "Un Transformer utilise une attention dense sur une séquence de longueur L. À architecture et batch constants, doubler L multiplie approximativement par combien le nombre de paires de positions d’attention ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "8"
+      },
+      {
+        "id": "b",
+        "text": "1"
+      },
+      {
+        "id": "c",
+        "text": "4"
+      },
+      {
+        "id": "d",
+        "text": "2"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "L’attention dense compare chaque position à chaque position, soit L² paires. Ce calcul décrit cette composante précise ; le coût total contient aussi d’autres opérations et dépend de l’implémentation.",
+    "sourceIds": [
+      "gr-transformer"
+    ]
+  },
+  {
+    "id": "gen-040",
+    "primaryTheme": "generation-controle",
+    "themes": [
+      "generation-controle",
+      "evaluation-recherche"
+    ],
+    "difficulty": "avance",
+    "prompt": "Vous augmentez fortement la guidance textuelle d’un générateur de diffusion. Quelle conclusion est prudente ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Une meilleure adhérence implique nécessairement une meilleure qualité perceptive"
+      },
+      {
+        "id": "b",
+        "text": "La guidance ne modifie jamais la diversité à condition de fixer la graine"
+      },
+      {
+        "id": "c",
+        "text": "La guidance supprime le besoin d’évaluer la qualité dès que le texte est respecté"
+      },
+      {
+        "id": "d",
+        "text": "Un compromis adhérence/diversité/artefacts est possible"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "La guidance modifie la distribution échantillonnée plutôt qu’elle n’ajoute une garantie de qualité. Il faut mesurer conjointement respect de la condition, diversité et qualité perceptive.",
+    "sourceIds": [
+      "gr-cfg"
+    ]
+  }
+]

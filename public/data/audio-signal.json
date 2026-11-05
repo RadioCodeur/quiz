@@ -1,0 +1,980 @@
+[
+  {
+    "id": "sig-001",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Un fichier mono contient 48 000 échantillons à 16 000 Hz. Quelle est sa durée ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "0,33 seconde"
+      },
+      {
+        "id": "b",
+        "text": "3 secondes"
+      },
+      {
+        "id": "c",
+        "text": "16 secondes"
+      },
+      {
+        "id": "d",
+        "text": "48 secondes"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "La durée vaut le nombre d’échantillons divisé par la fréquence d’échantillonnage : 48 000 / 16 000 = 3. Un échantillon représente ici 1/16 000 de seconde.",
+    "sourceIds": [
+      "audio-load"
+    ]
+  },
+  {
+    "id": "sig-002",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Un signal réel est échantillonné à 44 100 Hz. Quelle est sa fréquence de Nyquist ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "44 100 Hz"
+      },
+      {
+        "id": "b",
+        "text": "88 200 Hz"
+      },
+      {
+        "id": "c",
+        "text": "22 050 Hz"
+      },
+      {
+        "id": "d",
+        "text": "11 025 Hz"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "La fréquence de Nyquist vaut la moitié de la fréquence d’échantillonnage. Elle marque la limite supérieure de la bande représentable sans repliement, sous les hypothèses usuelles d’échantillonnage.",
+    "sourceIds": [
+      "audio-scipy-signal"
+    ]
+  },
+  {
+    "id": "sig-003",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Une sinusoïde à 6 kHz est échantillonnée à 8 kHz sans filtrage préalable. À quelle fréquence positive apparaît son repliement dans la bande de Nyquist ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "2 kHz"
+      },
+      {
+        "id": "b",
+        "text": "4 kHz"
+      },
+      {
+        "id": "c",
+        "text": "6 kHz"
+      },
+      {
+        "id": "d",
+        "text": "8 kHz"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Le repliement de 6 kHz autour de 4 kHz donne 2 kHz. Une fois les échantillons acquis, cette composante est indiscernable de celle à 2 kHz à un déphasage près.",
+    "sourceIds": [
+      "audio-scipy-signal"
+    ]
+  },
+  {
+    "id": "sig-004",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Un tableau audio est de forme (2, 96 000), avec convention (canaux, échantillons) et fréquence 48 kHz. Que décrit-il ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Deux extraits mono de quatre secondes chacun"
+      },
+      {
+        "id": "b",
+        "text": "Un signal mono de deux secondes"
+      },
+      {
+        "id": "c",
+        "text": "Un signal stéréo de quatre secondes"
+      },
+      {
+        "id": "d",
+        "text": "Un signal stéréo de deux secondes"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Les deux lignes sont les deux canaux, et chacun contient 96 000 échantillons. La durée est donc 96 000 / 48 000 = 2 secondes ; le nombre de canaux ne double pas la durée.",
+    "sourceIds": [
+      "audio-mono"
+    ]
+  },
+  {
+    "id": "sig-005",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Dans une STFT mono de forme (fréquences, trames), que décrit une colonne ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "L’évolution de toutes les trames à une fréquence"
+      },
+      {
+        "id": "b",
+        "text": "Le contenu fréquentiel d’une fenêtre temporelle"
+      },
+      {
+        "id": "c",
+        "text": "Un canal stéréo supplémentaire"
+      },
+      {
+        "id": "d",
+        "text": "La fréquence fondamentale exacte de chaque note"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Chaque colonne vient de la transformée d’une portion fenêtrée du signal. Elle contient plusieurs composantes fréquentielles, et ne se limite pas à une estimation de hauteur.",
+    "sourceIds": [
+      "audio-stft"
+    ]
+  },
+  {
+    "id": "sig-006",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "À 16 kHz, un hop STFT de 160 échantillons correspond à quel intervalle entre deux trames ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "1 ms"
+      },
+      {
+        "id": "b",
+        "text": "100 ms"
+      },
+      {
+        "id": "c",
+        "text": "10 ms"
+      },
+      {
+        "id": "d",
+        "text": "160 ms"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "L’intervalle vaut 160 / 16 000 = 0,01 seconde, soit 10 ms. Le hop règle l’espacement des trames, indépendamment de leur durée d’analyse.",
+    "sourceIds": [
+      "audio-stft"
+    ]
+  },
+  {
+    "id": "sig-007",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "D est une STFT complexe. Quelle quantité correspond à un spectrogramme de puissance non normalisé ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "abs(D) ** 2"
+      },
+      {
+        "id": "b",
+        "text": "angle(D) ** 2"
+      },
+      {
+        "id": "c",
+        "text": "abs(D) / 2"
+      },
+      {
+        "id": "d",
+        "text": "D.real uniquement"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "La puissance spectrale est proportionnelle au module complexe au carré. Le module seul décrit l’amplitude, tandis que l’angle contient la phase.",
+    "sourceIds": [
+      "audio-features"
+    ]
+  },
+  {
+    "id": "sig-008",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Avec une référence d’amplitude fixe et sans écrêtage, doubler une amplitude positive change son niveau de combien environ ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "+3 dB"
+      },
+      {
+        "id": "b",
+        "text": "+20 dB"
+      },
+      {
+        "id": "c",
+        "text": "+12 dB"
+      },
+      {
+        "id": "d",
+        "text": "+6 dB"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Le niveau d’amplitude utilise 20 log10(A / Aref). Le doublement produit 20 log10(2), soit environ 6,02 dB.",
+    "sourceIds": [
+      "audio-amplitude-db"
+    ]
+  },
+  {
+    "id": "sig-009",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Que perd-on en remplaçant une STFT complexe par son module ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Le nombre de trames"
+      },
+      {
+        "id": "b",
+        "text": "La phase des coefficients"
+      },
+      {
+        "id": "c",
+        "text": "Toutes les fréquences positives"
+      },
+      {
+        "id": "d",
+        "text": "La fréquence d’échantillonnage originale dans tous les cas"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Le module conserve la taille de chaque coefficient, mais retire son angle complexe. Ce retrait empêche en général une inversion exacte et univoque vers la forme d’onde originale.",
+    "sourceIds": [
+      "audio-stft",
+      "audio-griffinlim"
+    ]
+  },
+  {
+    "id": "sig-010",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Pourquoi calcule-t-on souvent log(max(P, epsilon)) plutôt que log(P), pour une puissance P ≥ 0 et un plancher epsilon > 0 ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Pour rendre chaque trame de moyenne nulle"
+      },
+      {
+        "id": "b",
+        "text": "Pour récupérer la phase manquante"
+      },
+      {
+        "id": "c",
+        "text": "Pour éviter log(0) et les valeurs non finies"
+      },
+      {
+        "id": "d",
+        "text": "Pour augmenter la fréquence de Nyquist"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Un plancher positif rend le logarithme défini même lorsque la puissance est nulle. Il impose aussi un niveau minimal de représentation et doit donc être choisi de manière cohérente.",
+    "sourceIds": [
+      "audio-amplitude-db"
+    ]
+  },
+  {
+    "id": "sig-011",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Un spectrogramme de puissance linéaire est projeté sur 64 bandes mel, moins nombreuses que ses bins FFT. Quelle propriété est attendue ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Une réduction fréquentielle généralement non inversible exactement"
+      },
+      {
+        "id": "b",
+        "text": "Une conservation obligatoire de tous les coefficients complexes"
+      },
+      {
+        "id": "c",
+        "text": "Un doublement automatique de la durée"
+      },
+      {
+        "id": "d",
+        "text": "Une transformation de chaque bande en un canal audio"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Les filtres mel regroupent plusieurs bins avec des pondérations, ce qui perd généralement de l’information fréquentielle. La phase est déjà absente du spectrogramme de puissance fourni en entrée et n’est pas restaurée par cette projection.",
+    "sourceIds": [
+      "audio-mel"
+    ]
+  },
+  {
+    "id": "sig-012",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "On lit les mêmes échantillons à 48 kHz puis à 24 kHz, en changeant seulement la fréquence de lecture. Que se passe-t-il ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "La durée est divisée par deux et la hauteur monte"
+      },
+      {
+        "id": "b",
+        "text": "La durée et la hauteur restent identiques"
+      },
+      {
+        "id": "c",
+        "text": "Le signal est proprement rééchantillonné à durée fixe"
+      },
+      {
+        "id": "d",
+        "text": "La durée double et les fréquences entendues sont divisées par deux"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Changer seulement la fréquence de lecture change l’échelle temporelle des échantillons existants. Un vrai rééchantillonnage calcule de nouveaux échantillons pour préserver la durée physique.",
+    "sourceIds": [
+      "audio-resample",
+      "audio-load"
+    ]
+  },
+  {
+    "id": "sig-013",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal",
+      "python-scientifique"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Quelle est la longueur de z pour ce signal réel et cette FFT ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "512"
+      },
+      {
+        "id": "b",
+        "text": "513"
+      },
+      {
+        "id": "c",
+        "text": "1 024"
+      },
+      {
+        "id": "d",
+        "text": "1 025"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Une FFT réelle à N pair conserve N/2 + 1 coefficients, incluant les fréquences nulle et de Nyquist. Les fréquences négatives sont redondantes par symétrie conjuguée.",
+    "sourceIds": [
+      "audio-rfft"
+    ],
+    "code": "import numpy as np\nx = np.zeros(1024)\nz = np.fft.rfft(x)"
+  },
+  {
+    "id": "sig-014",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal",
+      "python-scientifique"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Quelle valeur en hertz contient freqs[10] ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "10 Hz"
+      },
+      {
+        "id": "b",
+        "text": "100 Hz"
+      },
+      {
+        "id": "c",
+        "text": "1 000 Hz"
+      },
+      {
+        "id": "d",
+        "text": "1 600 Hz"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "L’espacement des bins est sr / N = 16 000 / 160 = 100 Hz. L’indice 10 correspond donc à 1 000 Hz, l’indice 0 étant la composante continue.",
+    "sourceIds": [
+      "audio-rfftfreq"
+    ],
+    "code": "import numpy as np\nsr = 16000\nfreqs = np.fft.rfftfreq(160, d=1/sr)"
+  },
+  {
+    "id": "sig-015",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Combien de trames contient D ? Le signal est mono, sans padding, et chaque fenêtre contient 400 échantillons.",
+    "options": [
+      {
+        "id": "a",
+        "text": "98"
+      },
+      {
+        "id": "b",
+        "text": "100"
+      },
+      {
+        "id": "c",
+        "text": "101"
+      },
+      {
+        "id": "d",
+        "text": "400"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "La première fenêtre démarre à l’échantillon 0 et la dernière doit finir au plus à 16 000. Le nombre vaut 1 + floor((16 000 - 400) / 160) = 98.",
+    "sourceIds": [
+      "audio-stft"
+    ],
+    "code": "D = librosa.stft(\n    y, n_fft=400, win_length=400,\n    hop_length=160, center=False\n)\n# y.shape == (16000,)"
+  },
+  {
+    "id": "sig-016",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Une fenêtre de 512 échantillons est complétée par des zéros pour une FFT de 2 048 points. Quel est l’effet principal ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Quatre fois plus d’information temporelle acquise"
+      },
+      {
+        "id": "b",
+        "text": "Quatre fois plus de durée de signal observée"
+      },
+      {
+        "id": "c",
+        "text": "Une séparation garantie de deux sinusoïdes voisines"
+      },
+      {
+        "id": "d",
+        "text": "Une grille fréquentielle plus dense sans observation plus longue"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Le zero-padding échantillonne plus finement le spectre de la même fenêtre. La capacité à séparer deux composantes proches dépend encore de la durée observée et de la fenêtre.",
+    "sourceIds": [
+      "audio-scipy-signal"
+    ]
+  },
+  {
+    "id": "sig-017",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Pour une sinusoïde qui ne tombe pas exactement sur un bin FFT, pourquoi choisir une fenêtre de Hann plutôt qu’une fenêtre rectangulaire ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Pour conserver seulement la fréquence fondamentale"
+      },
+      {
+        "id": "b",
+        "text": "Pour réduire les lobes secondaires, en élargissant le lobe principal"
+      },
+      {
+        "id": "c",
+        "text": "Pour supprimer toute phase de la STFT"
+      },
+      {
+        "id": "d",
+        "text": "Pour conserver une résolution identique avec zéro fuite"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "La fenêtre de Hann adoucit les bords et réduit les lobes secondaires de la fuite spectrale. Ce gain se paie par un lobe principal plus large ; il ne supprime pas tous les compromis.",
+    "sourceIds": [
+      "audio-scipy-signal"
+    ]
+  },
+  {
+    "id": "sig-018",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "À fréquence d’échantillonnage fixe, on augmente la durée réelle de la fenêtre STFT. Quel compromis est généralement attendu ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Meilleure localisation des transitoires et moins de détail fréquentiel"
+      },
+      {
+        "id": "b",
+        "text": "Meilleure localisation temporelle et fréquentielle simultanément"
+      },
+      {
+        "id": "c",
+        "text": "Plus de détail fréquentiel mais une localisation temporelle moins fine"
+      },
+      {
+        "id": "d",
+        "text": "Moins de détail fréquentiel et plus de trames obligatoirement"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Une observation plus longue distingue mieux des composantes fréquentielles proches. Elle mélange aussi les évolutions qui se produisent à l’intérieur de cette durée, ce qui localise moins finement un transitoire.",
+    "sourceIds": [
+      "audio-stft"
+    ]
+  },
+  {
+    "id": "sig-019",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal",
+      "python-scientifique"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Deux canaux sont exactement en opposition de phase. Que contient mono, à la précision numérique près ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Un signal nul"
+      },
+      {
+        "id": "b",
+        "text": "Le canal gauche inchangé"
+      },
+      {
+        "id": "c",
+        "text": "Le double du canal gauche"
+      },
+      {
+        "id": "d",
+        "text": "Un signal deux fois plus long"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "La moyenne des deux canaux vaut (gauche + droite)/2. Lorsque droite = -gauche, les contributions s’annulent ; une conversion mono peut donc perdre du contenu.",
+    "sourceIds": [
+      "audio-mono"
+    ],
+    "code": "import numpy as np\nleft = np.array([0.2, -0.4, 0.1])\nstereo = np.stack([left, -left])\nmono = stereo.mean(axis=0)"
+  },
+  {
+    "id": "sig-020",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal",
+      "python-scientifique"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "x est un signal mono de forme (N,), à 48 kHz, avec N divisible par 3. Quelle fréquence d’échantillonnage décrit y à durée physique conservée ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "48 kHz"
+      },
+      {
+        "id": "b",
+        "text": "96 kHz"
+      },
+      {
+        "id": "c",
+        "text": "144 kHz"
+      },
+      {
+        "id": "d",
+        "text": "16 kHz"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Le rapport up/down vaut 1/3, donc 48 kHz devient 16 kHz. Le filtrage passe-bas associé limite le repliement lors de la décimation.",
+    "sourceIds": [
+      "audio-resample"
+    ],
+    "code": "from scipy.signal import resample_poly\ny = resample_poly(x, up=1, down=3)"
+  },
+  {
+    "id": "sig-021",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "S est un spectrogramme de puissance de forme (257, 100). Quelle est la forme de M ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "(257, 64)"
+      },
+      {
+        "id": "b",
+        "text": "(64, 100)"
+      },
+      {
+        "id": "c",
+        "text": "(100, 64)"
+      },
+      {
+        "id": "d",
+        "text": "(64, 257, 100)"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "La projection mel remplace l’axe des 257 fréquences par 64 bandes. Elle conserve les 100 trames temporelles fournies dans S.",
+    "sourceIds": [
+      "audio-mel"
+    ],
+    "code": "M = librosa.feature.melspectrogram(\n    S=S, sr=16000, n_fft=512, n_mels=64\n)"
+  },
+  {
+    "id": "sig-022",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal",
+      "python-scientifique"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Quelle valeur contient rms pour ce petit signal ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "0"
+      },
+      {
+        "id": "b",
+        "text": "0.5"
+      },
+      {
+        "id": "c",
+        "text": "1"
+      },
+      {
+        "id": "d",
+        "text": "2"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Les quatre carrés valent 1, leur moyenne vaut donc 1 et sa racine vaut 1. La RMS reste positive pour un signal alternatif de moyenne nulle.",
+    "sourceIds": [
+      "audio-rms"
+    ],
+    "code": "import numpy as np\nx = np.array([1., -1., 1., -1.])\nrms = np.sqrt(np.mean(x ** 2))"
+  },
+  {
+    "id": "sig-023",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Vous inversez une STFT complexe non modifiée avec librosa.istft après librosa.stft. Quel réglage constitue le choix cohérent pour viser une reconstruction fidèle ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Reprendre fenêtre, hop et convention de centrage de l’analyse"
+      },
+      {
+        "id": "b",
+        "text": "Utiliser n’importe quel hop puisque la phase suffit"
+      },
+      {
+        "id": "c",
+        "text": "Remplacer systématiquement tous les coefficients par leur module"
+      },
+      {
+        "id": "d",
+        "text": "Convertir la STFT en mel avant son inversion"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "L’analyse et la synthèse doivent employer des paramètres compatibles, avec une couverture et une normalisation adaptées. Conserver les coefficients complexes ne corrige pas un désaccord de hop ou de fenêtre.",
+    "sourceIds": [
+      "audio-istft"
+    ]
+  },
+  {
+    "id": "sig-024",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "D est une STFT complexe. Que calcule ce code ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "La phase en radians"
+      },
+      {
+        "id": "b",
+        "text": "Une transformée inverse exacte"
+      },
+      {
+        "id": "c",
+        "text": "Une puissance déjà en décibels"
+      },
+      {
+        "id": "d",
+        "text": "Le module des coefficients STFT"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "La racine de la somme des carrés des parties réelle et imaginaire donne le module complexe. Pour obtenir une puissance non normalisée, on utiliserait son carré.",
+    "sourceIds": [
+      "audio-stft"
+    ],
+    "code": "magnitude = (D.real ** 2 + D.imag ** 2) ** 0.5"
+  },
+  {
+    "id": "sig-025",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Vous réduisez un signal de 48 kHz à 16 kHz. Avant la décimation, quel traitement limite le repliement des hautes fréquences ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Un filtre passe-haut au-dessus de 8 kHz"
+      },
+      {
+        "id": "b",
+        "text": "Un filtre passe-bas adapté à la nouvelle limite de 8 kHz"
+      },
+      {
+        "id": "c",
+        "text": "Une normalisation du maximum à 1"
+      },
+      {
+        "id": "d",
+        "text": "L’ajout de zéros à la fin du fichier"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Les composantes au-delà de la nouvelle bande utile doivent être atténuées avant la réduction du nombre d’échantillons. En pratique le filtre prévoit une bande de transition plutôt qu’une coupure idéale instantanée.",
+    "sourceIds": [
+      "audio-resample"
+    ]
+  },
+  {
+    "id": "sig-026",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal",
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Un modèle exploite la bande 10–12 kHz de signaux à 48 kHz. Quel prétraitement supprime cette bande par filtrage anti-repliement avant de fournir son entrée au modèle ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Convertir les flottants de float64 vers float32"
+      },
+      {
+        "id": "b",
+        "text": "Conserver 48 kHz avec une bonne mise à l’échelle"
+      },
+      {
+        "id": "c",
+        "text": "Rééchantillonner proprement à 16 kHz"
+      },
+      {
+        "id": "d",
+        "text": "Découper le signal en extraits de durée fixe à 48 kHz"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "À 16 kHz, la nouvelle fréquence de Nyquist est 8 kHz. Un rééchantillonnage anti-repliement retire donc les composantes de 10 à 12 kHz avant de produire les échantillons.",
+    "sourceIds": [
+      "audio-resample",
+      "audio-scipy-signal"
+    ]
+  },
+  {
+    "id": "sig-027",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "avance",
+    "prompt": "Pour une analyse en streaming sans accès au futur, pourquoi une STFT centrée peut-elle ajouter de la latence ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Une trame centrée attend des échantillons situés après son instant central"
+      },
+      {
+        "id": "b",
+        "text": "La FFT impose toujours une seconde de silence"
+      },
+      {
+        "id": "c",
+        "text": "Le centrage modifie obligatoirement la fréquence d’échantillonnage"
+      },
+      {
+        "id": "d",
+        "text": "Une fenêtre centrée ne peut traiter aucun signal réel"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Une fenêtre centrée utilise du contexte de part et d’autre de son instant de référence. Un traitement causal doit attendre le contexte droit ou utiliser une convention d’analyse compatible avec sa contrainte de latence.",
+    "sourceIds": [
+      "audio-stft"
+    ]
+  },
+  {
+    "id": "sig-028",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "avance",
+    "prompt": "On ne dispose que d’un spectrogramme de module. Que peut apporter Griffin-Lim ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Une garantie de retrouver la phase originale"
+      },
+      {
+        "id": "b",
+        "text": "Une conversion exacte du module en fréquence fondamentale"
+      },
+      {
+        "id": "c",
+        "text": "La restauration certaine de toutes les bandes supprimées"
+      },
+      {
+        "id": "d",
+        "text": "Une estimation itérative de phase, sans garantie de retrouver l’original"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Griffin-Lim alterne des opérations de synthèse et d’analyse pour chercher une phase adaptée au module fourni. Le problème reste ambigu et l’audio obtenu peut comporter des artefacts.",
+    "sourceIds": [
+      "audio-griffinlim"
+    ]
+  },
+  {
+    "id": "sig-029",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "avance",
+    "prompt": "Pour les signaux réels x et -x, calculés avec les mêmes paramètres, la STFT de x comporte au moins un coefficient non nul. Que peut-on conclure ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Leurs modules sont nécessairement différents"
+      },
+      {
+        "id": "b",
+        "text": "Leurs modules sont identiques et leurs phases diffèrent de π aux coefficients non nuls"
+      },
+      {
+        "id": "c",
+        "text": "Leurs fréquences d’échantillonnage sont opposées"
+      },
+      {
+        "id": "d",
+        "text": "Leurs STFT complexes sont identiques"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "La linéarité donne STFT(-x) = -STFT(x), et la multiplication par -1 conserve le module. Cet exemple suffit à montrer que le module seul ne détermine pas une forme d’onde unique.",
+    "sourceIds": [
+      "audio-stft",
+      "audio-rfft"
+    ]
+  },
+  {
+    "id": "sig-030",
+    "primaryTheme": "audio-signal",
+    "themes": [
+      "audio-signal"
+    ],
+    "difficulty": "avance",
+    "prompt": "Une synthèse par recouvrement-addition normalise chaque échantillon par une somme de fenêtres au carré. Quel cas empêche cette normalisation locale ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Plusieurs fenêtres contribuent au même échantillon"
+      },
+      {
+        "id": "b",
+        "text": "Le spectrogramme contient des coefficients complexes"
+      },
+      {
+        "id": "c",
+        "text": "La somme des fenêtres au carré est nulle à cet échantillon"
+      },
+      {
+        "id": "d",
+        "text": "Le hop est exprimé en échantillons"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Une somme nulle entraîne une division impossible à cet endroit et signale une couverture insuffisante. Fenêtre, hop et gestion des bords doivent donc assurer une couverture non nulle pour les échantillons reconstruits.",
+    "sourceIds": [
+      "audio-istft"
+    ]
+  }
+]

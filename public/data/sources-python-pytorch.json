@@ -1,0 +1,164 @@
+[
+  {
+    "id": "python-structures",
+    "title": "Python — Structures de données",
+    "url": "https://docs.python.org/3/tutorial/datastructures.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "python-functions",
+    "title": "Python — Définition de fonctions et itération",
+    "url": "https://docs.python.org/3/tutorial/controlflow.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "python-classes",
+    "title": "Python — Classes, itérateurs et générateurs",
+    "url": "https://docs.python.org/3/tutorial/classes.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "numpy-broadcast",
+    "title": "NumPy — Broadcasting",
+    "url": "https://numpy.org/doc/stable/user/basics.broadcasting.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "numpy-indexing",
+    "title": "NumPy — Indexation",
+    "url": "https://numpy.org/doc/stable/user/basics.indexing.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "numpy-copies",
+    "title": "NumPy — Copies et vues",
+    "url": "https://numpy.org/doc/stable/user/basics.copies.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "numpy-mean",
+    "title": "NumPy — Moyenne et précision",
+    "url": "https://numpy.org/doc/stable/reference/generated/numpy.mean.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "numpy-argsort",
+    "title": "NumPy — argsort",
+    "url": "https://numpy.org/doc/stable/reference/generated/numpy.argsort.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "numpy-matmul",
+    "title": "NumPy — Produit matriciel",
+    "url": "https://numpy.org/doc/stable/reference/generated/numpy.matmul.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-tensors",
+    "title": "PyTorch — Tenseurs",
+    "url": "https://docs.pytorch.org/tutorials/beginner/basics/tensorqs_tutorial.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-autograd",
+    "title": "PyTorch — Différentiation automatique",
+    "url": "https://docs.pytorch.org/tutorials/beginner/basics/autogradqs_tutorial.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-optimization",
+    "title": "PyTorch — Optimisation des paramètres",
+    "url": "https://docs.pytorch.org/tutorials/beginner/basics/optimization_tutorial.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-buildmodel",
+    "title": "PyTorch — Construction d’un réseau",
+    "url": "https://docs.pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-module",
+    "title": "PyTorch — Module, paramètres et buffers",
+    "url": "https://docs.pytorch.org/docs/2.15/generated/torch.nn.Module.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-data",
+    "title": "PyTorch — Dataset et DataLoader",
+    "url": "https://docs.pytorch.org/tutorials/beginner/basics/data_tutorial.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-loader",
+    "title": "PyTorch — Chargement et assemblage des données",
+    "url": "https://docs.pytorch.org/docs/2.15/data.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-broadcast",
+    "title": "PyTorch — Règles de broadcasting",
+    "url": "https://docs.pytorch.org/docs/2.15/notes/broadcasting.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-ce",
+    "title": "PyTorch — CrossEntropyLoss",
+    "url": "https://docs.pytorch.org/docs/2.15/generated/torch.nn.CrossEntropyLoss.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-bce",
+    "title": "PyTorch — BCEWithLogitsLoss",
+    "url": "https://docs.pytorch.org/docs/2.15/generated/torch.nn.BCEWithLogitsLoss.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-padding",
+    "title": "PyTorch — pad_sequence",
+    "url": "https://docs.pytorch.org/docs/2.15/generated/torch.nn.utils.rnn.pad_sequence.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-views",
+    "title": "PyTorch — Vues et contiguïté",
+    "url": "https://docs.pytorch.org/docs/2.15/tensor_view.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-conv1d",
+    "title": "PyTorch — Conv1d",
+    "url": "https://docs.pytorch.org/docs/2.15/generated/torch.nn.Conv1d.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-isfinite",
+    "title": "PyTorch — isfinite",
+    "url": "https://docs.pytorch.org/docs/2.15/generated/torch.isfinite.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-mse",
+    "title": "PyTorch — MSELoss",
+    "url": "https://docs.pytorch.org/docs/2.15/generated/torch.nn.MSELoss.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-clipping",
+    "title": "PyTorch — clip_grad_norm_",
+    "url": "https://docs.pytorch.org/docs/2.15/generated/torch.nn.utils.clip_grad_norm_.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-saving",
+    "title": "PyTorch — Sauvegarde et chargement des poids",
+    "url": "https://docs.pytorch.org/tutorials/beginner/basics/saveloadrun_tutorial.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "torch-checkpoints",
+    "title": "PyTorch — Sauvegarde et reprise d’entraînement",
+    "url": "https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html",
+    "accessed": "2026-11-05"
+  }
+]

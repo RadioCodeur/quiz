@@ -1,0 +1,8 @@
+[
+  {"id":"python-scientifique","label":"Python scientifique","short":"Python","description":"Du code clair aux tableaux NumPy.","symbol":"01","file":"python-scientifique.json"},
+  {"id":"pytorch","label":"PyTorch","short":"PyTorch","description":"Tenseurs, gradients et entraînement.","symbol":"02","file":"pytorch.json"},
+  {"id":"audio-signal","label":"Signal audio","short":"Signal audio","description":"De l’onde au spectrogramme.","symbol":"03","file":"audio-signal.json"},
+  {"id":"audio-ml","label":"Apprentissage audio","short":"Audio ML","description":"Représentations et modèles audio.","symbol":"04","file":"audio-ml.json"},
+  {"id":"generation-controle","label":"Génération & contrôle","short":"Génération","description":"Créer, conditionner et adapter.","symbol":"05","file":"generation-controle.json"},
+  {"id":"evaluation-recherche","label":"Évaluation & recherche","short":"Recherche","description":"Expérimenter et interpréter.","symbol":"06","file":"evaluation-recherche.json"}
+]

@@ -1,0 +1,194 @@
+[
+  {
+    "id": "gr-vae",
+    "title": "Kingma et Welling — Auto-Encoding Variational Bayes",
+    "url": "https://arxiv.org/html/1312.6114v11",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-ddpm",
+    "title": "Ho et al. — Denoising Diffusion Probabilistic Models",
+    "url": "https://arxiv.org/html/2006.11239v2",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-lora",
+    "title": "Hu et al. — LoRA: Low-Rank Adaptation",
+    "url": "https://arxiv.org/html/2106.09685v2",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-wavenet",
+    "title": "van den Oord et al. — WaveNet",
+    "url": "https://arxiv.org/html/1609.03499v2",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-vqvae",
+    "title": "van den Oord et al. — Neural Discrete Representation Learning",
+    "url": "https://arxiv.org/html/1711.00937v2",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-encodec",
+    "title": "Défossez et al. — High Fidelity Neural Audio Compression",
+    "url": "https://arxiv.org/html/2210.13438v1",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-musicgen",
+    "title": "Copet et al. — Simple and Controllable Music Generation",
+    "url": "https://arxiv.org/html/2306.05284v3",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-cfg",
+    "title": "Ho et Salimans — Classifier-Free Diffusion Guidance",
+    "url": "https://arxiv.org/html/2207.12598v1",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-audioldm",
+    "title": "Liu et al. — AudioLDM",
+    "url": "https://arxiv.org/html/2301.12503v3",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-pitfalls",
+    "title": "scikit-learn — Common pitfalls and recommended practices",
+    "url": "https://scikit-learn.org/stable/common_pitfalls.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-cv",
+    "title": "scikit-learn — Cross-validation: evaluating estimator performance",
+    "url": "https://scikit-learn.org/stable/modules/cross_validation.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-metrics",
+    "title": "scikit-learn — Metrics and scoring",
+    "url": "https://scikit-learn.org/stable/modules/model_evaluation.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-f1",
+    "title": "scikit-learn — f1_score",
+    "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-precision",
+    "title": "scikit-learn — precision_score",
+    "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_score.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-recall",
+    "title": "scikit-learn — recall_score",
+    "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.recall_score.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-groups",
+    "title": "scikit-learn — GroupKFold",
+    "url": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GroupKFold.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-randomness",
+    "title": "PyTorch — Reproducibility",
+    "url": "https://docs.pytorch.org/docs/2.15/notes/randomness.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-curves",
+    "title": "scikit-learn — Validation curves and learning curves",
+    "url": "https://scikit-learn.org/stable/modules/learning_curve.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-module",
+    "title": "PyTorch — torch.nn.Module, eval et requires_grad",
+    "url": "https://docs.pytorch.org/docs/2.15/generated/torch.nn.Module.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-transfer",
+    "title": "PyTorch — Transfer Learning Tutorial",
+    "url": "https://docs.pytorch.org/tutorials/beginner/transfer_learning_tutorial.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-softmax",
+    "title": "PyTorch — torch.nn.functional.softmax",
+    "url": "https://docs.pytorch.org/docs/2.15/generated/torch.nn.functional.softmax.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-confusion",
+    "title": "scikit-learn — confusion_matrix",
+    "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-dummy",
+    "title": "scikit-learn — DummyClassifier",
+    "url": "https://scikit-learn.org/stable/modules/generated/sklearn.dummy.DummyClassifier.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-timesplit",
+    "title": "scikit-learn — TimeSeriesSplit",
+    "url": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-nested",
+    "title": "scikit-learn — Nested versus non-nested cross-validation",
+    "url": "https://scikit-learn.org/stable/auto_examples/model_selection/plot_nested_cross_validation_iris.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-threshold",
+    "title": "scikit-learn — Tuning the decision threshold",
+    "url": "https://scikit-learn.org/stable/modules/classification_threshold.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-mushra",
+    "title": "UIT-R BS.1534-3 — Évaluation subjective de qualité audio, MUSHRA",
+    "url": "https://www.itu.int/dms_pubrec/itu-r/rec/bs/R-REC-BS.1534-3-201510-I!!PDF-E.pdf",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-fad",
+    "title": "Kilgour et al. — Fréchet Audio Distance",
+    "url": "https://arxiv.org/html/1812.08466v4",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-bootstrap",
+    "title": "SciPy — scipy.stats.bootstrap",
+    "url": "https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.bootstrap.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-reporting",
+    "title": "Dodge et al. — Show Your Work: Improved Reporting of Experimental Results",
+    "url": "https://arxiv.org/abs/1909.03004",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-transformer",
+    "title": "Vaswani et al. — Attention Is All You Need",
+    "url": "https://arxiv.org/abs/1706.03762",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "gr-symbolic",
+    "title": "Huang et al. — Music Transformer",
+    "url": "https://arxiv.org/abs/1809.04281",
+    "accessed": "2026-11-05"
+  }
+]

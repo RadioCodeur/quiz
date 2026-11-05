@@ -1,0 +1,665 @@
+[
+  {
+    "id": "py-001",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Que contient a après ces instructions ?",
+    "code": "a = [1, 2]\nb = a\nb.append(3)",
+    "options": [
+      {
+        "id": "a",
+        "text": "[1, 2]"
+      },
+      {
+        "id": "b",
+        "text": "[1, 2, 3]"
+      },
+      {
+        "id": "c",
+        "text": "[3]"
+      },
+      {
+        "id": "d",
+        "text": "Une erreur est levée"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "a et b désignent la même liste mutable. La modification effectuée via b est donc visible via a.",
+    "sourceIds": [
+      "python-structures"
+    ]
+  },
+  {
+    "id": "py-002",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Quelle valeur est affectée à y ?",
+    "code": "def centrer(x, moyenne):\n    return x - moyenne\ny = centrer(8, 3)",
+    "options": [
+      {
+        "id": "a",
+        "text": "3"
+      },
+      {
+        "id": "b",
+        "text": "8"
+      },
+      {
+        "id": "c",
+        "text": "5"
+      },
+      {
+        "id": "d",
+        "text": "None"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "La fonction renvoie explicitement la différence entre ses deux arguments. Le mot-clé return transmet ici la valeur 5 à l’appelant.",
+    "sourceIds": [
+      "python-functions"
+    ]
+  },
+  {
+    "id": "py-003",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Quelle valeur obtient-on pour duree ?",
+    "code": "meta = {\"nom\": \"prise.wav\"}\nduree = meta.get(\"duree\", 0)",
+    "options": [
+      {
+        "id": "a",
+        "text": "0"
+      },
+      {
+        "id": "b",
+        "text": "None"
+      },
+      {
+        "id": "c",
+        "text": "\"duree\""
+      },
+      {
+        "id": "d",
+        "text": "Une KeyError"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "get renvoie la valeur par défaut fournie quand la clé est absente. L’indexation meta[\"duree\"] aurait au contraire levé une KeyError.",
+    "sourceIds": [
+      "python-structures"
+    ]
+  },
+  {
+    "id": "py-004",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Quelle liste cette compréhension construit-elle ?",
+    "code": "valeurs = [-2, 0, 3]\npositifs = [x * x for x in valeurs if x > 0]",
+    "options": [
+      {
+        "id": "a",
+        "text": "[4, 0, 9]"
+      },
+      {
+        "id": "b",
+        "text": "[3]"
+      },
+      {
+        "id": "c",
+        "text": "[4, 9]"
+      },
+      {
+        "id": "d",
+        "text": "[9]"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "La condition filtre d’abord les éléments strictement positifs. Seul 3 est conservé, puis élevé au carré.",
+    "sourceIds": [
+      "python-structures"
+    ]
+  },
+  {
+    "id": "py-005",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Quelle est la dernière paire produite par cette boucle ?",
+    "code": "noms = [\"a.wav\", \"b.wav\"]\nfor indice, nom in enumerate(noms, start=1):\n    paire = (indice, nom)",
+    "options": [
+      {
+        "id": "a",
+        "text": "(1, \"b.wav\")"
+      },
+      {
+        "id": "b",
+        "text": "(2, \"b.wav\")"
+      },
+      {
+        "id": "c",
+        "text": "(2, \"a.wav\")"
+      },
+      {
+        "id": "d",
+        "text": "(0, \"b.wav\")"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "enumerate associe un compteur à chaque élément sans modifier l’ordre. Avec start=1, les deux indices sont 1 puis 2.",
+    "sourceIds": [
+      "python-structures"
+    ]
+  },
+  {
+    "id": "py-006",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Que vaut paires avec zip sans option strict ?",
+    "code": "paires = list(zip([1, 2, 3], [\"a\", \"b\"]))",
+    "options": [
+      {
+        "id": "a",
+        "text": "[(1, \"a\"), (2, \"b\")]"
+      },
+      {
+        "id": "b",
+        "text": "[(1, \"a\"), (2, \"b\"), (3, None)]"
+      },
+      {
+        "id": "c",
+        "text": "[(1, 2, 3), (\"a\", \"b\")]"
+      },
+      {
+        "id": "d",
+        "text": "Une erreur est toujours levée"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Par défaut, zip s’arrête dès que l’un de ses itérables est épuisé. Il ne complète pas les éléments manquants et n’exige pas des longueurs égales.",
+    "sourceIds": [
+      "python-structures"
+    ]
+  },
+  {
+    "id": "py-007",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Que vaut b.gain après la dernière ligne ?",
+    "code": "class Reglage:\n    def __init__(self):\n        self.gain = 1\na = Reglage()\nb = Reglage()\na.gain = 4",
+    "options": [
+      {
+        "id": "a",
+        "text": "4"
+      },
+      {
+        "id": "b",
+        "text": "0"
+      },
+      {
+        "id": "c",
+        "text": "1"
+      },
+      {
+        "id": "d",
+        "text": "Une AttributeError"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "gain est ici un attribut d’instance initialisé séparément pour chaque objet. Modifier a.gain ne modifie donc pas b.gain.",
+    "sourceIds": [
+      "python-classes"
+    ]
+  },
+  {
+    "id": "py-008",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Que vaut y ? On suppose NumPy importé sous np.",
+    "code": "x = np.array([1., 2., 3.])\ny = 2 * x",
+    "options": [
+      {
+        "id": "a",
+        "text": "Un tableau [1., 2., 3., 1., 2., 3.]"
+      },
+      {
+        "id": "b",
+        "text": "Un tableau [2., 2., 2.]"
+      },
+      {
+        "id": "c",
+        "text": "Le scalaire 6.0"
+      },
+      {
+        "id": "d",
+        "text": "Un tableau [2., 4., 6.]"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Sur un tableau NumPy, la multiplication par un scalaire agit élément par élément. Elle ne répète pas le tableau comme la multiplication d’une liste Python.",
+    "sourceIds": [
+      "numpy-broadcast"
+    ]
+  },
+  {
+    "id": "py-009",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "X a la forme (8, 5). Quelle expression centre chaque colonne en conservant une forme compatible ?",
+    "code": "X = np.ones((8, 5))\nY = ___",
+    "options": [
+      {
+        "id": "a",
+        "text": "X - X.mean(axis=1)"
+      },
+      {
+        "id": "b",
+        "text": "X - X.mean(axis=0, keepdims=True)"
+      },
+      {
+        "id": "c",
+        "text": "X - X.sum(axis=0, keepdims=True)"
+      },
+      {
+        "id": "d",
+        "text": "X.mean(axis=0) - X.mean(axis=1)"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "La moyenne selon axis=0 résume les huit observations pour chacune des cinq colonnes. keepdims=True conserve la forme (1, 5), diffusée sur les huit lignes.",
+    "sourceIds": [
+      "numpy-mean",
+      "numpy-broadcast"
+    ]
+  },
+  {
+    "id": "py-010",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Quelle est la forme de Y ?",
+    "code": "X = np.zeros((4, 6, 2))\nY = X[:, 1:5:2, 0]",
+    "options": [
+      {
+        "id": "a",
+        "text": "(4, 2)"
+      },
+      {
+        "id": "b",
+        "text": "(4, 4, 1)"
+      },
+      {
+        "id": "c",
+        "text": "(2, 4)"
+      },
+      {
+        "id": "d",
+        "text": "(4, 6)"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Le slice 1:5:2 sélectionne les indices 1 et 3 du deuxième axe. L’indice entier 0 retire le troisième axe, tandis que les quatre éléments du premier sont conservés.",
+    "sourceIds": [
+      "numpy-indexing"
+    ]
+  },
+  {
+    "id": "py-011",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Quelle est la valeur finale de x[0] ?",
+    "code": "x = np.array([1, 2, 3])\ny = x[[0, 2]]\ny[0] = 9",
+    "options": [
+      {
+        "id": "a",
+        "text": "9"
+      },
+      {
+        "id": "b",
+        "text": "3"
+      },
+      {
+        "id": "c",
+        "text": "1"
+      },
+      {
+        "id": "d",
+        "text": "0"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "L’indexation par une liste d’indices est une indexation avancée qui produit une copie. Modifier y n’affecte donc pas le tableau x.",
+    "sourceIds": [
+      "numpy-copies"
+    ]
+  },
+  {
+    "id": "py-012",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Que vaut a après la modification ?",
+    "code": "a = [[1], [2]]\nb = a.copy()\nb[0].append(3)",
+    "options": [
+      {
+        "id": "a",
+        "text": "[[1], [2]]"
+      },
+      {
+        "id": "b",
+        "text": "[[3], [2]]"
+      },
+      {
+        "id": "c",
+        "text": "[[1], [2], [3]]"
+      },
+      {
+        "id": "d",
+        "text": "[[1, 3], [2]]"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "copy crée une nouvelle liste extérieure, mais conserve les références aux sous-listes. La première sous-liste reste partagée entre a et b.",
+    "sourceIds": [
+      "python-structures"
+    ]
+  },
+  {
+    "id": "py-013",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Quel changement crée une nouvelle liste interne à chaque appel sans argument stock, en évitant l’accumulation involontaire entre ces appels ?",
+    "code": "def ajouter(x, stock=[]):\n    stock.append(x)\n    return stock",
+    "options": [
+      {
+        "id": "a",
+        "text": "Utiliser stock=None puis créer [] si stock is None"
+      },
+      {
+        "id": "b",
+        "text": "Remplacer append(x) par extend([x])"
+      },
+      {
+        "id": "c",
+        "text": "Ajouter return stock.copy() sans changer le reste"
+      },
+      {
+        "id": "d",
+        "text": "Déplacer stock.append(x) avant def"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Une valeur par défaut est évaluée une fois lors de la définition de la fonction. Le motif avec None crée une liste indépendante pour chaque appel qui ne fournit pas stock.",
+    "sourceIds": [
+      "python-functions"
+    ]
+  },
+  {
+    "id": "py-014",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Que vaut second ?",
+    "code": "g = (i * 2 for i in range(3))\npremier = list(g)\nsecond = list(g)",
+    "options": [
+      {
+        "id": "a",
+        "text": "[0, 2, 4]"
+      },
+      {
+        "id": "b",
+        "text": "[]"
+      },
+      {
+        "id": "c",
+        "text": "[2, 4, 6]"
+      },
+      {
+        "id": "d",
+        "text": "None"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Un générateur est consommé au fil de son itération. Le premier list(g) l’épuise ; le second ne reçoit donc plus aucun élément.",
+    "sourceIds": [
+      "python-classes"
+    ]
+  },
+  {
+    "id": "py-015",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Quel tableau d’indices obtient-on ?",
+    "code": "scores = np.array([0.4, 0.9, 0.1])\nordre = np.argsort(scores)[::-1]",
+    "options": [
+      {
+        "id": "a",
+        "text": "[0, 1, 2]"
+      },
+      {
+        "id": "b",
+        "text": "[2, 0, 1]"
+      },
+      {
+        "id": "c",
+        "text": "[1, 0, 2]"
+      },
+      {
+        "id": "d",
+        "text": "[0.9, 0.4, 0.1]"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "argsort renvoie les positions qui trient les valeurs par ordre croissant. Le slice inverse ensuite ces positions, donnant les indices des scores du plus grand au plus petit.",
+    "sourceIds": [
+      "numpy-argsort"
+    ]
+  },
+  {
+    "id": "py-016",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique",
+      "audio-signal"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "X est un tableau flottant réel fini de forme (B, T), chaque ligne étant un signal. On suppose ses carrés représentables sans débordement. Quelle expression calcule un RMS par signal ?",
+    "code": "rms = ___",
+    "options": [
+      {
+        "id": "a",
+        "text": "np.sqrt(np.mean(X, axis=1))"
+      },
+      {
+        "id": "b",
+        "text": "np.mean(np.sqrt(X ** 2), axis=1)"
+      },
+      {
+        "id": "c",
+        "text": "np.sqrt(np.mean(X ** 2, axis=0))"
+      },
+      {
+        "id": "d",
+        "text": "np.sqrt(np.mean(X ** 2, axis=1))"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Le RMS est la racine carrée de la moyenne des carrés. Réduire axis=1 agrège le temps pour chaque ligne et produit B valeurs.",
+    "sourceIds": [
+      "numpy-mean"
+    ]
+  },
+  {
+    "id": "py-017",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "A est (3, 4) et B est (4, 2). Quelle instruction donne le produit matriciel de forme (3, 2) ?",
+    "code": "A = np.ones((3, 4))\nB = np.ones((4, 2))\nC = ___",
+    "options": [
+      {
+        "id": "a",
+        "text": "A @ B"
+      },
+      {
+        "id": "b",
+        "text": "A * B"
+      },
+      {
+        "id": "c",
+        "text": "A + B"
+      },
+      {
+        "id": "d",
+        "text": "A.T @ B"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "L’opérateur @ effectue le produit matriciel en contractant les deux dimensions de taille 4. L’opérateur * tente une multiplication élément par élément, incompatible ici avec ces formes.",
+    "sourceIds": [
+      "numpy-matmul"
+    ]
+  },
+  {
+    "id": "py-018",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique",
+      "evaluation-recherche"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "mu et sigma sont la moyenne et l’écart-type du train par caractéristique. Quelle formule applique leur standardisation à X tout en garantissant un dénominateur au moins égal à 1e-8 ?",
+    "code": "X = np.ones((10, 6))\n# mu : moyenne du train par caractéristique, forme (6,)\n# sigma : écart-type du train par caractéristique, forme (6,)\nZ = ___",
+    "options": [
+      {
+        "id": "a",
+        "text": "(X - sigma) / np.maximum(mu, 1e-8)"
+      },
+      {
+        "id": "b",
+        "text": "(X - mu) / np.maximum(sigma, 1e-8)"
+      },
+      {
+        "id": "c",
+        "text": "(X - X.mean()) / sigma"
+      },
+      {
+        "id": "d",
+        "text": "X / mu - sigma"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "On soustrait la moyenne de chaque caractéristique et on divise par son écart-type protégé par un plancher positif. Réutiliser les statistiques d’entraînement évite d’adapter ce prétraitement au jeu de test.",
+    "sourceIds": [
+      "numpy-broadcast"
+    ]
+  },
+  {
+    "id": "py-019",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "avance",
+    "prompt": "X contient N vecteurs de dimension D, Y en contient M. Quelle forme a dist2 ?",
+    "code": "X = np.zeros((7, 3))\nY = np.zeros((5, 3))\ndist2 = ((X[:, None, :] - Y[None, :, :]) ** 2).sum(axis=-1)",
+    "options": [
+      {
+        "id": "a",
+        "text": "(7, 3)"
+      },
+      {
+        "id": "b",
+        "text": "(5, 3)"
+      },
+      {
+        "id": "c",
+        "text": "(7, 5)"
+      },
+      {
+        "id": "d",
+        "text": "(7, 5, 3)"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Les axes ajoutés construisent les différences de chaque paire de vecteurs, de forme (7, 5, 3). La somme sur les trois coordonnées donne les distances euclidiennes au carré de forme (7, 5).",
+    "sourceIds": [
+      "numpy-broadcast"
+    ]
+  },
+  {
+    "id": "py-020",
+    "primaryTheme": "python-scientifique",
+    "themes": [
+      "python-scientifique"
+    ],
+    "difficulty": "avance",
+    "prompt": "Pour une longue série float32 dont la moyenne perd en précision d’accumulation, quel changement cible directement ce problème ?",
+    "code": "m = np.mean(x)\n# x.dtype == np.float32",
+    "options": [
+      {
+        "id": "a",
+        "text": "m = np.mean(x, axis=0)"
+      },
+      {
+        "id": "b",
+        "text": "m = np.mean(x.copy())"
+      },
+      {
+        "id": "c",
+        "text": "m = np.mean(x).astype(np.float64)"
+      },
+      {
+        "id": "d",
+        "text": "m = np.mean(x, dtype=np.float64)"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Le paramètre dtype choisit la précision de l’accumulation de la moyenne. Convertir le résultat après le calcul ne récupère pas la précision perdue pendant cette accumulation.",
+    "sourceIds": [
+      "numpy-mean"
+    ]
+  }
+]

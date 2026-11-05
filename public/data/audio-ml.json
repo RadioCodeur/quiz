@@ -1,0 +1,991 @@
+[
+  {
+    "id": "aml-001",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Vous entraînez un classifieur d’instruments à partir d’extraits dont chacun porte une étiquette d’instrument. Quel est le rôle de cette étiquette pendant l’entraînement supervisé ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Remplacer la fréquence d’échantillonnage"
+      },
+      {
+        "id": "b",
+        "text": "Fournir la cible utilisée pour calculer la perte"
+      },
+      {
+        "id": "c",
+        "text": "Garantir que le fichier ne contient aucun bruit"
+      },
+      {
+        "id": "d",
+        "text": "Donner directement les poids de toutes les couches"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "L’étiquette indique la prédiction souhaitée pour cet exemple. La perte compare cette cible à la sortie du modèle et guide la mise à jour des paramètres.",
+    "sourceIds": [
+      "audio-panns"
+    ]
+  },
+  {
+    "id": "aml-002",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml",
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Un classifieur PyTorch prédit un instrument parmi cinq classes exclusives. Il produit des logits de forme (B, 5), avec des indices cibles torch.long de forme (B,) compris entre 0 et 4. Quel choix convient ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "BCEWithLogitsLoss avec ces indices tels quels"
+      },
+      {
+        "id": "b",
+        "text": "MSELoss entre logits et fréquence d’échantillonnage"
+      },
+      {
+        "id": "c",
+        "text": "CrossEntropyLoss appliquée directement aux logits"
+      },
+      {
+        "id": "d",
+        "text": "CrossEntropyLoss après argmax des logits"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "CrossEntropyLoss associe les logits de classes aux indices cibles. Appliquer argmax avant la perte détruirait l’information continue nécessaire à l’apprentissage.",
+    "sourceIds": [
+      "audio-cross-entropy"
+    ]
+  },
+  {
+    "id": "aml-003",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Vous possédez peu d’extraits annotés et un encodeur audio préentraîné pertinent. Quel est l’intérêt attendu d’essayer le transfert d’apprentissage ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Réutiliser des représentations déjà apprises avec moins d’étiquettes nouvelles"
+      },
+      {
+        "id": "b",
+        "text": "Éliminer le besoin de validation sur la nouvelle tâche"
+      },
+      {
+        "id": "c",
+        "text": "Garantir un score parfait pour tout instrument"
+      },
+      {
+        "id": "d",
+        "text": "Transformer les étiquettes en enregistrements audio"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Le préentraînement peut fournir des caractéristiques utiles pour la tâche cible. Le bénéfice dépend du domaine et doit être mesuré sur des données réservées.",
+    "sourceIds": [
+      "audio-panns"
+    ]
+  },
+  {
+    "id": "aml-004",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Un encodeur transforme chaque extrait en un vecteur de 512 nombres. Comment utiliser ce vecteur comme embedding ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Comme un fichier audio nécessairement lisible à 512 Hz"
+      },
+      {
+        "id": "b",
+        "text": "Comme la liste exacte de toutes les notes MIDI"
+      },
+      {
+        "id": "c",
+        "text": "Comme une preuve que les sons sont perceptivement identiques"
+      },
+      {
+        "id": "d",
+        "text": "Comme une représentation pour classer ou comparer les extraits"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Un embedding résume des propriétés apprises dans un espace vectoriel. Sa pertinence pour une comparaison dépend de l’objectif d’entraînement et ne garantit pas une équivalence perceptive.",
+    "sourceIds": [
+      "audio-panns",
+      "audio-clap"
+    ]
+  },
+  {
+    "id": "aml-005",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml",
+      "audio-signal"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Un encodeur attend réellement 16 000 échantillons par seconde. Vos fichiers arrivent à 44,1 kHz. Que faut-il faire avant de lui transmettre les échantillons ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Changer seulement le nom du fichier"
+      },
+      {
+        "id": "b",
+        "text": "Rééchantillonner les données à 16 kHz"
+      },
+      {
+        "id": "c",
+        "text": "Déclarer 16 kHz tout en conservant les mêmes échantillons"
+      },
+      {
+        "id": "d",
+        "text": "Diviser seulement chaque amplitude par 44 100"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "L’encodeur associe les indices temporels à sa fréquence attendue. Rééchantillonner modifie les données pour conserver la durée et les fréquences physiques cohérentes avec cette convention.",
+    "sourceIds": [
+      "audio-load",
+      "audio-resample"
+    ]
+  },
+  {
+    "id": "aml-006",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml",
+      "audio-signal"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Vous classez une hauteur musicale absolue. Quelle augmentation impose d’adapter aussi l’étiquette de hauteur ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Un petit gain positif sans saturation"
+      },
+      {
+        "id": "b",
+        "text": "Un bruit faible qui ne change pas la hauteur cible"
+      },
+      {
+        "id": "c",
+        "text": "Une transposition d’un demi-ton"
+      },
+      {
+        "id": "d",
+        "text": "Une conversion float64 vers float32"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Une transposition modifie précisément la variable que le classifieur doit prédire. Garder l’ancienne étiquette rendrait alors l’exemple incohérent avec la tâche.",
+    "sourceIds": [
+      "audio-pitch-shift"
+    ]
+  },
+  {
+    "id": "aml-007",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml",
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Un extrait peut contenir simultanément une sirène et une voix. Vous voulez prédire séparément leur présence. Quelle formulation convient ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Deux logits binaires, un par événement, avec des cibles multi-étiquettes"
+      },
+      {
+        "id": "b",
+        "text": "Un argmax qui impose une seule classe présente"
+      },
+      {
+        "id": "c",
+        "text": "Une régression obligatoire de la fréquence fondamentale"
+      },
+      {
+        "id": "d",
+        "text": "Une classe unique « silence » pour chaque mélange"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Les deux événements peuvent être vrais simultanément, donc une exclusivité imposée serait incorrecte. Des logits par événement et une perte binaire multi-étiquettes correspondent à cette définition.",
+    "sourceIds": [
+      "audio-bce"
+    ]
+  },
+  {
+    "id": "aml-008",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml",
+      "evaluation-recherche"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Vous mesurez l’effet d’une augmentation aléatoire ajoutée à l’entraînement. Pour comparer les modèles sur un jeu de validation ordinaire, quel protocole convient ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Augmenter chaque validation au hasard et ne rien consigner"
+      },
+      {
+        "id": "b",
+        "text": "Réentraîner les poids sur chaque exemple de validation"
+      },
+      {
+        "id": "c",
+        "text": "Choisir les transformations après observation du test"
+      },
+      {
+        "id": "d",
+        "text": "Employer un prétraitement de validation fixé et identique"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Une validation stable rend la comparaison des modèles interprétable. Un test de robustesse avec augmentations reste possible, mais constitue alors un protocole distinct à définir.",
+    "sourceIds": [
+      "audio-specaugment"
+    ]
+  },
+  {
+    "id": "aml-009",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml",
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Ces deux séquences mono sont des tenseurs de longueurs 4 et 7. Quelle est la forme de batch ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "(7, 2)"
+      },
+      {
+        "id": "b",
+        "text": "(2, 7)"
+      },
+      {
+        "id": "c",
+        "text": "(2, 4)"
+      },
+      {
+        "id": "d",
+        "text": "(11,)"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Avec batch_first=True, le nouvel axe de batch précède le temps. La séquence courte reçoit du padding jusqu’à la longueur maximale, ici 7.",
+    "sourceIds": [
+      "audio-pad-sequence"
+    ],
+    "code": "from torch.nn.utils.rnn import pad_sequence\nbatch = pad_sequence([a, b], batch_first=True)\n# a.shape == (4,), b.shape == (7,)"
+  },
+  {
+    "id": "aml-010",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml",
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "x a la forme (B, T, D), mask la forme (B, T), avec 1 pour une trame valide et 0 pour le padding. Chaque séquence possède au moins une trame valide. Quel calcul donne la moyenne temporelle masquée ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "x.mean(dim=1)"
+      },
+      {
+        "id": "b",
+        "text": "(x * mask[..., None]).sum(1) / T"
+      },
+      {
+        "id": "c",
+        "text": "(x * mask[..., None]).sum(1) / mask.sum(1, keepdim=True)"
+      },
+      {
+        "id": "d",
+        "text": "(x * mask[..., None]).sum(2) / mask.sum(1, keepdim=True)"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Le numérateur additionne uniquement les trames valides et le dénominateur compte ces trames. Diviser par T inclurait le padding dans le dénominateur et pourrait biaiser la moyenne vers zéro.",
+    "sourceIds": [
+      "audio-pad-sequence"
+    ],
+    "code": "# x : (B, T, D)\n# mask : (B, T), 1 = valide, 0 = padding\npooled = ____"
+  },
+  {
+    "id": "aml-011",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Vos extraits durent entre 1 et 60 secondes et sont paddés à la durée maximale du batch. Quel regroupement réduit le calcul inutile sans tronquer les signaux ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Former des batches d’extraits de durées proches"
+      },
+      {
+        "id": "b",
+        "text": "Doubler le padding de chaque exemple"
+      },
+      {
+        "id": "c",
+        "text": "Mettre systématiquement le plus court avec le plus long"
+      },
+      {
+        "id": "d",
+        "text": "Remplacer toutes les longueurs par leur moyenne sans modifier les données"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Regrouper des durées proches réduit la portion de padding dans chaque batch. Les longueurs réelles et les masques restent nécessaires pour les opérations sensibles au temps.",
+    "sourceIds": [
+      "audio-pad-sequence"
+    ]
+  },
+  {
+    "id": "aml-012",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Un fichier de 30 secondes est étiqueté « cloche présente », mais la cloche ne sonne qu’une seconde. Quel risque crée un crop aléatoire de 2 secondes portant toujours cette étiquette ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Une augmentation garantie de la fréquence de Nyquist"
+      },
+      {
+        "id": "b",
+        "text": "La suppression de tout besoin de segmentation"
+      },
+      {
+        "id": "c",
+        "text": "La création automatique d’une annotation temporelle exacte"
+      },
+      {
+        "id": "d",
+        "text": "Un extrait sans cloche recevant pourtant une cible positive"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Une étiquette au niveau du fichier ne décrit pas nécessairement chaque sous-extrait. Il faut tenir compte de ce caractère faible de l’annotation, par exemple avec une stratégie de sélection ou d’agrégation adaptée.",
+    "sourceIds": [
+      "audio-panns"
+    ]
+  },
+  {
+    "id": "aml-013",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Quelle transformation correspond directement au principe de SpecAugment sur des représentations temps-fréquence ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Échanger systématiquement voix et silence dans les cibles"
+      },
+      {
+        "id": "b",
+        "text": "Masquer des bandes de fréquence et des intervalles temporels"
+      },
+      {
+        "id": "c",
+        "text": "Remplacer chaque classe par l’indice d’un bin FFT"
+      },
+      {
+        "id": "d",
+        "text": "Inverser le signe de tous les paramètres du modèle"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "SpecAugment perturbe les caractéristiques en masquant notamment des zones temporelles et fréquentielles. Les tailles de masques doivent rester adaptées à la tâche et ne garantissent pas de préserver toute information utile.",
+    "sourceIds": [
+      "audio-specaugment"
+    ]
+  },
+  {
+    "id": "aml-014",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Pourquoi un retournement vertical arbitraire d’un spectrogramme mel n’est-il pas une augmentation générique sûre pour reconnaître des instruments ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Il conserve exactement toutes les relations physiques entre harmoniques"
+      },
+      {
+        "id": "b",
+        "text": "Il reproduit seulement un petit changement de volume"
+      },
+      {
+        "id": "c",
+        "text": "Il échange des régions graves et aiguës sans correspondance acoustique simple"
+      },
+      {
+        "id": "d",
+        "text": "Il laisse chaque bande de fréquence à son emplacement initial"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "L’axe fréquentiel encode des relations physiques que ce retournement altère fortement. Une transformation courante sur des images n’est donc pas automatiquement plausible pour une représentation audio.",
+    "sourceIds": [
+      "audio-mel",
+      "audio-panns"
+    ]
+  },
+  {
+    "id": "aml-015",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Vous entraînez un estimateur de tempo en BPM. Un time-stretch accélère la musique par un facteur 1,1 en préservant approximativement la hauteur. Que faut-il faire à la cible ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Multiplier le tempo par 1,1"
+      },
+      {
+        "id": "b",
+        "text": "Conserver systématiquement le tempo original"
+      },
+      {
+        "id": "c",
+        "text": "Diviser le tempo par 1,1"
+      },
+      {
+        "id": "d",
+        "text": "Remplacer le tempo par la fréquence d’échantillonnage"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Une lecture plus rapide rapproche les battements et augmente le nombre de battements par minute. La préservation de la hauteur ne signifie pas que le tempo reste inchangé.",
+    "sourceIds": [
+      "audio-time-stretch"
+    ]
+  },
+  {
+    "id": "aml-016",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Vous transposez une note de 3 demi-tons vers l’aigu avec bins_per_octave=12, sans changer sa durée. Quelle cible de hauteur MIDI convient ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "La hauteur initiale divisée par trois"
+      },
+      {
+        "id": "b",
+        "text": "La hauteur initiale multipliée par deux"
+      },
+      {
+        "id": "c",
+        "text": "La hauteur initiale moins trois"
+      },
+      {
+        "id": "d",
+        "text": "La hauteur initiale plus trois"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Une unité MIDI correspond à un demi-ton. Une transposition de +3 demi-tons ajoute donc 3 à cette cible, tandis que le nombre d’échantillons reste conservé par l’opération de pitch-shift.",
+    "sourceIds": [
+      "audio-pitch-shift"
+    ]
+  },
+  {
+    "id": "aml-017",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml",
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "x contient 8 extraits mono, de forme (8, 16000). Quelle entrée donne à conv la convention (batch, canaux, temps) ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "x.unsqueeze(0)"
+      },
+      {
+        "id": "b",
+        "text": "x.unsqueeze(1)"
+      },
+      {
+        "id": "c",
+        "text": "x.unsqueeze(-1)"
+      },
+      {
+        "id": "d",
+        "text": "x.reshape(16000, 8)"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "unsqueeze(1) insère le canal mono entre le batch et le temps, donnant (8, 1, 16000). Conv1d attend le nombre de canaux en deuxième position pour une entrée batched.",
+    "sourceIds": [
+      "audio-conv1d"
+    ],
+    "code": "conv = torch.nn.Conv1d(1, 16, kernel_size=5)\n# x.shape == (8, 16000)\ny = conv(____)"
+  },
+  {
+    "id": "aml-018",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml",
+      "pytorch",
+      "audio-signal"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "S a la forme (B, F, T), avec F ≥ 3 et T ≥ 3, et chaque spectrogramme possède un seul canal. Quelle entrée respecte la convention de Conv2d ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "S.unsqueeze(-1)"
+      },
+      {
+        "id": "b",
+        "text": "S.permute(1, 0, 2)"
+      },
+      {
+        "id": "c",
+        "text": "S.unsqueeze(1)"
+      },
+      {
+        "id": "d",
+        "text": "S.flatten(1)"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "L’ajout en dimension 1 donne la forme (B, 1, F, T). Les bandes fréquentielles sont ici une dimension spatiale du spectrogramme, et non les canaux d’entrée de cette couche.",
+    "sourceIds": [
+      "audio-conv2d"
+    ],
+    "code": "conv = torch.nn.Conv2d(1, 8, kernel_size=3)\n# S.shape == (B, F, T)\ny = conv(____)"
+  },
+  {
+    "id": "aml-019",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Un détecteur produit une probabilité par trame pour un événement très bref. Vous utilisez une moyenne sur tout l’extrait pour prédire sa présence. Quel risque est direct ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Diluer la réponse brève dans de nombreuses trames négatives"
+      },
+      {
+        "id": "b",
+        "text": "Restaurer automatiquement la position exacte de l’événement"
+      },
+      {
+        "id": "c",
+        "text": "Supprimer tout effet de la durée du fichier"
+      },
+      {
+        "id": "d",
+        "text": "Obtenir exactement le maximum temporel"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "La moyenne répartit l’influence d’une réponse locale sur toute la durée. Un événement bref peut ainsi donner un score de présence faible, même si sa détection locale est forte.",
+    "sourceIds": [
+      "audio-panns"
+    ]
+  },
+  {
+    "id": "aml-020",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml",
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "On veut entraîner seulement une nouvelle tête linéaire, avec un encodeur fixé en mode évaluation. Quel effet a ce code sur les paramètres de l’encodeur ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Il remet leurs valeurs initiales à zéro"
+      },
+      {
+        "id": "b",
+        "text": "Il supprime les paramètres de la mémoire"
+      },
+      {
+        "id": "c",
+        "text": "Il transforme les embeddings en cibles"
+      },
+      {
+        "id": "d",
+        "text": "Il empêche le calcul de leurs gradients par autograd"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "requires_grad_(False) gèle ces paramètres pour la différentiation. Le passage avant reste nécessaire pour calculer les embeddings, et la nouvelle tête peut toujours apprendre.",
+    "sourceIds": [
+      "audio-transfer"
+    ],
+    "code": "encoder.eval()\nfor p in encoder.parameters():\n    p.requires_grad_(False)\nhead = torch.nn.Linear(512, 10)"
+  },
+  {
+    "id": "aml-021",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml",
+      "evaluation-recherche"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Vous standardisez chaque bande mel avec une moyenne et un écart-type globaux. Sur quel sous-ensemble faut-il ajuster ces statistiques avant une évaluation séparée ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Le test uniquement"
+      },
+      {
+        "id": "b",
+        "text": "L’entraînement uniquement"
+      },
+      {
+        "id": "c",
+        "text": "L’union entraînement, validation et test"
+      },
+      {
+        "id": "d",
+        "text": "Chaque fichier de test en consultant sa classe"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Ces statistiques font partie du prétraitement appris et doivent être ajustées sur l’entraînement. Les mêmes valeurs sont ensuite appliquées à validation et test pour éviter une fuite d’information.",
+    "sourceIds": [
+      "audio-standardization"
+    ]
+  },
+  {
+    "id": "aml-022",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Un encodeur préentraîné attend du log-mel à 16 kHz, 64 bandes, avec une normalisation documentée. Quelle première préparation est la plus cohérente pour tester son transfert ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Lui fournir des modules FFT linéaires à 48 kHz sans adaptation"
+      },
+      {
+        "id": "b",
+        "text": "Changer aléatoirement le nombre de bandes à chaque fichier"
+      },
+      {
+        "id": "c",
+        "text": "Reproduire son prétraitement puis adapter la tête à la tâche cible"
+      },
+      {
+        "id": "d",
+        "text": "Déduire sa normalisation à partir des étiquettes de test"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Les filtres appris ont été optimisés pour une convention d’entrée précise. Reprendre cette convention fournit un point de départ interprétable, avant d’évaluer explicitement d’éventuelles adaptations.",
+    "sourceIds": [
+      "audio-features",
+      "audio-panns"
+    ]
+  },
+  {
+    "id": "aml-023",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml",
+      "evaluation-recherche"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Un classifieur entraîné sur des crops de durée fixe doit prédire une classe pour un long fichier. Quel protocole utilise plusieurs portions sans changer les poids au test ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Découper selon une règle fixe puis agréger les prédictions des crops"
+      },
+      {
+        "id": "b",
+        "text": "Garder seulement le crop dont on connaît la bonne étiquette"
+      },
+      {
+        "id": "c",
+        "text": "Faire une mise à jour supervisée sur tous les crops de test"
+      },
+      {
+        "id": "d",
+        "text": "Traiter les crops comme des votes provenant de nouveaux fichiers indépendants"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Une agrégation définie à l’avance exploite plusieurs parties du fichier. La métrique finale doit compter le fichier selon l’unité prévue, car les crops d’un même enregistrement ne sont pas indépendants.",
+    "sourceIds": [
+      "audio-panns"
+    ]
+  },
+  {
+    "id": "aml-024",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml",
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Pour ce mixup entre deux exemples, quelle cible souple est cohérente avec le même coefficient lam ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "y_a uniquement"
+      },
+      {
+        "id": "b",
+        "text": "lam * y_b + (1 - lam) * y_a"
+      },
+      {
+        "id": "c",
+        "text": "y_a + y_b sans pondération"
+      },
+      {
+        "id": "d",
+        "text": "lam * y_a + (1 - lam) * y_b"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Le mixup standard combine les cibles avec les mêmes coefficients que les entrées. Cela définit une supervision interpolée plutôt qu’une classe dure choisie arbitrairement.",
+    "sourceIds": [
+      "audio-mixup"
+    ],
+    "code": "lam = 0.25\nx_mix = lam * x_a + (1 - lam) * x_b\n# y_a et y_b sont des vecteurs cibles one-hot."
+  },
+  {
+    "id": "aml-025",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml",
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Les lignes de Q et K sont des embeddings audio de norme L2 égale à 1. Que représentent les éléments de scores ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Des distances euclidiennes au carré"
+      },
+      {
+        "id": "b",
+        "text": "Des similarités cosinus entre requêtes et candidats"
+      },
+      {
+        "id": "c",
+        "text": "Des probabilités qui somment forcément à 1 par ligne"
+      },
+      {
+        "id": "d",
+        "text": "Des amplitudes de reconstruction de chaque fichier"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Pour des vecteurs unitaires, le produit scalaire égale la similarité cosinus. La matrice n’est pas automatiquement normalisée en probabilités.",
+    "sourceIds": [
+      "audio-clap"
+    ],
+    "code": "# Q : (nombre_requetes, D)\n# K : (nombre_candidats, D)\nscores = Q @ K.T"
+  },
+  {
+    "id": "aml-026",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml"
+    ],
+    "difficulty": "avance",
+    "prompt": "Un dataset ne fournit que la présence d’un événement au niveau du fichier, sans instants de début et de fin. Quelle formulation respecte cette annotation faible pour un apprentissage sur des trames ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Imposer que toutes les trames d’un fichier positif soient positives"
+      },
+      {
+        "id": "b",
+        "text": "Déduire les limites exactes en découpant à intervalles égaux"
+      },
+      {
+        "id": "c",
+        "text": "Agréger des scores de trames vers une prédiction de fichier avant la perte"
+      },
+      {
+        "id": "d",
+        "text": "Attribuer chaque événement à la première trame par convention physique"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Une agrégation différentiable peut relier des scores locaux à la supervision disponible au niveau global. Une étiquette positive ne prouve pas que l’événement occupe chaque trame, et ne donne pas de frontières exactes.",
+    "sourceIds": [
+      "audio-panns"
+    ]
+  },
+  {
+    "id": "aml-027",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml"
+    ],
+    "difficulty": "avance",
+    "prompt": "Un encodeur appris surtout sur de la parole fonctionne mal sur des techniques instrumentales étendues. Quelle hypothèse est raisonnable à tester en priorité ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Un décalage de domaine entre les données de préentraînement et la nouvelle tâche"
+      },
+      {
+        "id": "b",
+        "text": "La preuve que le transfert audio est toujours impossible"
+      },
+      {
+        "id": "c",
+        "text": "Une garantie que les annotations de test sont fausses"
+      },
+      {
+        "id": "d",
+        "text": "La nécessité mathématique d’un embedding de dimension égale au sample rate"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Les propriétés pertinentes pour la parole peuvent couvrir imparfaitement des timbres et structures instrumentaux inhabituels. Une comparaison avec une représentation adaptée et une adaptation contrôlée permet de tester cette hypothèse.",
+    "sourceIds": [
+      "audio-wav2vec",
+      "audio-panns"
+    ]
+  },
+  {
+    "id": "aml-028",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml"
+    ],
+    "difficulty": "avance",
+    "prompt": "Un Transformer traite des patches de spectrogramme sans convolution, et la tâche dépend de leur ordre temporel. Pourquoi lui fournir une information de position ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Pour convertir directement les patches en notes MIDI"
+      },
+      {
+        "id": "b",
+        "text": "Pour interdire l’attention entre deux patches voisins"
+      },
+      {
+        "id": "c",
+        "text": "Pour garantir que le coût devient indépendant de leur nombre"
+      },
+      {
+        "id": "d",
+        "text": "Pour distinguer les positions au-delà du seul contenu des patches"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Le contenu des patches ne fournit pas à lui seul une représentation explicite fiable de leur emplacement. Une information de position permet à l’attention d’exploiter leur organisation dans le spectrogramme.",
+    "sourceIds": [
+      "audio-ast"
+    ]
+  },
+  {
+    "id": "aml-029",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml"
+    ],
+    "difficulty": "avance",
+    "prompt": "Un apprentissage contrastif audio-texte utilise les autres éléments du batch comme négatifs. Deux extraits différents partagent pourtant une description sonore équivalente. Quel problème peut survenir ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Le batch cesse d’avoir une dimension temporelle"
+      },
+      {
+        "id": "b",
+        "text": "Des négatifs sémantiquement pertinents peuvent être repoussés à tort"
+      },
+      {
+        "id": "c",
+        "text": "La loss devient nécessairement nulle"
+      },
+      {
+        "id": "d",
+        "text": "L’encodeur reçoit automatiquement une annotation temporelle exacte"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "La règle « autres paires = négatives » peut confondre une paire non appariée avec une paire réellement différente sémantiquement. Cette ambiguïté peut perturber les représentations et motive une analyse de la construction des paires.",
+    "sourceIds": [
+      "audio-clap"
+    ]
+  },
+  {
+    "id": "aml-030",
+    "primaryTheme": "audio-ml",
+    "themes": [
+      "audio-ml",
+      "pytorch"
+    ],
+    "difficulty": "avance",
+    "prompt": "Avec torch.nn.MultiheadAttention et un key_padding_mask booléen, comment masquer le padding ? valid contient True pour les positions réelles ; chaque séquence en possède au moins une et D est divisible par 4.",
+    "options": [
+      {
+        "id": "a",
+        "text": "valid"
+      },
+      {
+        "id": "b",
+        "text": "valid.float()"
+      },
+      {
+        "id": "c",
+        "text": "~valid"
+      },
+      {
+        "id": "d",
+        "text": "None"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Pour ce paramètre booléen précis, True désigne une clé à ignorer. Il faut donc inverser le masque de validité ; les conventions d’autres APIs de masquage peuvent différer.",
+    "sourceIds": [
+      "audio-attention"
+    ],
+    "code": "# x : (B, T, D), valid : (B, T)\nattn = torch.nn.MultiheadAttention(\n    D, num_heads=4, batch_first=True\n)\ny, _ = attn(x, x, x, key_padding_mask=____)"
+  }
+]

@@ -1,0 +1,981 @@
+[
+  {
+    "id": "eval-001",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Après avoir appris les poids sur le train, quel ensemble sert normalement à choisir un hyperparamètre avant l’évaluation finale ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "La validation"
+      },
+      {
+        "id": "b",
+        "text": "Le test final réutilisé à chaque essai"
+      },
+      {
+        "id": "c",
+        "text": "Le train sans aucun autre contrôle"
+      },
+      {
+        "id": "d",
+        "text": "L’ensemble qui donne le score le plus élevé après coup"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "La validation sert à comparer les choix de modèle et de réglage. Le test final est réservé à une estimation après ces choix pour limiter le biais de sélection.",
+    "sourceIds": [
+      "gr-cv"
+    ]
+  },
+  {
+    "id": "eval-002",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Vous découpez 100 enregistrements en milliers d’extraits qui se chevauchent. Quelle séparation limite directement une fuite entre train et test ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Séparer les extraits au hasard après leur découpage"
+      },
+      {
+        "id": "b",
+        "text": "Affecter tous les extraits issus d’un même enregistrement à un seul ensemble"
+      },
+      {
+        "id": "c",
+        "text": "Séparer les trames paires et impaires de chaque extrait"
+      },
+      {
+        "id": "d",
+        "text": "Stratifier les extraits par classe sans tenir compte des enregistrements"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Des extraits voisins partagent du contenu acoustique et des caractéristiques de prise de son. Regrouper par enregistrement évite que cette même source soit présente des deux côtés.",
+    "sourceIds": [
+      "gr-groups"
+    ]
+  },
+  {
+    "id": "eval-003",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Un jeu de test contient 95 % de classe A et 5 % de classe B. Quel score d’accuracy obtient un système prédisant toujours A ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "5 %"
+      },
+      {
+        "id": "b",
+        "text": "100 %"
+      },
+      {
+        "id": "c",
+        "text": "95 %"
+      },
+      {
+        "id": "d",
+        "text": "50 %"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Le système réussit tous les exemples A et échoue sur les B, soit 95 % de réussite. Cette baseline montre pourquoi une accuracy élevée peut masquer une absence de reconnaissance de la classe rare.",
+    "sourceIds": [
+      "gr-dummy"
+    ]
+  },
+  {
+    "id": "eval-004",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "La loss du train baisse encore, mais la loss de validation augmente durablement sur un split fixe. Quel phénomène ces courbes suggèrent-elles ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Une généralisation qui s’améliore puisque la loss train baisse"
+      },
+      {
+        "id": "b",
+        "text": "Une erreur certaine dans les étiquettes de validation"
+      },
+      {
+        "id": "c",
+        "text": "Une garantie qu’aucune régularisation n’est nécessaire"
+      },
+      {
+        "id": "d",
+        "text": "Un surapprentissage du train"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Le modèle continue d’améliorer son ajustement aux exemples vus sans améliorer les exemples réservés. Cette divergence est un signal de surapprentissage, à confirmer avec les conditions du protocole.",
+    "sourceIds": [
+      "gr-curves"
+    ]
+  },
+  {
+    "id": "eval-005",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Un détecteur de sirènes produit 20 alertes, dont 15 correctes. Quelle est sa précision positive ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "75 %"
+      },
+      {
+        "id": "b",
+        "text": "20 %"
+      },
+      {
+        "id": "c",
+        "text": "15 %"
+      },
+      {
+        "id": "d",
+        "text": "25 %"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "La précision vaut TP/(TP + FP), soit 15/20. Le rappel exigerait de connaître aussi le nombre de sirènes réellement présentes, y compris celles manquées.",
+    "sourceIds": [
+      "gr-precision"
+    ]
+  },
+  {
+    "id": "eval-006",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Que faut-il conserver pour rendre un résultat expérimental interprétable et plus facilement reproductible ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "La meilleure graine et le seul score de l’essai retenu"
+      },
+      {
+        "id": "b",
+        "text": "Conserver code, versions, réglages, graines et composition exacte des ensembles train/validation/test"
+      },
+      {
+        "id": "c",
+        "text": "Le nom du modèle et la seule taille du jeu de test"
+      },
+      {
+        "id": "d",
+        "text": "Le code sans préciser les données ni les réglages utilisés"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Ces éléments décrivent les conditions qui ont produit le résultat. Une graine seule ne suffit pas à reproduire un protocole dont les données ou les versions sont inconnues.",
+    "sourceIds": [
+      "gr-randomness"
+    ]
+  },
+  {
+    "id": "eval-007",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Sur trois classes, on veut donner le même poids à chacune dans le résumé des F1, quel que soit son effectif. Quel agrégat choisir ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "L’accuracy globale"
+      },
+      {
+        "id": "b",
+        "text": "La moyenne des probabilités maximales"
+      },
+      {
+        "id": "c",
+        "text": "Le F1 macro"
+      },
+      {
+        "id": "d",
+        "text": "Le F1 pondéré par les effectifs"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Le F1 macro calcule le F1 de chaque classe puis leur moyenne non pondérée. Il rend visible une mauvaise performance sur une petite classe qui serait peu représentée dans une moyenne pondérée.",
+    "sourceIds": [
+      "gr-f1"
+    ]
+  },
+  {
+    "id": "eval-008",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Un classifieur binaire reconnaît 90 % des positifs et 50 % des négatifs. Quelle est sa balanced accuracy, sans ajustement au hasard ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "90 %"
+      },
+      {
+        "id": "b",
+        "text": "50 %"
+      },
+      {
+        "id": "c",
+        "text": "40 %"
+      },
+      {
+        "id": "d",
+        "text": "70 %"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "La balanced accuracy binaire est la moyenne du rappel positif et du rappel négatif. Elle vaut donc (0,9 + 0,5)/2 = 0,7 et ne dépend pas ici des proportions de classes.",
+    "sourceIds": [
+      "gr-metrics"
+    ]
+  },
+  {
+    "id": "eval-009",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche",
+      "python-scientifique"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Les lignes de cette matrice sont les vraies classes [0, 1], les colonnes les classes prédites [0, 1]. Quel est le rappel de la classe 1 ?",
+    "code": "cm = [[40, 10],\n      [20, 30]]",
+    "options": [
+      {
+        "id": "a",
+        "text": "60 %"
+      },
+      {
+        "id": "b",
+        "text": "75 %"
+      },
+      {
+        "id": "c",
+        "text": "50 %"
+      },
+      {
+        "id": "d",
+        "text": "80 %"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "La ligne de la vraie classe 1 contient 20 faux négatifs et 30 vrais positifs. Le rappel de cette classe est 30/(20 + 30), soit 60 %.",
+    "sourceIds": [
+      "gr-confusion",
+      "gr-recall"
+    ]
+  },
+  {
+    "id": "eval-010",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche",
+      "python-scientifique"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Une loss est une moyenne par exemple dans chaque batch. Les batches ont respectivement 8 et 2 exemples, avec losses 1 et 3. Quelle est la moyenne sur les 10 exemples ?",
+    "code": "batch_sizes = [8, 2]\nbatch_mean_losses = [1.0, 3.0]",
+    "options": [
+      {
+        "id": "a",
+        "text": "0.4"
+      },
+      {
+        "id": "b",
+        "text": "1.4"
+      },
+      {
+        "id": "c",
+        "text": "2.0"
+      },
+      {
+        "id": "d",
+        "text": "4.0"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Il faut pondérer chaque moyenne de batch par son effectif : (8 × 1 + 2 × 3)/10 = 1,4. La moyenne non pondérée des deux batches surreprésenterait le dernier batch.",
+    "sourceIds": [
+      "gr-metrics"
+    ]
+  },
+  {
+    "id": "eval-011",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "On cherche le seuil d’un détecteur maximisant un critère métier, puis on veut annoncer une performance finale. Où régler ce seuil ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Sur chaque exemple du test avec son étiquette"
+      },
+      {
+        "id": "b",
+        "text": "Après avoir supprimé les faux positifs du test"
+      },
+      {
+        "id": "c",
+        "text": "Sur une validation réservée avant de mesurer sur le test"
+      },
+      {
+        "id": "d",
+        "text": "Sur le test puis annoncer ce même score comme indépendant"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Le seuil fait partie des choix du système. Le régler sur le test utilise ses étiquettes pour sélectionner une décision et rend son score final optimiste.",
+    "sourceIds": [
+      "gr-threshold"
+    ]
+  },
+  {
+    "id": "eval-012",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche",
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Le modèle contient du dropout et a été laissé en mode train. Quelle instruction manque pour évaluer son comportement d’inférence standard ?",
+    "code": "with torch.no_grad():\n    predictions = model(x_test)",
+    "options": [
+      {
+        "id": "a",
+        "text": "optimizer.step()"
+      },
+      {
+        "id": "b",
+        "text": "model.train()"
+      },
+      {
+        "id": "c",
+        "text": "loss.backward()"
+      },
+      {
+        "id": "d",
+        "text": "model.eval()"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "no_grad évite de construire le graphe de gradients, mais ne change pas le mode du dropout. eval configure les modules concernés pour leur comportement d’évaluation.",
+    "sourceIds": [
+      "gr-module"
+    ]
+  },
+  {
+    "id": "eval-013",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche",
+      "generation-controle"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Une nouvelle méthode ajoute un conditionnement mélodique et un nouveau décodeur. Quel essai isole directement l’effet du conditionnement à décodeur fixé ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Comparer le décodeur fixé avec et sans conditionnement, en gardant le reste du protocole commun"
+      },
+      {
+        "id": "b",
+        "text": "Comparer ancien système et système complet en changeant aussi le décodeur"
+      },
+      {
+        "id": "c",
+        "text": "Comparer deux entraînements utilisant des corpus de tailles différentes"
+      },
+      {
+        "id": "d",
+        "text": "Comparer la meilleure sortie conditionnée à une sortie aléatoire non conditionnée"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Une ablation retire un composant en conservant les autres conditions de comparaison. Elle permet d’attribuer plus clairement une différence à ce composant, dans le cadre de l’expérience.",
+    "sourceIds": [
+      "gr-musicgen"
+    ]
+  },
+  {
+    "id": "eval-014",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Une écoute comparative doit porter sur les artefacts de deux traitements. Quelle mesure réduit un biais simple de présentation ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Présenter systématiquement le nouveau système en premier"
+      },
+      {
+        "id": "b",
+        "text": "Masquer les systèmes et contrôler ordre et niveau"
+      },
+      {
+        "id": "c",
+        "text": "Présenter le nouveau système avec un gain légèrement supérieur"
+      },
+      {
+        "id": "d",
+        "text": "Laisser l’auditeur voir le nom du système pendant chaque essai"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "L’identité et l’ordre peuvent orienter les jugements avant même l’écoute attentive. Un protocole contrôlé réduit ces effets et doit préciser la gestion des niveaux selon la tâche.",
+    "sourceIds": [
+      "gr-mushra"
+    ]
+  },
+  {
+    "id": "eval-015",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche",
+      "generation-controle"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Un générateur a une meilleure Fréchet Audio Distance sur un même protocole. Quelle conclusion est justifiée à partir de cette métrique seule ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Une garantie de fidélité au texte pour chaque génération individuelle"
+      },
+      {
+        "id": "b",
+        "text": "Une preuve d’absence de copies d’exemples du corpus d’apprentissage"
+      },
+      {
+        "id": "c",
+        "text": "Le jeu généré est plus proche du corpus de référence selon les statistiques de ces embeddings"
+      },
+      {
+        "id": "d",
+        "text": "Une préférence perceptive garantie pour tous les auditeurs et tous les extraits"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "La FAD compare des distributions d’embeddings, et non chaque sortie à une vérité unique. Elle ne suffit pas à prouver le respect de la condition, l’originalité ou une préférence perceptive universelle.",
+    "sourceIds": [
+      "gr-fad"
+    ]
+  },
+  {
+    "id": "eval-016",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Dans un test MUSHRA de qualité de reconstruction avec référence disponible, à quoi sert notamment une ancre dégradée ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Remplacer la référence cachée par une sortie du meilleur système"
+      },
+      {
+        "id": "b",
+        "text": "Corriger automatiquement toutes les différences entre auditeurs"
+      },
+      {
+        "id": "c",
+        "text": "Prouver qu’un écart moyen entre systèmes est statistiquement fiable"
+      },
+      {
+        "id": "d",
+        "text": "Offrir un repère dégradé dans le même essai"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "L’ancre aide à situer les dégradations sur l’échelle de jugement aux côtés des systèmes et de la référence. Elle ne remplace ni un protocole d’écoute adapté ni l’analyse des résultats.",
+    "sourceIds": [
+      "gr-mushra"
+    ]
+  },
+  {
+    "id": "eval-017",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche",
+      "python-scientifique"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Pourquoi ce prétraitement est-il problématique avant une séparation train/test supervisée ?",
+    "code": "X_scaled = StandardScaler().fit_transform(X)\nX_train, X_test, y_train, y_test = train_test_split(\n    X_scaled, y, random_state=0\n)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Le centrage est ajusté avec des observations qui appartiendront ensuite au jeu de test"
+      },
+      {
+        "id": "b",
+        "text": "StandardScaler lit automatiquement les étiquettes y"
+      },
+      {
+        "id": "c",
+        "text": "Le centrage supprime nécessairement toutes les classes"
+      },
+      {
+        "id": "d",
+        "text": "train_test_split exige des entiers uniquement"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "fit_transform estime ici les paramètres de transformation sur tout X. Il faut d’abord séparer, ajuster le scaler sur le train et appliquer sa transformation au test.",
+    "sourceIds": [
+      "gr-pitfalls"
+    ]
+  },
+  {
+    "id": "eval-018",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Deux modèles sont entraînés une seule fois et leur accuracy diffère de 0,2 point. Quelle suite étudie directement la sensibilité à l’aléa d’entraînement ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Annoncer que l’écart restera identique pour toutes les initialisations"
+      },
+      {
+        "id": "b",
+        "text": "Répéter sur plusieurs graines et rapporter les résultats"
+      },
+      {
+        "id": "c",
+        "text": "Comparer seulement les meilleures graines de chaque méthode"
+      },
+      {
+        "id": "d",
+        "text": "Augmenter le nombre d’essais puis garder uniquement le score maximal"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Les initialisations et l’ordre des batches peuvent modifier les résultats. Plusieurs répétitions renseignent cette variabilité, sans éliminer l’incertitude liée au choix des données.",
+    "sourceIds": [
+      "gr-reporting"
+    ]
+  },
+  {
+    "id": "eval-019",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche",
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "La cible est de reconnaître un instrument sur de nouveaux interprètes. Les mêmes interprètes apparaissent dans plusieurs enregistrements. Quel groupement répond le plus directement à cette cible ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Tirer au hasard chaque trame spectrale"
+      },
+      {
+        "id": "b",
+        "text": "Mettre toutes les prises d’un interprète dans chaque ensemble"
+      },
+      {
+        "id": "c",
+        "text": "Regrouper toutes les prises d’un même interprète avant de répartir les groupes entre ensembles"
+      },
+      {
+        "id": "d",
+        "text": "Séparer uniquement par nom d’extrait"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Le groupement doit correspondre à l’unité de généralisation revendiquée. Une séparation par enregistrement seule n’empêcherait pas ici de retrouver les mêmes interprètes dans le train et le test.",
+    "sourceIds": [
+      "gr-groups"
+    ]
+  },
+  {
+    "id": "eval-020",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche",
+      "generation-controle"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "On évalue un générateur contrôlé par du texte. Quel protocole distingue qualité acoustique et respect de la consigne ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Noter seulement la qualité puis en déduire le respect du texte"
+      },
+      {
+        "id": "b",
+        "text": "Noter seulement l’adéquation au texte puis en déduire l’absence d’artefacts"
+      },
+      {
+        "id": "c",
+        "text": "Écouter les meilleures sorties de chaque système sans critère commun"
+      },
+      {
+        "id": "d",
+        "text": "Noter séparément qualité et respect de la consigne"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Une sortie peut être propre mais hors sujet, ou pertinente mais dégradée. Des critères séparés permettent de voir ce compromis et d’éviter une conclusion trop générale.",
+    "sourceIds": [
+      "gr-audioldm"
+    ]
+  },
+  {
+    "id": "eval-021",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "avance",
+    "prompt": "Le test contient 20 enregistrements indépendants, chacun découpé en 100 extraits fortement corrélés. Pour estimer l’incertitude due au choix des enregistrements par bootstrap, quelle unité rééchantillonner ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Rééchantillonner les enregistrements, en conservant ensemble les cent extraits de chaque groupe"
+      },
+      {
+        "id": "b",
+        "text": "Les extraits séparément comme s’ils provenaient de sources indépendantes"
+      },
+      {
+        "id": "c",
+        "text": "Les bonnes réponses seulement afin de limiter le bruit statistique"
+      },
+      {
+        "id": "d",
+        "text": "Les scores de batches sans conserver leur enregistrement d’origine"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Rééchantillonner les groupes préserve la dépendance entre extraits d’une même source. Traiter ces extraits comme 2 000 observations indépendantes risque de sous-estimer l’incertitude visée.",
+    "sourceIds": [
+      "gr-bootstrap",
+      "gr-groups"
+    ]
+  },
+  {
+    "id": "eval-022",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "avance",
+    "prompt": "Chaque auditeur note les deux systèmes sur les mêmes extraits. Comment analyser la différence en respectant ce plan apparié ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Traiter toutes les notes comme des observations indépendantes"
+      },
+      {
+        "id": "b",
+        "text": "Conserver les paires et leurs dépendances"
+      },
+      {
+        "id": "c",
+        "text": "Mélanger les identifiants d’auditeurs avant de comparer les systèmes"
+      },
+      {
+        "id": "d",
+        "text": "Ignorer l’identité des extraits et comparer seulement les deux maxima"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Les deux notes d’une même paire partagent l’auditeur et le contenu évalué. Une analyse appariée ou un modèle tenant compte de ces dépendances utilise cette structure au lieu de l’effacer.",
+    "sourceIds": [
+      "gr-mushra",
+      "gr-bootstrap"
+    ]
+  },
+  {
+    "id": "eval-023",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "avance",
+    "prompt": "On sélectionne de nombreux hyperparamètres avec une validation croisée et on veut estimer sans biais de sélection excessif la procédure complète sur le même petit corpus. Quelle organisation convient ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "La sélection du meilleur score sur tous les plis sans autre évaluation"
+      },
+      {
+        "id": "b",
+        "text": "Une sélection sur les plis externes suivie du rapport de leur meilleur score"
+      },
+      {
+        "id": "c",
+        "text": "Utiliser des plis externes pour l’évaluation et des plis internes pour sélectionner les hyperparamètres"
+      },
+      {
+        "id": "d",
+        "text": "Un entraînement sur tout le corpus avant de construire les plis de test"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "La validation croisée imbriquée sépare l’évaluation externe de la sélection interne. Les ensembles externes ne doivent pas guider le choix des hyperparamètres.",
+    "sourceIds": [
+      "gr-nested"
+    ]
+  },
+  {
+    "id": "eval-024",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche",
+      "audio-ml"
+    ],
+    "difficulty": "avance",
+    "prompt": "Un classifieur est excellent sur des enregistrements de studio mais échoue sur des captations de téléphone. Que faut-il conclure en priorité ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Le score studio garantit que l’échec téléphone est une erreur de mesure"
+      },
+      {
+        "id": "b",
+        "text": "Le modèle a nécessairement oublié toutes ses connaissances instrumentales"
+      },
+      {
+        "id": "c",
+        "text": "Il suffit de mélanger studio et téléphone dans le test pour garantir la robustesse"
+      },
+      {
+        "id": "d",
+        "text": "Le résultat dépend du domaine d’enregistrement"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Le changement de conditions acoustiques constitue un décalage de distribution. L’échec dans ce domaine limite la portée du résultat initial sans annuler les mesures obtenues sur le studio.",
+    "sourceIds": [
+      "gr-cv"
+    ]
+  },
+  {
+    "id": "eval-025",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "avance",
+    "prompt": "Après chaque modification, une équipe consulte le même test pour décider quoi conserver. Comment qualifier ensuite ce test ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Ce jeu a participé à la sélection et ne constitue plus une évaluation finale indépendante"
+      },
+      {
+        "id": "b",
+        "text": "Un test indépendant parce qu’aucun gradient n’a été calculé dessus"
+      },
+      {
+        "id": "c",
+        "text": "Un test indépendant si son nom de dossier reste « test »"
+      },
+      {
+        "id": "d",
+        "text": "Un test non biaisé tant que les mêmes fichiers y sont conservés"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "La sélection peut exploiter les scores du test sans passer par une rétropropagation. Un nouvel ensemble non utilisé pour ces décisions est nécessaire pour une nouvelle évaluation indépendante.",
+    "sourceIds": [
+      "gr-cv",
+      "gr-pitfalls"
+    ]
+  },
+  {
+    "id": "eval-026",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "avance",
+    "prompt": "Deux méthodes ont des moyennes de 81 % et 82 % sur trois graines, mais des scores de répétitions très variables. Quel compte rendu est défendable ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Annoncer que le modèle à 82 % sera meilleur à chaque nouvel entraînement"
+      },
+      {
+        "id": "b",
+        "text": "Montrer répétitions et incertitude, et limiter la conclusion"
+      },
+      {
+        "id": "c",
+        "text": "Garder la meilleure graine de chaque méthode pour confirmer la différence"
+      },
+      {
+        "id": "d",
+        "text": "Conclure à l’égalité exacte puisque les moyennes sont voisines"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Un faible écart moyen peut être du même ordre que les variations d’une répétition à l’autre. Il faut montrer cette variabilité et adapter la force de la conclusion aux preuves disponibles.",
+    "sourceIds": [
+      "gr-reporting"
+    ]
+  },
+  {
+    "id": "eval-027",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "avance",
+    "prompt": "On veut prédire des événements audio futurs à partir de données collectées au fil du temps, avec une dérive des appareils. Quelle évaluation reflète le mieux cet usage ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Entraîner sur le futur et tester sur le passé uniquement"
+      },
+      {
+        "id": "b",
+        "text": "Mettre tous les appareils et toutes les dates dans les deux ensembles"
+      },
+      {
+        "id": "c",
+        "text": "Respecter l’ordre chronologique : apprendre sur une période passée, évaluer sur une période ultérieure"
+      },
+      {
+        "id": "d",
+        "text": "Mélanger toutes les dates indépendamment avant chaque mesure"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Un découpage chronologique respecte la direction temporelle de l’usage envisagé. Un mélange aléatoire peut atténuer artificiellement l’effet de la dérive et donner une estimation trop favorable.",
+    "sourceIds": [
+      "gr-timesplit"
+    ]
+  },
+  {
+    "id": "eval-028",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche",
+      "generation-controle"
+    ],
+    "difficulty": "avance",
+    "prompt": "Une méthode est explicitement optimisée pour améliorer une métrique fondée sur un embedding fixe. Quel contrôle cherche un progrès au-delà de cet évaluateur ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Mesurer le même embedding après avoir seulement renommé la métrique"
+      },
+      {
+        "id": "b",
+        "text": "Choisir les extraits à écouter selon leur classement par cette métrique"
+      },
+      {
+        "id": "c",
+        "text": "Conclure à une meilleure perception dès que la métrique progresse"
+      },
+      {
+        "id": "d",
+        "text": "Ajouter écoutes aveugles et critères indépendants"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Optimiser un évaluateur peut exploiter ses limites sans améliorer toutes les propriétés perceptives. Des jugements humains et des critères complémentaires testent des aspects que ce signal ne capture pas.",
+    "sourceIds": [
+      "gr-fad"
+    ]
+  },
+  {
+    "id": "eval-029",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche"
+    ],
+    "difficulty": "avance",
+    "prompt": "Deux composants A et B peuvent interagir. Quel plan permet d’observer leur effet conjoint en plus de leurs effets séparés ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Comparer les quatre configurations base, base+A, base+B et base+A+B sous des conditions communes"
+      },
+      {
+        "id": "b",
+        "text": "Comparer seulement la base au modèle possédant A et B"
+      },
+      {
+        "id": "c",
+        "text": "Tester A sur un corpus et B sur un autre corpus sans base commune"
+      },
+      {
+        "id": "d",
+        "text": "Attribuer le gain total à chacun des composants séparément"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Les quatre configurations montrent ce qui se passe avec chaque composant seul puis avec les deux. Une simple comparaison base contre modèle complet ne permet pas d’identifier une interaction.",
+    "sourceIds": [
+      "gr-musicgen"
+    ]
+  },
+  {
+    "id": "eval-030",
+    "primaryTheme": "evaluation-recherche",
+    "themes": [
+      "evaluation-recherche",
+      "generation-controle"
+    ],
+    "difficulty": "avance",
+    "prompt": "On compare deux générateurs sous une limite de calcul annoncée. Quel compte rendu rend le mieux le compromis qualité/coût vérifiable ?",
+    "options": [
+      {
+        "id": "a",
+        "text": "Rapporter le meilleur score sans compter les essais de sélection"
+      },
+      {
+        "id": "b",
+        "text": "Décrire qualité, recherche, entraînement et inférence"
+      },
+      {
+        "id": "c",
+        "text": "Comparer les temps sans préciser ni matériel ni taille des entrées"
+      },
+      {
+        "id": "d",
+        "text": "Compter seulement les paramètres sans mesurer les coûts d’usage"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Le coût inclut les essais de sélection ainsi que l’apprentissage et l’usage du système retenu. Décrire matériel et conditions aide à interpréter si un gain reste pertinent sous la limite annoncée.",
+    "sourceIds": [
+      "gr-reporting"
+    ]
+  }
+]

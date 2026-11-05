@@ -1,0 +1,1671 @@
+[
+  {
+    "id": "pt-001",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Quelle est la forme de x ?",
+    "code": "x = torch.zeros(3, 2, 5)",
+    "options": [
+      {
+        "id": "a",
+        "text": "(3, 2, 5)"
+      },
+      {
+        "id": "b",
+        "text": "(5, 2, 3)"
+      },
+      {
+        "id": "c",
+        "text": "(30,)"
+      },
+      {
+        "id": "d",
+        "text": "(3, 10)"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Les arguments indiquent les tailles des trois axes dans leur ordre. Le tenseur contient 30 éléments, mais conserve bien trois dimensions.",
+    "sourceIds": [
+      "torch-tensors"
+    ]
+  },
+  {
+    "id": "pt-002",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Quelle est la forme de y ?",
+    "code": "x = torch.zeros(6, 4, 9)\ny = x[2]",
+    "options": [
+      {
+        "id": "a",
+        "text": "(6, 9)"
+      },
+      {
+        "id": "b",
+        "text": "(4, 9)"
+      },
+      {
+        "id": "c",
+        "text": "(1, 4, 9)"
+      },
+      {
+        "id": "d",
+        "text": "(6, 4)"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Un indice entier sur le premier axe sélectionne un élément et retire cet axe. Les dimensions restantes sont les quatre canaux et les neuf positions.",
+    "sourceIds": [
+      "torch-tensors"
+    ]
+  },
+  {
+    "id": "pt-003",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Quel dtype convient à un tenseur de caractéristiques sur lequel calculer des gradients ?",
+    "code": "x = torch.tensor([1, 2, 3], dtype=___, requires_grad=True)",
+    "options": [
+      {
+        "id": "a",
+        "text": "torch.bool"
+      },
+      {
+        "id": "b",
+        "text": "torch.int64"
+      },
+      {
+        "id": "c",
+        "text": "torch.float32"
+      },
+      {
+        "id": "d",
+        "text": "torch.uint8"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Le calcul de gradients est pris en charge pour les types flottants ou complexes. Un entier utilisé comme indice ne représente pas une variable différentiable continue.",
+    "sourceIds": [
+      "torch-autograd"
+    ]
+  },
+  {
+    "id": "pt-004",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "x est initialement sur CPU. Quelle ligne conserve dans x la version déplacée vers un device disponible ?",
+    "code": "device = \"cuda\"\n# On suppose CUDA disponible\n___",
+    "options": [
+      {
+        "id": "a",
+        "text": "x.cuda_available()"
+      },
+      {
+        "id": "b",
+        "text": "x.device = device"
+      },
+      {
+        "id": "c",
+        "text": "device.to(x)"
+      },
+      {
+        "id": "d",
+        "text": "x = x.to(device)"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Pour un tenseur, to renvoie le tenseur sur le périphérique demandé et il faut conserver ce résultat. Affecter directement l’attribut device n’est pas une méthode de déplacement.",
+    "sourceIds": [
+      "torch-tensors"
+    ]
+  },
+  {
+    "id": "pt-005",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Quelle forme obtient-on après concaténation ?",
+    "code": "a = torch.zeros(2, 3)\nb = torch.ones(4, 3)\ny = torch.cat([a, b], dim=0)",
+    "options": [
+      {
+        "id": "a",
+        "text": "(6, 3)"
+      },
+      {
+        "id": "b",
+        "text": "(2, 4, 3)"
+      },
+      {
+        "id": "c",
+        "text": "(2, 6)"
+      },
+      {
+        "id": "d",
+        "text": "(6,)"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "cat joint les tenseurs le long d’un axe existant. Les dimensions hors de cet axe doivent correspondre, ici la dimension de taille 3.",
+    "sourceIds": [
+      "torch-tensors"
+    ]
+  },
+  {
+    "id": "pt-006",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Quelle est la forme de y ?",
+    "code": "a = torch.zeros(3, 5)\nb = torch.ones(3, 5)\ny = torch.stack([a, b], dim=0)",
+    "options": [
+      {
+        "id": "a",
+        "text": "(6, 5)"
+      },
+      {
+        "id": "b",
+        "text": "(2, 3, 5)"
+      },
+      {
+        "id": "c",
+        "text": "(3, 10)"
+      },
+      {
+        "id": "d",
+        "text": "(3, 5, 2)"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "stack crée un nouvel axe pour empiler des tenseurs de mêmes formes. dim=0 place les deux éléments sur le premier axe.",
+    "sourceIds": [
+      "torch-tensors"
+    ]
+  },
+  {
+    "id": "pt-007",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch",
+      "audio-ml"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "x contient un batch de B signaux mono sous forme (B, T). Quelle ligne ajoute l’axe canal pour Conv1d ?",
+    "code": "x = torch.zeros(8, 16000)\ny = ___",
+    "options": [
+      {
+        "id": "a",
+        "text": "x.unsqueeze(0)"
+      },
+      {
+        "id": "b",
+        "text": "x.squeeze(1)"
+      },
+      {
+        "id": "c",
+        "text": "x.unsqueeze(1)"
+      },
+      {
+        "id": "d",
+        "text": "x.reshape(16000, 8)"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "unsqueeze(1) insère une dimension de taille 1 entre le batch et le temps. On obtient (8, 1, 16000), l’organisation attendue pour un canal en Conv1d.",
+    "sourceIds": [
+      "torch-tensors",
+      "torch-conv1d"
+    ]
+  },
+  {
+    "id": "pt-008",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "y suit l’ordre (batch, canal, temps). Le batch peut contenir un seul exemple. Quelle ligne retire uniquement l’axe canal ?",
+    "code": "y = torch.zeros(1, 1, 80)\nz = ___",
+    "options": [
+      {
+        "id": "a",
+        "text": "y.squeeze()"
+      },
+      {
+        "id": "b",
+        "text": "y.squeeze(0)"
+      },
+      {
+        "id": "c",
+        "text": "y.flatten()"
+      },
+      {
+        "id": "d",
+        "text": "y.squeeze(1)"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "squeeze(1) retire seulement la dimension 1 explicitement visée. squeeze() retirerait aussi l’axe batch de taille 1, ce qui rendrait la forme dépendante de la taille du batch.",
+    "sourceIds": [
+      "torch-tensors"
+    ]
+  },
+  {
+    "id": "pt-009",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Que vaut x.grad après backward ?",
+    "code": "x = torch.tensor(3., requires_grad=True)\ny = x ** 2\ny.backward()",
+    "options": [
+      {
+        "id": "a",
+        "text": "6.0"
+      },
+      {
+        "id": "b",
+        "text": "3.0"
+      },
+      {
+        "id": "c",
+        "text": "9.0"
+      },
+      {
+        "id": "d",
+        "text": "1.0"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "La dérivée de x au carré est 2x. Évaluée en 3, elle vaut 6 et est accumulée dans x.grad.",
+    "sourceIds": [
+      "torch-autograd"
+    ]
+  },
+  {
+    "id": "pt-010",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "loss est un tenseur scalaire différentiable dont le graphe est disponible. Quelle est l’action de cette instruction seule ?",
+    "code": "loss.backward()",
+    "options": [
+      {
+        "id": "a",
+        "text": "Mettre à jour les paramètres avec SGD"
+      },
+      {
+        "id": "b",
+        "text": "Calculer et accumuler les gradients"
+      },
+      {
+        "id": "c",
+        "text": "Mettre le modèle en mode évaluation"
+      },
+      {
+        "id": "d",
+        "text": "Remettre tous les gradients à zéro"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "backward propage les dérivées dans le graphe et remplit les gradients des paramètres concernés. La mise à jour des paramètres nécessite ensuite un pas d’optimiseur.",
+    "sourceIds": [
+      "torch-optimization"
+    ]
+  },
+  {
+    "id": "pt-011",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Quel appel empêche de cumuler involontairement les gradients de deux minibatches indépendants ?",
+    "code": "for x, y in loader:\n    ___\n    loss = loss_fn(model(x), y)\n    loss.backward()\n    optimizer.step()",
+    "options": [
+      {
+        "id": "a",
+        "text": "model.eval()"
+      },
+      {
+        "id": "b",
+        "text": "loss.detach()"
+      },
+      {
+        "id": "c",
+        "text": "optimizer.zero_grad()"
+      },
+      {
+        "id": "d",
+        "text": "optimizer.state_dict()"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Les gradients s’accumulent par défaut d’un backward à l’autre. Les réinitialiser avant le calcul d’un nouveau minibatch isole sa contribution.",
+    "sourceIds": [
+      "torch-optimization"
+    ]
+  },
+  {
+    "id": "pt-012",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Quel effet a model.eval() sur un module Dropout standard ?",
+    "code": "model.eval()\ny = model(x)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Il remet ses paramètres à zéro"
+      },
+      {
+        "id": "b",
+        "text": "Il supprime les paramètres du modèle"
+      },
+      {
+        "id": "c",
+        "text": "Il calcule automatiquement la loss"
+      },
+      {
+        "id": "d",
+        "text": "Il désactive l’abandon aléatoire d’activations"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "eval change le comportement des modules sensibles au mode, dont Dropout. Il ne désactive pas à lui seul l’enregistrement des opérations par autograd.",
+    "sourceIds": [
+      "torch-module"
+    ]
+  },
+  {
+    "id": "pt-013",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "À quoi sert ce contexte lors d’une validation ?",
+    "code": "with torch.no_grad():\n    predictions = model(x)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Éviter de construire le graphe de gradients"
+      },
+      {
+        "id": "b",
+        "text": "Activer le Dropout pour tous les modules"
+      },
+      {
+        "id": "c",
+        "text": "Modifier les poids avec un gradient nul"
+      },
+      {
+        "id": "d",
+        "text": "Convertir automatiquement x en entier"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "no_grad désactive le suivi des gradients pour les opérations effectuées dans ce contexte. Il réduit les besoins de mémoire de validation et se combine avec model.eval().",
+    "sourceIds": [
+      "torch-autograd"
+    ]
+  },
+  {
+    "id": "pt-014",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Quels objets cet optimiseur doit-il recevoir pour entraîner les poids du modèle ?",
+    "code": "optimizer = torch.optim.SGD(___, lr=0.01)",
+    "options": [
+      {
+        "id": "a",
+        "text": "model.buffers()"
+      },
+      {
+        "id": "b",
+        "text": "model.parameters()"
+      },
+      {
+        "id": "c",
+        "text": "model.state_dict().keys()"
+      },
+      {
+        "id": "d",
+        "text": "model.training"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "parameters fournit les tenseurs de paramètres enregistrés par le module. L’optimiseur utilise leurs gradients pour modifier ces paramètres lors de step.",
+    "sourceIds": [
+      "torch-buildmodel",
+      "torch-optimization"
+    ]
+  },
+  {
+    "id": "pt-015",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Quelle est la forme de y ?",
+    "code": "layer = torch.nn.Linear(12, 5)\nx = torch.zeros(8, 12)\ny = layer(x)",
+    "options": [
+      {
+        "id": "a",
+        "text": "(5, 12)"
+      },
+      {
+        "id": "b",
+        "text": "(12, 8)"
+      },
+      {
+        "id": "c",
+        "text": "(8, 5)"
+      },
+      {
+        "id": "d",
+        "text": "(8, 12, 5)"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Linear transforme la dernière dimension de 12 caractéristiques en 5 sorties. L’axe batch de taille 8 est conservé.",
+    "sourceIds": [
+      "torch-buildmodel"
+    ]
+  },
+  {
+    "id": "pt-016",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Que vaut y ?",
+    "code": "x = torch.tensor([-2., 0., 3.])\ny = torch.relu(x)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Un tenseur [-2., 0., 3.]"
+      },
+      {
+        "id": "b",
+        "text": "Un tenseur [2., 0., 3.]"
+      },
+      {
+        "id": "c",
+        "text": "Un tenseur [0., 1., 3.]"
+      },
+      {
+        "id": "d",
+        "text": "Un tenseur [0., 0., 3.]"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "ReLU remplace les valeurs négatives par zéro et conserve les valeurs positives. Elle n’est ni une valeur absolue ni une normalisation des sorties.",
+    "sourceIds": [
+      "torch-buildmodel"
+    ]
+  },
+  {
+    "id": "pt-017",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch",
+      "audio-ml"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Pour une classification exclusive à 4 classes, que doit contenir logits donné à CrossEntropyLoss ?",
+    "code": "logits = model(x)  # forme (B, 4)\nloss = torch.nn.CrossEntropyLoss()(logits, labels)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Des scores bruts sans softmax préalable"
+      },
+      {
+        "id": "b",
+        "text": "Des indices de classe de forme (B,)"
+      },
+      {
+        "id": "c",
+        "text": "Des probabilités après argmax"
+      },
+      {
+        "id": "d",
+        "text": "Uniquement des valeurs entre 0 et 1"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "CrossEntropyLoss reçoit les scores non normalisés et intègre l’opération de log-softmax nécessaire. Appliquer argmax détruirait l’information différentiable sur les classes.",
+    "sourceIds": [
+      "torch-ce"
+    ]
+  },
+  {
+    "id": "pt-018",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "fondamental",
+    "prompt": "Dans un Dataset indexable, que doit renvoyer cette méthode ?",
+    "code": "class Sons(torch.utils.data.Dataset):\n    def __len__(self):\n        return ___",
+    "options": [
+      {
+        "id": "a",
+        "text": "La durée totale en secondes"
+      },
+      {
+        "id": "b",
+        "text": "Le nombre d’exemples indexables"
+      },
+      {
+        "id": "c",
+        "text": "Le nombre de workers"
+      },
+      {
+        "id": "d",
+        "text": "La taille du dernier minibatch"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "__len__ donne le nombre d’éléments accessibles dans le Dataset. La durée audio ou la taille des minibatches correspond à d’autres informations.",
+    "sourceIds": [
+      "torch-data"
+    ]
+  },
+  {
+    "id": "pt-019",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Quelle est la forme du résultat ?",
+    "code": "x = torch.zeros(4, 3, 7)\nb = torch.ones(3, 1)\ny = x + b",
+    "options": [
+      {
+        "id": "a",
+        "text": "(4, 3, 1)"
+      },
+      {
+        "id": "b",
+        "text": "(3, 7)"
+      },
+      {
+        "id": "c",
+        "text": "(4, 3, 7)"
+      },
+      {
+        "id": "d",
+        "text": "Cette addition est incompatible"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Les dimensions sont comparées depuis la droite : 1 peut être diffusé en 7, puis 3 correspond à 3. L’axe absent dans b est diffusé sur les quatre éléments du batch.",
+    "sourceIds": [
+      "torch-broadcast"
+    ]
+  },
+  {
+    "id": "pt-020",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch",
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "x est (batch, temps, fréquences). Quelle expression donne (batch, fréquences, temps) en réordonnant correctement les valeurs ?",
+    "code": "x = torch.arange(8 * 100 * 64).reshape(8, 100, 64)\ny = ___",
+    "options": [
+      {
+        "id": "a",
+        "text": "x.reshape(8, 64, 100)"
+      },
+      {
+        "id": "b",
+        "text": "x.permute(2, 1, 0)"
+      },
+      {
+        "id": "c",
+        "text": "x.flatten(1)"
+      },
+      {
+        "id": "d",
+        "text": "x.permute(0, 2, 1)"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "permute réordonne les axes et conserve la signification des coordonnées. reshape change le découpage de l’ordre des éléments, sans effectuer cette permutation sémantique.",
+    "sourceIds": [
+      "torch-views"
+    ]
+  },
+  {
+    "id": "pt-021",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Quel tenseur y obtient-on ?",
+    "code": "x = torch.tensor([[1, 2, 3], [4, 5, 6]])\ny = x.reshape(3, 2)",
+    "options": [
+      {
+        "id": "a",
+        "text": "[[1, 2], [3, 4], [5, 6]]"
+      },
+      {
+        "id": "b",
+        "text": "[[1, 4], [2, 5], [3, 6]]"
+      },
+      {
+        "id": "c",
+        "text": "[[1, 3], [5, 2], [4, 6]]"
+      },
+      {
+        "id": "d",
+        "text": "[[1, 2, 3], [4, 5, 6]]"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "reshape conserve ici la séquence logique des six valeurs et les répartit en trois lignes de deux. La seconde proposition correspondrait à une transposition, une autre opération.",
+    "sourceIds": [
+      "torch-views"
+    ]
+  },
+  {
+    "id": "pt-022",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "scores est de forme (B, C), avec une classe exclusive par exemple. Quelle expression fournit, pour chaque exemple, l’indice de sa classe au score maximal ?",
+    "code": "classes = ___",
+    "options": [
+      {
+        "id": "a",
+        "text": "scores.argmax(dim=0)"
+      },
+      {
+        "id": "b",
+        "text": "scores.argmax(dim=1)"
+      },
+      {
+        "id": "c",
+        "text": "scores.mean(dim=1)"
+      },
+      {
+        "id": "d",
+        "text": "scores.argmax()"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "dim=1 sélectionne la position du plus grand score parmi les C classes pour chaque exemple. dim=0 comparerait les exemples entre eux pour chaque classe.",
+    "sourceIds": [
+      "torch-buildmodel"
+    ]
+  },
+  {
+    "id": "pt-023",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Quelles valeurs contient y ?",
+    "code": "x = torch.tensor([-1., 2., 0., 5.])\ny = x[x > 0]",
+    "options": [
+      {
+        "id": "a",
+        "text": "[-1., 0.]"
+      },
+      {
+        "id": "b",
+        "text": "[0., 2., 5.]"
+      },
+      {
+        "id": "c",
+        "text": "[2., 5.]"
+      },
+      {
+        "id": "d",
+        "text": "[False, True, False, True]"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Le masque booléen sélectionne uniquement les éléments qui satisfont x > 0. La valeur zéro est exclue puisque l’inégalité est stricte.",
+    "sourceIds": [
+      "torch-tensors"
+    ]
+  },
+  {
+    "id": "pt-024",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Pour x de forme (B, C, T), quelle est la forme de m ?",
+    "code": "x = torch.zeros(4, 6, 100)\nm = x.mean(dim=-1, keepdim=True)",
+    "options": [
+      {
+        "id": "a",
+        "text": "(4, 100)"
+      },
+      {
+        "id": "b",
+        "text": "(4, 6)"
+      },
+      {
+        "id": "c",
+        "text": "(6, 1)"
+      },
+      {
+        "id": "d",
+        "text": "(4, 6, 1)"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "La moyenne réduit l’axe temporel de taille 100. keepdim=True conserve cet axe avec une taille de 1, ce qui facilite une soustraction avec broadcasting.",
+    "sourceIds": [
+      "torch-broadcast"
+    ]
+  },
+  {
+    "id": "pt-025",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Sans pondération ni cible ignorée, logits est un tenseur flottant (B, C) et labels contient B indices de classe valides de type long. Quelle forme renvoie loss ?",
+    "code": "loss = torch.nn.CrossEntropyLoss(reduction=\"none\")(logits, labels)",
+    "options": [
+      {
+        "id": "a",
+        "text": "(B,)"
+      },
+      {
+        "id": "b",
+        "text": "(B, C)"
+      },
+      {
+        "id": "c",
+        "text": "Un scalaire"
+      },
+      {
+        "id": "d",
+        "text": "(C,)"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "reduction=\"none\" conserve une perte par exemple dans cette situation. La dimension des classes est agrégée par la formule d’entropie croisée.",
+    "sourceIds": [
+      "torch-ce"
+    ]
+  },
+  {
+    "id": "pt-026",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch",
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "On prédit 5 étiquettes indépendantes, plusieurs pouvant être présentes. Quelle perte utiliser directement sur ces logits ?",
+    "code": "logits = model(x)  # (B, 5)\ntargets = labels.float()  # (B, 5), valeurs 0 ou 1\nloss = ___",
+    "options": [
+      {
+        "id": "a",
+        "text": "torch.nn.CrossEntropyLoss()(logits, targets.argmax(1))"
+      },
+      {
+        "id": "b",
+        "text": "torch.nn.BCEWithLogitsLoss()(logits, targets)"
+      },
+      {
+        "id": "c",
+        "text": "torch.nn.MSELoss()(logits.argmax(1), targets)"
+      },
+      {
+        "id": "d",
+        "text": "torch.nn.BCELoss()(logits, targets)"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "BCEWithLogitsLoss combine une sigmoid et une entropie croisée binaire stable pour chaque étiquette. Une softmax exclusive imposerait à tort une compétition entre des étiquettes pouvant coexister.",
+    "sourceIds": [
+      "torch-bce"
+    ]
+  },
+  {
+    "id": "pt-027",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch",
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Quelle est la forme de y avec stride=1, padding=0 et dilation=1 ?",
+    "code": "conv = torch.nn.Conv1d(1, 8, kernel_size=5)\nx = torch.zeros(4, 1, 100)\ny = conv(x)",
+    "options": [
+      {
+        "id": "a",
+        "text": "(4, 1, 96)"
+      },
+      {
+        "id": "b",
+        "text": "(4, 8, 100)"
+      },
+      {
+        "id": "c",
+        "text": "(4, 8, 96)"
+      },
+      {
+        "id": "d",
+        "text": "(8, 4, 105)"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Un noyau de longueur 5 sans padding dispose de 100 - 5 + 1 = 96 positions. Le nombre de canaux de sortie est 8 et le batch reste de taille 4.",
+    "sourceIds": [
+      "torch-conv1d"
+    ]
+  },
+  {
+    "id": "pt-028",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch",
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Quelle forme a batch ?",
+    "code": "from torch.nn.utils.rnn import pad_sequence\na = torch.ones(30, 6)\nb = torch.ones(20, 6)\nbatch = pad_sequence([a, b], batch_first=True)",
+    "options": [
+      {
+        "id": "a",
+        "text": "(30, 2, 6)"
+      },
+      {
+        "id": "b",
+        "text": "(2, 20, 6)"
+      },
+      {
+        "id": "c",
+        "text": "(2, 50, 6)"
+      },
+      {
+        "id": "d",
+        "text": "(2, 30, 6)"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "pad_sequence complète les séquences jusqu’à la longueur maximale, ici 30. batch_first=True place les deux exemples au premier axe et conserve les six caractéristiques.",
+    "sourceIds": [
+      "torch-padding"
+    ]
+  },
+  {
+    "id": "pt-029",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch",
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "x est un tenseur flottant fini (B, T, D), mask est (B, T) booléen, vrai sur les positions valides. Chaque exemple a au moins une position valide. Quelle formule calcule la moyenne temporelle des seuls vecteurs valides, quelle que soit la quantité de padding ?",
+    "code": "m = mask.unsqueeze(-1)\npooled = ___",
+    "options": [
+      {
+        "id": "a",
+        "text": "(x * m).sum(1) / m.sum(1)"
+      },
+      {
+        "id": "b",
+        "text": "x.mean(1)"
+      },
+      {
+        "id": "c",
+        "text": "(x * m).sum(1) / x.shape[1]"
+      },
+      {
+        "id": "d",
+        "text": "x.sum(1) / x.shape[2]"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Le numérateur somme seulement les vecteurs valides. Le dénominateur compte ces positions pour chaque exemple, plutôt que la longueur maximale incluant le padding.",
+    "sourceIds": [
+      "torch-padding",
+      "torch-broadcast"
+    ]
+  },
+  {
+    "id": "pt-030",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Pour des cibles constituées d’indices de classe avec CrossEntropyLoss, quelle conversion convient ?",
+    "code": "labels = torch.tensor([0., 2., 1.])\n# logits a la forme (3, 4)\nloss = torch.nn.CrossEntropyLoss()(logits, ___)",
+    "options": [
+      {
+        "id": "a",
+        "text": "labels.bool()"
+      },
+      {
+        "id": "b",
+        "text": "labels.long()"
+      },
+      {
+        "id": "c",
+        "text": "labels.unsqueeze(1)"
+      },
+      {
+        "id": "d",
+        "text": "labels.softmax(dim=0)"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Dans le mode à indices de classe, les cibles sont des entiers de type long et de forme (B,). La forme et le dtype des probabilités cibles constituent un autre mode, distinct de cet énoncé.",
+    "sourceIds": [
+      "torch-ce"
+    ]
+  },
+  {
+    "id": "pt-031",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Le modèle et x sont sur CUDA, labels contient les indices de classe valides de type long sur CPU. Quelle ligne insérer juste avant la perte résout ce conflit de device ?",
+    "code": "logits = model(x)\nloss = loss_fn(logits, labels)",
+    "options": [
+      {
+        "id": "a",
+        "text": "logits = logits.long()"
+      },
+      {
+        "id": "b",
+        "text": "model.eval()"
+      },
+      {
+        "id": "c",
+        "text": "labels = labels.to(logits.device)"
+      },
+      {
+        "id": "d",
+        "text": "labels = labels.requires_grad_()"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Les tenseurs impliqués dans cette perte doivent être sur le même périphérique. Déplacer les cibles vers le device des logits résout ce conflit sans changer leur rôle ni leur dtype.",
+    "sourceIds": [
+      "torch-tensors"
+    ]
+  },
+  {
+    "id": "pt-032",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "pred est sur CUDA et pred.requires_grad vaut True. On veut mémoriser les prédictions sans garder leur graphe autograd, sous forme de tenseurs CPU. Quelle ligne convient ?",
+    "code": "pred = model(x)\nhistorique.append(___)",
+    "options": [
+      {
+        "id": "a",
+        "text": "pred"
+      },
+      {
+        "id": "b",
+        "text": "pred.clone()"
+      },
+      {
+        "id": "c",
+        "text": "pred.to(x.device)"
+      },
+      {
+        "id": "d",
+        "text": "pred.detach().cpu()"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "detach coupe la relation avec le graphe autograd ; cpu déplace ensuite les valeurs sur le CPU. clone seule conserve une opération différentiable et peut donc retenir le graphe.",
+    "sourceIds": [
+      "torch-autograd"
+    ]
+  },
+  {
+    "id": "pt-033",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch",
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Quelle instruction désactive le calcul des gradients par rapport aux paramètres de cet encodeur ?",
+    "code": "for p in encoder.parameters():\n    ___",
+    "options": [
+      {
+        "id": "a",
+        "text": "p.requires_grad_(False)"
+      },
+      {
+        "id": "b",
+        "text": "p.zero_()"
+      },
+      {
+        "id": "c",
+        "text": "p.detach()"
+      },
+      {
+        "id": "d",
+        "text": "p.grad = 1"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Désactiver requires_grad empêche le calcul de nouveaux gradients pour ces paramètres. Cela ne change pas le mode train/eval du module ; appeler detach sans conserver son résultat ne modifie pas le paramètre original.",
+    "sourceIds": [
+      "torch-autograd"
+    ]
+  },
+  {
+    "id": "pt-034",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Dans __init__, quel conteneur enregistre ces couches afin que model.parameters() les retrouve ?",
+    "code": "self.layers = ___([torch.nn.Linear(8, 8) for _ in range(3)])",
+    "options": [
+      {
+        "id": "a",
+        "text": "list"
+      },
+      {
+        "id": "b",
+        "text": "torch.nn.ModuleList"
+      },
+      {
+        "id": "c",
+        "text": "tuple"
+      },
+      {
+        "id": "d",
+        "text": "torch.tensor"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "ModuleList enregistre les sous-modules tout en permettant leur parcours comme une liste. Une liste Python ordinaire ne réalise pas cet enregistrement automatique auprès du module parent.",
+    "sourceIds": [
+      "torch-module"
+    ]
+  },
+  {
+    "id": "pt-035",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Une moyenne fixe doit suivre model.to(device), apparaître dans state_dict et rester absente de model.parameters(). Quelle instruction utiliser dans __init__ ?",
+    "code": "___",
+    "options": [
+      {
+        "id": "a",
+        "text": "self.mean = torch.zeros(8)"
+      },
+      {
+        "id": "b",
+        "text": "self.mean = torch.nn.Parameter(torch.zeros(8))"
+      },
+      {
+        "id": "c",
+        "text": "self.register_buffer(\"mean\", torch.zeros(8))"
+      },
+      {
+        "id": "d",
+        "text": "self.mean = [0.] * 8"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Un buffer enregistré suit les changements de device et participe par défaut à state_dict. Il n’apparaît pas dans parameters(), contrairement à un nn.Parameter.",
+    "sourceIds": [
+      "torch-module"
+    ]
+  },
+  {
+    "id": "pt-036",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Que sauvegarde principalement cette ligne pour un modèle standard ?",
+    "code": "torch.save(model.state_dict(), \"poids.pt\")",
+    "options": [
+      {
+        "id": "a",
+        "text": "Le code Python complet des classes"
+      },
+      {
+        "id": "b",
+        "text": "Tous les minibatches précédents"
+      },
+      {
+        "id": "c",
+        "text": "Le graphe autograd du dernier batch"
+      },
+      {
+        "id": "d",
+        "text": "Les paramètres et buffers persistants enregistrés"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "state_dict associe les noms aux valeurs des paramètres et buffers persistants. Pour recharger ces poids, on reconstruit une architecture compatible puis on lui fournit cet état.",
+    "sourceIds": [
+      "torch-saving"
+    ]
+  },
+  {
+    "id": "pt-037",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Après chargement des poids, quel appel prépare Dropout et BatchNorm pour l’inférence ?",
+    "code": "model.load_state_dict(etat)\n___",
+    "options": [
+      {
+        "id": "a",
+        "text": "model.eval()"
+      },
+      {
+        "id": "b",
+        "text": "model.zero_grad()"
+      },
+      {
+        "id": "c",
+        "text": "model.train()"
+      },
+      {
+        "id": "d",
+        "text": "model.requires_grad_(True)"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Le chargement des poids ne sélectionne pas le mode évaluation du modèle. eval règle les modules dont le comportement diffère entre entraînement et inférence.",
+    "sourceIds": [
+      "torch-saving",
+      "torch-module"
+    ]
+  },
+  {
+    "id": "pt-038",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch",
+      "audio-ml"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Des exemples audio ont des longueurs différentes. Que fournir au DataLoader pour définir padding et masques lors du regroupement ?",
+    "code": "loader = torch.utils.data.DataLoader(dataset, batch_size=8, ___)",
+    "options": [
+      {
+        "id": "a",
+        "text": "drop_last=False"
+      },
+      {
+        "id": "b",
+        "text": "collate_fn=assembler_batch"
+      },
+      {
+        "id": "c",
+        "text": "shuffle=False"
+      },
+      {
+        "id": "d",
+        "text": "num_workers=0"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "collate_fn définit comment une liste d’exemples devient un minibatch. On peut y compléter les signaux et produire leurs longueurs ou leurs masques, là où l’empilement par défaut échouerait.",
+    "sourceIds": [
+      "torch-loader"
+    ]
+  },
+  {
+    "id": "pt-039",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Le Dataset renvoie un couple (signal, étiquette). Quel est l’effet de shuffle=True ?",
+    "code": "loader = torch.utils.data.DataLoader(dataset, batch_size=8, shuffle=True)",
+    "options": [
+      {
+        "id": "a",
+        "text": "Mélanger les échantillons temporels de chaque signal"
+      },
+      {
+        "id": "b",
+        "text": "Mélanger les étiquettes indépendamment des signaux"
+      },
+      {
+        "id": "c",
+        "text": "Mélanger l’ordre des exemples en conservant les couples"
+      },
+      {
+        "id": "d",
+        "text": "Mélanger uniquement les canaux stéréo"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Le DataLoader mélange les indices des exemples, pas le contenu des éléments retournés. Chaque signal conserve ainsi l’étiquette que le Dataset lui associe.",
+    "sourceIds": [
+      "torch-data"
+    ]
+  },
+  {
+    "id": "pt-040",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "loss est un tenseur scalaire. Que produit loss.item() pour la journalisation ?",
+    "code": "valeur = loss.item()",
+    "options": [
+      {
+        "id": "a",
+        "text": "Un nouveau paramètre entraînable"
+      },
+      {
+        "id": "b",
+        "text": "Une copie de tout le graphe"
+      },
+      {
+        "id": "c",
+        "text": "Un tenseur de même device"
+      },
+      {
+        "id": "d",
+        "text": "Un nombre Python sans graphe autograd"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "item extrait une valeur scalaire Python qui ne sert plus à rétropropager. Cette conversion peut aussi synchroniser le calcul lorsque le tenseur se trouve sur un accélérateur.",
+    "sourceIds": [
+      "torch-tensors"
+    ]
+  },
+  {
+    "id": "pt-041",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Que vaut w.grad après ces deux backward sur deux graphes recréés, sans remise à zéro ?",
+    "code": "w = torch.tensor(2., requires_grad=True)\n(w * 3).backward()\n(w * 4).backward()",
+    "options": [
+      {
+        "id": "a",
+        "text": "7.0"
+      },
+      {
+        "id": "b",
+        "text": "4.0"
+      },
+      {
+        "id": "c",
+        "text": "3.0"
+      },
+      {
+        "id": "d",
+        "text": "14.0"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Le premier graphe contribue un gradient 3 et le second un gradient 4. Les gradients étant accumulés, w.grad contient leur somme 7.",
+    "sourceIds": [
+      "torch-autograd"
+    ]
+  },
+  {
+    "id": "pt-042",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "Quel duo prépare une validation sans Dropout actif et sans suivi de gradients ?",
+    "code": "___\nwith ___:\n    pred = model(x)",
+    "options": [
+      {
+        "id": "a",
+        "text": "model.train() ; torch.no_grad()"
+      },
+      {
+        "id": "b",
+        "text": "model.eval() ; torch.no_grad()"
+      },
+      {
+        "id": "c",
+        "text": "model.eval() ; torch.enable_grad()"
+      },
+      {
+        "id": "d",
+        "text": "model.zero_grad() ; torch.enable_grad()"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "eval règle notamment Dropout et BatchNorm en mode évaluation. no_grad agit séparément sur la construction du graphe : les deux mécanismes sont complémentaires.",
+    "sourceIds": [
+      "torch-module",
+      "torch-autograd"
+    ]
+  },
+  {
+    "id": "pt-043",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "intermediaire",
+    "prompt": "On soupçonne NaN ou inf dans un batch. Quel test vérifie directement que toutes ses valeurs sont finies ?",
+    "code": "ok = ___",
+    "options": [
+      {
+        "id": "a",
+        "text": "x.sum() == 0"
+      },
+      {
+        "id": "b",
+        "text": "x.dtype == torch.float32"
+      },
+      {
+        "id": "c",
+        "text": "torch.isfinite(x).all()"
+      },
+      {
+        "id": "d",
+        "text": "x.requires_grad"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "isfinite identifie les valeurs qui ne sont ni NaN ni infinies, puis all exige que le test soit vrai partout. Un dtype flottant ou une somme particulière ne suffit pas à assurer cette propriété.",
+    "sourceIds": [
+      "torch-isfinite"
+    ]
+  },
+  {
+    "id": "pt-044",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "avance",
+    "prompt": "y est une transposition non contiguë. Quel remplacement aplatit ses valeurs dans leur ordre logique même si une copie est nécessaire ?",
+    "code": "x = torch.arange(12).reshape(3, 4)\ny = x.transpose(0, 1)\nz = y.view(-1)  # échoue ici",
+    "options": [
+      {
+        "id": "a",
+        "text": "z = y.permute(1, 0)"
+      },
+      {
+        "id": "b",
+        "text": "z = y.squeeze()"
+      },
+      {
+        "id": "c",
+        "text": "z = y.detach()"
+      },
+      {
+        "id": "d",
+        "text": "z = y.reshape(-1)"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "reshape peut effectuer une copie lorsque les strides ne permettent pas une vue de la forme demandée. view impose la compatibilité de la disposition mémoire et échoue dans cet exemple.",
+    "sourceIds": [
+      "torch-views"
+    ]
+  },
+  {
+    "id": "pt-045",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "avance",
+    "prompt": "Que vaut x[0] après ces opérations sans backward ?",
+    "code": "x = torch.tensor([1., 2.], requires_grad=True)\ny = x.detach()\ny[0] = 9.",
+    "options": [
+      {
+        "id": "a",
+        "text": "9.0"
+      },
+      {
+        "id": "b",
+        "text": "1.0"
+      },
+      {
+        "id": "c",
+        "text": "0.0"
+      },
+      {
+        "id": "d",
+        "text": "Une copie indépendante protège x"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "detach sépare le suivi autograd mais conserve le partage des données. Une copie indépendante exige par exemple detach().clone(), en particulier pour un instantané modifiable.",
+    "sourceIds": [
+      "torch-views",
+      "torch-autograd"
+    ]
+  },
+  {
+    "id": "pt-046",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch",
+      "evaluation-recherche"
+    ],
+    "difficulty": "avance",
+    "prompt": "Une loss moyenne par exemple vaut 2 pour un batch de 8, puis 5 pour un batch de 2. Quelle est la moyenne sur les 10 exemples ?",
+    "code": "valeurs = [(2.0, 8), (5.0, 2)]",
+    "options": [
+      {
+        "id": "a",
+        "text": "3.5"
+      },
+      {
+        "id": "b",
+        "text": "2.6"
+      },
+      {
+        "id": "c",
+        "text": "7.0"
+      },
+      {
+        "id": "d",
+        "text": "1.4"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "Il faut pondérer chaque moyenne par son effectif : (2 × 8 + 5 × 2) / 10 = 2,6. La moyenne simple des deux batches donnerait trop de poids au petit batch.",
+    "sourceIds": [
+      "torch-optimization"
+    ]
+  },
+  {
+    "id": "pt-047",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "avance",
+    "prompt": "On accumule 4 microbatches de même taille. Le modèle traite chaque exemple indépendamment et de façon déterministe, sans BatchNorm ni Dropout ; la loss est la moyenne arithmétique des pertes par exemple. Quelle ligne reproduit le gradient de la moyenne de leur réunion ?",
+    "code": "optimizer.zero_grad()\nfor x, y in quatre_microbatches:\n    loss = loss_fn(model(x), y)  # moyenne par exemple\n    ___\noptimizer.step()",
+    "options": [
+      {
+        "id": "a",
+        "text": "loss.backward()"
+      },
+      {
+        "id": "b",
+        "text": "(loss * 4).backward()"
+      },
+      {
+        "id": "c",
+        "text": "(loss / 4).backward()"
+      },
+      {
+        "id": "d",
+        "text": "loss.item()"
+      }
+    ],
+    "correctOptionId": "c",
+    "explanation": "Chaque microbatch représente un quart des exemples de cette réunion. Diviser chaque perte moyenne par 4 avant backward donne donc le gradient de la moyenne globale sous les hypothèses indiquées.",
+    "sourceIds": [
+      "torch-autograd",
+      "torch-optimization"
+    ]
+  },
+  {
+    "id": "pt-048",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch",
+      "audio-ml"
+    ],
+    "difficulty": "avance",
+    "prompt": "pred et target sont des tenseurs flottants finis (B, T, D), mask est (B, T) booléen et mask.sum() > 0. Quelle formule donne le nombre de valeurs valides pour calculer une MSE moyenne par valeur, quels que soient D et le padding ?",
+    "code": "err = (pred - target).pow(2)\nnum = (err * mask.unsqueeze(-1)).sum()\nloss = num / ___",
+    "options": [
+      {
+        "id": "a",
+        "text": "mask.numel()"
+      },
+      {
+        "id": "b",
+        "text": "mask.sum()"
+      },
+      {
+        "id": "c",
+        "text": "pred.numel()"
+      },
+      {
+        "id": "d",
+        "text": "(mask.sum() * pred.shape[-1])"
+      }
+    ],
+    "correctOptionId": "d",
+    "explanation": "Le numérateur contient D erreurs par position temporelle valide. Le nombre de valeurs effectivement incluses est donc le nombre de positions valides multiplié par D.",
+    "sourceIds": [
+      "torch-broadcast",
+      "torch-mse"
+    ]
+  },
+  {
+    "id": "pt-049",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "avance",
+    "prompt": "Sans précision mixte ni accumulation, où placer le clipping pour limiter les gradients utilisés par ce pas d’optimiseur ?",
+    "code": "optimizer.zero_grad()\nloss = loss_fn(model(x), y)\nloss.backward()\n___\noptimizer.step()",
+    "options": [
+      {
+        "id": "a",
+        "text": "torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)"
+      },
+      {
+        "id": "b",
+        "text": "torch.nn.utils.clip_grad_norm_(model.buffers(), 1.0)"
+      },
+      {
+        "id": "c",
+        "text": "loss = loss.clamp(max=1.0)"
+      },
+      {
+        "id": "d",
+        "text": "model.eval()"
+      }
+    ],
+    "correctOptionId": "a",
+    "explanation": "Le clipping agit sur les gradients déjà calculés, avant leur utilisation par l’optimiseur. Il limite leur norme globale plutôt que la valeur numérique de la loss.",
+    "sourceIds": [
+      "torch-clipping"
+    ]
+  },
+  {
+    "id": "pt-050",
+    "primaryTheme": "pytorch",
+    "themes": [
+      "pytorch"
+    ],
+    "difficulty": "avance",
+    "prompt": "Pour reprendre Adam avec ses moments accumulés, que faut-il sauvegarder en plus de model.state_dict() ?",
+    "code": "checkpoint = {\"model\": model.state_dict(), \"optim\": ___}",
+    "options": [
+      {
+        "id": "a",
+        "text": "optimizer.param_groups[0][\"lr\"]"
+      },
+      {
+        "id": "b",
+        "text": "optimizer.state_dict()"
+      },
+      {
+        "id": "c",
+        "text": "model.training"
+      },
+      {
+        "id": "d",
+        "text": "loss.item()"
+      }
+    ],
+    "correctOptionId": "b",
+    "explanation": "L’état d’Adam comprend notamment les estimations des moments et le compteur de pas, au-delà des seuls poids. Une reprise exactement reproductible nécessite aussi les autres états pertinents, tels que scheduler, générateurs aléatoires et position dans les données.",
+    "sourceIds": [
+      "torch-checkpoints"
+    ]
+  }
+]

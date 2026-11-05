@@ -1,0 +1,176 @@
+[
+  {
+    "id": "audio-load",
+    "title": "librosa — Chargement et fréquence d’échantillonnage",
+    "url": "https://librosa.org/doc/0.11.0/generated/librosa.load.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-stft",
+    "title": "librosa — STFT, formes, fenêtre et centrage",
+    "url": "https://librosa.org/doc/0.11.0/generated/librosa.stft.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-mel",
+    "title": "librosa — Spectrogramme mel",
+    "url": "https://librosa.org/doc/0.11.0/generated/librosa.feature.melspectrogram.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-istft",
+    "title": "librosa — Inversion de STFT et normalisation",
+    "url": "https://librosa.org/doc/0.11.0/generated/librosa.istft.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-amplitude-db",
+    "title": "librosa — Conversion d’amplitude en décibels",
+    "url": "https://librosa.org/doc/0.11.0/generated/librosa.amplitude_to_db.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-resample",
+    "title": "SciPy — Rééchantillonnage polyphasé et filtrage",
+    "url": "https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.resample_poly.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-mono",
+    "title": "librosa — Conversion mono par moyenne des canaux",
+    "url": "https://librosa.org/doc/0.11.0/generated/librosa.to_mono.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-scipy-signal",
+    "title": "SciPy — Traitement du signal et analyse spectrale",
+    "url": "https://docs.scipy.org/doc/scipy/tutorial/signal.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-rfft",
+    "title": "NumPy — FFT des signaux réels",
+    "url": "https://numpy.org/doc/stable/reference/generated/numpy.fft.rfft.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-rfftfreq",
+    "title": "NumPy — Fréquences des bins de FFT réelle",
+    "url": "https://numpy.org/doc/stable/reference/generated/numpy.fft.rfftfreq.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-rms",
+    "title": "librosa — Énergie RMS",
+    "url": "https://librosa.org/doc/0.11.0/generated/librosa.feature.rms.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-griffinlim",
+    "title": "librosa — Reconstruction Griffin-Lim",
+    "url": "https://librosa.org/doc/0.11.0/generated/librosa.griffinlim.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-features",
+    "title": "Torchaudio — Extraction de caractéristiques audio",
+    "url": "https://docs.pytorch.org/audio/stable/tutorials/audio_feature_extractions_tutorial.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-panns",
+    "title": "Kong et al. — PANNs: Large-Scale Pretrained Audio Neural Networks",
+    "url": "https://arxiv.org/abs/1912.10211",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-specaugment",
+    "title": "Park et al. — SpecAugment",
+    "url": "https://arxiv.org/abs/1904.08779",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-wav2vec",
+    "title": "Schneider et al. — wav2vec",
+    "url": "https://arxiv.org/abs/1904.05862",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-conv1d",
+    "title": "PyTorch — Conv1d",
+    "url": "https://docs.pytorch.org/docs/2.15/generated/torch.nn.Conv1d.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-conv2d",
+    "title": "PyTorch — Conv2d",
+    "url": "https://docs.pytorch.org/docs/2.15/generated/torch.nn.Conv2d.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-pad-sequence",
+    "title": "PyTorch — pad_sequence",
+    "url": "https://docs.pytorch.org/docs/2.15/generated/torch.nn.utils.rnn.pad_sequence.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-bce",
+    "title": "PyTorch — BCEWithLogitsLoss",
+    "url": "https://docs.pytorch.org/docs/2.15/generated/torch.nn.BCEWithLogitsLoss.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-cross-entropy",
+    "title": "PyTorch — CrossEntropyLoss",
+    "url": "https://docs.pytorch.org/docs/2.15/generated/torch.nn.CrossEntropyLoss.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-transfer",
+    "title": "PyTorch — Transfert et gel des paramètres",
+    "url": "https://docs.pytorch.org/tutorials/beginner/transfer_learning_tutorial.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-ast",
+    "title": "Gong et al. — Audio Spectrogram Transformer",
+    "url": "https://arxiv.org/abs/2104.01778",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-time-stretch",
+    "title": "librosa — Time-stretch",
+    "url": "https://librosa.org/doc/0.11.0/generated/librosa.effects.time_stretch.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-pitch-shift",
+    "title": "librosa — Transposition de hauteur",
+    "url": "https://librosa.org/doc/0.11.0/generated/librosa.effects.pitch_shift.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-clap",
+    "title": "Wu et al. — Contrastive Language-Audio Pretraining",
+    "url": "https://arxiv.org/abs/2211.06687",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-mixup",
+    "title": "Zhang et al. — mixup",
+    "url": "https://arxiv.org/abs/1710.09412",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-attention",
+    "title": "PyTorch — MultiheadAttention et masques",
+    "url": "https://docs.pytorch.org/docs/2.15/generated/torch.nn.MultiheadAttention.html",
+    "accessed": "2026-11-05"
+  },
+  {
+    "id": "audio-standardization",
+    "title": "scikit-learn — Prétraitement et standardisation",
+    "url": "https://scikit-learn.org/stable/modules/preprocessing.html",
+    "accessed": "2026-11-05"
+  }
+]
