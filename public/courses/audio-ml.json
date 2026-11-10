@@ -30,15 +30,29 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Notre application doit répondre « sirène présente ? ». Si nous ajoutons « voix présente ? », les deux réponses peuvent être vraies en même temps. Ce n’est pas la même tâche que choisir un seul instrument parmi cinq. Une cible est la réponse souhaitée associée à un exemple. La perte est un nombre qui mesure un désaccord selon une règle choisie ; l’optimisation cherche à réduire cette perte sur l’entraînement."
+          "text": "Notre question est « une sirène est-elle présente ? ». La cible est la réponse souhaitée, par exemple 1 pour présente et 0 pour absente. Une probabilité prédite est un score entre zéro et un. Un seuil est une limite choisie pour lire ce score : au-dessus, nous signalons une présence. Commençons par cette lecture, sans supposer comment le modèle a produit le nombre."
+        },
+        {
+          "type": "first-example",
+          "title": "Lire un seul score avant de parler d’apprentissage",
+          "introduction": "Score inventé : il ne provient ni d’un modèle publié ni d’un test sur des rues réelles.",
+          "code": "Probabilité prédite pour la sirène : 0,7\nSeuil : 0,5\nRègle : signaler si le score est au moins égal au seuil",
+          "language": "text",
+          "output": "0,7 ≥ 0,5 : présence signalée",
+          "explanation": "Nous avons appliqué une règle de décision à un nombre. Ce calcul ne dit pas encore si l’alerte est juste : pour le savoir, il faut comparer à la cible de l’enregistrement.",
+          "variant": {
+            "change": "Changer seulement le seuil de 0,5 à 0,8 ; conserver le score 0,7.",
+            "output": "0,7 < 0,8 : présence non signalée",
+            "explanation": "La décision change sans que le score ni l’enregistrement changent. Le choix du seuil déplace le compromis entre événements manqués et alertes erronées."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Un logit est un score réel sans borne. La fonction exp est l’exponentielle. Pour une question binaire, la sigmoïde 1/(1 + exp(-z)) le transforme en valeur comprise entre zéro et un : z = 0 donne 0,5. On lit cette sortie comme une probabilité prédite, sans garantie qu’elle soit bien calibrée. Pour des classes exclusives, softmax transforme un vecteur de logits en valeurs positives de somme un. Plusieurs sigmoïdes, au contraire, permettent plusieurs présences simultanées. Autoriser plusieurs sorties positives ne suppose pas que les événements soient indépendants dans la réalité."
+          "text": "Le modèle peut d’abord calculer un logit, un score réel sans borne. La sigmoïde transforme un logit en probabilité prédite : 1/(1 + exp(-z)), où exp désigne l’exponentielle. Un logit nul donne 0,5. La perte mesure ensuite le désaccord avec la cible. Nous cherchons à la réduire pendant l’apprentissage ; ni la probabilité ni le seuil ne garantissent à eux seuls que les probabilités annoncées soient fiables."
         },
         {
           "type": "paragraph",
-          "text": "Si chaque extrait appartient à une seule classe parmi cinq instruments, le réseau peut produire cinq logits par exemple. Un logit est un score réel, pas encore une probabilité. Pour un batch de taille B, les logits ont la forme (B, 5), et les cibles sont B indices entiers entre 0 et 4, de type torch.long. CrossEntropyLoss reçoit directement ces logits et applique en interne les opérations nécessaires à la perte."
+          "text": "Pour choisir une seule classe parmi cinq instruments, une softmax transforme les cinq logits en probabilités dont la somme vaut un. La perte d’entropie croisée, appelée CrossEntropyLoss dans PyTorch, reçoit directement les logits de forme (B, 5) et les indices cibles torch.long de forme (B,), entre 0 et 4. B compte les exemples traités ensemble. Pour des présences simultanées, plusieurs sigmoïdes binaires seront plus adaptées."
         },
         {
           "type": "walkthrough",
@@ -207,7 +221,25 @@
         ],
         "correctOptionId": "b",
         "explanation": "Deux questions de présence autorisent deux réponses positives. Un seul argmax imposerait une exclusivité absente de la tâche."
-      }
+      },
+      "notions": [
+        {
+          "name": "Cible",
+          "explanation": "La réponse souhaitée pour un exemple, donnée par l’annotation."
+        },
+        {
+          "name": "Probabilité prédite",
+          "explanation": "Un score entre zéro et un présenté par le modèle comme une probabilité ; sa fiabilité doit être évaluée."
+        },
+        {
+          "name": "Logit",
+          "explanation": "Un score réel sans borne que l’on peut transformer en probabilité."
+        },
+        {
+          "name": "Perte",
+          "explanation": "Un nombre calculé selon une règle qui mesure le désaccord entre une sortie et sa cible."
+        }
+      ]
     },
     {
       "id": "pretraitement-entrees-coherentes",
@@ -221,11 +253,25 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Notre collection mélange des rues enregistrées à 44,1 et 48 kHz. Un encodeur attend pourtant 16 kHz. Lui donner les nombres d’origine en changeant seulement l’étiquette de cadence déplace le sens de ses filtres temporels. Il faut calculer de nouveaux échantillons pour conserver les mêmes durées et fréquences physiques. Le prétraitement est ce contrat qui transforme un fichier quelconque en entrée correspondant réellement aux attentes du modèle."
+          "text": "Nous savons quelle réponse attendre. Il faut maintenant présenter au modèle des entrées comparables. Le prétraitement regroupe les opérations qui transforment un fichier en cette entrée. Un encodeur est la partie du modèle qui en extrait une description. S’il attend 16 000 mesures par seconde, la cadence annoncée doit correspondre aux valeurs réellement fournies, comme dans le cours Signal."
+        },
+        {
+          "type": "first-example",
+          "title": "Compter les mesures attendues",
+          "introduction": "Contrat numérique inventé pour un encodeur qui reçoit des signaux à 16 kHz.",
+          "code": "Durée voulue : 1 seconde\nCadence attendue : 16 000 mesures par seconde\nNombre de mesures : 1 × 16 000",
+          "language": "text",
+          "output": "16 000 mesures",
+          "explanation": "La durée et la cadence déterminent la longueur attendue pour un canal. Changer seulement une étiquette de cadence sur les mêmes valeurs ne ferait pas un vrai rééchantillonnage.",
+          "variant": {
+            "change": "Changer seulement la durée de 1 à 2 secondes ; garder la cadence de 16 kHz.",
+            "output": "32 000 mesures",
+            "explanation": "2 × 16000 = 32000. La cadence du contrat reste la même ; la portion plus longue demande davantage de mesures."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Une caractéristique est une valeur calculée pour décrire le signal, par exemple la puissance d’une bande mel à une trame. Standardiser une caractéristique signifie soustraire une moyenne puis diviser par un écart-type. L’écart-type résume sa dispersion autour de la moyenne. Ces statistiques ne sont pas des paramètres universels : elles dépendent du corpus qui les a fournies et des transformations déjà appliquées, notamment du logarithme."
+          "text": "Une caractéristique est une valeur calculée pour décrire le son. La puissance d’une bande mel, regroupement de fréquences étudié dans le cours Signal, en est un exemple. Standardiser une caractéristique consiste à soustraire une moyenne puis à diviser par un écart-type, qui décrit sa dispersion. Ces statistiques doivent être fixées avec une règle explicite, pas ajustées silencieusement à chaque nouveau fichier."
         },
         {
           "type": "figure",
@@ -357,7 +403,21 @@
         ],
         "correctOptionId": "b",
         "explanation": "Les statistiques apprises font partie du système. Les ajuster sur l’entraînement hors padding conserve un test réservé et une échelle liée à de vraies observations."
-      }
+      },
+      "notions": [
+        {
+          "name": "Prétraitement",
+          "explanation": "Les opérations qui convertissent le fichier en entrée conforme aux attentes du modèle."
+        },
+        {
+          "name": "Caractéristique",
+          "explanation": "Une valeur calculée pour décrire un aspect du son, comme une puissance par bande et par instant."
+        },
+        {
+          "name": "Standardisation",
+          "explanation": "La soustraction d’une moyenne puis la division par un écart-type fixé pour la caractéristique."
+        }
+      ]
     },
     {
       "id": "durees-padding-masques",
@@ -371,11 +431,25 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Les sirènes ne restent pas toutes aussi longtemps et les enregistrements de rue ont des durées différentes. Un batch est un groupe d’exemples traités ensemble. Un tenseur dense exige des dimensions compatibles : on peut compléter les séquences courtes avec des valeurs de padding, ou remplissage. Ces cases rendent le calcul possible, mais elles ne deviennent pas de nouvelles observations. Il faut conserver où chaque vraie séquence s’arrête."
+          "text": "Le prétraitement donne un sens commun aux valeurs, mais les enregistrements n’ont pas tous la même durée. Un batch est un groupe d’exemples traités ensemble. Pour les stocker dans un tableau à plusieurs axes, appelé tenseur, on peut compléter les plus courts : ce remplissage s’appelle padding. Les cases ajoutées ne deviennent pas de nouvelles observations du son."
+        },
+        {
+          "type": "first-example",
+          "title": "Agrandir le stockage sans rallonger le vrai contenu",
+          "introduction": "La courte liste ci-dessous est un exemple inventé de caractéristiques, pas une forme d’onde enregistrée.",
+          "code": "Contenu réel : [2, 4]\nLongueur de stockage voulue : 4\nValeur de remplissage : 0\nListe stockée : [2, 4, 0, 0]",
+          "language": "text",
+          "output": "2 valeurs réelles sur 4 positions",
+          "explanation": "Le contenu est toujours [2,4]. Les deux zéros ajoutés occupent la place nécessaire au stockage, sans devenir deux nouvelles observations à moyenner.",
+          "variant": {
+            "change": "Changer seulement la longueur de stockage de 4 à 6.",
+            "output": "[2, 4, 0, 0, 0, 0] : 2 valeurs réelles sur 6 positions",
+            "explanation": "Le masque doit encore retenir seulement les deux premières positions. Un stockage plus grand ne justifie pas de changer le résumé du vrai contenu."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Un masque est un tableau d’indicateurs. Ici, True signifie que la position appartient aux données réelles. Le masque ne se déduit pas simplement des amplitudes : un vrai silence peut aussi valoir zéro. Pour des caractéristiques (B, T, D), B compte les exemples, T les positions de temps et D les valeurs descriptives par position. Réduire l’axe T fabrique un résumé par exemple, dont le dénominateur doit correspondre aux positions réellement utilisées."
+          "text": "Un masque de validité indique les positions qui appartiennent aux données réelles. Ici, True signifie position réelle et False position ajoutée. Une vraie amplitude nulle reste une observation valide : le masque ne se déduit donc pas seulement de la valeur. Dans la convention (B, T, D), B compte les exemples, T les positions temporelles et D les caractéristiques à chacune de ces positions."
         },
         {
           "type": "paragraph",
@@ -552,7 +626,21 @@
         ],
         "correctOptionId": "b",
         "explanation": "La somme des valeurs réelles vaut 6 et leur nombre reste 2. Le padding ne doit pas augmenter le dénominateur : 6 / 2 = 3."
-      }
+      },
+      "notions": [
+        {
+          "name": "Batch",
+          "explanation": "Un groupe d’exemples traités ensemble dans un même calcul."
+        },
+        {
+          "name": "Padding",
+          "explanation": "Des cases de remplissage ajoutées pour rendre compatibles les longueurs stockées."
+        },
+        {
+          "name": "Masque de validité",
+          "explanation": "Un tableau indiquant quelles positions correspondent réellement aux données, plutôt qu’au padding."
+        }
+      ]
     },
     {
       "id": "embeddings-transfert-domaines",
@@ -567,11 +655,25 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Un encodeur est la partie d’un réseau qui transforme l’entrée en une description apprise. Une tête utilise cette description pour répondre, par exemple « sirène présente ». Un embedding est un vecteur de cette description, souvent de taille fixe. Ses 512 nombres ne sont pas 512 échantillons à lire comme un son. Ils peuvent résumer des motifs utiles, selon les données et l’objectif qui ont entraîné l’encodeur."
+          "text": "Nos exemples ont une entrée et un masque compréhensibles. Un encodeur peut maintenant transformer chaque entrée en une liste de caractéristiques apprises. Cette liste ordonnée est un vecteur ; lorsqu’il sert de description de l’extrait, on l’appelle embedding. Une tête de décision utilise ce vecteur pour calculer des scores. Commençons avec deux coordonnées seulement, avant les centaines d’un vrai modèle."
+        },
+        {
+          "type": "first-example",
+          "title": "Deux caractéristiques deviennent un score",
+          "introduction": "Description et poids inventés : ils ne correspondent pas aux coordonnées interprétées d’un modèle publié.",
+          "code": "Caractéristiques : 2 et 3\nPoids de la tête : 1 et -1\nScore : 1 × 2 + (-1) × 3",
+          "language": "text",
+          "output": "-1",
+          "explanation": "La tête combine la description en un score réel. Le poids négatif retire ici la seconde contribution. Ce score n’est pas automatiquement une probabilité ; nous avons appris à distinguer ces deux objets.",
+          "variant": {
+            "change": "Changer seulement la seconde caractéristique de 3 à 4 ; conserver les poids.",
+            "output": "-2",
+            "explanation": "1 × 2 + (-1) × 4 = -2. La tête reste la même mais sa sortie répond au nouveau contenu de la description."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Un paramètre est une valeur ajustable du modèle, comme le poids reliant deux caractéristiques. Un gradient indique comment une petite variation de ce paramètre influence la perte. Geler des paramètres signifie empêcher leur mise à jour pendant notre nouvel apprentissage. Cela ne supprime ni leur stockage ni le calcul avant nécessaire pour décrire les nouveaux sons. Une tête simple permet alors de tester si cette description contient déjà l’information utile."
+          "text": "Un poids est un nombre qui règle la contribution d’une caractéristique au calcul suivant. Les poids ajustables sont des paramètres du modèle. Le gradient indique comment une petite variation d’un paramètre influence la perte. Geler un encodeur empêche la mise à jour de ses paramètres, mais ne supprime pas son passage avant : il doit toujours calculer la description d’une nouvelle entrée."
         },
         {
           "type": "paragraph",
@@ -701,7 +803,25 @@
         ],
         "correctOptionId": "a",
         "explanation": "Le gel empêche l’apprentissage de ces paramètres, mais l’encodeur doit encore produire la description de la nouvelle entrée. Sinon la tête n’a pas ses caractéristiques."
-      }
+      },
+      "notions": [
+        {
+          "name": "Gel des paramètres",
+          "explanation": "Le fait de conserver les paramètres d’une partie du modèle sans les mettre à jour pendant le nouvel apprentissage."
+        },
+        {
+          "name": "Embedding",
+          "explanation": "Un vecteur de caractéristiques produit pour décrire un extrait ; ses coordonnées ne sont pas des échantillons à écouter."
+        },
+        {
+          "name": "Tête de décision",
+          "explanation": "Une transformation qui utilise ces caractéristiques pour produire les scores de la tâche."
+        },
+        {
+          "name": "Transfert d’apprentissage",
+          "explanation": "La réutilisation de paramètres ou de caractéristiques appris sur un corpus source pour une autre tâche."
+        }
+      ]
     },
     {
       "id": "architectures-axes-contexte",
@@ -715,11 +835,25 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Une architecture est l’organisation des opérations et des couches qui composent un modèle. Une couche transforme un tableau en un autre ; empiler des couches permet de combiner des motifs simples en descriptions plus complexes. Une convolution réutilise les mêmes poids en plusieurs positions. L’attention calcule plutôt des liens dépendant du contenu entre positions. Nous allons d’abord comprendre ces rôles, puis lire les conventions de formes."
+          "text": "Une tête combine des caractéristiques ; une couche effectue plus généralement une transformation de valeurs. Une architecture organise ces couches et leurs connexions. Pour apprendre des motifs locaux dans le son, une convolution applique le même petit filtre à plusieurs positions. Le filtre est une liste de poids. Nous allons voir son calcul sur trois nombres avant d’ajouter des canaux ou des dimensions."
+        },
+        {
+          "type": "first-example",
+          "title": "Le même filtre passe deux fois",
+          "introduction": "Mini-calcul inventé, avec un déplacement d’une position et sans ajouter de valeurs aux bords.",
+          "code": "Valeurs : [1, 2, 4]\nFiltre : [1, 1]\nPortions successives : [1, 2] puis [2, 4]\nRésultats : 1 × 1 + 1 × 2 ; 1 × 2 + 1 × 4",
+          "language": "text",
+          "output": "[3, 6]",
+          "explanation": "Nous réutilisons les deux mêmes poids pour les deux portions. Cette répétition du filtre, plutôt qu’un poids neuf pour chaque position, caractérise la convolution utilisée dans une couche de réseau.",
+          "variant": {
+            "change": "Changer seulement le second poids du filtre de 1 à 0.",
+            "output": "[1, 2]",
+            "explanation": "Le filtre [1,0] conserve le premier nombre de chaque portion : 1×1 + 0×2 = 1, puis 1×2 + 0×4 = 2. Le signal et le déplacement restent inchangés."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Un filtre convolutif est une petite collection de poids appliquée à un voisinage. Sur une forme d’onde, le voisinage est temporel ; sur un spectrogramme, il peut couvrir temps et fréquences. Les canaux internes d’un réseau sont des cartes de caractéristiques apprises : après une couche, 16 canaux ne signifient plus 16 microphones. En attention, une position reçoit un résumé d’autres positions, pondéré selon leur compatibilité ; le dernier chapitre déroulera ce calcul."
+          "text": "Sur une forme d’onde, le filtre parcourt des positions temporelles. Sur un spectrogramme, il peut parcourir le temps et les fréquences. Une carte de caractéristiques contient les résultats obtenus à ces positions ; un canal interne n’est donc pas forcément un microphone. Un réseau convolutif, nommé CNN pour convolutional neural network, empile ce type de couches. Un Transformer utilise notamment l’attention : un mécanisme qui réunit le contenu d’autres positions avec des poids dépendant des entrées."
         },
         {
           "type": "walkthrough",
@@ -848,7 +982,21 @@
         ],
         "correctOptionId": "c",
         "explanation": "Le batch vient d’abord, puis l’unique canal, puis les bandes et les trames. Les 80 bandes ne représentent pas 80 microphones."
-      }
+      },
+      "notions": [
+        {
+          "name": "Couche",
+          "explanation": "Une opération paramétrée qui transforme des valeurs d’entrée en nouvelles valeurs."
+        },
+        {
+          "name": "Convolution",
+          "explanation": "L’application d’un même petit filtre de poids à plusieurs positions d’une entrée."
+        },
+        {
+          "name": "Architecture",
+          "explanation": "L’organisation des couches et de leurs connexions dans un modèle."
+        }
+      ]
     },
     {
       "id": "annotations-faibles-agregation",
@@ -863,11 +1011,25 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Notre rue de trente secondes porte seulement l’étiquette « sirène présente ». Nous ne savons pas précisément quand elle commence ni finit. Une annotation faible indique une présence globale ; une annotation forte ajoute des limites temporelles selon la convention du corpus. Recopier la présence sur toutes les portions revient à prétendre que la sirène sonne partout. Cette différence entre quelque part et partout doit guider la façon d’apprendre."
+          "text": "L’architecture peut produire plusieurs scores dans le temps, mais la cible ne décrit pas forcément chacun de ces instants. Une annotation faible annonce par exemple « sirène présente » pour tout le fichier. Une annotation forte temporelle ajoute des limites de début et de fin. Une présence quelque part ne signifie donc pas une présence partout. Nous devons choisir comment réunir les scores locaux."
+        },
+        {
+          "type": "first-example",
+          "title": "Une présence brève dans une moyenne",
+          "introduction": "Trois scores de portions inventés ; ce petit calcul n’évalue aucun détecteur réel.",
+          "code": "Scores des portions : [0 ; 0 ; 0,9]\nSomme : 0,9\nMoyenne : 0,9 / 3",
+          "language": "text",
+          "output": "0,3",
+          "explanation": "Le score local de 0,9 devient un score moyen de 0,3 quand deux portions ont un score nul. Une moyenne décrit le niveau global, pas seulement la preuve la plus forte quelque part.",
+          "variant": {
+            "change": "Changer seulement le dernier score de 0,9 à 0,6.",
+            "output": "0,2",
+            "explanation": "Les trois portions et la règle restent identiques : (0 + 0 + 0,6)/3 = 0,2. Nous isolons ainsi l’effet d’une seule preuve locale plus faible."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Agréger signifie réunir plusieurs valeurs dans un résumé. Une moyenne décrit un niveau moyen ; un maximum retient la plus forte valeur. Ni l’un ni l’autre n’est universellement meilleur. Pour une présence brève, une moyenne peut diluer la preuve ; un maximum peut amplifier un faux pic. Une agrégation différentiable peut être placée avant la perte de fichier pour relier des scores locaux à la supervision globale."
+          "text": "Agréger signifie réunir plusieurs valeurs dans un résumé. La moyenne ajoute les valeurs puis divise par leur nombre ; le maximum retient la plus forte. Une moyenne peut diluer un événement bref et un maximum amplifier un faux pic. Un crop est simplement une portion découpée du fichier : même dans un fichier positif, cette portion peut ne pas contenir l’événement."
         },
         {
           "type": "paragraph",
@@ -1088,7 +1250,21 @@
         ],
         "correctOptionId": "b",
         "explanation": "La présence quelque part dans trente secondes ne garantit pas la présence dans toute portion de deux secondes. Une cible de crop exige une stratégie cohérente avec cette annotation faible."
-      }
+      },
+      "notions": [
+        {
+          "name": "Annotation faible",
+          "explanation": "Une indication globale de présence qui ne donne pas nécessairement les instants de l’événement."
+        },
+        {
+          "name": "Annotation forte temporelle",
+          "explanation": "Une annotation qui indique les limites de présence dans le temps, selon la convention du corpus."
+        },
+        {
+          "name": "Agrégation",
+          "explanation": "La réunion de plusieurs scores locaux en un score global, par exemple par moyenne ou maximum."
+        }
+      ]
     },
     {
       "id": "augmentations-cibles-validation",
@@ -1103,11 +1279,25 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Notre détecteur doit reconnaître une sirène même si son niveau change légèrement. Une augmentation est une transformation utilisée pour varier les exemples d’entraînement. Un petit gain peut conserver la présence de sirène, mais une transposition change la hauteur si la tâche demande précisément cette hauteur. Avant de choisir une transformation, il faut annoncer la propriété que la cible mesure et vérifier si elle est conservée."
+          "text": "Le crop nous a montré qu’une transformation peut changer ce qui est vrai dans une entrée. Une augmentation varie les exemples d’entraînement pour rendre le modèle moins dépendant de détails accidentels. Avant de l’utiliser, nous précisons la propriété prédite : présence, hauteur ou tempo, par exemple. Si cette propriété change, la cible doit suivre le changement."
+        },
+        {
+          "type": "first-example",
+          "title": "Accélérer un tempo et sa cible",
+          "introduction": "Exemple numérique inventé ; nous supposons une accélération temporelle idéale pour isoler la règle.",
+          "code": "Tempo initial : 100 BPM\nFacteur de vitesse : 1,2\nNouveau tempo : 100 × 1,2",
+          "language": "text",
+          "output": "120 BPM",
+          "explanation": "Les battements se produisent 1,2 fois plus souvent. Si la tâche prédit le tempo, garder la cible 100 après cette accélération donnerait une supervision incohérente.",
+          "variant": {
+            "change": "Changer seulement le facteur de vitesse de 1,2 à 0,8.",
+            "output": "80 BPM",
+            "explanation": "100 × 0,8 = 80. Le son est ralenti et non accéléré ; le même principe de mise à jour de la cible s’applique."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Une invariance est une propriété de réponse qui reste stable malgré une transformation. La présence d’un instrument peut parfois être considérée comme invariante à un petit changement de niveau, sans l’être à une distorsion extrême. Une équivariance décrit plutôt une réponse qui se transforme selon une règle connue : accélérer une musique multiplie son tempo. Les BPM comptent des battements par minute ; une hauteur MIDI progresse d’une unité par demi-ton."
+          "text": "Une invariance signifie que la réponse reste identique malgré une transformation. Un petit gain sans saturation peut conserver une présence sonore. Une réponse peut aussi changer selon une règle connue : accélérer la musique multiplie son tempo. Les battements par minute, abrégés BPM, mesurent ce tempo. La notation MIDI décrit des hauteurs par nombres ; une unité correspond à un demi-ton."
         },
         {
           "type": "figure",
@@ -1240,7 +1430,21 @@
         ],
         "correctOptionId": "a",
         "explanation": "Le nombre de battements par minute est multiplié par la vitesse : 120 × 0,8 = 96. La durée est divisée par 0,8 ; ce n’est pas la même opération sur la cible."
-      }
+      },
+      "notions": [
+        {
+          "name": "Augmentation",
+          "explanation": "Une transformation utilisée pour varier les exemples d’entraînement."
+        },
+        {
+          "name": "Invariance de la cible",
+          "explanation": "Le fait que la réponse attendue reste identique après une transformation donnée."
+        },
+        {
+          "name": "Transformation cohérente de la cible",
+          "explanation": "Une règle qui modifie la réponse attendue quand la propriété prédite a changé."
+        }
+      ]
     },
     {
       "id": "masquage-mixup-representations",
@@ -1254,11 +1458,25 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Un spectrogramme ressemble à une image rectangulaire, mais retourner ses fréquences n’est pas retourner une photographie de rue. L’axe vertical distingue grave et aigu ; l’axe horizontal ordonne les événements. Une permutation peut donc changer la hauteur, le timbre ou la causalité. Une augmentation de caractéristiques doit être définie par son effet audio attendu, et non seulement par sa disponibilité dans une boîte à outils graphique."
+          "text": "Nous savons qu’une augmentation doit respecter la cible. On peut transformer la forme d’onde, mais aussi ses caractéristiques déjà calculées. Masquer des caractéristiques signifie cacher certaines positions en les remplaçant par une valeur choisie. Observons d’abord une liste de trois valeurs ; nous appliquerons ensuite l’idée aux axes temporels et fréquentiels d’un spectrogramme."
+        },
+        {
+          "type": "first-example",
+          "title": "Cacher une seule case",
+          "introduction": "Liste de caractéristiques inventée ; les positions sont numérotées 0, 1 et 2.",
+          "code": "Valeurs : [1, 2, 3]\nIndice de la case cachée : 1\nValeur de remplacement : 0\nAprès masquage : [1, 0, 3]",
+          "language": "text",
+          "output": "[1, 0, 3]",
+          "explanation": "Seule la case d’indice 1 a été remplacée. Le nombre de positions reste trois : nous avons retiré une information visible, pas raccourci la liste.",
+          "variant": {
+            "change": "Changer seulement l’indice caché de 1 à 2.",
+            "output": "[1, 2, 0]",
+            "explanation": "La valeur de remplacement et la liste initiale restent identiques. C’est maintenant la dernière caractéristique qui manque, ce qui peut retirer une autre preuve pour la tâche."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Masquer signifie remplacer certaines caractéristiques par une valeur de remplissage choisie. La valeur zéro n’a pas le même sens dans une puissance positive et dans un log-mel standardisé. Une cible souple est un vecteur de poids plutôt qu’un indice unique : [0,25, 0,75] exprime ici une interpolation de deux cibles. Ce n’est pas une annotation assurant qu’un auditeur entend exactement 25 % d’un objet et 75 % d’un autre. Une cible one-hot place un 1 sur la classe retenue et des 0 sur les autres."
+          "text": "Une cible souple est un vecteur de poids de classes ; une cible one-hot place au contraire un 1 sur une classe et des 0 ailleurs. Mixup mélange deux entrées et leurs cibles avec les mêmes coefficients. Le masquage conserve généralement la cible sous une hypothèse de preuve suffisante, tandis que mixup la transforme. La valeur de remplissage doit aussi être cohérente : zéro ne signifie pas la même chose dans une puissance positive et dans un log-mel standardisé."
         },
         {
           "type": "paragraph",
@@ -1449,7 +1667,21 @@
         ],
         "correctOptionId": "d",
         "explanation": "Les mêmes coefficients s’appliquent aux entrées et aux cibles : 0,2×[1,0] + 0,8×[0,1] = [0,2 ; 0,8]."
-      }
+      },
+      "notions": [
+        {
+          "name": "Masquage de caractéristiques",
+          "explanation": "Le remplacement de positions choisies par une valeur de remplissage définie."
+        },
+        {
+          "name": "Cible souple",
+          "explanation": "Un vecteur de poids de classes, plutôt qu’un seul indice ou une seule classe certaine."
+        },
+        {
+          "name": "Mixup",
+          "explanation": "Une interpolation de deux entrées et de leurs cibles avec les mêmes coefficients."
+        }
+      ]
     },
     {
       "id": "similarites-contraste-attention",
@@ -1463,11 +1695,29 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Comparer deux embeddings commence par choisir une notion de proximité. Un produit scalaire multiplie les coordonnées correspondantes puis additionne les produits. Une norme L2 mesure la longueur du vecteur. La similarité cosinus divise le produit scalaire par les deux longueurs : elle compare l’orientation plutôt que la taille. Pour des vecteurs de norme un, le produit scalaire est donc déjà ce cosinus. Q @ K.T regroupe ces comparaisons, sans produire automatiquement des probabilités."
+          "text": "Un embedding est une description du son par un vecteur, introduite plus haut. Pour réunir plusieurs descriptions, nous pouvons multiplier leurs contenus par des poids puis additionner. Si les poids sont positifs et de somme un, nous obtenons un résumé pondéré. L’attention est un mécanisme qui choisit de tels poids à partir des entrées. Commençons par deux contenus et des poids déjà donnés."
+        },
+        {
+          "type": "first-example",
+          "title": "Deux contenus deviennent un résumé",
+          "introduction": "Contenus et poids inventés : nous isolons la somme pondérée avant de calculer les poids d’attention.",
+          "code": "Valeurs à réunir : 2 et 10\nPoids : 0,75 et 0,25\nRésumé : 0,75 × 2 + 0,25 × 10",
+          "language": "text",
+          "output": "4",
+          "explanation": "Les poids somment à un. Le résumé combine surtout la première valeur, mais sa contribution de 1,5 est complétée par 2,5 venant de la seconde.",
+          "variant": {
+            "change": "Changer seulement la seconde valeur de 10 à 6 ; garder les poids.",
+            "output": "3",
+            "explanation": "0,75 × 2 + 0,25 × 6 = 3. Une autre sortie peut donc venir d’un contenu différent, même lorsque les poids restent les mêmes."
+          }
         },
         {
           "type": "paragraph",
-          "text": "L’attention utilise des requêtes pour demander un contexte, des clés pour calculer les compatibilités et des valeurs pour fournir le contenu à mélanger. Une softmax transforme les scores en poids positifs de somme un. La sortie est une somme pondérée des valeurs. Ces poids sont relatifs aux positions autorisées : ils ne constituent pas directement des probabilités de présence de sirène, ni une explication causale certaine du modèle."
+          "text": "Pour calculer ses poids, l’attention utilise des requêtes, qui demandent un contexte, et des clés, auxquelles elles sont comparées. Les valeurs fournissent le contenu à réunir. Une softmax transforme les scores de comparaison en poids positifs de somme un. La somme pondérée porte sur les valeurs. Ces poids relatifs ne sont pas directement des probabilités de présence de sirène et ne constituent pas une explication causale certaine."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le produit scalaire compare deux vecteurs en multipliant leurs coordonnées correspondantes puis en additionnant. Leur norme L2 est leur longueur. La similarité cosinus divise le produit scalaire par ces deux longueurs ; pour des vecteurs de norme un, le produit scalaire est donc déjà ce cosinus. Q @ K.T réunit plusieurs comparaisons, sans produire automatiquement des probabilités."
         },
         {
           "type": "walkthrough",
@@ -1592,7 +1842,25 @@
         ],
         "correctOptionId": "b",
         "explanation": "Le masque doit signaler les positions à ignorer, donc inverser le masque de validité. Ici seule la troisième clé est du padding."
-      }
+      },
+      "notions": [
+        {
+          "name": "Produit scalaire",
+          "explanation": "La somme des produits entre coordonnées correspondantes de deux vecteurs."
+        },
+        {
+          "name": "Similarité cosinus",
+          "explanation": "Le produit scalaire divisé par les longueurs des deux vecteurs ; il compare leur orientation."
+        },
+        {
+          "name": "Attention",
+          "explanation": "Un mécanisme qui calcule des poids pour réunir le contenu de plusieurs positions."
+        },
+        {
+          "name": "Softmax",
+          "explanation": "Une transformation de scores en poids positifs dont la somme vaut un."
+        }
+      ]
     }
   ],
   "edition": 2,
@@ -1648,5 +1916,51 @@
       "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html",
       "accessed": "2026-11-10"
     }
-  ]
+  ],
+  "moduleIntroduction": {
+    "startingPoint": "Tu sais ce que représentent durée, fréquences et bandes d’un signal. Nous reprenons une question simple : faut-il signaler la présence d’une sirène dans cette portion de rue ?",
+    "goal": "Relier une entrée sonore à une décision en expliquant les cibles, les caractéristiques, les couches et les transformations, avant de manipuler de grands tableaux.",
+    "concepts": [
+      {
+        "name": "Définir la réponse attendue",
+        "explanation": "Une cible décrit la réponse souhaitée. Une sortie du modèle est un score, et une règle de décision indique comment le lire.",
+        "chapterId": "tache-cibles-pertes"
+      },
+      {
+        "name": "Préparer des entrées comparables",
+        "explanation": "Le prétraitement fixe la cadence, les caractéristiques et leur échelle pour que les mêmes nombres gardent le même sens.",
+        "chapterId": "pretraitement-entrees-coherentes"
+      },
+      {
+        "name": "Traiter plusieurs durées",
+        "explanation": "Un batch regroupe des exemples. Le padding complète les formes, et un masque distingue ces cases des vraies observations.",
+        "chapterId": "durees-padding-masques"
+      },
+      {
+        "name": "Réutiliser une description apprise",
+        "explanation": "Un encodeur transforme le son en une description numérique, appelée embedding. Le transfert réutilise cette description pour apprendre une nouvelle décision.",
+        "chapterId": "embeddings-transfert-domaines"
+      },
+      {
+        "name": "Comprendre une couche avant ses dimensions",
+        "explanation": "Une convolution applique un même petit filtre à plusieurs positions. Une architecture organise plusieurs transformations de ce type ou d’autres mécanismes.",
+        "chapterId": "architectures-axes-contexte"
+      },
+      {
+        "name": "Relier présence locale et présence globale",
+        "explanation": "Une annotation de fichier ne décrit pas chaque instant. Une agrégation relie des scores locaux à la réponse globale attendue.",
+        "chapterId": "annotations-faibles-agregation"
+      },
+      {
+        "name": "Modifier les données avec une cible cohérente",
+        "explanation": "Une augmentation peut préserver la réponse ou la déplacer selon une règle connue. La cible doit suivre cette règle.",
+        "chapterId": "augmentations-cibles-validation"
+      },
+      {
+        "name": "Comparer et réunir des descriptions",
+        "explanation": "Une similarité compare des vecteurs. L’attention calcule des poids pour réunir du contenu, en excluant les positions invalides.",
+        "chapterId": "similarites-contraste-attention"
+      }
+    ]
+  }
 }

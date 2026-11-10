@@ -2,6 +2,11 @@ import { shuffle } from './quiz.js';
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[char]);
 const number = value => new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 3 }).format(value);
 
+export function renderFirstExample(block) {
+  const isText=block.language==='text';
+  return `<section class="first-example"><p class="eyebrow">POUR COMPRENDRE, PRENONS LE CAS LE PLUS SIMPLE</p><h3>${escape(block.title)}</h3><p class="first-example-intro">${escape(block.introduction)}</p><div class="first-example-input"><span>${isText?'La situation':block.language==='bash'?'La commande':'On écrit'}</span><pre><code>${escape(block.code)}</code></pre></div><div class="first-example-output"><span>${isText?'On obtient':'Résultat expliqué'}</span><pre>${escape(block.output)}</pre></div><p class="first-example-explanation">${escape(block.explanation)}</p><section class="first-example-variant"><h4>Changeons une seule chose</h4><p>${escape(block.variant.change)}</p><pre>${escape(block.variant.output)}</pre><p>${escape(block.variant.explanation)}</p></section></section>`;
+}
+
 export function renderVisual(block) {
   let body;
   if (block.kind === 'flow') {

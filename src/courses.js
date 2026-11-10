@@ -5,7 +5,7 @@ import { loadBank } from './bank.js';
 import { createStorage } from './storage.js';
 import { COURSE_ORDER, COURSE_STORAGE_KEY, courseHref, buildCoverage, chapterMinutes, normalizeProgress, setChapterRead, resolveChapter, courseStage, mergeCourseReferences } from './course-model.js';
 import { renderFigure } from './course-figures.js';
-import { renderVisual, renderPlot, renderWalkthrough, attachWalkthroughs, renderCheckpoint, attachCheckpoint } from './learning-blocks.js';
+import { renderVisual, renderPlot, renderWalkthrough, attachWalkthroughs, renderCheckpoint, attachCheckpoint, renderFirstExample } from './learning-blocks.js';
 
 const root = document.querySelector('#app');
 const storage = createStorage();
@@ -38,6 +38,7 @@ function renderBlock(block) {
   if(block.type==='visual') return renderVisual(block);
   if(block.type==='plot') return renderPlot(block,++serial);
   if(block.type==='walkthrough') return renderWalkthrough(block,++serial);
+  if(block.type==='first-example') return renderFirstExample(block);
   return '';
 }
 
@@ -45,16 +46,27 @@ function renderGlobalRoadmap() {
   return `<section class="global-learning-goal"><p class="eyebrow">LE FIL ROUGE DU PARCOURS</p><h2>Transformer des sons en données, puis en décisions et en créations.</h2><p>Au départ, vous avez des enregistrements. À l’arrivée, vous savez expliquer comment les préparer, apprendre un modèle, contrôler un générateur et vérifier ce qu’il apporte. Chaque cours construit une partie de cette chaîne.</p><ol>${courses.map((course,index)=>`<li><a href="${courseHref(course.themeId)}"><span>${String(index+1).padStart(2,'0')}</span>${esc(name(course.themeId))}</a></li>`).join('')}</ol></section>`;
 }
 
+function renderModuleIntroduction(course) {
+  const introduction=course.moduleIntroduction;
+  if(!introduction)return '';
+  return `<section class="module-introduction"><p><strong>Pour commencer.</strong> ${esc(introduction.startingPoint)}</p><p class="module-goal"><strong>À la fin de ce module.</strong> ${esc(introduction.goal)}</p><h3>Les notions que nous allons découvrir, dans l’ordre</h3><ol>${introduction.concepts.map(concept=>`<li><a href="${courseHref(course.themeId,concept.chapterId)}">${esc(concept.name)}</a><p>${esc(concept.explanation)}</p></li>`).join('')}</ol><button type="button" class="module-begin">Aller au chapitre ↓</button></section>`;
+}
+
+function renderNotions(chapter) {
+  if(!chapter.notions)return '';
+  return `<section class="introduced-notions"><h3>Dans ce chapitre, nous allons voir…</h3><ul>${chapter.notions.map(notion=>`<li><strong>${esc(notion.name)}</strong><p>${esc(notion.explanation)}</p></li>`).join('')}</ul></section>`;
+}
+
 function renderJourney(course,chapter) {
   if(!course.journey)return '';
   const journey=course.journey,current=courseStage(course,chapter.id);
-  return `<details class="course-journey" ${chapter===course.chapters[0]?'open':''}><summary><span><small>LE PROJET QUI RELIE LES CHAPITRES</small><strong>${esc(journey.title)}</strong></span><span class="journey-toggle" aria-hidden="true">+</span></summary><div class="journey-content"><p class="journey-scenario">${esc(journey.scenario)}</p><div class="journey-endpoints"><div><span>Au départ</span><p>${esc(journey.startingPoint)}</p></div><div><span>À l’arrivée</span><p>${esc(journey.destination)}</p></div></div><ol class="journey-stages">${journey.stages.map((stage,index)=>`<li class="${stage===current?'is-current':''}"><a href="${courseHref(course.themeId,stage.chapterIds[0])}" ${stage===current?'aria-current="step"':''}><span>${String(index+1).padStart(2,'0')}</span><strong>${esc(stage.title)}</strong><small>${stage.chapterIds.length} chapitre${stage.chapterIds.length===1?'':'s'}${stage===current?' · Vous êtes ici':''}</small></a></li>`).join('')}</ol><details class="interview-scope"><summary>Ce que ce cours vous aide à expliquer en entretien</summary><ul>${journey.scope.map(item=>`<li>${esc(item)}</li>`).join('')}</ul></details></div></details>`;
+  return `<details class="course-journey" ${chapter===course.chapters[0]?'open':''}><summary><span><small>PRÉSENTATION DU MODULE</small><strong>${esc(name(course.themeId))}</strong></span><span class="journey-toggle" aria-hidden="true">+</span></summary><div class="journey-content">${renderModuleIntroduction(course)}<details class="module-project"><summary>Le projet et les étapes du module</summary><h3>${esc(journey.title)}</h3><p class="journey-scenario">${esc(journey.scenario)}</p><div class="journey-endpoints"><div><span>Au départ</span><p>${esc(journey.startingPoint)}</p></div><div><span>À l’arrivée</span><p>${esc(journey.destination)}</p></div></div><ol class="journey-stages">${journey.stages.map((stage,index)=>`<li class="${stage===current?'is-current':''}"><a href="${courseHref(course.themeId,stage.chapterIds[0])}" ${stage===current?'aria-current="step"':''}><span>${String(index+1).padStart(2,'0')}</span><strong>${esc(stage.title)}</strong><small>${stage.chapterIds.length} chapitre${stage.chapterIds.length===1?'':'s'}${stage===current?' · Vous êtes ici':''}</small></a></li>`).join('')}</ol><details class="interview-scope"><summary>Ce que ce cours vous aide à expliquer en entretien</summary><ul>${journey.scope.map(item=>`<li>${esc(item)}</li>`).join('')}</ul></details></details></div></details>`;
 }
 
 function renderContext(chapter,course) {
   if(!chapter.context)return '';
   const context=chapter.context,stage=courseStage(course,chapter.id);
-  return `<section class="chapter-context"><p class="eyebrow">${stage?esc(stage.title):'POSONS LE PROBLÈME'}</p><h2>Pourquoi cette étape ?</h2><p class="context-problem">${esc(context.problem)}</p><dl><div><dt>On s’appuie sur…</dt><dd>${esc(context.recall)}</dd></div><div><dt>Cela va nous servir à…</dt><dd>${esc(context.why)}</dd></div></dl><p class="context-connection">${esc(context.connection)}</p></section>`;
+  return `<section class="chapter-context"><p class="eyebrow">${stage?esc(stage.title):'POSONS LE PROBLÈME'}</p><h2>Pourquoi cette étape ?</h2><p class="context-problem">${esc(context.problem)}</p>${renderNotions(chapter)}<dl><div><dt>On s’appuie sur…</dt><dd>${esc(context.recall)}</dd></div><div><dt>Cela va nous servir à…</dt><dd>${esc(context.why)}</dd></div></dl><p class="context-connection">${esc(context.connection)}</p></section>`;
 }
 
 function renderMethodology() {
@@ -86,6 +98,10 @@ function showCourse(course, chapter) {
   save(); applyPreferences();
   document.title = `${chapter.title} — ${name(course.themeId)} — À l’écoute`;
   root.innerHTML = `<div class="course-breadcrumb"><a href="./cours.html">Tous les cours</a><span aria-hidden="true">/</span><span>${esc(name(course.themeId))}</span></div>${renderJourney(course,chapter)}<div class="course-layout"><aside class="course-sidebar"><div class="sidebar-title"><span class="eyebrow">LE FIL DU COURS</span><h2>${esc(name(course.themeId))}</h2><p>${count} / ${course.chapters.length} chapitres lus</p><progress max="${course.chapters.length}" value="${count}" aria-label="Progression de lecture"></progress></div><details class="chapter-toc" open><summary>Sommaire <span>${index+1} / ${course.chapters.length}</span></summary><nav aria-label="Chapitres du cours"><ol>${course.chapters.map((ch,i)=>`<li><a href="${courseHref(course.themeId,ch.id)}" ${ch.id===chapter.id?'aria-current="step"':''}><span class="toc-number">${progress.completed.includes(readKey(course,ch))?'✓':String(i+1).padStart(2,'0')}</span><span>${esc(ch.title)}${progress.completed.includes(readKey(course,ch))?'<span class="sr-only"> — lu</span>':''}</span></a></li>`).join('')}</ol></nav></details><details class="course-introduction"><summary>Avant de commencer</summary>${course.intro.map(p=>`<p>${esc(p)}</p>`).join('')}<h3>Ce que vous allez comprendre</h3><ul>${course.objectives.map(p=>`<li>${esc(p)}</li>`).join('')}</ul>${course.prerequisites.length?`<h3>Des bases utiles avant ce cours</h3>${course.prerequisites.map(id=>`<a class="prerequisite" href="${courseHref(id)}">${esc(name(id))} ↗</a>`).join('')}`:'<p>Vous pouvez commencer ici sans autre cours du parcours.</p>'}</details></aside><article class="lesson" aria-labelledby="lesson-title"><div class="lesson-tools"><span class="eyebrow">CHAPITRE ${String(index+1).padStart(2,'0')} / ${String(course.chapters.length).padStart(2,'0')}</span><div><button id="large-text" aria-pressed="${progress.largeText}" aria-label="Agrandir le texte du cours">Aa +</button><button id="reading-mode" aria-pressed="${progress.readingMode}">${progress.readingMode?'Afficher le sommaire':'Mode lecture'}</button></div></div><header class="lesson-heading"><span class="lesson-time">≈ ${chapterMinutes(chapter)} min · À votre rythme</span><h1 id="lesson-title">${esc(chapter.title)}</h1><p class="lesson-summary">${esc(chapter.summary)}</p></header>${renderContext(chapter,course)}${storageNotice()}${fromQuestion?`<aside class="question-context"><span>↳ Depuis le quiz</span><p>${esc(fromQuestion.prompt)}</p><small>Voici le chapitre qui explique la notion. Votre session reste sauvegardée.</small></aside>`:''}<div class="lesson-body">${chapter.blocks.map(renderBlock).join('')}</div><section class="takeaway"><p class="eyebrow">SI VOUS NE GARDEZ QUE TROIS IDÉES</p><h2>L’essentiel, sans les détours.</h2><ol>${chapter.takeaways.map(t=>`<li>${esc(t)}</li>`).join('')}</ol></section>${chapter.checkpoint?renderCheckpoint(chapter.checkpoint):''}<div class="chapter-completion"><label><input type="checkbox" id="mark-read" ${isRead?'checked':''}><span><strong>J’ai lu ce chapitre</strong><small>Un repère pour vous, sans test ni obligation.</small></span></label><span class="read-status" role="status">${isRead?'Repère enregistré':'À votre rythme'}</span></div>${references(chapter.sourceIds)}${chapter.context?`<aside class="next-connection"><strong>Et maintenant ?</strong><p>${esc(chapter.context.next)}</p></aside>`:''}<nav class="chapter-pagination" aria-label="Continuer la lecture">${index?`<a class="chapter-prev" href="${courseHref(course.themeId,course.chapters[index-1].id)}"><span>← Chapitre précédent</span><strong>${esc(course.chapters[index-1].title)}</strong></a>`:'<a class="chapter-prev" href="./cours.html"><span>← Tous les cours</span><strong>Retrouver le parcours</strong></a>'}${index<course.chapters.length-1?`<a class="chapter-next" href="${courseHref(course.themeId,course.chapters[index+1].id)}"><span>Chapitre suivant →</span><strong>${esc(course.chapters[index+1].title)}</strong></a>`:nextCourse(course)}</nav><div class="lesson-quiz-link"><img src="${portrait}" alt="" width="68" height="68" loading="lazy"><p>Les notions ont pris forme ?<br><span>Le quiz est là pour les remettre en mouvement.</span></p><a class="button secondary" href="./">Retour au quiz ↗</a></div></article></div>`;
+  root.querySelector('.module-begin')?.addEventListener('click',()=>{
+    const heading=root.querySelector('#lesson-title');heading.tabIndex=-1;heading.focus({preventScroll:true});
+    root.querySelector('.lesson').scrollIntoView({block:'start',behavior:'instant'});
+  });
   attachWalkthroughs(root,chapter.blocks);
   if(chapter.checkpoint)attachCheckpoint(root,chapter.checkpoint);
   if(window.matchMedia('(max-width:740px)').matches) root.querySelector('.chapter-toc').open=false;

@@ -208,6 +208,9 @@ try {
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`Débordement : ${course.themeId}/${chapter.id}`);
       assert.equal(await page.locator('.lesson-figure').count(),chapter.blocks.filter(b=>b.type==='figure').length);
       assert.equal(await page.locator('.chapter-context').count(),1);
+      assert.equal(await page.locator('.introduced-notions li').count(),chapter.notions.length);
+      assert.equal(await page.locator('.first-example').count(),chapter.blocks.filter(b=>b.type==='first-example').length);
+      assert.ok((await page.locator('.first-example-output').first().innerText()).trim().length>0);
       assert.equal(await page.locator('.worked-example').count(),chapter.blocks.filter(b=>b.type==='walkthrough').length);
       assert.equal(await page.locator('.concept-visual').count(),chapter.blocks.filter(b=>b.type==='visual').length);
       assert.equal(await page.locator('.data-plot').count(),chapter.blocks.filter(b=>b.type==='plot').length);
@@ -277,6 +280,12 @@ try {
     assert.equal(await page.locator('.course-journey').getAttribute('open'),'');
     assert.equal(await page.locator('.journey-endpoints>div').count(),2);
     assert.equal(await page.locator('.journey-stages .is-current').count(),1);
+    assert.equal(await page.locator('.module-introduction>ol>li').count(),courses[0].moduleIntroduction.concepts.length);
+    assert.ok((await page.locator('.module-goal').innerText()).includes(courses[0].moduleIntroduction.goal));
+    const title=await page.locator('#lesson-title').innerText();
+    await page.locator('.module-begin').click();
+    assert.equal(await page.locator('#lesson-title').innerText(),title);
+    assert.equal(await page.locator('#lesson-title').evaluate(element=>element===document.activeElement),true);
     await page.screenshot({path:'test-results/courses-revised-python-introduction.png',fullPage:true});
     await page.locator('.course-breadcrumb a').click();
     await page.locator('.learning-methodology>summary').click();

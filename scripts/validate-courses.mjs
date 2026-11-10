@@ -19,7 +19,7 @@ export function validateCourses(courses, { bank, themes, sources }) {
   assert.deepEqual(new Set(courses.map(c=>c.themeId)),themeIds);
   const ids=new Map(bank.map(q=>[q.id,q]));
   const coverage=new Map();
-  let chapters=0, words=0, figures=0, examples=0, code=0, visuals=0, plots=0, walkthroughs=0, checkpoints=0;
+  let chapters=0, words=0, figures=0, examples=0, code=0, visuals=0, plots=0, walkthroughs=0, checkpoints=0, firstExamples=0, introducedNotions=0;
   for(const course of courses) {
     const check=(condition,message)=>assert.ok(condition,`${course.themeId}: ${message}`);
     check(course.edition===2,'édition pédagogique 2');
@@ -29,6 +29,15 @@ export function validateCourses(courses, { bank, themes, sources }) {
     check(Array.isArray(course.prerequisites)&&course.prerequisites.every(id=>themeIds.has(id)&&id!==course.themeId),'prérequis valides');
     check(Array.isArray(course.chapters)&&course.chapters.length>=6,'au moins six chapitres');
     check(new Set(course.chapters.map(ch=>ch.id)).size===course.chapters.length,'IDs de chapitres uniques');
+    const moduleIntroduction=course.moduleIntroduction;
+    check(moduleIntroduction?.startingPoint?.trim()&&moduleIntroduction.goal?.trim(),'présentation du module');
+    check(moduleIntroduction.concepts?.length>=5&&moduleIntroduction.concepts.length<=8,'cinq à huit jalons annoncés');
+    let previousConceptIndex=-1;
+    for(const concept of moduleIntroduction.concepts){
+      const chapterIndex=course.chapters.findIndex(ch=>ch.id===concept.chapterId);
+      check(concept.name?.trim()&&concept.explanation?.trim()&&chapterIndex>=0,'notion de module définie et reliée à un chapitre');
+      check(chapterIndex>=previousConceptIndex,'notions annoncées dans l’ordre du cours');previousConceptIndex=chapterIndex;
+    }
     const journey=course.journey;
     check(journey&&['title','scenario','startingPoint','destination'].every(key=>typeof journey[key]==='string'&&journey[key].trim()),'projet, départ et destination');
     check(journey.scope?.length>=3&&journey.scope.every(x=>typeof x==='string'&&x.trim()),'compétences visées');
@@ -39,6 +48,8 @@ export function validateCourses(courses, { bank, themes, sources }) {
       const fail=message=>`${course.themeId}/${ch.id}: ${message}`;
       assert.match(ch.id,/^[a-z0-9]+(?:-[a-z0-9]+)*$/,fail('ID stable'));
       assert.ok(ch.title?.trim()&&ch.summary?.trim(),fail('titre et idée directrice'));
+      assert.ok(ch.notions?.length>=2&&ch.notions.length<=4&&ch.notions.every(notion=>notion.name?.trim()&&notion.explanation?.trim()),fail('deux à quatre notions introduites et expliquées'));
+      introducedNotions+=ch.notions.length;
       assert.ok(Array.isArray(ch.questionIds),fail('questions reliées ; vide autorisé pour un chapitre de fondations'));
       assert.ok(ch.context&&['recall','problem','why','connection','next'].every(key=>typeof ch.context[key]==='string'&&ch.context[key].trim()),fail('rappel, problème, utilité et transitions'));
       for(const id of ch.questionIds) {
@@ -48,16 +59,25 @@ export function validateCourses(courses, { bank, themes, sources }) {
       }
       assert.ok(ch.blocks.length>=4,fail('développement explicatif'));
       assert.ok(ch.blocks.some(b=>b.type==='walkthrough'),fail('exemple résolu pas à pas'));
+      const firstExampleIndex=ch.blocks.findIndex(block=>block.type==='first-example');
+      assert.ok(firstExampleIndex>=0&&firstExampleIndex<=3,fail('premier exemple simple au début du chapitre'));
+      assert.ok(firstExampleIndex<ch.blocks.findIndex(block=>block.type==='walkthrough'),fail('cas simple avant le déroulé complet'));
       assert.ok(ch.blocks.some(b=>['visual','plot'].includes(b.type)),fail('schéma ou graphique propre à la notion'));
       let chapterWords=0;
       for(const block of ch.blocks) {
-        assert.ok(['paragraph','heading','list','code','callout','example','figure','visual','plot','walkthrough'].includes(block.type),fail('type de bloc'));
+        assert.ok(['paragraph','heading','list','code','callout','example','figure','visual','plot','walkthrough','first-example'].includes(block.type),fail('type de bloc'));
         if(['paragraph','heading','callout','example'].includes(block.type))assert.ok(typeof block.text==='string'&&block.text.trim(),fail('texte non vide'));
         if(block.type==='code'){assert.ok(block.code?.trim()&&block.caption?.trim(),fail('code commenté'));code++;}
         if(block.type==='list')assert.ok(Array.isArray(block.items)&&block.items.length&&block.items.every(x=>typeof x==='string'&&x.trim()),fail('liste lisible'));
         if(block.type==='callout')assert.ok(['tip','pitfall','analogy'].includes(block.tone)&&block.label?.trim(),fail('encadré nommé'));
         if(block.type==='figure'){assert.ok(FIGURE_KINDS.includes(block.kind)&&block.caption?.trim(),fail('figure légendée'));figures++;}
         if(block.type==='example'){assert.ok(block.title?.trim(),fail('exemple titré'));examples++;}
+        if(block.type==='first-example'){
+          firstExamples++;assert.ok(['title','introduction','code','output','explanation'].every(key=>typeof block[key]==='string'&&block[key].trim()),fail('premier exemple et résultat expliqués'));
+          assert.ok(['python','text','bash'].includes(block.language),fail('langage du premier exemple'));
+          assert.ok(block.code.split('\n').length<=6,fail('six lignes maximum pour le cas simple'));
+          assert.ok(block.variant&&['change','output','explanation'].every(key=>typeof block.variant[key]==='string'&&block.variant[key].trim()),fail('variation unique et résultat expliqués'));
+        }
         if(block.type==='visual'){
           visuals++;assert.ok(block.title?.trim()&&block.caption?.trim(),fail('schéma titré et interprété'));
           assert.ok(['flow','comparison','table'].includes(block.kind),fail('type de schéma'));
@@ -97,7 +117,7 @@ export function validateCourses(courses, { bank, themes, sources }) {
   for(const c of courses)for(const pre of c.prerequisites)assert.ok(COURSE_ORDER.indexOf(pre)<COURSE_ORDER.indexOf(c.themeId),`Ordre du prérequis ${pre} → ${c.themeId}`);
   assert.ok(visuals+plots>=chapters,'Des représentations dans chaque chapitre');
   assert.ok(plots>=9,'Graphiques numériques répartis dans les cours');
-  return { courses:courses.length,chapters,coveredQuestions:coverage.size,wordsExcludingCode:words,figures,visuals,plots,examples,codeExamples:code,walkthroughs,checkpoints,references:refs.size };
+  return { courses:courses.length,chapters,coveredQuestions:coverage.size,wordsExcludingCode:words,figures,visuals,plots,examples,codeExamples:code,walkthroughs,checkpoints,firstExamples,introducedNotions,references:refs.size };
 }
 
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)console.log(JSON.stringify(validateCourses(await readCourses(),await readBank()),null,2));

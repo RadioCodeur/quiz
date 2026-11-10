@@ -8,6 +8,8 @@ Six cours, **65 chapitres**, environ **40 000 mots hors code**, **65 exemples gu
 
 Chaque cours annonce son projet, son point de départ, sa destination et les étapes qui relient ses chapitres. Chaque chapitre rappelle ce qui est déjà connu, pose un problème, explique son utilité dans le projet et prépare la suite. Le **mode lecture** masque le sommaire ; **Aa +** agrandit le texte. Le sommaire est replié au départ sur téléphone. Les schémas larges et le code défilent dans leur propre conteneur. Le portrait du professeur est local ; aucune image extérieure n’est chargée.
 
+La présentation de chaque module annonce aussi cinq à huit notions, dans l’ordre où elles seront rencontrées, avec une explication et un lien vers le chapitre correspondant. Chaque chapitre nomme et définit deux à quatre notions avant ses exemples. Un **premier exemple très court** affiche la situation ou le code, son résultat, puis une variation qui change une seule chose. Ce passage précède le grand déroulé guidé : il sert à comprendre la règle avant de l’appliquer à un cas plus riche. La présentation s’inspire des pages de cours publiques de France-IOI consultées, avec des textes et exemples audio originaux.
+
 Les exemples guidés possèdent des boutons précédent/suivant : ils surlignent les lignes de code concernées et expliquent les états avant/après. Il s’agit d’un déroulé rédigé et vérifié à l’avance, sans interpréteur Python. Une vue « toutes les étapes » reste disponible. Les tableaux et graphiques ont une légende interprétative ; les valeurs des graphiques sont consultables sous forme de tableau. Un QCM facultatif de transfert avec quatre choix et une correction immédiate suit chaque chapitre. Ces réponses ne sont pas ajoutées au score du quiz et ne sont pas conservées comme mesure de maîtrise.
 
 La case **J’ai lu ce chapitre** est un repère volontaire, pas un test de maîtrise. Le dernier chapitre et les préférences sont enregistrés dans `localStorage`, sous la clé distincte **`a-lecoute.courses.v1`**. La session du quiz reste intacte. Les données corrompues ou les identifiants retirés sont filtrés. Sans stockage disponible, la lecture fonctionne en mémoire.
@@ -15,6 +17,8 @@ La case **J’ai lu ce chapitre** est un repère volontaire, pas un test de maî
 ## Sources et couverture
 
 Les cours sont de vrais JSON dans `public/courses/`, avec un fichier par thème. Chaque chapitre déclare les `questionIds` dont il explique les connaissances et les `sourceIds` provenant des registres de références du quiz. Le validateur vérifie que les **200 questions** possèdent chacune un chapitre dans leur thème principal, sans oubli ni doublon. Cette vérification structurelle est complétée par une relecture pédagogique ; elle ne prouve pas automatiquement qu’un lecteur saura répondre juste.
+
+Les introductions de module utilisent `moduleIntroduction` (`startingPoint`, `goal`, `concepts` reliés par `chapterId`). Les nouvelles notions d’un chapitre sont dans `notions`. Le bloc `first-example` contient `title`, `introduction`, `code`, `language`, `output`, `explanation` et `variant` (`change`, `output`, `explanation`). Les sorties sont rédigées et vérifiées : aucun interpréteur n’est intégré au site. Le validateur impose un premier exemple de six lignes au plus, placé avant le grand exemple guidé.
 
 Les extraits supposent les imports usuels (`np` pour NumPy, `torch` pour PyTorch) lorsqu’ils ne sont pas montrés. Aucun code Python n’est exécuté par le site. Les résultats des exemples sont expliqués pour permettre le raisonnement.
 

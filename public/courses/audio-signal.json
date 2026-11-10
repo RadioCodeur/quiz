@@ -27,11 +27,25 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Notre microphone capte une pression variable, puis un convertisseur la mesure à intervalles réguliers. Un échantillon est une de ces mesures. Dans un fichier ordinaire, les amplitudes numériques sont souvent normalisées ; sans étalonnage du matériel, une valeur de 0,5 ne désigne pas automatiquement 0,5 pascal. Pour retrouver le temps, il faut aussi connaître la fréquence d’échantillonnage : 48 kHz signifie 48 000 mesures par seconde et par canal."
+          "text": "Le microphone mesure un son au cours du temps. Chaque mesure est un échantillon. La fréquence d’échantillonnage indique combien de mesures sont prises en une seconde ; un hertz, noté Hz, signifie une mesure par seconde dans ce contexte. Commençons avec une cadence fictive très lente pour pouvoir tout compter : elle sert uniquement à expliquer le temps, pas à enregistrer une vraie sirène."
+        },
+        {
+          "type": "first-example",
+          "title": "Compter deux secondes",
+          "introduction": "Petit exemple inventé : quatre mesures représentent ici une seconde.",
+          "code": "Mesures dans un canal : 8\nMesures par seconde : 4\nDurée : 8 / 4",
+          "language": "text",
+          "output": "2 secondes",
+          "explanation": "Huit mesures regroupées par paquets de quatre correspondent à deux secondes. Nous avons seulement converti un compte en temps.",
+          "variant": {
+            "change": "Remplacer seulement 8 mesures par 12 ; garder 4 mesures par seconde.",
+            "output": "3 secondes",
+            "explanation": "12 / 4 = 3. La liste plus longue dure davantage parce que la cadence n’a pas changé."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Un hertz signifie une répétition par seconde ; un kilohertz vaut mille hertz. Le symbole N comptera les valeurs d’un canal, et sr leur cadence en hertz. Un canal est un signal simultané distinct : gauche et droite en stéréo, par exemple. Nous gardons ces trois idées séparées, car nombre de canaux, nombre d’échantillons et amplitude décrivent des propriétés différentes."
+          "text": "Un canal est une suite de mesures ; les canaux gauche et droit d’un fichier stéréo couvrent les mêmes instants. Pour connaître la durée, on compte les échantillons d’un seul canal puis on divise par la cadence. Dans la suite, N désigne ce nombre et sr la cadence. Un kilohertz, ou kHz, vaut mille hertz."
         },
         {
           "type": "paragraph",
@@ -188,7 +202,21 @@
         ],
         "correctOptionId": "b",
         "explanation": "Chaque canal contient 240 000 échantillons : 240000 / 48000 = 5 secondes. Les deux canaux sont simultanés et ne s’additionnent pas dans ce calcul."
-      }
+      },
+      "notions": [
+        {
+          "name": "Échantillon",
+          "explanation": "Une mesure numérique de l’amplitude à un instant donné."
+        },
+        {
+          "name": "Fréquence d’échantillonnage",
+          "explanation": "Le nombre de mesures prises en une seconde, pour chaque canal."
+        },
+        {
+          "name": "Canal",
+          "explanation": "Une suite de mesures enregistrées simultanément à d’autres, comme la gauche et la droite en stéréo."
+        }
+      ]
     },
     {
       "id": "nyquist-repliement-reechantillonnage",
@@ -204,11 +232,25 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Pour préparer notre rue à moindre coût, nous envisageons de passer de 48 à 16 kHz. Cela retire deux mesures sur trois, mais ne doit pas inventer de fausses fréquences. Appelons fréquence sonore le nombre d’oscillations par seconde d’une composante, et fréquence d’échantillonnage le nombre de mesures prises par seconde. Les deux s’expriment en hertz, mais elles ne répondent pas à la même question."
+          "text": "Nous savons maintenant convertir une cadence de mesure en durée. Une fréquence sonore décrit autre chose : combien de fois une oscillation accomplit son cycle en une seconde. La cadence de mesure et la fréquence du son s’expriment toutes deux en hertz, mais l’une compte nos observations et l’autre les variations observées."
+        },
+        {
+          "type": "first-example",
+          "title": "Trouver la frontière avec un petit nombre",
+          "introduction": "Cadence fictive choisie pour voir immédiatement le calcul.",
+          "code": "Cadence : 8 mesures par seconde\nMoitié de la cadence : 8 / 2",
+          "language": "text",
+          "output": "Frontière de Nyquist : 4 Hz",
+          "explanation": "Un signal idéal doit rester sous cette frontière pour éviter l’ambiguïté de mesure. Le nom Nyquist désigne ici la moitié calculée, pas une fréquence automatiquement présente dans le son.",
+          "variant": {
+            "change": "Changer seulement la cadence de 8 à 12 mesures par seconde.",
+            "output": "Frontière de Nyquist : 6 Hz",
+            "explanation": "12 / 2 = 6. Augmenter la cadence repousse la frontière ; cela ne rend pas plus fort le signal enregistré."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Une sinusoïde est une oscillation régulière simple, utile comme brique de test. Sa période est la durée d’un cycle ; une composante à 2 kHz accomplit 2 000 cycles par seconde. Le principe de Nyquist dit qu’un signal idéal limité en bande exige une cadence strictement supérieure à deux fois sa fréquence maximale pour être représenté sans ambiguïté. La moitié de sr est donc une frontière, pas une promesse de qualité acoustique."
+          "text": "Une oscillation régulière simple est une sinusoïde. Pour distinguer sans ambiguïté les oscillations d’un signal idéal limité en fréquence, la cadence doit dépasser deux fois leur fréquence maximale. La moitié de la cadence s’appelle fréquence de Nyquist. Cette frontière ne garantit pas la qualité du son : elle indique une limite de représentation."
         },
         {
           "type": "figure",
@@ -428,7 +470,21 @@
         ],
         "correctOptionId": "d",
         "explanation": "16 kHz place Nyquist à 8 kHz, au-dessus de la bande utile. Les cadences inférieures ou égales à 12 kHz n’offrent pas la marge demandée ; un filtre réel a aussi besoin d’une transition."
-      }
+      },
+      "notions": [
+        {
+          "name": "Fréquence sonore",
+          "explanation": "Le nombre de cycles d’une oscillation par seconde, distinct du nombre de mesures prises."
+        },
+        {
+          "name": "Fréquence de Nyquist",
+          "explanation": "La frontière égale à la moitié de la cadence de mesure ; la bande utile doit rester en dessous pour éviter le repliement."
+        },
+        {
+          "name": "Repliement",
+          "explanation": "La confusion entre deux oscillations qui donnent les mêmes mesures à une cadence insuffisante."
+        }
+      ]
     },
     {
       "id": "amplitude-puissance-decibels",
@@ -443,11 +499,25 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Dans notre rue, une oscillation de sirène traverse alternativement zéro. Additionner toutes ses amplitudes peut presque tout annuler, même quand on l’entend nettement. Pour résumer l’amplitude d’une portion, il faut une opération qui traite positifs et négatifs de façon cohérente. La RMS signifie racine de la moyenne des carrés : son nom décrit directement les trois opérations à effectuer."
+          "text": "La cadence indique quand nous mesurons ; l’amplitude indique la valeur mesurée. Elle peut être positive ou négative. Une oscillation de sirène peut ainsi avoir une moyenne presque nulle sans être silencieuse. Nous cherchons un résumé qui ne fasse pas disparaître son importance en additionnant des signes opposés."
+        },
+        {
+          "type": "first-example",
+          "title": "Une moyenne nulle, une amplitude non nulle",
+          "introduction": "Deux valeurs inventées suffisent pour voir pourquoi nous utilisons des carrés.",
+          "code": "Valeurs : +1 et -1\nCarrés : 1 et 1\nMoyenne des carrés : 1\nRacine de cette moyenne : 1",
+          "language": "text",
+          "output": "Amplitude efficace : 1",
+          "explanation": "La moyenne brute vaut zéro, mais les deux valeurs ont une importance non nulle. La racine de la moyenne des carrés conserve cette importance.",
+          "variant": {
+            "change": "Multiplier seulement les amplitudes par 2 : les valeurs deviennent +2 et -2.",
+            "output": "Amplitude efficace : 2",
+            "explanation": "Les carrés deviennent 4 et 4, leur moyenne vaut 4 et sa racine vaut 2. Le même calcul suit donc le changement d’amplitude."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Une moyenne ajoute des valeurs puis divise par leur nombre. Un carré multiplie un nombre par lui-même et rend ici les contributions non négatives. Une racine carrée défait ce changement d’échelle. Le logarithme pose une autre question : quel facteur multiplicatif sépare deux valeurs ? Les décibels utilisent ce principe pour exprimer un rapport à une référence, et non un volume absolu obtenu gratuitement."
+          "text": "La moyenne ajoute les valeurs puis divise par leur nombre. Le carré multiplie une valeur par elle-même et rend ici les contributions non négatives. Prendre ensuite la racine de cette moyenne donne l’amplitude efficace, souvent notée RMS, pour root mean square en anglais. Le logarithme et les décibels serviront plus loin à comparer les échelles ; ils ne remplacent pas cette définition."
         },
         {
           "type": "paragraph",
@@ -608,7 +678,21 @@
         ],
         "correctOptionId": "b",
         "explanation": "Le carré de 0,5 vaut 0,25. Le rapport d’amplitudes donne 20 log10(0,5) ≈ -6,02 dB ; la puissance reste non négative."
-      }
+      },
+      "notions": [
+        {
+          "name": "Amplitude efficace",
+          "explanation": "Un résumé de l’amplitude obtenu par racine de la moyenne des carrés, également appelé RMS."
+        },
+        {
+          "name": "Puissance non normalisée",
+          "explanation": "Une grandeur proportionnelle au carré du module de l’amplitude."
+        },
+        {
+          "name": "Décibel",
+          "explanation": "Une manière logarithmique d’exprimer un rapport à une référence précisée."
+        }
+      ]
     },
     {
       "id": "fourier-coefficients-frequences",
@@ -622,11 +706,25 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Une sirène peut contenir plusieurs oscillations superposées. La transformée de Fourier cherche leur contribution sur une grille de fréquences. On passe d’une liste ordonnée dans le temps à une liste de coefficients fréquentiels. Ce changement ressemble à décrire un mélange par ses ingrédients, mais avec une limite : les ingrédients sont des oscillations mathématiques, pas directement des objets comme une voiture ou une voix."
+          "text": "Nous avons résumé l’amplitude d’une portion entière. La transformée de Fourier décrit maintenant comment cette portion se répartit entre différentes fréquences. Elle produit une liste de contributions sur une grille. Chaque case de la grille, ou bin, possède un indice ; cet indice n’est pas encore une fréquence en hertz."
+        },
+        {
+          "type": "first-example",
+          "title": "Donner une fréquence à une case",
+          "introduction": "Ce calcul inventé ne construit pas encore un spectre ; il repère seulement une case de sa grille.",
+          "code": "Cadence : 12 000 Hz\nTaille de l’analyse : 12 mesures\nIndice de la case : 3\nFréquence de la case : 3 × 12 000 / 12",
+          "language": "text",
+          "output": "3 000 Hz",
+          "explanation": "Deux cases voisines sont ici séparées de 1 000 Hz. L’indice 3 désigne donc 3 000 Hz, pas 3 Hz.",
+          "variant": {
+            "change": "Remplacer seulement l’indice 3 par l’indice 4.",
+            "output": "4 000 Hz",
+            "explanation": "4 × 12 000 / 12 = 4 000. La grille et la portion analysée n’ont pas changé ; nous regardons seulement une autre case."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Un coefficient complexe s’écrit a + ib : a et b sont deux coordonnées. Son module √(a² + b²) est une longueur et sa phase un angle. Le symbole i sert à calculer avec ces deux coordonnées ; il n’exige pas que le son physique soit imaginaire. Un bin est une case de la grille fréquentielle. Son indice devient une fréquence seulement une fois sr et la taille de FFT connus."
+          "text": "Pour relier un indice à une fréquence, il faut connaître la cadence et le nombre de mesures analysées. Une contribution peut être stockée dans un coefficient complexe, c’est-à-dire un nombre à deux coordonnées. Sa longueur s’appelle module et son angle phase. FFT désigne un algorithme rapide de calcul de la transformée de Fourier ; ce nom ne change pas le sens des axes."
         },
         {
           "type": "paragraph",
@@ -793,7 +891,21 @@
         ],
         "correctOptionId": "c",
         "explanation": "Les bins sont séparés de 12000 / 12 = 1000 Hz. L’indice 3 correspond à 3 × 1000 = 3000 Hz, avec l’indice 0 à la fréquence nulle."
-      }
+      },
+      "notions": [
+        {
+          "name": "Transformée de Fourier",
+          "explanation": "Une description d’une portion de signal par des contributions à des fréquences déterminées."
+        },
+        {
+          "name": "Bin fréquentiel",
+          "explanation": "Une case de cette grille ; sa fréquence dépend de la cadence et de la taille d’analyse."
+        },
+        {
+          "name": "Coefficient complexe",
+          "explanation": "Un nombre à deux coordonnées dont la longueur est le module et l’angle la phase."
+        }
+      ]
     },
     {
       "id": "stft-fenetres-hop-trames",
@@ -807,11 +919,25 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Imaginons dix secondes de rue : une sirène commence après plusieurs secondes puis s’éloigne. Une seule FFT mélange l’avant, la présence et l’après. La STFT, transformée de Fourier à court terme, analyse une succession de portions locales. Une trame est le résultat d’une de ces analyses. En mettant les trames côte à côte, on conserve une indication du moment où les fréquences sont présentes."
+          "text": "La transformée de Fourier décrit une portion choisie. Pour savoir quand la sirène commence, nous répétons cette analyse sur des portions courtes. Une fenêtre désigne la portion et les poids utilisés pour l’observer. Chaque résultat local s’appelle une trame. La succession de ces résultats est la transformée de Fourier à court terme, abrégée STFT."
+        },
+        {
+          "type": "first-example",
+          "title": "Placer des fenêtres sur huit mesures",
+          "introduction": "Nous conservons seulement les fenêtres qui tiennent entièrement dans cette liste inventée.",
+          "code": "Longueur du signal : 8 mesures\nLongueur d’une fenêtre : 4 mesures\nDéplacement : 2 mesures\nDébuts possibles : 0, 2, 4",
+          "language": "text",
+          "output": "3 fenêtres complètes",
+          "explanation": "La dernière fenêtre commence à 4 et utilise les indices 4 à 7. Une fenêtre commençant à 6 dépasserait la liste. Le déplacement de deux n’est donc pas la longueur de quatre.",
+          "variant": {
+            "change": "Changer seulement la longueur du signal de 8 à 10 mesures.",
+            "output": "4 fenêtres complètes ; débuts 0, 2, 4, 6",
+            "explanation": "La fenêtre qui commence à 6 tient maintenant jusqu’à l’indice 9. Longueur de fenêtre et déplacement restent identiques."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Une fenêtre désigne ici les poids appliqués à une portion d’échantillons avant sa FFT ; sa longueur fixe l’observation locale. Le hop est le déplacement entre deux portions successives. Le mot trame désigne une analyse, pas un échantillon sonore. Avec la convention (fréquences, trames), avancer d’une colonne correspond donc à avancer d’un hop, tandis que chaque colonne résume toute une fenêtre."
+          "text": "Le hop est le déplacement entre deux fenêtres. Il peut être plus petit que leur longueur : les portions se recouvrent alors. La longueur dit combien de signal contribue à un résultat ; le déplacement dit où le résultat suivant commence. Compter les portions sur une courte liste rend cette distinction visible avant de calculer des durées en millisecondes."
         },
         {
           "type": "figure",
@@ -943,7 +1069,21 @@
         ],
         "correctOptionId": "b",
         "explanation": "La première commence à 0 et la dernière à 800. Le compte vaut 1 + floor((1000 - 200)/100) = 9."
-      }
+      },
+      "notions": [
+        {
+          "name": "Fenêtre d’analyse",
+          "explanation": "Une portion de signal et les poids appliqués à ses mesures avant de la décrire."
+        },
+        {
+          "name": "Trame",
+          "explanation": "Le résultat d’une analyse locale à une position temporelle donnée."
+        },
+        {
+          "name": "Hop",
+          "explanation": "Le déplacement en échantillons entre deux analyses successives."
+        }
+      ]
     },
     {
       "id": "resolution-fuite-zero-padding",
@@ -957,11 +1097,25 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "La sirène monte et descend, tandis qu’une attaque de piano surgit presque instantanément. Les montrer avec le même réglage peut masquer un détail utile. La résolution temporelle décrit la capacité à distinguer des événements proches dans le temps ; la résolution fréquentielle concerne des composantes proches en fréquence. Observer plus longtemps aide souvent la seconde, mais rassemble les variations de la première."
+          "text": "Nous savons choisir une fenêtre et déplacer cette fenêtre dans le temps. Reste à décider ce que son analyse doit distinguer : deux attaques presque simultanées ou deux fréquences très proches. Cette capacité s’appelle résolution, temporelle ou fréquentielle selon la question. Obtenir plus de cases dans un tableau ne garantit pas une meilleure capacité de distinction."
+        },
+        {
+          "type": "first-example",
+          "title": "Compter les vraies mesures avant les cases calculées",
+          "introduction": "Petite liste inventée : les zéros ajoutés ne sont pas de nouvelles observations.",
+          "code": "Mesures réellement observées : 4\nZéros ajoutés : 4\nValeurs fournies au calcul : 4 + 4",
+          "language": "text",
+          "output": "8 valeurs, dont 4 mesures observées",
+          "explanation": "Le calcul reçoit une liste plus longue, mais il ne dispose toujours que de quatre mesures du son. Ce complément par des zéros peut densifier la grille fréquentielle.",
+          "variant": {
+            "change": "Remplacer seulement les 4 zéros ajoutés par 12 zéros.",
+            "output": "16 valeurs, dont toujours 4 mesures observées",
+            "explanation": "4 + 12 = 16. La grille calculée peut encore grandir, mais la durée observée reste celle des quatre mesures initiales."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Une discontinuité est un saut brutal entre deux valeurs. Découper une oscillation à des bords qui ne se raccordent pas crée une rupture dans l’observation périodique supposée par la FFT. La fuite spectrale est la répartition d’une composante autour de sa fréquence dans cette analyse. Une fenêtre de Hann réduit le poids des bords ; les termes lobe principal et lobes secondaires désignent respectivement le centre et les zones latérales de cette répartition."
+          "text": "Compléter la fenêtre par des zéros signifie ajouter des valeurs nulles avant le calcul de Fourier. La FFT, son algorithme rapide, peut alors fournir une grille plus dense sans avoir reçu de nouvelles mesures. C’est différent d’observer une portion réellement plus longue. Une fenêtre de Hann, introduite plus bas, donne moins de poids aux bords pour limiter la fuite spectrale, c’est-à-dire l’étalement d’une composante autour de sa fréquence."
         },
         {
           "type": "paragraph",
@@ -1084,7 +1238,21 @@
         ],
         "correctOptionId": "c",
         "explanation": "Les valeurs observées n’ont pas changé. Le zero-padding échantillonne plus finement leur spectre, sans garantir une meilleure séparation physique."
-      }
+      },
+      "notions": [
+        {
+          "name": "Résolution",
+          "explanation": "La capacité à distinguer deux événements proches dans le temps, ou deux composantes proches en fréquence ; il faut préciser laquelle."
+        },
+        {
+          "name": "Complément par des zéros",
+          "explanation": "Des valeurs nulles ajoutées avant le calcul pour densifier sa grille, sans observer davantage de son."
+        },
+        {
+          "name": "Fuite spectrale",
+          "explanation": "La répartition d’une composante autour de sa fréquence dans l’analyse d’une portion finie."
+        }
+      ]
     },
     {
       "id": "mel-representation-compressee",
@@ -1097,11 +1265,25 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Pour reconnaître une sirène, nous n’avons peut-être pas besoin de traiter chaque bin FFT séparément. Un filtre fréquentiel peut prendre une somme pondérée de bins voisins ; un banc de filtres en applique plusieurs. Le mel est une organisation particulière de ces bandes, inspirée de différences perceptives de hauteur. Ce résumé est utile pour de nombreux modèles, sans représenter exactement toutes les capacités de l’audition humaine. Les bandes mel sont en général plus serrées dans le grave que dans l’aigu."
+          "text": "Notre analyse locale fournit plusieurs valeurs de puissance, une par case fréquentielle et par trame. Pour les regrouper, nous pouvons multiplier chaque valeur par un poids puis additionner : c’est une somme pondérée. Un banc de filtres répète ce regroupement pour plusieurs bandes. Voyons d’abord deux valeurs seulement, avant les dizaines de bandes d’un modèle."
+        },
+        {
+          "type": "first-example",
+          "title": "Regrouper deux valeurs avec des poids",
+          "introduction": "Ce jouet illustre une somme pondérée ; il n’utilise pas les poids d’un véritable filtre mel.",
+          "code": "Puissances voisines : 2 et 6\nPoids de chacune : 0,5\nSomme pondérée : 0,5 × 2 + 0,5 × 6",
+          "language": "text",
+          "output": "4",
+          "explanation": "Chaque puissance contribue pour moitié dans cet exemple. Nous avons produit un seul résumé à partir de deux nombres, sans modifier l’instant analysé.",
+          "variant": {
+            "change": "Changer seulement la seconde puissance de 6 à 10 ; conserver les poids.",
+            "output": "6",
+            "explanation": "0,5 × 2 + 0,5 × 10 = 6. Le résumé suit le changement d’une valeur, sans devenir une fréquence ou un nouveau canal audio."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Une somme pondérée multiplie chaque valeur par un poids, puis additionne les résultats. Avec des puissances [2, 6], les poids [0,5, 0,5] produisent 4. Une bande ne sélectionne donc pas toujours une seule fréquence. Plusieurs spectres différents peuvent conduire au même résumé, comme [4, 4] dans cet exemple. C’est une perte d’information possible, pas une erreur de programme."
+          "text": "Les bandes mel sont une organisation de ces regroupements inspirée de la perception des hauteurs : elles sont en général plus serrées dans le grave que dans l’aigu. Les poids réels ne sont pas tous égaux et ne sont pas toujours normalisés comme une moyenne. Une représentation log-mel applique ensuite un logarithme aux puissances regroupées. Elle ne constitue pas une copie exacte de l’audition humaine."
         },
         {
           "type": "figure",
@@ -1222,7 +1404,21 @@
         ],
         "correctOptionId": "a",
         "explanation": "La projection remplace les 513 bins par 80 bandes et conserve les 40 trames. Les bandes ne sont pas de nouveaux canaux audio."
-      }
+      },
+      "notions": [
+        {
+          "name": "Somme pondérée",
+          "explanation": "Une addition de valeurs multipliées chacune par un poids."
+        },
+        {
+          "name": "Bande mel",
+          "explanation": "Une somme pondérée de contributions fréquentielles, dans un banc de bandes inspiré de la perception des hauteurs."
+        },
+        {
+          "name": "Log-mel",
+          "explanation": "Des puissances regroupées en bandes mel, puis transformées par un logarithme avec une convention précisée."
+        }
+      ]
     },
     {
       "id": "phase-canaux-annulations",
@@ -1236,11 +1432,25 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Une sirène enregistrée par deux microphones peut arriver avec un décalage entre les canaux. Lorsque nous les mélangeons, leurs variations peuvent s’ajouter ou se compenser. La phase décrit la position d’une oscillation dans son cycle. Pour une fréquence donnée, deux contributions de même amplitude opposées d’un demi-tour s’annulent. Comparer uniquement leurs modules ne révèle pas cette différence."
+          "text": "Le module décrit l’importance d’une contribution fréquentielle, mais pas sa position dans un cycle. Cette position est la phase, représentée par un angle. Une moyenne de canaux additionne leurs valeurs à chaque instant : si elles sont opposées, elles peuvent se compenser. Commençons par cette addition sur un instant unique, puis nous reviendrons aux oscillations complètes."
+        },
+        {
+          "type": "first-example",
+          "title": "Un instant de la moyenne mono",
+          "introduction": "Nous observons ici deux amplitudes inventées au même instant, pas la phase complète de deux sons.",
+          "code": "Canal gauche : 1\nCanal droit : -1\nMoyenne mono : (1 + (-1)) / 2",
+          "language": "text",
+          "output": "0",
+          "explanation": "Les deux contributions se compensent à cet instant. Pour obtenir un silence sur tout le signal, cette opposition doit exister à chaque instant, comme dans le parcours guidé qui suit.",
+          "variant": {
+            "change": "Changer seulement l’amplitude du canal droit de -1 à 1.",
+            "output": "1",
+            "explanation": "(1 + 1) / 2 = 1. La moyenne ne supprime plus ces contributions : les signes et l’alignement comptent autant que leurs valeurs absolues."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Un tour complet correspond à 2π radians, et un demi-tour à π radians. Multiplier une oscillation par -1 inverse sa polarité. Pour son coefficient complexe non nul, cela conserve la longueur et tourne l’angle d’un demi-tour. Cette construction suffit pour raisonner sans maîtriser toute l’algèbre complexe : le module dit combien, l’angle participe à comment les contributions s’alignent."
+          "text": "Inverser la polarité d’un signal signifie multiplier toutes ses valeurs par -1. Pour une oscillation régulière, cela correspond à un demi-tour de phase. Un tour complet vaut 2π radians et un demi-tour π radians. Sur un coefficient complexe non nul, la longueur reste la même alors que l’angle change. Un seul point isolé ne suffit cependant pas à déterminer la phase d’un son."
         },
         {
           "type": "paragraph",
@@ -1450,7 +1660,21 @@
         ],
         "correctOptionId": "c",
         "explanation": "La moyenne est (x + (-x))/2 = 0 à chaque instant. Les autres opérations ne réalisent pas cette annulation des deux contributions opposées."
-      }
+      },
+      "notions": [
+        {
+          "name": "Phase",
+          "explanation": "La position d’une oscillation dans son cycle, représentée par un angle pour un coefficient complexe."
+        },
+        {
+          "name": "Polarité",
+          "explanation": "Le signe d’un signal ; inverser sa polarité multiplie toutes ses valeurs par -1."
+        },
+        {
+          "name": "Annulation",
+          "explanation": "La compensation de deux contributions opposées lorsqu’on les additionne."
+        }
+      ]
     },
     {
       "id": "reconstruction-streaming-limites",
@@ -1465,11 +1689,25 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Deux objectifs se distinguent. Pour vérifier notre pipeline, nous pouvons vouloir retrouver fidèlement le son analysé. Pour une alerte en direct, nous voulons surtout une sortie assez rapide. L’inverse de STFT reconstruit des portions temporelles puis les additionne dans leurs zones communes. Cette reconstruction demande des paramètres compatibles et une couverture suffisante ; le calcul en direct ajoute la question du contexte déjà disponible."
+          "text": "La reconstruction tente de revenir de la représentation calculée à une forme d’onde. En parallèle, une utilisation en direct impose un délai acceptable : ce délai est la latence. Avant toute difficulté d’inversion, attendre des mesures qui ne sont pas encore arrivées impose déjà un temps minimal. Ce petit calcul d’attente prépare notre analyse des fenêtres centrées."
+        },
+        {
+          "type": "first-example",
+          "title": "Attendre des mesures futures",
+          "introduction": "Scène numérique inventée : le calcul est supposé instantané pour isoler le seul délai d’acquisition.",
+          "code": "Cadence : 16 000 mesures par seconde\nMesures futures à attendre : 160\nAttente : 160 / 16 000",
+          "language": "text",
+          "output": "0,010 seconde, soit 10 ms",
+          "explanation": "Même un calcul instantané ne peut exploiter ces mesures avant leur arrivée. La latence totale d’un système réel peut aussi comprendre des buffers et du temps de calcul.",
+          "variant": {
+            "change": "Changer seulement le contexte futur de 160 à 320 mesures.",
+            "output": "0,020 seconde, soit 20 ms",
+            "explanation": "320 / 16000 = 0,020. À cadence identique, attendre deux fois plus de mesures double ce délai d’acquisition."
+          }
         },
         {
           "type": "paragraph",
-          "text": "Le recouvrement est la zone où plusieurs fenêtres utilisent les mêmes échantillons. Additionner leurs sorties doit tenir compte des poids appliqués, sinon le niveau varierait artificiellement. Une normalisation courante utilise la somme des fenêtres au carré. Une valeur nulle dans ce dénominateur indique une position non couverte dans cette formulation. Le mot causal signifie que l’on ne dispose pas encore des échantillons futurs."
+          "text": "Dans la transformée de Fourier à court terme, ou STFT, plusieurs fenêtres couvrent souvent les mêmes instants. La reconstruction par recouvrement-addition réunit leurs portions et normalise les poids pour éviter de changer le niveau. Une analyse causale utilise seulement les mesures déjà arrivées. Une fenêtre centrée demande aussi du contexte après son centre, ce qui ajoute de l’attente en direct."
         },
         {
           "type": "paragraph",
@@ -1596,7 +1834,21 @@
         ],
         "correctOptionId": "c",
         "explanation": "La demi-fenêtre contient environ 512 échantillons : 512 / 16000 = 0,032 seconde. Cela ne représente pas toute la latence du système, qui comprend aussi calcul et buffers."
-      }
+      },
+      "notions": [
+        {
+          "name": "Reconstruction",
+          "explanation": "Le retour d’une représentation calculée vers une forme d’onde, avec des informations et des paramètres compatibles."
+        },
+        {
+          "name": "Recouvrement-addition",
+          "explanation": "La réunion de portions reconstruites qui se superposent, en tenant compte de leurs poids."
+        },
+        {
+          "name": "Latence",
+          "explanation": "Le délai entre l’arrivée du son et une sortie disponible ; attendre des mesures futures y contribue."
+        }
+      ]
     }
   ],
   "edition": 2,
@@ -1657,5 +1909,51 @@
       "url": "https://librosa.org/doc/0.11.0/auto_examples/plot_superflux.html",
       "accessed": "2026-11-10"
     }
-  ]
+  ],
+  "moduleIntroduction": {
+    "startingPoint": "Tu sais compter des mesures et lire une liste de nombres. Nous partons d’un microphone, puis nous ajoutons une notion à la fois ; aucune connaissance de Fourier n’est supposée.",
+    "goal": "Comprendre comment les mesures d’un son deviennent une représentation lisible, et expliquer ce que chaque transformation conserve ou retire.",
+    "concepts": [
+      {
+        "name": "Des mesures à une durée",
+        "explanation": "Une cadence indique combien de mesures correspondent à une seconde. Elle permet de convertir la longueur d’une liste en durée.",
+        "chapterId": "echantillons-duree-canaux"
+      },
+      {
+        "name": "La limite des fréquences mesurables",
+        "explanation": "Une cadence trop faible peut confondre une oscillation rapide avec une autre. On apprend à repérer cette limite avant de changer de cadence.",
+        "chapterId": "nyquist-repliement-reechantillonnage"
+      },
+      {
+        "name": "Mesurer une importance",
+        "explanation": "Le carré et la moyenne résument les amplitudes sans annuler les signes. Les décibels expriment ensuite un rapport à une référence.",
+        "chapterId": "amplitude-puissance-decibels"
+      },
+      {
+        "name": "Associer des nombres aux fréquences",
+        "explanation": "La transformée de Fourier décrit une portion par des contributions à différentes fréquences. Chaque case possède une unité et une position calculables.",
+        "chapterId": "fourier-coefficients-frequences"
+      },
+      {
+        "name": "Retrouver le moment où le son change",
+        "explanation": "Répéter une analyse sur de petites fenêtres relie les fréquences aux instants. La longueur de fenêtre et son déplacement ont des rôles différents.",
+        "chapterId": "stft-fenetres-hop-trames"
+      },
+      {
+        "name": "Choisir un compromis",
+        "explanation": "Observer plus longtemps et calculer davantage de cases ne donnent pas la même information. Nous séparons ces deux changements.",
+        "chapterId": "resolution-fuite-zero-padding"
+      },
+      {
+        "name": "Regrouper les fréquences",
+        "explanation": "Les bandes mel résument plusieurs contributions avec des poids. Le résumé coûte moins de place mais peut perdre des détails.",
+        "chapterId": "mel-representation-compressee"
+      },
+      {
+        "name": "Conserver un alignement pour reconstruire",
+        "explanation": "La phase décrit comment les oscillations s’alignent. La comprendre prépare le retour à la forme d’onde et l’étude du délai en direct.",
+        "chapterId": "phase-canaux-annulations"
+      }
+    ]
+  }
 }

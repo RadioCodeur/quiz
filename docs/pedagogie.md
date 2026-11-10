@@ -18,6 +18,14 @@ La nouvelle édition distingue donc la couverture des connaissances et la constr
 
 Ces sources ont été consultées le 10 novembre 2026. Le registre utilisé par l’interface est `public/courses/pedagogy.json`. Les nouvelles références techniques propres aux cours sont stockées dans leur tableau `references`, puis fusionnées avec celles de la banque pour afficher les sources de chaque chapitre. Les textes et les exemples sont originaux ; les sources servent à vérifier et à orienter le contenu.
 
+## Ajustement des introductions avec France-IOI
+
+À la demande du lecteur, cette passe prend aussi pour références deux pages de **cours**, sans utiliser les exercices : [Faire des calculs](https://www.france-ioi.org/algo/course.php?idChapter=686&idCourse=1908) et [Fonctions à plusieurs paramètres](https://www.france-ioi.org/algo/course.php?iOrder=4&idChapter=493). Ces pages publiques ont été accessibles et consultées. Cette référence est un choix de présentation adapté à l’expérience antérieure du lecteur, pas une nouvelle revendication d’efficacité expérimentale.
+
+Nous en retenons une progression de présentation : partir d’un usage compréhensible, montrer un cas très court et son résultat, expliquer les mots ou la syntaxe utilisés, puis modifier un seul élément pour rendre visible ce qui change. Les exemples, les nombres et le texte du site restent originaux et sont adaptés à l’IA audio ; aucune leçon ni aucun exercice France-IOI n’a été recopié.
+
+Les six modules annoncent désormais explicitement leurs notions et leurs étapes. Les 65 chapitres disposent de notions définies et d’un premier exemple avec sortie, explication et variation. Les introductions ont été clarifiées pour éviter l’usage d’un mot technique avant sa présentation. Les grands déroulés, schémas, QCM de transfert, identifiants et correspondances avec les 200 questions sont conservés.
+
 ## Ce que le lecteur retrouve à chaque étape
 
 1. Le problème concret du chapitre et ce qui sera utile ensuite.

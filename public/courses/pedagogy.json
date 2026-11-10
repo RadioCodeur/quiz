@@ -2,17 +2,89 @@
   "title": "Comment ce parcours a été reconstruit",
   "intro": "Un cours utile doit montrer le problème à résoudre avant de nommer l’outil. Chaque thème suit donc un projet, chaque chapitre reprend ce qui est déjà connu et prépare une étape suivante explicite.",
   "principles": [
-    {"title":"Une destination visible","text":"Vous savez d’où vous partez, ce que vous voulez produire et pourquoi les prochaines notions sont nécessaires.","sourceIds":["ped-carpentries-motivation","ped-software-carpentry"]},
-    {"title":"Un exemple résolu, puis un petit transfert","text":"L’exemple montre les décisions et les valeurs intermédiaires. Un QCM facultatif vous propose ensuite une situation proche, avec une correction immédiate.","sourceIds":["ped-ies-guide"]},
-    {"title":"Voir et expliquer au même endroit","text":"Les flux, tableaux, graphiques et lignes de code sont accompagnés de leur interprétation. Ils représentent les relations à comprendre, pas un décor.","sourceIds":["ped-ies-guide","ped-numpy-learn"]},
-    {"title":"Revenir sur une idée sans tout recommencer","text":"Les rappels de début de chapitre et les liens vers le quiz vous permettent de retrouver les bases. Vous pouvez reprendre plus tard, sans calendrier ni série obligatoire.","sourceIds":["ped-aero-retrieval"]}
+    {
+      "title": "Une destination visible",
+      "text": "Vous savez d’où vous partez, ce que vous voulez produire et pourquoi les prochaines notions sont nécessaires.",
+      "sourceIds": [
+        "ped-carpentries-motivation",
+        "ped-software-carpentry"
+      ]
+    },
+    {
+      "title": "Un cas simple, son résultat, puis une variation",
+      "text": "Avant l’exemple complet, un petit cas montre ce que fait la nouvelle notion. Le résultat est écrit et expliqué ; une variation ne change qu’un élément. Cette présentation est inspirée des pages de cours de France-IOI, avec des exemples audio originaux.",
+      "sourceIds": [
+        "ped-ies-guide",
+        "ped-france-ioi-calculs",
+        "ped-france-ioi-parametres"
+      ]
+    },
+    {
+      "title": "Voir et expliquer au même endroit",
+      "text": "Les flux, tableaux, graphiques et lignes de code sont accompagnés de leur interprétation. Ils représentent les relations à comprendre, pas un décor.",
+      "sourceIds": [
+        "ped-ies-guide",
+        "ped-numpy-learn"
+      ]
+    },
+    {
+      "title": "Revenir sur une idée sans tout recommencer",
+      "text": "Les rappels de début de chapitre et les liens vers le quiz vous permettent de retrouver les bases. Vous pouvez reprendre plus tard, sans calendrier ni série obligatoire.",
+      "sourceIds": [
+        "ped-aero-retrieval"
+      ]
+    }
   ],
   "limits": "Ces choix s’appuient sur des guides de recherche et des ressources reconnues de formation scientifique. Ils ne constituent pas une validation expérimentale de ce site ni une garantie individuelle d’apprentissage. Le parcours prépare les compétences indiquées dans l’offre et les connaissances fondamentales associées ; il ne peut prédire toutes les questions d’un entretien.",
   "sources": [
-    {"id":"ped-ies-guide","title":"IES / What Works Clearinghouse — Organizing Instruction and Study to Improve Student Learning","url":"https://ies.ed.gov/ncee/wwc/PracticeGuide/1","accessed":"2026-11-10","role":"Guide de recherche : exemples résolus, liens concret-abstrait, explications et représentations visuelles, rappel actif. Les niveaux de preuve varient selon les recommandations."},
-    {"id":"ped-carpentries-motivation","title":"The Carpentries — Motivation and Demotivation","url":"https://carpentries.github.io/instructor-training/08-motivation.html","accessed":"2026-11-10","role":"Formation d’enseignants : donner une utilité au contenu et relier l’apprentissage aux objectifs du public."},
-    {"id":"ped-software-carpentry","title":"Software Carpentry — Programming with Python","url":"https://swcarpentry.github.io/python-novice-inflammation/","accessed":"2026-11-10","role":"Exemple de progression de cours autour d’une tâche scientifique. Sert de référence de conception, pas de preuve isolée d’efficacité."},
-    {"id":"ped-numpy-learn","title":"NumPy — Ressources d’apprentissage sélectionnées par les contributeurs","url":"https://numpy.org/learn/","accessed":"2026-11-10","role":"Point d’entrée vers des tutoriels techniques relus par la communauté, notamment l’introduction visuelle pour débutants."},
-    {"id":"ped-aero-retrieval","title":"AERO — Spacing and retrieval practice guide","url":"https://www.edresearch.edu.au/guides-resources/practice-guides/spacing-and-retrieval-practice-guide-full-publication","accessed":"2026-11-10","role":"Guide de pratiques fondées sur la recherche : rappeler une connaissance, donner un retour et la retrouver après un délai. Les contextes d’étude ne sont pas identiques à ce site de révision adulte."}
+    {
+      "id": "ped-ies-guide",
+      "title": "IES / What Works Clearinghouse — Organizing Instruction and Study to Improve Student Learning",
+      "url": "https://ies.ed.gov/ncee/wwc/PracticeGuide/1",
+      "accessed": "2026-11-10",
+      "role": "Guide de recherche : exemples résolus, liens concret-abstrait, explications et représentations visuelles, rappel actif. Les niveaux de preuve varient selon les recommandations."
+    },
+    {
+      "id": "ped-carpentries-motivation",
+      "title": "The Carpentries — Motivation and Demotivation",
+      "url": "https://carpentries.github.io/instructor-training/08-motivation.html",
+      "accessed": "2026-11-10",
+      "role": "Formation d’enseignants : donner une utilité au contenu et relier l’apprentissage aux objectifs du public."
+    },
+    {
+      "id": "ped-software-carpentry",
+      "title": "Software Carpentry — Programming with Python",
+      "url": "https://swcarpentry.github.io/python-novice-inflammation/",
+      "accessed": "2026-11-10",
+      "role": "Exemple de progression de cours autour d’une tâche scientifique. Sert de référence de conception, pas de preuve isolée d’efficacité."
+    },
+    {
+      "id": "ped-numpy-learn",
+      "title": "NumPy — Ressources d’apprentissage sélectionnées par les contributeurs",
+      "url": "https://numpy.org/learn/",
+      "accessed": "2026-11-10",
+      "role": "Point d’entrée vers des tutoriels techniques relus par la communauté, notamment l’introduction visuelle pour débutants."
+    },
+    {
+      "id": "ped-aero-retrieval",
+      "title": "AERO — Spacing and retrieval practice guide",
+      "url": "https://www.edresearch.edu.au/guides-resources/practice-guides/spacing-and-retrieval-practice-guide-full-publication",
+      "accessed": "2026-11-10",
+      "role": "Guide de pratiques fondées sur la recherche : rappeler une connaissance, donner un retour et la retrouver après un délai. Les contextes d’étude ne sont pas identiques à ce site de révision adulte."
+    },
+    {
+      "id": "ped-france-ioi-calculs",
+      "title": "France-IOI — Faire des calculs (cours Python)",
+      "url": "https://www.france-ioi.org/algo/course.php?idChapter=686&idCourse=1908",
+      "accessed": "2026-11-10",
+      "role": "Page de cours publique consultée : observer une opération courte et sa sortie avant d’étendre l’explication. Référence de présentation choisie pour cette révision, sans reprise du texte ni des exercices."
+    },
+    {
+      "id": "ped-france-ioi-parametres",
+      "title": "France-IOI — Fonctions à plusieurs paramètres (cours Python)",
+      "url": "https://www.france-ioi.org/algo/course.php?iOrder=4&idChapter=493",
+      "accessed": "2026-11-10",
+      "role": "Page de cours publique consultée : repartir d’un usage connu, introduire le besoin supplémentaire, expliquer la syntaxe puis généraliser. Nos exemples restent originaux et adaptés à l’audio."
+    }
   ]
 }

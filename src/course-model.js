@@ -27,13 +27,13 @@ export function chapterMinutes(chapter) {
 
 export function chapterText(chapter) {
   const blocks=chapter.blocks.map(block=>[
-    block.text,block.title,block.caption,block.goal,block.result,
+    block.text,block.title,block.caption,block.goal,block.result,block.introduction,block.explanation,block.variant?.change,block.variant?.explanation,
     ...(block.items??[]),
     ...(block.steps??[]).flatMap(step=>[step.title,step.text]),
     ...(block.nodes??[]).flatMap(node=>[node.title,node.text]),
     ...(block.panels??[]).flatMap(panel=>[panel.title,...panel.items]),
   ].filter(Boolean).join(' '));
-  return [...Object.values(chapter.context??{}),...blocks,chapter.checkpoint?.prompt,chapter.checkpoint?.explanation].filter(Boolean).join(' ');
+  return [...Object.values(chapter.context??{}),...(chapter.notions??[]).flatMap(notion=>[notion.name,notion.explanation]),...blocks,chapter.checkpoint?.prompt,chapter.checkpoint?.explanation].filter(Boolean).join(' ');
 }
 
 export function courseStage(course,chapterId) {

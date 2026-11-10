@@ -4,7 +4,7 @@ import { readCourses,validateCourses } from '../scripts/validate-courses.mjs';
 import { readBank } from '../scripts/read-bank.mjs';
 import { buildCoverage, normalizeProgress, resolveChapter, setChapterRead, courseHref, chapterMinutes, chapterText, mergeCourseReferences, courseStage } from '../src/course-model.js';
 import { readFile } from 'node:fs/promises';
-import { plotGeometry, renderPlot, renderVisual, renderWalkthrough, renderCheckpoint } from '../src/learning-blocks.js';
+import { plotGeometry, renderPlot, renderVisual, renderWalkthrough, renderCheckpoint, renderFirstExample } from '../src/learning-blocks.js';
 const courses=await readCourses();
 const data=await readBank();
 
@@ -93,4 +93,30 @@ test('les QCM de transfert restent à quatre options avec des IDs indépendants 
     assert.equal((rendered.match(/data-checkpoint-option=/g)??[]).length,4);
     assert.ok(rendered.includes(`data-checkpoint-option="${chapter.checkpoint.correctOptionId}"`));
   }
+});
+
+test('chaque module annonce ses notions dans l’ordre des chapitres',()=>{
+  for(const course of courses){
+    assert.ok(course.moduleIntroduction.startingPoint&&course.moduleIntroduction.goal);
+    const indices=course.moduleIntroduction.concepts.map(concept=>course.chapters.findIndex(ch=>ch.id===concept.chapterId));
+    assert.ok(indices.every(index=>index>=0));
+    assert.deepEqual(indices,[...indices].sort((a,b)=>a-b));
+    assert.ok(course.chapters.every(ch=>ch.notions.length>=2&&ch.notions.every(n=>n.name&&n.explanation)));
+  }
+});
+test('le petit exemple et sa sortie précèdent l’application complète',()=>{
+  for(const course of courses)for(const chapter of course.chapters){
+    const index=chapter.blocks.findIndex(block=>block.type==='first-example');
+    assert.ok(index>=0&&index<=3);
+    assert.ok(index<chapter.blocks.findIndex(block=>block.type==='walkthrough'));
+    const block=chapter.blocks[index];
+    assert.ok(block.output&&block.explanation&&block.variant.change&&block.variant.output&&block.variant.explanation);
+    assert.ok(block.code.split('\n').length<=6);
+  }
+});
+test('les sorties et les variantes du premier exemple restent du texte lisible',()=>{
+  const rendered=renderFirstExample({title:'Un exemple',introduction:'Lire une valeur',language:'python',code:'print(3 < 4)',output:'True',explanation:'Une comparaison',variant:{change:'Remplacer 4 par 2',output:'False',explanation:'3 est supérieur à 2.'}});
+  assert.ok(rendered.includes('print(3 &lt; 4)'));
+  assert.ok(rendered.includes('Résultat expliqué')&&rendered.includes('True'));
+  assert.ok(rendered.includes('Changeons une seule chose')&&rendered.includes('False'));
 });
