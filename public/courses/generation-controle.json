@@ -1,10 +1,10 @@
 {
   "themeId": "generation-controle",
-  "title": "Générer des sons, garder la main sur la musique",
-  "subtitle": "Du latent aux contrôles musicaux, comprendre ce que chaque choix rend possible.",
+  "title": "Composer avec un modèle : représenter, générer et contrôler",
+  "subtitle": "Un projet continu : transformer un petit corpus en outil de création que l’on sait expliquer.",
   "intro": [
-    "On va suivre le trajet d’un son : sa représentation, le modèle qui invente une suite, puis les conditions qui orientent cette invention. Chaque mécanisme répond à un problème concret de composition.",
-    "Les exemples sont volontairement petits pour permettre les calculs de tête. Les architectures citées servent de repères scientifiques ; ces cours et ces questions sont une préparation indépendante à la recherche en audio."
+    "Une compositrice veut prolonger une texture de percussion puis placer un changement harmonique à un instant précis. Elle dispose d’un petit corpus et veut plusieurs propositions, sans perdre le contrôle de sa forme musicale.",
+    "Nous relierons son intention aux données, aux probabilités et aux choix de modèle. Les calculs miniatures sont pédagogiques ; MusicGen et EnCodec servent de repères réels, avec leurs propres architectures et limites."
   ],
   "prerequisites": [
     "pytorch",
@@ -30,25 +30,63 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Imagine que tu veuilles composer dix secondes de percussion. Une onde mono à 32 000 Hz contient déjà 320 000 valeurs. Un générateur peut travailler sur ces valeurs, mais aussi sur un spectrogramme ou sur une représentation compressée. Ce choix décide quelles informations sont disponibles et combien de positions le modèle devra traiter. Il précède donc le choix de la famille générative."
+          "text": "La compositrice apporte dix secondes de son et demande trois variantes. Avant de choisir une architecture, demandons ce qui doit être conservé : rythme, transitoires, hauteur, espace stéréo ? À 32 000 Hz, une onde mono contient 320 000 valeurs. Nous pouvons les modéliser directement ou fabriquer une description plus compacte, mais chaque compression impose un compromis. Cette décision donne leur rôle aux composants qui suivent."
         },
         {
           "type": "paragraph",
           "text": "Dans un autoencodeur, l’encodeur convertit l’entrée x en un latent z. Le décodeur transforme z en reconstruction. On entraîne généralement cette chaîne pour réduire un écart entre entrée et sortie. Le latent n’est pas nécessairement une partition : une coordonnée peut mêler plusieurs propriétés acoustiques. Une reconstruction précise ne suffit donc pas à prouver un contrôle séparé de la hauteur ou du timbre."
         },
         {
+          "type": "visual",
+          "kind": "flow",
+          "title": "Le trajet d’un exemple",
+          "nodes": [
+            {
+              "title": "Onde",
+              "text": "Les valeurs décrivent la pression échantillonnée."
+            },
+            {
+              "title": "Représentation",
+              "text": "L’encodeur choisit ce qui sera transporté."
+            },
+            {
+              "title": "Reconstruction",
+              "text": "Le décodeur transforme cette description en son."
+            }
+          ],
+          "caption": "Cette chaîne reconstruit ; un modèle supplémentaire peut inventer une nouvelle description."
+        },
+        {
+          "type": "walkthrough",
+          "title": "Localiser la perte avant de générer",
+          "goal": "Distinguer la compression et les erreurs du générateur.",
+          "language": "python",
+          "steps": [
+            {
+              "title": "Avant : le passage de référence",
+              "text": "Prends la même percussion dans trois écoutes à niveau comparable. La première reste l’original ; aucun modèle génératif n’intervient.",
+              "state": "Une référence, dix secondes, un même taux."
+            },
+            {
+              "title": "Isoler la compression",
+              "text": "Encode puis décode les vrais codes. Si la cymbale perd déjà ses aigus, le prior ne peut pas être la seule cause.",
+              "state": "Original → encodeur → vrais codes → décodeur."
+            },
+            {
+              "title": "Ajouter l’invention",
+              "text": "Écoute ensuite des codes prédits avec ce même décodeur. Une désorganisation supplémentaire peut venir du prior ; une faiblesse déjà présente reste à suivre.",
+              "state": "Codes prédits → même décodeur → variante."
+            },
+            {
+              "title": "Après : choisir une expérience",
+              "text": "Garde ce passage de contrôle. Change un seul composant afin de savoir quelle différence sonore tu recherches."
+            }
+          ],
+          "result": "La chaîne devient un ensemble de causes testables plutôt qu’une boîte produisant un son final."
+        },
+        {
           "type": "paragraph",
           "text": "Un codec neuronal comme EnCodec ajoute une compression avec quantification. Au lieu de garder toutes les valeurs continues, il transmet des indices de dictionnaires. Pour entendre le son, il faut encore décoder ces indices. Le générateur apprend ensuite à produire des indices plausibles. Il ne remplace pas automatiquement le codec et ne récupère pas une information exacte qui aurait disparu pendant sa compression."
-        },
-        {
-          "type": "figure",
-          "kind": "generative-families",
-          "caption": "Représenter et reconstruire sont deux opérations distinctes du choix d’une nouvelle séquence."
-        },
-        {
-          "type": "example",
-          "title": "Une cymbale abîmée : quel composant examiner ?",
-          "text": "Écoute trois versions du même passage : l’original, la reconstruction de ses vrais codes et la sortie obtenue avec des codes générés. Si la reconstruction perd déjà les aigus fins, le codec contribue au problème. Si elle est convaincante mais que la génération présente un rythme incohérent, le modèle de séquences est un autre suspect. Les deux limites peuvent coexister."
         },
         {
           "type": "paragraph",
@@ -59,6 +97,10 @@
           "label": "Réflexe de diagnostic",
           "tone": "tip",
           "text": "Fixe le taux d’échantillonnage, le niveau d’écoute et le passage comparé. Sinon une différence de préparation peut être prise pour une différence de modèle. Le codec est une référence pratique pour son système, pas une borne absolue de toute qualité perceptive possible."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le latent est une description interne, pas une commande musicale garantie. Déplacer une coordonnée peut changer à la fois volume et timbre : l’objectif de reconstruction n’a pas nécessairement demandé leur séparation. Il faudra formuler une exigence de contrôle si cette séparation sert effectivement la composition."
         }
       ],
       "takeaways": [
@@ -69,113 +111,37 @@
       "sourceIds": [
         "gr-vae",
         "gr-encodec"
-      ]
-    },
-    {
-      "id": "vae-et-echantillonnage",
-      "title": "Le VAE : encoder une distribution",
-      "summary": "Comprendre moyenne, dispersion et reparamétrisation avant de lire une loss de VAE.",
-      "questionIds": [
-        "gen-002",
-        "gen-009",
-        "gen-010"
       ],
-      "blocks": [
-        {
-          "type": "paragraph",
-          "text": "Avec un autoencodeur déterministe, chaque entrée donne un seul code. Pour générer, on aimerait aussi savoir où tirer de nouveaux codes. Le VAE organise cette question avec un modèle probabiliste. Son encodeur approxime une distribution q(z|x), c’est-à-dire des codes compatibles avec l’entrée. Un prior p(z), souvent une normale standard, définit la distribution depuis laquelle on souhaite pouvoir générer."
-        },
-        {
-          "type": "paragraph",
-          "text": "Dans le cas gaussien diagonal, l’encodeur donne une moyenne mu et une variance pour chaque dimension latente. On prédit souvent logvar, le logarithme de la variance, afin de représenter une quantité positive après exponentiation. Attention à la racine carrée : exp(logvar) est la variance ; exp(0,5 × logvar) est l’écart-type. C’est ce dernier qui multiplie un bruit normal standard."
-        },
-        {
-          "type": "code",
-          "language": "python",
-          "code": "eps = torch.randn_like(mu)\nstd = torch.exp(0.5 * logvar)\nz = mu + std * eps\nx_hat = decoder(z)",
-          "caption": "mu, logvar et eps ont ici la forme (B, D). Le bruit est tiré indépendamment des paramètres de l’encodeur."
-        },
-        {
-          "type": "paragraph",
-          "text": "Cette écriture s’appelle reparamétrisation. On ne demande pas de différencier le tirage aléatoire lui-même : pour un bruit eps donné, z est une fonction différentiable de mu et de std. Le gradient de la reconstruction peut ainsi apprendre à modifier l’encodeur. Le hasard reste présent, mais il est placé dans une variable auxiliaire indépendante des paramètres appris."
-        },
-        {
-          "type": "example",
-          "title": "Un calcul à une dimension",
-          "text": "Prenons mu = 2 et une variance égale à 4. logvar vaut ln(4), std vaut 2. Si eps vaut −0,5, alors z = 2 + 2 × (−0,5) = 1. Multiplier eps par la variance aurait donné 0, une dispersion différente de celle annoncée. Le tirage ne doit pas être confondu avec la moyenne de la distribution."
-        },
-        {
-          "type": "paragraph",
-          "text": "Pour créer un nouvel exemple sans audio d’entrée, on peut tirer z dans le prior et le passer au décodeur. Pour reconstruire une entrée, on tire plutôt depuis q(z|x). Cette distinction explique l’intérêt d’organiser les distributions encodées près du prior : les codes tirés en génération doivent ressembler à des zones que le décodeur a appris à traiter."
-        },
-        {
-          "type": "callout",
-          "label": "Deux objectifs à concilier",
-          "tone": "analogy",
-          "text": "Le VAE cherche à reconstruire chaque exemple tout en organisant les distributions encodées près d’un prior commun. La KL joue le rôle d’une pénalité de désaccord avec ce prior ; elle ne mesure ni directement la qualité musicale ni une distance entre deux fichiers particuliers."
-        }
-      ],
-      "takeaways": [
-        "L’encodeur produit une distribution conditionnelle.",
-        "Le bruit est multiplié par l’écart-type, pas la variance.",
-        "Reconstruction et rapprochement du prior ont des rôles différents."
-      ],
-      "sourceIds": [
-        "gr-vae"
-      ]
-    },
-    {
-      "id": "kl-et-latent-inutilise",
-      "title": "La KL : un compromis, pas un score de qualité",
-      "summary": "Lire les axes de réduction et reconnaître un latent que le décodeur ignore.",
-      "questionIds": [
-        "gen-029",
-        "gen-030"
-      ],
-      "blocks": [
-        {
-          "type": "paragraph",
-          "text": "La divergence KL compare deux distributions et dépend de leur ordre. Ici, KL(q(z|x) || p(z)) pénalise le désaccord entre le posterior approché et le prior. Elle est positive ou nulle, et vaut zéro lorsque les distributions coïncident presque partout dans le cadre habituel. Une petite KL ne signifie donc pas que la reconstruction est excellente : elle décrit une autre partie du problème."
-        },
-        {
-          "type": "paragraph",
-          "text": "Pour une gaussienne diagonale face à une normale standard, la contribution de chaque dimension s’écrit 0,5 × (mu² + variance − 1 − logvariance). Avec un tenseur (B, D), on obtient une contribution par exemple et par dimension. Si la convention est une KL moyenne par exemple, on additionne D contributions puis on moyenne sur B. Le nom de la variable loss ne précise pas cette convention à lui seul."
-        },
-        {
-          "type": "code",
-          "language": "python",
-          "code": "kl_dim = -0.5 * (1 + logvar - mu.square() - logvar.exp())\nkl_per_example = kl_dim.sum(dim=1)\nkl = kl_per_example.mean()\nloss = reconstruction_loss + beta * kl",
-          "caption": "La reconstruction doit elle aussi avoir une réduction explicitée pour que beta garde un sens."
-        },
-        {
-          "type": "example",
-          "title": "Le facteur caché dans une moyenne",
-          "text": "Si B = 2 et D = 4, et que chacune des huit contributions vaut 0,5, chaque exemple a une KL de 2. La moyenne par exemple vaut donc 2. Une moyenne sur les huit cases vaut 0,5 : elle est quatre fois plus petite. Garder beta identique ne conserve alors pas le même compromis d’apprentissage."
-        },
-        {
-          "type": "paragraph",
-          "text": "Un décodeur très puissant peut apprendre à produire des sorties sans exploiter le latent. Si q rejoint le prior, que la KL devient presque nulle et que changer z modifie très peu les sorties, l’ensemble suggère un posterior collapse. Mais une seule courbe ne suffit pas : on doit examiner les reconstructions et la sensibilité au code. Réduire la pression KL, l’introduire progressivement ou modifier le décodeur sont des pistes expérimentales, pas des remèdes universels."
-        },
-        {
-          "type": "paragraph",
-          "text": "Avec beta = 1 et les termes probabilistes appropriés, reconstruction et KL correspondent à la minimisation de l’opposé d’une borne variationnelle sur la log-vraisemblance. Utiliser une MSE arbitrairement normalisée ou changer beta peut rester utile, mais il faut alors décrire précisément l’objectif optimisé plutôt que supposer une équivalence automatique."
-        },
-        {
-          "type": "callout",
-          "label": "La bonne question",
-          "tone": "tip",
-          "text": "Quand une loss change, demande d’abord ce qui a été sommé ou moyenné. Professeur Squoinks rappelle que comparer deux nombres sans leurs unités et leurs axes revient souvent à comparer deux expériences différentes."
-        }
-      ],
-      "takeaways": [
-        "La KL est directionnelle et distincte de la reconstruction.",
-        "Une réduction différente change le poids effectif du terme.",
-        "Une KL faible et un latent ignoré doivent être diagnostiqués ensemble."
-      ],
-      "sourceIds": [
-        "gr-vae",
-        "gr-vqvae"
-      ]
+      "context": {
+        "recall": "Les tenseurs possèdent déjà une forme et des axes. Nous décidons maintenant quel contenu musical ils transportent.",
+        "problem": "Le corpus existe, mais une grande onde brute n’est pas encore une représentation facile à générer.",
+        "why": "Séparer représentation et invention évite d’accuser le mauvais composant lorsqu’une attaque disparaît.",
+        "connection": "C’est le départ de notre outil : conserver d’abord un exemple avant d’en demander une variante.",
+        "next": "Le chapitre suivant convertit la représentation continue en indices que l’on pourra compter et prédire."
+      },
+      "checkpoint": {
+        "prompt": "Les vrais codes reconstruisent déjà mal les attaques. Quelle comparaison est utile en priorité ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Mesurer la reconstruction du codec sur les mêmes attaques"
+          },
+          {
+            "id": "b",
+            "text": "Changer uniquement le texte du prompt"
+          },
+          {
+            "id": "c",
+            "text": "Conclure que le prior a mémorisé les attaques"
+          },
+          {
+            "id": "d",
+            "text": "Augmenter uniquement la température"
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Les vrais codes testent la chaîne sans erreur de prédiction du prior. Ils localisent une limite présente avant la génération."
+      }
     },
     {
       "id": "quantification-et-tokens",
@@ -189,16 +155,72 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Pour employer un modèle de séquences discret, on convertit une représentation acoustique en indices. Dans la quantification vectorielle, l’encodeur produit un vecteur continu et on l’associe à une entrée d’un dictionnaire, souvent la plus proche selon une distance euclidienne. On transmet son indice, puis le décodeur retrouve le vecteur associé. Un indice représente ainsi un élément appris, sans obligation de correspondre à une note ou à un phonème."
+          "text": "La représentation conserve suffisamment la percussion. Nous voulons la transmettre à un modèle qui prédit des éléments discrets, comme il prédirait des mots. Remplaçons donc les vecteurs continus par des indices. Un token audio est un choix dans un dictionnaire appris, pas automatiquement une note ; plusieurs tokens peuvent décrire un même instant acoustique."
         },
         {
           "type": "paragraph",
           "text": "Un VQ-VAE apprend des représentations discrètes de cette manière. Les codecs audio peuvent utiliser plusieurs dictionnaires par trame, par exemple avec une quantification résiduelle : un étage représente une partie du vecteur, puis le suivant code ce qui reste. Il faut distinguer la cadence temporelle des trames, le nombre d’indices par trame et la taille de chaque vocabulaire. Ces trois quantités ne disent pas la même chose."
         },
         {
-          "type": "example",
-          "title": "Compter sans confondre les axes",
-          "text": "Avec 50 trames par seconde et quatre indices par trame, dix secondes contiennent 500 trames et 2 000 indices. Si chaque dictionnaire possède 1 024 entrées, dix bits suffisent théoriquement à représenter un indice à longueur fixe. Cela donne 20 000 bits avant en-têtes ou codage supplémentaire. Le nombre de pas autorégressifs dépend encore de l’entrelacement choisi : quatre flux parallèles ne sont pas une seule séquence aplatie."
+          "type": "visual",
+          "kind": "table",
+          "title": "Les unités du calcul",
+          "columns": [
+            "Quantité",
+            "Valeur illustrative",
+            "Signification"
+          ],
+          "rows": [
+            [
+              "Durée",
+              "10 s",
+              "Longueur du son"
+            ],
+            [
+              "Cadence",
+              "50 trames/s",
+              "Positions temporelles"
+            ],
+            [
+              "Flux",
+              "4 indices/trame",
+              "Descriptions simultanées"
+            ],
+            [
+              "Vocabulaire",
+              "1 024 codes",
+              "Choix par dictionnaire"
+            ]
+          ],
+          "caption": "Le nombre de pas dépend encore de l’agencement choisi pour ces indices."
+        },
+        {
+          "type": "walkthrough",
+          "title": "Compter une séquence avant de la modéliser",
+          "goal": "Relier durée et taille des données sans confondre les unités.",
+          "language": "python",
+          "steps": [
+            {
+              "title": "Avant : une durée physique",
+              "text": "Dix secondes à cinquante trames par seconde donnent 10 × 50 = 500 positions temporelles.",
+              "state": "500 trames."
+            },
+            {
+              "title": "Ajouter les dictionnaires",
+              "text": "Quatre indices par trame donnent 500 × 4 = 2 000 indices. Quatre flux parallèles ne sont pas forcément une unique suite aplatie.",
+              "state": "2 000 indices sur 500 instants."
+            },
+            {
+              "title": "Choisir un vecteur",
+              "text": "L’encodeur fournit un vecteur continu. Le quantificateur choisit une entrée du dictionnaire selon sa distance, puis transmet son indice.",
+              "state": "Vecteur → indice → vecteur retrouvé."
+            },
+            {
+              "title": "Après : examiner les affectations",
+              "text": "Compte les indices sur de nombreux morceaux. Cinq codes actifs sur 1 024 invitent à examiner la quantification, surtout si les reconstructions sont mauvaises. Relie ce signal à la diversité réelle du corpus."
+            }
+          ],
+          "result": "La durée, la cadence, les flux et le vocabulaire restent quatre grandeurs séparées."
         },
         {
           "type": "paragraph",
@@ -217,6 +239,10 @@
         {
           "type": "paragraph",
           "text": "Pour préparer un entretien, décris toujours le trajet complet : onde, encodeur, indices, modèle de séquences, décodeur, onde. Cette chaîne explique pourquoi une bonne prédiction d’indices et un bon son final constituent deux niveaux de vérification liés mais distincts."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le MusicGen documenté par AudioCraft emploie réellement un tokenizer EnCodec à plusieurs flux et des décalages entre dictionnaires. Notre calcul explique les unités ; il ne décrit pas toutes les variantes de codecs. Le débit final dépend aussi du codage des indices, des en-têtes et des éventuels modèles de compression."
         }
       ],
       "takeaways": [
@@ -227,8 +253,39 @@
       "sourceIds": [
         "gr-vqvae",
         "gr-encodec",
-        "gr-musicgen"
-      ]
+        "gr-musicgen",
+        "course-gen-audiocraft"
+      ],
+      "context": {
+        "recall": "Nous avons séparé onde, représentation et reconstruction.",
+        "problem": "Il faut définir le vocabulaire et le nombre d’éléments reçus par le modèle de séquences.",
+        "why": "Compter trames et indices aide à prévoir le coût et diagnostiquer un dictionnaire peu utilisé.",
+        "connection": "La même percussion devient une suite de descriptions discrètes.",
+        "next": "Nous apprendrons ensuite l’ordre de ces indices par prédiction du prochain élément."
+      },
+      "checkpoint": {
+        "prompt": "On passe de quatre à huit indices par trame, à durée et cadence fixes. Que double-t-on directement ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "La durée du son"
+          },
+          {
+            "id": "b",
+            "text": "La taille du vocabulaire"
+          },
+          {
+            "id": "c",
+            "text": "Le nombre de trames"
+          },
+          {
+            "id": "d",
+            "text": "Le nombre d’indices"
+          }
+        ],
+        "correctOptionId": "d",
+        "explanation": "Ajouter des flux double les indices sans doubler les instants temporels ni nécessairement les pas d’un schéma parallèle."
+      }
     },
     {
       "id": "autoregression-et-causalite",
@@ -243,22 +300,73 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Un modèle autorégressif représente une séquence par une succession de décisions. Pour trois tokens, la probabilité jointe s’écrit p(x1) × p(x2|x1) × p(x3|x1,x2). À chaque étape, il prédit une distribution sur le prochain token. WaveNet applique cette idée à l’audio brut ; des modèles comme MusicGen l’emploient sur des représentations audio discrètes compressées. La factorisation porte sur l’ordre choisi pour ces éléments."
+          "text": "Nous avons une suite d’indices de percussion. Pour en inventer une autre, faisons une décision à la fois : quel élément peut suivre ceux déjà présents ? C’est l’idée autorégressive. Une distribution donne des probabilités aux candidats ; le modèle l’apprend sur de vrais préfixes avant d’utiliser ses propres sorties pour composer."
         },
         {
           "type": "paragraph",
           "text": "À l’entraînement, on connaît toute la séquence réelle. Le teacher forcing fournit son vrai préfixe au modèle. Pour un tableau (B, T), les entrées prennent les positions de 0 à T−2 et les cibles celles de 1 à T−1. Le token à la position suivante est la cible du contexte précédent. Décaler l’axe B associerait des morceaux indépendants au lieu de représenter cette succession."
         },
         {
-          "type": "code",
-          "language": "python",
-          "code": "inputs = tokens[:, :-1]\ntargets = tokens[:, 1:]\nlogits = model(inputs, causal=True)\n# Chaque position de logits prédit la cible correspondante.",
-          "caption": "causal=True illustre ici le contrat attendu ; l’API exacte dépend du modèle utilisé."
+          "type": "visual",
+          "kind": "flow",
+          "title": "Une suite, trois prédictions",
+          "nodes": [
+            {
+              "title": "Préfixe [0]",
+              "text": "Cible : 4."
+            },
+            {
+              "title": "Préfixe [0,4]",
+              "text": "Cible : 7."
+            },
+            {
+              "title": "Préfixe [0,4,7]",
+              "text": "Cible : 9."
+            }
+          ],
+          "caption": "En teacher forcing, ces préfixes viennent des données ; en génération, ils viennent des décisions du modèle."
         },
         {
-          "type": "example",
-          "title": "Voir le décalage sur une suite courte",
-          "text": "Pour [début, do, mi, sol], l’entrée est [début, do, mi] et la cible [do, mi, sol]. Le modèle apprend donc à proposer do après début, mi après le préfixe début-do, puis sol après début-do-mi. Une cible identique à l’entrée lui demanderait plutôt de recopier le token déjà présent."
+          "type": "walkthrough",
+          "title": "Préparer la cible sans la dévoiler",
+          "goal": "Suivre les valeurs et les dimensions avant de brancher le modèle.",
+          "language": "python",
+          "code": "tokens = torch.tensor([[0, 4, 7, 9]])\ninputs = tokens[:, :-1]\ntargets = tokens[:, 1:]\n# Le modèle applique un masque causal.\nlogits = model(inputs)",
+          "steps": [
+            {
+              "title": "Avant : voir la suite entière",
+              "text": "Le batch contient [début, do, mi, sol] représenté par [0, 4, 7, 9]. Ces indices pédagogiques ne décrivent pas un codec audio réel.",
+              "lines": [
+                1
+              ],
+              "state": "tokens : (1, 4)."
+            },
+            {
+              "title": "Préparer les entrées",
+              "text": "Retirer la dernière position donne [0, 4, 7]. Chaque token est connu au moment où l’on veut prédire le suivant.",
+              "lines": [
+                2
+              ],
+              "state": "inputs : (1, 3)."
+            },
+            {
+              "title": "Préparer les réponses",
+              "text": "Retirer la première position donne [4, 7, 9]. Le décalage a lieu sur le temps, jamais entre des morceaux du batch.",
+              "lines": [
+                3
+              ],
+              "state": "targets : (1, 3)."
+            },
+            {
+              "title": "Après : limiter le regard",
+              "text": "Le logit suivant le contexte [0] ne doit pas lire les positions contenant 4 et 7. Le masque interdit ce regard vers l’avenir même si toutes les positions sont calculées en parallèle.",
+              "lines": [
+                4,
+                5
+              ]
+            }
+          ],
+          "result": "Le modèle apprend une cible suivante à partir du préfixe autorisé."
         },
         {
           "type": "paragraph",
@@ -273,6 +381,10 @@
           "label": "L’écart entre apprentissage et usage",
           "tone": "pitfall",
           "text": "Pendant la génération, les préfixes sont les sorties du modèle, pas les vrais tokens du corpus. Une petite erreur peut donc déplacer les contextes suivants hors des exemples rencontrés. C’est une raison de tester des continuations complètes, et pas seulement la prédiction supervisée sur des préfixes réels."
+        },
+        {
+          "type": "paragraph",
+          "text": "Si les probabilités conditionnelles de trois décisions sont 0,5 puis 0,8 puis 0,25, la probabilité de cette suite précise vaut 0,5 × 0,8 × 0,25 = 0,1. Changer une décision peut changer les distributions suivantes. Cette dépendance explique pourquoi une petite erreur locale peut réorienter toute la continuation."
         }
       ],
       "takeaways": [
@@ -283,7 +395,37 @@
       "sourceIds": [
         "gr-wavenet",
         "gr-musicgen"
-      ]
+      ],
+      "context": {
+        "recall": "Les codes sont des éléments discrets organisés dans le temps.",
+        "problem": "Il faut apprendre leur ordre sans laisser le modèle voir la réponse future.",
+        "why": "Le décalage des cibles et le masque causal alignent l’apprentissage avec la génération.",
+        "connection": "Nous passons de la reconstruction d’un exemple à l’invention d’une suite.",
+        "next": "Nous déciderons ensuite comment tirer un token et quelle histoire conserver."
+      },
+      "checkpoint": {
+        "prompt": "La loss est excellente, mais chaque logit peut lire les tokens ultérieurs du morceau. Quel problème examiner d’abord ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Une fuite de la cible par le contexte futur"
+          },
+          {
+            "id": "b",
+            "text": "Un vocabulaire nécessairement trop petit"
+          },
+          {
+            "id": "c",
+            "text": "Une température forcément trop basse"
+          },
+          {
+            "id": "d",
+            "text": "Un besoin de supprimer tous les préfixes"
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "La future réponse est une information absente lors de la génération. L’apprentissage ne respecte plus le contrat causal."
+      }
     },
     {
       "id": "echantillonnage-contexte-et-cout",
@@ -298,22 +440,77 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Prédire une distribution ne décide pas encore quelle sortie produire. Prendre toujours le token le plus probable donne une décision déterministe pour un contexte donné. Échantillonner laisse plusieurs suites possibles. La température transforme les logits avant le softmax : on les divise par un nombre positif. Une petite température accentue les préférences déjà présentes ; elle ne change pas leur ordre."
-        },
-        {
-          "type": "code",
-          "language": "python",
-          "code": "logits = torch.tensor([0.0, 2.0])\np1 = torch.softmax(logits / 1.0, dim=-1)\np2 = torch.softmax(logits / 0.5, dim=-1)",
-          "caption": "La probabilité du deuxième token passe approximativement de 0,881 à 0,982."
+          "text": "Le modèle propose des probabilités, mais la compositrice veut plusieurs variantes. Prendre toujours le maximum répète une décision pour un même contexte ; tirer un échantillon laisse d’autres possibilités. Nous allons relier cette concentration au contexte disponible et au coût de calcul : une préférence locale très nette ne suffit pas à construire une forme musicale longue."
         },
         {
           "type": "paragraph",
           "text": "Une température basse ne garantit pourtant ni originalité ni cohérence. Elle concentre la distribution locale, tandis que la forme musicale longue dépend aussi du contexte accessible. Avec deux secondes d’historique, le modèle peut suivre une texture immédiate sans disposer directement d’un motif entendu une minute auparavant. Une mémoire, une hiérarchie ou des conditions longues peuvent apporter cette information ; elles demandent ensuite une évaluation adaptée."
         },
         {
-          "type": "example",
-          "title": "Le coût d’un contexte allongé",
-          "text": "Une attention dense compare chaque position à chaque autre. Pour L = 500, elle représente 250 000 paires de positions par tête ; à L = 1 000, elle en représente 1 000 000. Doubler la séquence multiplie donc ce compte par quatre. Le calcul total contient aussi projections et couches intermédiaires : ce facteur décrit cette composante, pas nécessairement tout le temps mesuré."
+          "type": "visual",
+          "kind": "table",
+          "title": "L’attention construit une représentation de contexte",
+          "columns": [
+            "Étape",
+            "Rôle"
+          ],
+          "rows": [
+            [
+              "Comparer requête et clés",
+              "Identifier les positions pertinentes"
+            ],
+            [
+              "Normaliser les scores",
+              "Donner des poids positifs de somme 1"
+            ],
+            [
+              "Combiner les valeurs",
+              "Construire une représentation influencée par ces positions"
+            ]
+          ],
+          "caption": "Une requête est une description de ce qui est recherché ; les clés décrivent les contenus consultables, les valeurs ce qui est combiné."
+        },
+        {
+          "type": "walkthrough",
+          "title": "Transformer deux logits en probabilités",
+          "goal": "Calculer l’effet de la température avant de juger le son.",
+          "language": "python",
+          "code": "logits = torch.tensor([0.0, 2.0])\np1 = torch.softmax(logits / 1.0, dim=-1)\np2 = torch.softmax(logits / 0.5, dim=-1)",
+          "steps": [
+            {
+              "title": "Avant : distinguer score et probabilité",
+              "text": "Les logits 0 et 2 sont des scores relatifs. Le softmax les exponentie puis divise chaque résultat par leur somme.",
+              "lines": [
+                1
+              ],
+              "state": "Les probabilités totaliseront 1."
+            },
+            {
+              "title": "Calculer à température 1",
+              "text": "Le deuxième token reçoit exp(2)/(1+exp(2)), soit environ 0,881. Le premier conserve environ 0,119.",
+              "lines": [
+                2
+              ],
+              "state": "[0,119 ; 0,881]."
+            },
+            {
+              "title": "Réduire la température",
+              "text": "À température 0,5, les scores deviennent [0,4]. Le deuxième token atteint environ 0,982 : l’ordre reste identique, mais les alternatives sont moins fréquentes.",
+              "lines": [
+                3
+              ],
+              "state": "[0,018 ; 0,982]."
+            },
+            {
+              "title": "Après : revenir à l’intention",
+              "text": "Écoute plusieurs tirages avec les mêmes conditions. Cette concentration n’ajoute aucune mémoire du motif entendu une minute auparavant.",
+              "lines": [
+                2,
+                3
+              ]
+            }
+          ],
+          "result": "La température change la concentration, sans garantir une meilleure cohérence."
         },
         {
           "type": "paragraph",
@@ -332,6 +529,74 @@
         {
           "type": "paragraph",
           "text": "En pratique, compare plusieurs sorties par condition et documente température, stratégie d’échantillonnage et longueur du contexte. Sinon un changement de décodage peut être attribué par erreur à une meilleure architecture. Une suite convaincante reste un résultat individuel ; la conclusion doit porter sur un ensemble de cas."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour des poids 0,75 et 0,25 associés aux valeurs 2 et 6, l’attention combine 0,75 × 2 + 0,25 × 6 = 3. Dans un réseau, les valeurs sont des vecteurs appris. Cette moyenne pondérée explique le mécanisme ; elle ne signifie pas qu’une tête identifie directement une notion musicale nommée."
+        },
+        {
+          "type": "plot",
+          "title": "Température et concentration",
+          "xLabel": "Température positive",
+          "yLabel": "Probabilité du deuxième token",
+          "series": [
+            {
+              "name": "softmax([0,2]/T)",
+              "points": [
+                [
+                  0.25,
+                  0.9996646498695335
+                ],
+                [
+                  0.5,
+                  0.9820137900379085
+                ],
+                [
+                  1,
+                  0.8807970779778824
+                ],
+                [
+                  2,
+                  0.7310585786300049
+                ],
+                [
+                  4,
+                  0.6224593312018546
+                ]
+              ]
+            }
+          ],
+          "caption": "Calcul exact pour des logits fixes ; aucune mesure de qualité audio n’est représentée."
+        },
+        {
+          "type": "plot",
+          "title": "Paires comparées par l’attention dense",
+          "xLabel": "Longueur L",
+          "yLabel": "Paires L²",
+          "series": [
+            {
+              "name": "Paires par tête",
+              "points": [
+                [
+                  250,
+                  62500
+                ],
+                [
+                  500,
+                  250000
+                ],
+                [
+                  750,
+                  562500
+                ],
+                [
+                  1000,
+                  1000000
+                ]
+              ]
+            }
+          ],
+          "caption": "Compte exact de positions ; le coût total inclut aussi les projections et les autres couches."
         }
       ],
       "takeaways": [
@@ -344,7 +609,37 @@
         "gr-wavenet",
         "gr-transformer",
         "gr-pitfalls"
-      ]
+      ],
+      "context": {
+        "recall": "Le modèle autorégressif calcule une distribution après chaque préfixe.",
+        "problem": "Il reste à choisir une sortie et à décider quelle histoire consulter.",
+        "why": "Température, mémoire du contexte et coût affectent des aspects différents de l’outil.",
+        "connection": "Nous passons de la prédiction supervisée à une véritable production de variantes.",
+        "next": "Une variante peut rester hors intention : le chapitre suivant précisera les conditions musicales."
+      },
+      "checkpoint": {
+        "prompt": "On double L en attention dense, à batch et dimension cachée constants. Que devient le compte de paires de positions ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Il est divisé par deux"
+          },
+          {
+            "id": "b",
+            "text": "Il est multiplié par quatre"
+          },
+          {
+            "id": "c",
+            "text": "Il est multiplié par deux"
+          },
+          {
+            "id": "d",
+            "text": "Il ne change pas"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Le tableau des comparaisons possède L × L cases. À longueur 2L, il contient 4L² paires, sans imposer ce facteur à tous les autres calculs."
+      }
     },
     {
       "id": "conditions-et-intention-musicale",
@@ -361,21 +656,62 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Partons d’une demande : un piano doux, un accord à trois secondes, puis une accélération progressive. Elle contient trois types d’information. Le caractère doux est global, l’accord est un événement local, l’accélération est une trajectoire temporelle. Un texte peut exprimer les trois verbalement, mais il ne fournit pas nécessairement au modèle une représentation qui fixe chaque instant avec précision."
+          "text": "La compositrice aime une variante mais demande un accord à trois secondes et une accélération après six secondes. Le contrôle devient une exigence précise. Un texte global peut orienter une esthétique ; un événement horodaté et une trajectoire demandent une description temporelle plus explicite. Nous choisirons chaque condition selon ce qu’elle conserve vraiment et selon la mesure qui vérifiera son respect."
         },
         {
           "type": "paragraph",
           "text": "Une condition influence une distribution de sorties. Ce n’est pas automatiquement une contrainte dure. Pour des hauteurs et débuts de notes précis, une séquence symbolique horodatée est plus directement structurée. Elle doit encore être traduite dans un format connu du modèle et celui-ci doit avoir appris à la suivre. Une représentation détaillée n’annule donc pas le besoin de vérifier le résultat acoustique."
         },
         {
-          "type": "figure",
-          "kind": "conditioning",
-          "caption": "Une condition globale décrit l’ensemble ; une condition locale doit correspondre aux positions qu’elle contrôle."
+          "type": "visual",
+          "kind": "comparison",
+          "title": "Deux niveaux de condition",
+          "panels": [
+            {
+              "title": "Global",
+              "items": [
+                "Texture et instrumentation",
+                "Style de l’ensemble",
+                "Pas de calendrier exact garanti"
+              ]
+            },
+            {
+              "title": "Temporel",
+              "items": [
+                "Notes et débuts explicités",
+                "Courbe alignée",
+                "Mesure du respect local"
+              ]
+            }
+          ],
+          "caption": "Une condition précise reste utilisée par un modèle appris ; elle ne garantit pas sa fidélité absolue."
         },
         {
-          "type": "example",
-          "title": "Aligner une courbe de tempo",
-          "text": "Supposons dix secondes découpées en 100 positions de contrôle. Une valeur toutes les 0,1 seconde décrit le tempo visé à cette position. Si l’audio est décalé de deux secondes mais pas la courbe, le modèle reçoit un appariement incohérent. Remplacer la courbe par sa moyenne de 100 BPM perd aussi la différence entre une accélération de 80 à 120 BPM et un tempo stable de 100 BPM."
+          "type": "walkthrough",
+          "title": "Traduire une intention en données alignées",
+          "goal": "Définir un contrat de contrôle avant d’entraîner.",
+          "language": "python",
+          "steps": [
+            {
+              "title": "Avant : distinguer trois échelles",
+              "text": "Sépare douceur globale, accord local et accélération progressive. Un seul nombre moyen ne conserve pas ces trois informations.",
+              "state": "Global ; événement ; trajectoire."
+            },
+            {
+              "title": "Conserver les distinctions utiles",
+              "text": "Des notes horodatées gardent hauteurs et débuts. Une chroma conserve des classes de hauteur, mais réunit les octaves : deux do de registres différents restent confondus."
+            },
+            {
+              "title": "Aligner les origines",
+              "text": "À dix positions par seconde, trois secondes correspondent à la position 30 si l’origine est zéro. Décaler l’audio impose aussi de décaler sa condition.",
+              "state": "Même grille et même origine."
+            },
+            {
+              "title": "Après : mesurer localement",
+              "text": "Inspecte l’accord à trois secondes et l’évolution après six secondes. Des retards puis des avances peuvent laisser le tempo moyen correct sans respecter le calendrier."
+            }
+          ],
+          "result": "Chaque exigence possède une représentation d’entrée et une observation de sortie définies."
         },
         {
           "type": "paragraph",
@@ -390,6 +726,10 @@
           "label": "Le contrôle se mesure à son échelle",
           "tone": "pitfall",
           "text": "Un tempo moyen correct peut cacher des attaques en avance puis en retard. Pour juger un accord à trois secondes, inspecte cet événement et son voisinage ; pour une accélération, inspecte la trajectoire. La moyenne globale seule peut faire disparaître la dérive que la composition cherchait justement à éviter."
+        },
+        {
+          "type": "paragraph",
+          "text": "Notre scénario combine des contrôles pour apprendre à les distinguer. MusicGen illustre réellement texte et caractéristiques mélodiques ; cela ne promet pas une prise en charge native de toute partition symbolique ou courbe de tempo décrite ici. On consulte les capacités du système avant de transformer une idée de conditionnement en engagement produit."
         }
       ],
       "takeaways": [
@@ -400,7 +740,321 @@
       "sourceIds": [
         "gr-musicgen",
         "gr-symbolic"
-      ]
+      ],
+      "context": {
+        "recall": "Nous savons produire plusieurs variantes avec des compromis de diversité et de contexte.",
+        "problem": "Une proposition plausible peut manquer l’accord ou l’accélération demandés.",
+        "why": "La représentation de la condition rend l’intention mesurable au niveau approprié.",
+        "connection": "Le projet passe de la plausibilité générale à une décision de composition locale.",
+        "next": "Nous étudierons ensuite une autre organisation des variantes avec des distributions latentes."
+      },
+      "checkpoint": {
+        "prompt": "Le tempo moyen est correct, mais les changements arrivent tard. Quelle analyse sert la demande ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Comparer seulement les tempos moyens"
+          },
+          {
+            "id": "b",
+            "text": "Renommer la condition sans observer la sortie"
+          },
+          {
+            "id": "c",
+            "text": "Comparer les trajectoires et événements dans le temps"
+          },
+          {
+            "id": "d",
+            "text": "Comparer seulement les niveaux moyens"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "L’objectif concerne l’évolution temporelle. Une moyenne efface précisément les décalages à examiner."
+      }
+    },
+    {
+      "id": "vae-et-echantillonnage",
+      "title": "Le VAE : encoder une distribution",
+      "summary": "Comprendre moyenne, dispersion et reparamétrisation avant de lire une loss de VAE.",
+      "questionIds": [
+        "gen-002",
+        "gen-009",
+        "gen-010"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Pour explorer des textures proches, la compositrice voudrait déplacer une description interne et écouter ce qui change. Un code unique par exemple ne dit pas où tirer de nouveaux codes. Le VAE organise cette question avec des distributions : l’encodeur décrit des codes compatibles avec un son, tandis qu’un prior définit l’espace depuis lequel nous souhaitons pouvoir générer."
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans le cas gaussien diagonal, l’encodeur donne une moyenne mu et une variance pour chaque dimension latente. On prédit souvent logvar, le logarithme de la variance, afin de représenter une quantité positive après exponentiation. Attention à la racine carrée : exp(logvar) est la variance ; exp(0,5 × logvar) est l’écart-type. C’est ce dernier qui multiplie un bruit normal standard."
+        },
+        {
+          "type": "visual",
+          "kind": "flow",
+          "title": "Deux usages du même décodeur",
+          "nodes": [
+            {
+              "title": "Reconstruction",
+              "text": "L’entrée x définit une distribution q(z|x)."
+            },
+            {
+              "title": "Création",
+              "text": "Un nouveau z est tiré dans le prior p(z)."
+            },
+            {
+              "title": "Décodage",
+              "text": "Le code choisi devient une proposition sonore."
+            }
+          ],
+          "caption": "Le prior ne décrit pas un morceau précis ; la distribution encodée dépend de l’observation."
+        },
+        {
+          "type": "walkthrough",
+          "title": "Fabriquer un latent gaussien",
+          "goal": "Comprendre l’échelle du bruit et le trajet du gradient.",
+          "language": "python",
+          "code": "eps = torch.randn_like(mu)\nstd = torch.exp(0.5 * logvar)\nz = mu + std * eps\nx_hat = decoder(z)",
+          "steps": [
+            {
+              "title": "Avant : annoncer la loi",
+              "text": "Prenons une dimension de moyenne 2 et variance 4. logvar vaut ln(4). La moyenne est un centre ; la variance mesure la dispersion, pas un déplacement.",
+              "state": "mu = 2 ; écart-type = 2.",
+              "lines": [
+                2
+              ]
+            },
+            {
+              "title": "Isoler le hasard",
+              "text": "Le bruit normal standard a la même forme que mu. Imaginons un tirage eps = −0,5 ; il est indépendant des paramètres appris.",
+              "lines": [
+                1
+              ],
+              "state": "eps : (B, D)."
+            },
+            {
+              "title": "Convertir la dispersion",
+              "text": "exp(0,5 × ln(4)) vaut 2. Employer exp(logvar) donnerait 4 et une mauvaise échelle du bruit.",
+              "lines": [
+                2
+              ],
+              "state": "std = 2."
+            },
+            {
+              "title": "Après : calculer et décoder",
+              "text": "z = 2 + 2 × (−0,5) = 1. Pour ce bruit fixé, z est différentiable en mu et std, ce qui laisse passer le gradient de reconstruction vers l’encodeur.",
+              "lines": [
+                3,
+                4
+              ],
+              "state": "Un tirage vaut 1, sa moyenne reste 2."
+            }
+          ],
+          "result": "Le tirage aléatoire est séparé des paramètres que l’on cherche à apprendre."
+        },
+        {
+          "type": "paragraph",
+          "text": "Cette écriture s’appelle reparamétrisation. On ne demande pas de différencier le tirage aléatoire lui-même : pour un bruit eps donné, z est une fonction différentiable de mu et de std. Le gradient de la reconstruction peut ainsi apprendre à modifier l’encodeur. Le hasard reste présent, mais il est placé dans une variable auxiliaire indépendante des paramètres appris."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour créer un nouvel exemple sans audio d’entrée, on peut tirer z dans le prior et le passer au décodeur. Pour reconstruire une entrée, on tire plutôt depuis q(z|x). Cette distinction explique l’intérêt d’organiser les distributions encodées près du prior : les codes tirés en génération doivent ressembler à des zones que le décodeur a appris à traiter."
+        },
+        {
+          "type": "callout",
+          "label": "Deux objectifs à concilier",
+          "tone": "analogy",
+          "text": "Le VAE cherche à reconstruire chaque exemple tout en organisant les distributions encodées près d’un prior commun. La KL joue le rôle d’une pénalité de désaccord avec ce prior ; elle ne mesure ni directement la qualité musicale ni une distance entre deux fichiers particuliers."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une distribution est une règle pour attribuer des probabilités aux valeurs possibles. Une gaussienne est décrite ici par son centre et sa dispersion. Tirer depuis q(z|x) sert à reconstruire une entrée ; tirer depuis p(z) sert à inventer. L’apprentissage doit rendre ces usages compatibles sans obliger toutes les entrées à partager exactement le même code."
+        }
+      ],
+      "takeaways": [
+        "L’encodeur produit une distribution conditionnelle.",
+        "Le bruit est multiplié par l’écart-type, pas la variance.",
+        "Reconstruction et rapprochement du prior ont des rôles différents."
+      ],
+      "sourceIds": [
+        "gr-vae"
+      ],
+      "context": {
+        "recall": "La probabilité d’un prochain token représente une incertitude sur une décision.",
+        "problem": "Nous voulons maintenant organiser l’incertitude sur une représentation continue entière.",
+        "why": "Moyenne, variance et prior donnent un sens aux tenseurs du VAE avant les équations.",
+        "connection": "Nous changeons de famille en gardant notre intention de variations musicales.",
+        "next": "Le chapitre suivant examinera le compromis qui organise cet espace et la réduction de sa loss."
+      },
+      "checkpoint": {
+        "prompt": "logvar vaut ln(9), mu reste fixé. Quel facteur multiplie eps ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "0,5 × ln(9)"
+          },
+          {
+            "id": "b",
+            "text": "3"
+          },
+          {
+            "id": "c",
+            "text": "9"
+          },
+          {
+            "id": "d",
+            "text": "ln(9)"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Le facteur est l’écart-type : sqrt(9) = 3. Le logarithme est une paramétrisation de la variance, pas une échelle directe du bruit."
+      }
+    },
+    {
+      "id": "kl-et-latent-inutilise",
+      "title": "La KL : un compromis, pas un score de qualité",
+      "summary": "Lire les axes de réduction et reconnaître un latent que le décodeur ignore.",
+      "questionIds": [
+        "gen-029",
+        "gen-030"
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Les reconstructions sonnent correctement, mais déplacer le latent modifie très peu les sorties. Une belle reconstruction ne prouve donc pas que cette commande interne est utilisée. Nous devons comprendre ce que la KL pénalise, puis lire exactement les dimensions de sa réduction. Ce diagnostic relie une difficulté de composition à l’objectif réellement optimisé."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour une gaussienne diagonale face à une normale standard, la contribution de chaque dimension s’écrit 0,5 × (mu² + variance − 1 − logvariance). Avec un tenseur (B, D), on obtient une contribution par exemple et par dimension. Si la convention est une KL moyenne par exemple, on additionne D contributions puis on moyenne sur B. Le nom de la variable loss ne précise pas cette convention à lui seul."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Comprendre une KL avec deux catégories",
+          "columns": [
+            "Loi",
+            "A",
+            "B"
+          ],
+          "rows": [
+            [
+              "q",
+              "0,5",
+              "0,5"
+            ],
+            [
+              "p identique",
+              "0,5",
+              "0,5"
+            ],
+            [
+              "Autre p",
+              "0,9",
+              "0,1"
+            ]
+          ],
+          "caption": "La KL moyenne, selon q, les logarithmes du rapport q/p. Lorsque les lois coïncident, chaque logarithme vaut zéro."
+        },
+        {
+          "type": "walkthrough",
+          "title": "Ne pas perdre un facteur D dans la loss",
+          "goal": "Vérifier la grandeur numérique avant de modifier beta.",
+          "language": "python",
+          "code": "kl_dim = -0.5 * (1 + logvar - mu.square() - logvar.exp())\nkl_per_example = kl_dim.sum(dim=1)\nkl = kl_per_example.mean()\nloss = reconstruction_loss + beta * kl",
+          "steps": [
+            {
+              "title": "Avant : garder les axes",
+              "text": "Fixons B = 2, D = 4 et huit contributions toutes égales à 0,5. Chaque case décrit une dimension latente d’un exemple.",
+              "lines": [
+                1
+              ],
+              "state": "kl_dim : (2, 4)."
+            },
+            {
+              "title": "Additionner un exemple",
+              "text": "La somme sur dim=1 vaut 4 × 0,5 = 2 pour chaque exemple. Nous n’avons pas encore moyenné le batch.",
+              "lines": [
+                2
+              ],
+              "state": "[2, 2]."
+            },
+            {
+              "title": "Après : calculer la moyenne",
+              "text": "La moyenne du batch vaut 2. Une moyenne des huit cases donnerait 0,5, soit un terme quatre fois plus petit.",
+              "lines": [
+                3
+              ],
+              "state": "KL moyenne par exemple : 2."
+            },
+            {
+              "title": "Interpréter le poids",
+              "text": "Garder beta identique après un changement de réduction change la pression relative sur le latent. La reconstruction doit aussi avoir une unité annoncée.",
+              "lines": [
+                4
+              ]
+            }
+          ],
+          "result": "La réduction définit le sens de beta et doit être commune aux essais comparés."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un décodeur très puissant peut apprendre à produire des sorties sans exploiter le latent. Si q rejoint le prior, que la KL devient presque nulle et que changer z modifie très peu les sorties, l’ensemble suggère un posterior collapse. Mais une seule courbe ne suffit pas : on doit examiner les reconstructions et la sensibilité au code. Réduire la pression KL, l’introduire progressivement ou modifier le décodeur sont des pistes expérimentales, pas des remèdes universels."
+        },
+        {
+          "type": "paragraph",
+          "text": "Avec beta = 1 et les termes probabilistes appropriés, reconstruction et KL correspondent à la minimisation de l’opposé d’une borne variationnelle sur la log-vraisemblance. Utiliser une MSE arbitrairement normalisée ou changer beta peut rester utile, mais il faut alors décrire précisément l’objectif optimisé plutôt que supposer une équivalence automatique."
+        },
+        {
+          "type": "callout",
+          "label": "La bonne question",
+          "tone": "tip",
+          "text": "Quand une loss change, demande d’abord ce qui a été sommé ou moyenné. Professeur Squoinks rappelle que comparer deux nombres sans leurs unités et leurs axes revient souvent à comparer deux expériences différentes."
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans ce tableau, KL(q||p) pour le dernier p vaut 0,5 ln(0,5/0,9) + 0,5 ln(0,5/0,1), soit environ 0,511. L’ordre compte et le résultat ne mesure pas directement la qualité sonore. Ce petit cas discret explique l’idée ; le code correspond au cas gaussien diagonal face à une normale standard."
+        }
+      ],
+      "takeaways": [
+        "La KL est directionnelle et distincte de la reconstruction.",
+        "Une réduction différente change le poids effectif du terme.",
+        "Une KL faible et un latent ignoré doivent être diagnostiqués ensemble."
+      ],
+      "sourceIds": [
+        "gr-vae",
+        "gr-vqvae"
+      ],
+      "context": {
+        "recall": "Le VAE produit q(z|x) et veut aussi générer depuis un prior p(z).",
+        "problem": "Un décodeur peut réussir sans exploiter une représentation utile au contrôle.",
+        "why": "Comprendre la KL distingue un compromis d’apprentissage d’une erreur d’échelle.",
+        "connection": "Nous vérifions si le latent sert effectivement aux variantes promises.",
+        "next": "Nous passerons ensuite à un autre apprentissage supervisé : retirer une corruption connue."
+      },
+      "checkpoint": {
+        "prompt": "D passe de 4 à 8 avec des contributions identiques, une somme latente et une moyenne du batch. Que devient la KL ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Elle reste identique"
+          },
+          {
+            "id": "b",
+            "text": "Elle devient nulle"
+          },
+          {
+            "id": "c",
+            "text": "Elle double"
+          },
+          {
+            "id": "d",
+            "text": "Elle est divisée par deux"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "La somme contient deux fois plus de contributions. Une moyenne sur D suivrait une autre convention."
+      }
     },
     {
       "id": "diffusion-et-bruit",
@@ -415,22 +1069,72 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "La diffusion apprend un trajet inverse. Pendant l’entraînement, on prend une donnée propre x0, on tire un bruit eps et on construit une version corrompue xt à un niveau t. Le réseau apprend à utiliser cette observation et ce niveau pour estimer une quantité liée au signal propre. Pendant la génération, on part généralement d’un bruit et on applique plusieurs étapes apprises pour obtenir une donnée structurée."
+          "text": "Nous voulons créer une texture sans décider un token après l’autre. Une autre stratégie apprend à retrouver de la structure dans une observation bruitée. Pendant l’entraînement, nous savons quel bruit a été ajouté : cette connaissance fabrique une cible supervisée. Le réseau apprend plusieurs niveaux de corruption, puis un sampler réemploie ces estimations dans le sens de la création."
         },
         {
           "type": "paragraph",
           "text": "Une paramétrisation courante demande au réseau de prédire le bruit eps qui a servi à construire xt. On écrit xt = sqrt(alpha_bar) × x0 + sqrt(1 − alpha_bar) × eps, avec alpha_bar entre zéro et un. Les deux racines règlent les contributions du signal et du bruit. La cible de la MSE est alors eps, et non xt, un zéro ou alpha_bar."
         },
         {
-          "type": "code",
-          "language": "python",
-          "code": "eps = torch.randn_like(x0)\nxt = alpha_bar.sqrt() * x0 + (1 - alpha_bar).sqrt() * eps\npred_eps = model(xt, t)\nloss = torch.nn.functional.mse_loss(pred_eps, eps)",
-          "caption": "x0 et eps ont la même forme. Ici alpha_bar est un scalaire ; un batch avec plusieurs t demande un broadcasting explicite."
+          "type": "visual",
+          "kind": "flow",
+          "title": "Apprendre puis créer",
+          "nodes": [
+            {
+              "title": "Corrompre",
+              "text": "Donnée propre + bruit connu → entrée bruitée."
+            },
+            {
+              "title": "Superviser",
+              "text": "Le réseau estime une quantité définie par l’objectif."
+            },
+            {
+              "title": "Échantillonner",
+              "text": "Un sampler répète des mises à jour depuis un bruit initial."
+            }
+          ],
+          "caption": "Une estimation de bruit seule ne décrit pas tout le sampler de génération."
         },
         {
-          "type": "example",
-          "title": "Lire les coefficients",
-          "text": "Si alpha_bar vaut 0,64, le coefficient du signal vaut 0,8 et celui du bruit vaut 0,6. On obtient xt = 0,8 x0 + 0,6 eps. Si alpha_bar diminue vers zéro, le bruit domine. Fournir t indique au réseau le niveau à traiter : une faible perturbation et une observation presque entièrement bruitée ne demandent pas la même estimation."
+          "type": "walkthrough",
+          "title": "Construire une corruption et sa vraie cible",
+          "goal": "Suivre un exemple de paramétrisation prédisant eps.",
+          "language": "python",
+          "code": "eps = torch.randn_like(x0)\nxt = alpha_bar.sqrt() * x0 + (1 - alpha_bar).sqrt() * eps\npred_eps = model(xt, t)\nloss = torch.nn.functional.mse_loss(pred_eps, eps)",
+          "steps": [
+            {
+              "title": "Avant : choisir un cas lisible",
+              "text": "Prenons x0 = 1, eps = −1 et alpha_bar = 0,64. Les coefficients deviennent 0,8 pour le signal et 0,6 pour le bruit.",
+              "lines": [
+                1
+              ],
+              "state": "Signal propre 1 ; bruit connu −1."
+            },
+            {
+              "title": "Former l’entrée",
+              "text": "Le mélange est 0,8 × 1 + 0,6 × (−1) = 0,2. Le réseau ne reçoit pas séparément le signal propre.",
+              "lines": [
+                2
+              ],
+              "state": "xt = 0,2."
+            },
+            {
+              "title": "Fournir le niveau",
+              "text": "Le réseau reçoit t, car une même observation peut venir de mélanges différents. Ce niveau n’est pas l’instant musical du son.",
+              "lines": [
+                3
+              ]
+            },
+            {
+              "title": "Après : mesurer l’erreur",
+              "text": "S’il prédit −0,8, l’erreur quadratique vaut (−0,8 − (−1))² = 0,04. La cible est eps ; une autre paramétrisation demanderait d’autres conversions.",
+              "lines": [
+                4
+              ],
+              "state": "Erreur de cette composante : 0,04."
+            }
+          ],
+          "result": "Une cible connue est construite à partir de la corruption, avant toute génération complète."
         },
         {
           "type": "paragraph",
@@ -449,6 +1153,10 @@
           "label": "Deux index à distinguer",
           "tone": "tip",
           "text": "Le niveau de bruit t n’est pas forcément le temps musical du son. Un événement à trois secondes et une étape de diffusion numérotée 50 décrivent deux axes conceptuellement différents."
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans une diffusion latente comme AudioLDM, le débruitage porte sur une description compressée avant décodage. Moins de positions peuvent réduire le coût, mais la qualité de reconstruction reste déterminante. Notre calcul scalaire explique les coefficients ; il ne reproduit pas un sampler audio complet et ne permet pas d’obtenir une œuvre en soustrayant simplement un seul bruit."
         }
       ],
       "takeaways": [
@@ -459,7 +1167,37 @@
       "sourceIds": [
         "gr-ddpm",
         "gr-audioldm"
-      ]
+      ],
+      "context": {
+        "recall": "Les modèles latents ont séparé représentation, hasard et objectif entraîné.",
+        "problem": "Comment une succession de débruitages peut-elle produire un nouveau son ?",
+        "why": "La cible exacte évite de confondre bruit, donnée propre et indice de diffusion.",
+        "connection": "Nous gardons la même intention, mais changeons le trajet de génération.",
+        "next": "Le chapitre suivant renforcera la condition et préservera des régions déjà connues."
+      },
+      "checkpoint": {
+        "prompt": "On remplace eps par x0 dans la cible sans adapter le sampler. Que faut-il vérifier ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Un doublement obligatoire de la durée audio"
+          },
+          {
+            "id": "b",
+            "text": "Une conversion automatique en autorégression"
+          },
+          {
+            "id": "c",
+            "text": "L’impossibilité de fournir t au réseau"
+          },
+          {
+            "id": "d",
+            "text": "La cohérence entre quantité prédite et équations du sampler"
+          }
+        ],
+        "correctOptionId": "d",
+        "explanation": "Prédire x0 peut être valide, mais le sampler doit interpréter cette sortie avec les conversions correspondantes."
+      }
     },
     {
       "id": "guidance-et-zones-connues",
@@ -474,22 +1212,76 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Un générateur conditionnel peut produire un son propre mais trop peu fidèle au texte. La guidance amplifie l’influence de la condition pendant l’échantillonnage. Dans la guidance sans classifieur, on combine une prédiction conditionnelle et une prédiction inconditionnelle. On ne demande pas nécessairement à un classifieur externe de noter chaque résultat : le débruiteur fournit lui-même les deux branches nécessaires."
+          "text": "La texture est crédible, mais son timbre s’éloigne parfois du texte. La compositrice veut aussi conserver les premières secondes d’une prise et refaire seulement une zone. Ces objectifs demandent deux mécanismes : renforcer une préférence conditionnelle, puis exprimer quelles valeurs doivent rester connues. Nous allons séparer ces contrats avant de les combiner."
         },
         {
           "type": "paragraph",
           "text": "Pour apprendre cette double utilisation, on retire la condition sur une fraction des exemples d’entraînement, en la remplaçant par la représentation d’absence prévue. Le modèle voit ainsi des cas avec et sans condition. Retirer le texte seulement au test sans avoir prévu cette situation ne garantit pas une prédiction inconditionnelle correctement apprise."
         },
         {
-          "type": "code",
-          "language": "python",
-          "code": "eps_guided = eps_u + s * (eps_c - eps_u)",
-          "caption": "Convention de ce cours : eps_u est inconditionnelle, eps_c est conditionnelle, s est l’échelle de guidance."
+          "type": "visual",
+          "kind": "comparison",
+          "title": "Préférence et contrainte",
+          "panels": [
+            {
+              "title": "Guidance",
+              "items": [
+                "Combine deux estimations",
+                "Peut réduire diversité ou qualité",
+                "Ne fixe pas chaque échantillon"
+              ]
+            },
+            {
+              "title": "Masque",
+              "items": [
+                "Sépare connu et à inventer",
+                "Permet de réimposer observed",
+                "N’assure pas un raccord musical parfait"
+              ]
+            }
+          ],
+          "caption": "Les mécanismes peuvent coexister sans devenir interchangeables."
         },
         {
-          "type": "example",
-          "title": "Le calcul évite une confusion de convention",
-          "text": "Si eps_u vaut 2 et eps_c vaut 5 dans une composante, s = 0 donne 2, s = 1 donne 5 et s = 2 donne 8. On extrapole au-delà de la branche conditionnelle lorsque s dépasse 1. Certains articles paramètrent cette combinaison autrement : il faut lire la formule avant de déduire ce que signifie une valeur numérique du réglage."
+          "type": "walkthrough",
+          "title": "Guider puis préserver les observations",
+          "goal": "Distinguer une extrapolation de prédictions et une conservation exacte.",
+          "language": "python",
+          "code": "eps_guided = eps_u + s * (eps_c - eps_u)\noutput = torch.where(known_mask, observed, generated)",
+          "steps": [
+            {
+              "title": "Avant : apprendre deux usages",
+              "text": "Le réseau rencontre une condition absente sur une partie de l’entraînement. Retirer le texte seulement au test ne suffit pas à apprendre une branche inconditionnelle.",
+              "state": "eps_u : sans condition ; eps_c : avec condition.",
+              "lines": [
+                1
+              ]
+            },
+            {
+              "title": "Lire l’équation",
+              "text": "Avec eps_u = 2 et eps_c = 5, s = 0 donne 2, s = 1 donne 5 et s = 2 donne 8. Au-delà de 1, on extrapole dans la direction conditionnelle.",
+              "lines": [
+                1
+              ],
+              "state": "La convention est définie par cette formule."
+            },
+            {
+              "title": "Après : réimposer le connu",
+              "text": "Un masque vrai aux premières secondes fait reprendre observed dans cette région. Les autres positions prennent generated.",
+              "lines": [
+                2
+              ],
+              "state": "Valeurs connues conservées exactement."
+            },
+            {
+              "title": "Écouter la frontière",
+              "text": "L’exactitude à l’extérieur du trou n’assure pas un raccord sans clic. Le sampler peut aussi intégrer le connu à chaque niveau avec une méthode de corruption adaptée.",
+              "lines": [
+                2
+              ]
+            }
+          ],
+          "result": "Un guidage fort et une zone imposée répondent à deux propriétés différentes."
         },
         {
           "type": "paragraph",
@@ -504,6 +1296,10 @@
           "label": "Préserver et raccorder",
           "tone": "pitfall",
           "text": "Réimposer la zone connue assure ses valeurs, mais ne garantit pas une frontière sans clic ni un raccord musical convaincant. Il faut examiner les transitions et le contexte. Une contrainte exacte sur certaines valeurs ne règle pas à elle seule la qualité de la zone inventée."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour choisir s, conserve plusieurs mêmes consignes et plusieurs tirages. Une meilleure adhérence peut coexister avec moins de diversité ou davantage d’artefacts ; il faut observer ces dimensions ensemble. Certains travaux décalent la définition du paramètre : lire l’équation compte davantage que mémoriser qu’une valeur numérique particulière signifierait toujours la même chose."
         }
       ],
       "takeaways": [
@@ -514,7 +1310,37 @@
       "sourceIds": [
         "gr-cfg",
         "gr-audioldm"
-      ]
+      ],
+      "context": {
+        "recall": "Le débruiteur reçoit une observation corrompue et son niveau t.",
+        "problem": "Une génération plausible peut ignorer une condition ou altérer une zone à conserver.",
+        "why": "La guidance oriente les tirages ; un masque indique des contraintes locales précises.",
+        "connection": "La diffusion devient un outil de composition avec des exigences vérifiables.",
+        "next": "Nous adapterons ensuite certains paramètres au corpus, sans supprimer le besoin d’évaluation."
+      },
+      "checkpoint": {
+        "prompt": "L’extérieur du trou est identique à l’original, mais la frontière produit un clic. Que conclure ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "La conservation est respectée, le raccord reste à améliorer"
+          },
+          {
+            "id": "b",
+            "text": "Le masque n’a conservé aucune valeur"
+          },
+          {
+            "id": "c",
+            "text": "La présence du texte rend le clic impossible"
+          },
+          {
+            "id": "d",
+            "text": "Toute guidance doit nécessairement être supprimée"
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Conserver des valeurs et produire une transition continue sont deux exigences différentes."
+      }
     },
     {
       "id": "adaptation-lora-et-petit-corpus",
@@ -531,31 +1357,90 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Sur un petit corpus, entraîner tous les poids d’un grand modèle demande de la mémoire et peut favoriser la mémorisation. Geler une base préentraînée puis apprendre une petite adaptation réduit le nombre de paramètres mis à jour et les états d’optimisation associés. Le forward de la base reste nécessaire et la généralisation doit être validée sur des données séparées."
+          "text": "La compositrice veut maintenant retrouver les textures de son petit corpus. Réentraîner toute une grande base coûte cher et peut mémoriser ses quelques prises. Limitons ce qui change, comptons les paramètres entraînés et suivons leurs gradients. La décision finale sera une adaptation testable face à la base, plutôt qu’une technique supposée éviter automatiquement le surapprentissage."
         },
         {
           "type": "paragraph",
           "text": "Avec PyTorch, requires_grad_(False) empêche le calcul de nouveaux gradients pour les paramètres concernés. On construit ensuite l’optimiseur sur les seuls paramètres à entraîner. Ce gel ne place pas automatiquement les modules en mode eval : dropout et normalisations ont leur propre comportement. Il ne rend pas non plus la sortie indépendante de l’entrée, et n’efface pas magiquement d’anciens gradients déjà accumulés."
         },
         {
-          "type": "figure",
-          "kind": "lora",
-          "caption": "Une matrice de base reste fixe tandis qu’une petite paire de facteurs apprend une mise à jour."
+          "type": "visual",
+          "kind": "table",
+          "title": "La petite dimension est celle de la mise à jour",
+          "columns": [
+            "Objet",
+            "Forme",
+            "Interprétation"
+          ],
+          "rows": [
+            [
+              "W0",
+              "(d_out, d_in)",
+              "Base potentiellement de rang plein"
+            ],
+            [
+              "B",
+              "(d_out, r)",
+              "Premier facteur"
+            ],
+            [
+              "A",
+              "(r, d_in)",
+              "Second facteur"
+            ],
+            [
+              "B A",
+              "(d_out, d_in)",
+              "Rang au plus r"
+            ]
+          ],
+          "caption": "W0 + B A peut rester de rang plein : seul le rang de la modification est contraint."
+        },
+        {
+          "type": "walkthrough",
+          "title": "Compter les poids et suivre le premier gradient",
+          "goal": "Vérifier la forme et le démarrage d’une mise à jour LoRA.",
+          "language": "python",
+          "code": "for p in base.parameters():\n    p.requires_grad_(False)\nB = torch.zeros(d_out, r, requires_grad=True)\nA = torch.randn(r, d_in, requires_grad=True)\nh = W0 @ x + B @ A @ x",
+          "steps": [
+            {
+              "title": "Avant : conserver la base",
+              "text": "Une matrice W0 de taille 1 024 × 1 024 possède 1 048 576 poids. Le gel empêche de nouveaux gradients pour ses paramètres ; le mode train/eval reste une décision séparée.",
+              "lines": [
+                1,
+                2
+              ],
+              "state": "La base garde son forward et son stockage."
+            },
+            {
+              "title": "Compter la modification",
+              "text": "Avec r = 8, B contient 1 024 × 8 poids et A en contient 8 × 1 024. Le total est 16 384, soit 64 fois moins pour cette paire. Ici x est un vecteur de forme (d_in,).",
+              "lines": [
+                3,
+                4
+              ],
+              "state": "B A possède la même forme que W0."
+            },
+            {
+              "title": "Après : démarrer sans changer la sortie",
+              "text": "B vaut zéro, donc B A vaut zéro au départ. Le calcul ignore ici biais et facteur d’échelle pour isoler le mécanisme.",
+              "lines": [
+                5
+              ]
+            },
+            {
+              "title": "Suivre le backward",
+              "text": "Le gradient de A passe par B et est nul au premier pas. Celui de B peut être non nul via A x. Mettre les deux facteurs à zéro bloquerait cette branche au départ.",
+              "lines": [
+                5
+              ]
+            }
+          ],
+          "result": "La mise à jour est petite et dispose d’une trajectoire de gradient capable de démarrer."
         },
         {
           "type": "paragraph",
           "text": "LoRA écrit une mise à jour sous la forme B A. Si W0 est de forme (d_out, d_in), on choisit B de forme (d_out, r) et A de forme (r, d_in). Leur produit peut être ajouté à W0. Le rang du produit est au plus r ; cela ne signifie pas que la matrice finale W0 + B A a elle-même un petit rang. On contraint la modification, pas toute la base."
-        },
-        {
-          "type": "example",
-          "title": "Compter ce qui est entraîné",
-          "text": "Une matrice 1 024 × 1 024 possède 1 048 576 poids. Avec r = 8, les facteurs comportent 1 024 × 8 + 8 × 1 024 = 16 384 paramètres, soit 64 fois moins pour cette adaptation. Ce compte ignore biais et facteurs d’échelle, et ne décrit pas nécessairement la réduction de mémoire totale du modèle."
-        },
-        {
-          "type": "code",
-          "language": "python",
-          "code": "for p in base.parameters():\n    p.requires_grad_(False)\n# W0 : (d_out, d_in), B : (d_out, r), A : (r, d_in)\nh = W0 @ x + B @ A @ x",
-          "caption": "Schéma sans biais ni facteur d’échelle pour rendre les dimensions explicites."
         },
         {
           "type": "paragraph",
@@ -566,6 +1451,10 @@
           "label": "Pour un petit corpus musical",
           "tone": "tip",
           "text": "Compare une base gelée, une adaptation légère et éventuellement un ajustement plus large sous un budget décrit. Garde des morceaux réellement réservés et écoute les ressemblances excessives au corpus. Une réduction du nombre de paramètres entraînés n’est pas une preuve d’absence de mémorisation."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tu peux maintenant expliquer ce qui représente le son, où agit le hasard et comment une condition influence la sortie. Pour conclure que l’adaptation aide la compositrice, il reste à la comparer à la base sur des prises réservées et avec un budget décrit. Le cours d’évaluation transforme ces mécanismes en hypothèses, observations et conclusions mesurées."
         }
       ],
       "takeaways": [
@@ -577,7 +1466,90 @@
         "gr-lora",
         "gr-module",
         "gr-transfer"
-      ]
+      ],
+      "context": {
+        "recall": "Nous disposons d’une chaîne de génération et de contrôles aux limites explicites.",
+        "problem": "Un petit corpus ne justifie pas automatiquement un ajustement complet des poids.",
+        "why": "Gel et LoRA proposent un compromis entre liberté d’adaptation et ressources.",
+        "connection": "Le projet arrive au choix de ce que la base apprend des nouvelles textures.",
+        "next": "Le cours d’évaluation prendra le relais : protéger les données et comparer le gain à la base."
+      },
+      "checkpoint": {
+        "prompt": "On divise r par deux à dimensions de base fixes. Quel compte diminue directement de moitié ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Le nombre de couches de la base"
+          },
+          {
+            "id": "b",
+            "text": "Les paramètres des deux facteurs LoRA"
+          },
+          {
+            "id": "c",
+            "text": "Les poids de W0"
+          },
+          {
+            "id": "d",
+            "text": "La durée de l’audio produit"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "La paire comporte r × (d_out + d_in) paramètres. Cette réduction ne supprime ni la base ni tous les calculs du forward."
+      }
+    }
+  ],
+  "edition": 2,
+  "journey": {
+    "title": "Du son enregistré à une proposition musicale contrôlable",
+    "scenario": "Créer dix secondes de percussion et de sons tenus, suivre un événement musical local, puis adapter prudemment une base préentraînée à un petit corpus.",
+    "startingPoint": "Tu sais lire des tenseurs et une boucle PyTorch, mais tu ne sais pas encore quelle représentation ou famille générative sert l’intention musicale.",
+    "destination": "Tu peux expliquer une chaîne complète, interpréter ses équations, choisir un contrôle et proposer un diagnostic quand le résultat déçoit.",
+    "stages": [
+      {
+        "title": "Construire une représentation et apprendre des suites",
+        "chapterIds": [
+          "representation-et-reconstruction",
+          "quantification-et-tokens",
+          "autoregression-et-causalite"
+        ]
+      },
+      {
+        "title": "Choisir des sorties et préciser le contrôle",
+        "chapterIds": [
+          "echantillonnage-contexte-et-cout",
+          "conditions-et-intention-musicale"
+        ]
+      },
+      {
+        "title": "Comprendre les distributions et le débruitage",
+        "chapterIds": [
+          "vae-et-echantillonnage",
+          "kl-et-latent-inutilise",
+          "diffusion-et-bruit",
+          "guidance-et-zones-connues"
+        ]
+      },
+      {
+        "title": "Adapter le système au corpus",
+        "chapterIds": [
+          "adaptation-lora-et-petit-corpus"
+        ]
+      }
+    ],
+    "scope": [
+      "Décrire les rôles du codec, du prior génératif et du décodeur.",
+      "Lire les probabilités, les axes d’une KL et une étape de diffusion.",
+      "Relier une intention musicale à la précision d’une condition.",
+      "Raisonner sur le coût, le gel des poids et une adaptation LoRA."
+    ]
+  },
+  "references": [
+    {
+      "id": "course-gen-audiocraft",
+      "title": "AudioCraft — MusicGen, documentation officielle",
+      "url": "https://facebookresearch.github.io/audiocraft/docs/MUSICGEN.html",
+      "accessed": "2026-11-10"
     }
   ]
 }

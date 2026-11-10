@@ -20,9 +20,28 @@ export function wordCount(value) {
 }
 
 export function chapterMinutes(chapter) {
-  const text = chapter.blocks.map(block => [block.text, block.title, block.caption, ...(block.items ?? [])].filter(Boolean).join(' ')).join(' ');
+  const text = chapterText(chapter);
   // Includes time to read examples and diagrams; indicative, never a timer.
   return Math.max(3, Math.ceil(wordCount(text) / 150));
+}
+
+export function chapterText(chapter) {
+  const blocks=chapter.blocks.map(block=>[
+    block.text,block.title,block.caption,block.goal,block.result,
+    ...(block.items??[]),
+    ...(block.steps??[]).flatMap(step=>[step.title,step.text]),
+    ...(block.nodes??[]).flatMap(node=>[node.title,node.text]),
+    ...(block.panels??[]).flatMap(panel=>[panel.title,...panel.items]),
+  ].filter(Boolean).join(' '));
+  return [...Object.values(chapter.context??{}),...blocks,chapter.checkpoint?.prompt,chapter.checkpoint?.explanation].filter(Boolean).join(' ');
+}
+
+export function courseStage(course,chapterId) {
+  return course.journey?.stages.find(stage=>stage.chapterIds.includes(chapterId))??null;
+}
+
+export function mergeCourseReferences(base,courses) {
+  return [...new Map([...base,...courses.flatMap(course=>course.references??[])].map(source=>[source.id,source])).values()];
 }
 
 export function normalizeProgress(raw, courses) {

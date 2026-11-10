@@ -1,5 +1,5 @@
 const esc = value => String(value).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
-export const FIGURE_KINDS = ['tensor-axes','broadcast','training-loop','sampling','stft','mel','pipeline','augmentation','generative-families','conditioning','lora','split','evaluation'];
+export const FIGURE_KINDS = ['tensor-axes','broadcast','training-loop','sampling','stft','mel','pipeline','augmentation','generative-families','conditioning','lora','split','evaluation','python-shallow-copy','numpy-reductions'];
 const text = (x, y, value, extra = '') => `<text x="${x}" y="${y}" ${extra}>${esc(value)}</text>`;
 const rect = (x,y,w,h,fill='var(--diagram-light)') => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="11" fill="${fill}"/>`;
 const arrow = (x1,y1,x2,y2) => `<path d="M${x1} ${y1} L${x2} ${y2}" fill="none" stroke="var(--diagram-ink)" stroke-width="2" marker-end="url(#arrow-head)"/>`;
@@ -12,6 +12,25 @@ function sinePath(f=4, offset=0, amplitude=40, length=560, y=120) {
   return Array.from({length:141},(_,i)=>`${i?'L':'M'}${40+i*length/140} ${(y-amplitude*Math.sin(2*Math.PI*f*i/140+offset)).toFixed(2)}`).join(' ');
 }
 function content(kind) {
+  if(kind==='python-shallow-copy') {
+    return text(35,26,'Des noms différents peuvent encore atteindre le même objet intérieur.')+
+      text(30,88,'original','font-family="monospace" font-size="13"')+text(30,190,'travail','font-family="monospace" font-size="13"')+
+      arrow(100,83,151,83)+arrow(100,185,151,185)+
+      rect(160,52,145,67)+text(177,76,'Liste extérieure A','font-size="12" font-weight="650"')+text(177,99,'case 0  ·  case 1','class="diagram-small"')+
+      rect(160,154,145,67)+text(177,178,'Liste extérieure B','font-size="12" font-weight="650"')+text(177,201,'case 0  ·  case 1','class="diagram-small"')+
+      box(448,38,155,'L1 : [1., 3.]','objet partagé','#dce9c8')+box(448,113,155,'L2 : [2.]','reste dans original')+box(448,188,155,'L3 : [9.]','nouvel objet de travail')+
+      arrow(303,82,438,68)+arrow(303,105,438,141)+arrow(303,208,438,218)+
+      '<path d="M303 174 C390 174 376 69 438 69" fill="none" stroke="var(--diagram-ink)" stroke-width="2" marker-end="url(#arrow-head)"/>';
+  }
+  if(kind==='numpy-reductions') {
+    const cells=Array.from({length:2},(_,row)=>Array.from({length:3},(_,col)=>rect(175+col*56,70+row*45,51,40,row?'#dae8c9':'#e9efdf')+text(200+col*56,96+row*45,String(1+row*3+col),'text-anchor="middle"')).join('')).join('');
+    return text(175,29,'axis=1 : les mesures d’un extrait','class="diagram-small"')+arrow(175,47,335,47)+
+      cells+text(28,93,'extrait A','font-size="12"')+text(28,137,'extrait B','font-size="12"')+
+      arrow(145,73,145,152)+text(28,177,'axis=0 : extraits','class="diagram-small"')+
+      arrow(350,113,401,113)+text(413,103,'mean(axis=1)','font-family="monospace" font-size="13"')+text(413,132,'[2., 5.]','font-family="monospace" font-size="17"')+
+      arrow(255,163,255,188)+text(255,214,'mean(axis=0)','text-anchor="middle" font-family="monospace" font-size="13"')+text(255,241,'[2.5, 3.5, 4.5]','text-anchor="middle" font-family="monospace" font-size="17"')+
+      text(412,184,'L’axe indiqué disparaît.','class="diagram-small"')+text(412,205,'Les autres restent.','class="diagram-small"');
+  }
   if(kind==='sampling') {
     return text(40,30,'Une onde continue, puis des mesures à intervalles réguliers.')+`<path d="${sinePath(3)}" fill="none" stroke="#809b71" stroke-width="3"/>`+
       Array.from({length:19},(_,i)=>{const x=40+i*560/18,y=120-40*Math.sin(2*Math.PI*3*i/18);return `<path d="M${x} 170V${y}" stroke="#c3ceb8"/><circle cx="${x}" cy="${y}" r="5" fill="#285648"/>`;}).join('')+

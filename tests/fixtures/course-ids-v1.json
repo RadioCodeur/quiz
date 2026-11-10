@@ -1,0 +1,71 @@
+{
+  "python-scientifique": [
+    "lire-fonctions-objets",
+    "references-et-copies",
+    "valeurs-par-defaut",
+    "parcourir-et-filtrer",
+    "tableaux-et-indexation",
+    "reduire-les-bons-axes",
+    "broadcasting-et-algebre",
+    "standardiser-et-preserver-precision"
+  ],
+  "audio-signal": [
+    "echantillons-duree-canaux",
+    "nyquist-repliement-reechantillonnage",
+    "amplitude-puissance-decibels",
+    "fourier-coefficients-frequences",
+    "stft-fenetres-hop-trames",
+    "resolution-fuite-zero-padding",
+    "mel-representation-compressee",
+    "phase-canaux-annulations",
+    "reconstruction-streaming-limites"
+  ],
+  "pytorch": [
+    "tenseur-forme-type-device",
+    "organiser-les-axes",
+    "selection-diffusion-reduction",
+    "construire-un-module",
+    "autograd-et-derivees",
+    "detacher-geler-journaliser",
+    "choisir-la-perte",
+    "dataset-et-batches",
+    "moyennes-masquees",
+    "une-iteration-entrainement",
+    "entrainer-ou-evaluer",
+    "moyennes-et-microbatches",
+    "sauvegarder-et-reprendre"
+  ],
+  "audio-ml": [
+    "tache-cibles-pertes",
+    "pretraitement-entrees-coherentes",
+    "durees-padding-masques",
+    "embeddings-transfert-domaines",
+    "architectures-axes-contexte",
+    "annotations-faibles-agregation",
+    "augmentations-cibles-validation",
+    "masquage-mixup-representations",
+    "similarites-contraste-attention"
+  ],
+  "generation-controle": [
+    "representation-et-reconstruction",
+    "vae-et-echantillonnage",
+    "kl-et-latent-inutilise",
+    "quantification-et-tokens",
+    "autoregression-et-causalite",
+    "echantillonnage-contexte-et-cout",
+    "conditions-et-intention-musicale",
+    "diffusion-et-bruit",
+    "guidance-et-zones-connues",
+    "adaptation-lora-et-petit-corpus"
+  ],
+  "evaluation-recherche": [
+    "splits-et-fuites",
+    "metriques-et-seuils",
+    "boucle-evaluation-et-surapprentissage",
+    "baselines-et-ablations",
+    "ecoute-et-jugement-perceptif",
+    "fad-et-limites-des-proxies",
+    "variabilite-et-incertitude",
+    "generalisation-et-compte-rendu"
+  ]
+}

@@ -13,6 +13,7 @@ import { fileURLToPath } from 'node:url';
 process.chdir(fileURLToPath(new URL('../', import.meta.url)));
 const { bank } = await readBank();
 const courses = await readCourses();
+const totalChapters=courses.reduce((total,course)=>total+course.chapters.length,0);
 const coverage = buildCoverage(courses);
 const byId = new Map(bank.map(q => [q.id,q]));
 const base = 'http://127.0.0.1:4188';
@@ -196,7 +197,7 @@ try {
     await page.locator('.header-nav a').first().click();await page.locator('#next').waitFor();
     assert.deepEqual(await getSession(),quizSnapshot);
   });
-  await check('cours mobile : les 57 chapitres se rendent sans débordement de page',async()=>{
+  await check(`cours mobile : les ${totalChapters} chapitres se rendent sans débordement de page`,async()=>{
     await page.setViewportSize({width:360,height:800});
     await page.locator('.header-nav a').last().click();await page.locator('.course-card').first().waitFor();
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
@@ -206,11 +207,81 @@ try {
       assert.equal(await page.locator('#lesson-title').innerText(),chapter.title);
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`Débordement : ${course.themeId}/${chapter.id}`);
       assert.equal(await page.locator('.lesson-figure').count(),chapter.blocks.filter(b=>b.type==='figure').length);
+      assert.equal(await page.locator('.chapter-context').count(),1);
+      assert.equal(await page.locator('.worked-example').count(),chapter.blocks.filter(b=>b.type==='walkthrough').length);
+      assert.equal(await page.locator('.concept-visual').count(),chapter.blocks.filter(b=>b.type==='visual').length);
+      assert.equal(await page.locator('.data-plot').count(),chapter.blocks.filter(b=>b.type==='plot').length);
+      assert.equal(await page.locator('[data-checkpoint-option]').count(),4);
     }
     const illustrated=courses.find(c=>c.themeId==='audio-signal');
     const chapter=illustrated.chapters.find(ch=>ch.blocks.some(b=>b.type==='figure'));
     await page.evaluate(url=>{history.pushState(null,'',url);dispatchEvent(new PopStateEvent('popstate'));},courseHref(illustrated.themeId,chapter.id));
     await page.screenshot({path:'test-results/courses-mobile-chapter.png',fullPage:true});
+  });
+  await check('exemple guidé : étapes, états et lignes de code réellement reliés',async()=>{
+    const course=courses.find(c=>c.themeId==='python-scientifique');
+    const chapter=course.chapters.find(ch=>ch.id==='references-et-copies');
+    const block=chapter.blocks.find(b=>b.type==='walkthrough'&&b.code);
+    await page.evaluate(url=>{history.pushState(null,'',url);dispatchEvent(new PopStateEvent('popstate'));},courseHref(course.themeId,chapter.id));
+    const example=page.locator('.worked-example').first();
+    assert.equal(await example.locator('[data-walk-prev]').isDisabled(),true);
+    for(let i=0;i<block.steps.length;i++){
+      assert.equal(await example.locator('.walk-position').innerText(),`ÉTAPE ${i+1} / ${block.steps.length}`);
+      assert.ok((await example.locator('.walk-explanation').innerText()).includes(block.steps[i].text));
+      assert.deepEqual(await example.locator('.walk-code-line.is-active').evaluateAll(lines=>lines.map(line=>Number(line.dataset.line))),block.steps[i].lines??[]);
+      if(i<block.steps.length-1)await example.locator('[data-walk-next]').click();
+    }
+    assert.equal(await example.locator('[data-walk-next]').isDisabled(),true);
+    await example.locator('[data-walk-prev]').click();
+    await example.locator('.all-walk-steps summary').click();
+    assert.equal(await example.locator('.all-walk-steps li').count(),block.steps.length);
+    const titleBeforeSkip=await page.locator('#lesson-title').innerText();
+    await page.locator('.skip-link').focus();await page.keyboard.press('Enter');
+    assert.equal(await page.locator('#lesson-title').innerText(),titleBeforeSkip);
+    assert.equal(await page.locator('#app').evaluate(element=>element===document.activeElement),true);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    await example.screenshot({path:'test-results/courses-mobile-worked-example.png'});
+    await page.setViewportSize({width:1440,height:1000});
+    await example.screenshot({path:'test-results/courses-desktop-worked-example.png'});
+  });
+  await check('QCM de transfert : correction juste/fausse, verrouillage et aucune modification du quiz',async()=>{
+    const course=courses.find(c=>c.themeId==='python-scientifique'),chapter=course.chapters.find(ch=>ch.id==='references-et-copies');
+    const q=chapter.checkpoint;
+    const before=await getSession();
+    const wrong=q.options.find(option=>option.id!==q.correctOptionId).id;
+    await page.locator(`[data-checkpoint-option="${wrong}"]`).click();
+    assert.equal(await page.locator('[data-checkpoint-option]:disabled').count(),4);
+    assert.equal(await page.locator('.checkpoint-options .is-wrong').count(),1);
+    assert.equal(await page.locator('.checkpoint-options .is-correct').count(),1);
+    assert.ok((await page.locator('.checkpoint-feedback').innerText()).includes(q.explanation));
+    await page.locator('.checkpoint-reset').click();
+    await page.locator(`[data-checkpoint-option="${q.correctOptionId}"]`).click();
+    assert.equal(await page.locator('.checkpoint-options .is-wrong').count(),0);
+    assert.ok((await page.locator('.checkpoint-feedback').innerText()).includes('L’idée est là'));
+    assert.deepEqual(await getSession(),before);
+  });
+  await check('graphique : axes lisibles et accès aux données numériques',async()=>{
+    const course=courses.find(c=>c.themeId==='audio-signal');
+    const chapter=course.chapters.find(ch=>ch.blocks.some(b=>b.type==='plot'));
+    const graph=chapter.blocks.find(b=>b.type==='plot');
+    await page.evaluate(url=>{history.pushState(null,'',url);dispatchEvent(new PopStateEvent('popstate'));},courseHref(course.themeId,chapter.id));
+    const figure=page.locator('.data-plot').first();
+    assert.ok((await figure.locator('svg[role=img]').textContent()).includes(graph.xLabel));
+    await figure.locator('.plot-values summary').click();
+    assert.equal(await figure.locator('tbody tr').count(),graph.series.reduce((total,series)=>total+series.points.length,0));
+    assert.equal(await figure.locator('path[d*="NaN"]').count(),0);
+    await figure.screenshot({path:'test-results/courses-numeric-plot.png'});
+  });
+  await check('projet, progression et sources pédagogiques restent visibles',async()=>{
+    await page.goto(`${base}/cours.html?theme=python-scientifique`);await page.locator('#lesson-title').waitFor();
+    assert.equal(await page.locator('.course-journey').getAttribute('open'),'');
+    assert.equal(await page.locator('.journey-endpoints>div').count(),2);
+    assert.equal(await page.locator('.journey-stages .is-current').count(),1);
+    await page.screenshot({path:'test-results/courses-revised-python-introduction.png',fullPage:true});
+    await page.locator('.course-breadcrumb a').click();
+    await page.locator('.learning-methodology>summary').click();
+    assert.equal(await page.locator('.method-principles section').count(),4);
+    assert.ok(await page.locator('.learning-methodology a').count()>=5);
   });
   await check('cours : stockage bloqué et liens périmés restent utilisables',async()=>{
     const ctx=await browser.newContext({viewport:{width:360,height:800}});
