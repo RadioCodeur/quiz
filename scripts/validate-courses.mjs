@@ -57,11 +57,12 @@ export function validateCourses(courses, { bank, themes, sources }) {
         assert.ok(!coverage.has(id),fail(`couverture unique de ${id}`));
         coverage.set(id,`${course.themeId}/${ch.id}`);
       }
-      assert.ok(ch.blocks.length>=4,fail('développement explicatif'));
+      assert.ok(ch.progression&&['input','action','output'].every(key=>typeof ch.progression[key]==='string'&&ch.progression[key].trim()),fail('entrée, action et résultat du chapitre'));
+      assert.ok(ch.readingRole===undefined||ch.readingRole==='reference',fail('rôle de lecture valide'));
+      assert.ok(ch.blocks.length>=3,fail('développement explicatif'));
       assert.ok(ch.blocks.some(b=>b.type==='walkthrough'),fail('exemple résolu pas à pas'));
       const firstExampleIndex=ch.blocks.findIndex(block=>block.type==='first-example');
-      assert.ok(firstExampleIndex>=0&&firstExampleIndex<=3,fail('premier exemple simple au début du chapitre'));
-      assert.ok(firstExampleIndex<ch.blocks.findIndex(block=>block.type==='walkthrough'),fail('cas simple avant le déroulé complet'));
+      if(firstExampleIndex>=0)assert.ok(firstExampleIndex<ch.blocks.findIndex(block=>block.type==='walkthrough'),fail('cas court avant le déroulé complet'));
       assert.ok(ch.blocks.some(b=>['visual','plot'].includes(b.type)),fail('schéma ou graphique propre à la notion'));
       let chapterWords=0;
       for(const block of ch.blocks) {
@@ -76,7 +77,7 @@ export function validateCourses(courses, { bank, themes, sources }) {
           firstExamples++;assert.ok(['title','introduction','code','output','explanation'].every(key=>typeof block[key]==='string'&&block[key].trim()),fail('premier exemple et résultat expliqués'));
           assert.ok(['python','text','bash'].includes(block.language),fail('langage du premier exemple'));
           assert.ok(block.code.split('\n').length<=6,fail('six lignes maximum pour le cas simple'));
-          assert.ok(block.variant&&['change','output','explanation'].every(key=>typeof block.variant[key]==='string'&&block.variant[key].trim()),fail('variation unique et résultat expliqués'));
+          if(block.variant)assert.ok(['change','output','explanation'].every(key=>typeof block.variant[key]==='string'&&block.variant[key].trim()),fail('variation complète quand elle est utile'));
         }
         if(block.type==='visual'){
           visuals++;assert.ok(block.title?.trim()&&block.caption?.trim(),fail('schéma titré et interprété'));
@@ -99,7 +100,7 @@ export function validateCourses(courses, { bank, themes, sources }) {
         chapterWords+=wordCount([block.text,block.title,block.caption,...(block.items??[])].filter(Boolean).join(' '));
       }
       chapterWords=wordCount(chapterText(ch));
-      assert.ok(chapterWords>=350,fail(`chapitre développé (${chapterWords} mots hors code)`));
+      assert.ok(chapterWords>=(ch.readingRole==='reference'?80:200),fail(`chapitre développé (${chapterWords} mots hors code)`));
       words+=chapterWords;
       assert.ok(Array.isArray(ch.takeaways)&&ch.takeaways.length===3&&ch.takeaways.every(x=>typeof x==='string'&&x.trim()),fail('trois idées à retenir'));
       assert.ok(Array.isArray(ch.sourceIds)&&ch.sourceIds.length&&ch.sourceIds.every(id=>refs.has(id)),fail('références existantes'));

@@ -1,30 +1,31 @@
 # Vérification de la livraison
 
-Contrôles locaux actualisés le **10 novembre 2026**, avec Node.js 24.22.1 et Microsoft Edge piloté par Playwright.
+Révision éditoriale du **11 novembre 2026**, adaptée à un lecteur connaissant déjà le Python algorithmique.
 
-- **Banque validée** : exactement 200 QCM, quotas principaux 20/50/30/30/40/30, 60/100/40 par difficulté, 99 questions avec code, 88 entrées de sources, IDs uniques, quatre options distinctes, bonne réponse existante, thèmes valides, explications présentes et références résolues.
-- **27 tests de logique réussis** : les 12 contrôles du quiz sont conservés. Les cours vérifient schéma, couverture, prérequis, liens et progression, mais aussi conservation des 57 anciens identifiants, ordre des étapes, fusion des références, durée incluant les explications, géométrie des graphiques, échappement du texte, surlignage des lignes et QCM de transfert indépendants de l’ordre des propositions. Trois tests supplémentaires vérifient l’annonce ordonnée des notions, le premier exemple avant l’application détaillée et le rendu textuel de ses sorties et variantes.
-- **19 contrôles navigateur réussis** : parcours du quiz, reprise, bilan, erreurs, clavier et stockage dégradé ; navigation quiz/cours sans perte de session ; lecture et préférences ; affichage de tous les 65 chapitres à 360 px ; étapes de code avec états et numéros de ligne vérifiés ; QCM de transfert juste/faux et verrouillage ; graphique et tableau de valeurs ; projet et sources pédagogiques visibles ; anciens liens ; deux pages construites sous `/qr-entretien/`. Certains contrôles regroupent plusieurs assertions. Le lien d’évitement au clavier conserve le chapitre en cours.
-- **Cours édition 2 validés** : six thèmes, 65 chapitres, 200 questions reliées une fois chacune, 65 exemples guidés, 65 nouveaux schémas relationnels, 15 graphiques numériques, 7 figures complémentaires et 65 QCM de transfert. Chaque chapitre présente rappel, problème, utilité et transition. Les 59 extraits de code détaillés et les 65 premiers exemples sont à lire ; l’application ne les exécute pas. Environ 47 000 mots hors code. Relecture pédagogique effectuée ; le contrôle automatique des correspondances ne suffit pas à prouver la compréhension des notions.
-- **Construction Vite réussie**, puis application construite servie et testée à travers un serveur statique sous un chemin de dépôt. Aucun appel réseau de l’application vers une API extérieure.
-- **Lanceur Windows corrigé et testé sans Node dans le PATH** : lancement réel de `Lancer.cmd` dans un environnement Windows réduit, recherche automatique du runtime local, réponse HTTP du serveur et accès aux 200 questions vérifiés. Test reproductible avec `node scripts/test-windows-launcher.mjs` ; le serveur de test est arrêté automatiquement.
-- **Captures ordinateur et mobile inspectées visuellement**, notamment la configuration, une question avec code et la correction. Absence de débordement horizontal de page vérifiée à 360 px ; le code défile dans son propre conteneur.
-- **Relecture pédagogique** des banques et consultation des références primaires pendant leur rédaction. Les vérifications structurelles ne sont pas une preuve automatique de justesse scientifique ; les extraits Python n’ont pas été exécutés. Ils sont destinés à être lus, comme demandé.
+## Contenu et cohérence
 
-Captures reproductibles : `test-results/desktop-configuration.png`, `desktop-correction.png`, `desktop-bilan.png`, `mobile-configuration.png`, `mobile-question.png`, `mobile-correction.png`, `mobile-bilan.png`.
+- Six modules et 65 chapitres, dont deux rappels Python facultatifs en fin de sommaire. Les 65 identifiants et les associations aux 200 QCM sont comparés à la version publiée précédente et conservés. La banque du quiz reste inchangée.
+- Les développements, projets et transitions ont été réécrits. Les signaux miniatures du Python servent successivement à calculer RMS, facteur de crête, caractéristiques et standardisation ; leurs sorties sont exécutées et vérifiées. Les changements de taille ou de scénario sont annoncés.
+- Les 65 exemples guidés et les 65 représentations relationnelles sont présents. Les cas courts passent de 65 à 8 : les exemples de syntaxe élémentaire et les variantes répétitives ont été retirés. Les variantes conservées et les définitions se déplient à la demande.
+- Les pages publiques de cours et de découverte France-IOI citées dans `docs/pedagogie.md` ont été lues, y compris des explications intégrées aux énoncés. OpenClassrooms a également été consulté. Aucun accès aux corrections privées ou aux niveaux verrouillés n’est revendiqué ; les scénarios et les textes audio sont originaux.
+- Relecture de la couverture scientifique des QCM par thème. Les correspondances automatiques prouvent la présence d’un lien, pas la compréhension du lecteur ni une exhaustivité de toutes les questions d’entretien possibles.
 
-Captures des cours : `courses-desktop-overview.png`, `courses-desktop-chapter.png`, `courses-mobile-overview.png` et `courses-mobile-chapter.png`, dans le même dossier. Elles ont été inspectées visuellement. Le portrait de Squoinks a été généré avec ImageGen et inspecté ; son prompt est conservé dans `docs/illustration-squoinks.md`.
+## Vérifications techniques
 
-Captures de la refonte : `courses-desktop-worked-example.png`, `courses-mobile-worked-example.png`, `courses-numeric-plot.png` et `courses-revised-python-introduction.png`. Les méthodes et leur portée sont documentées dans `docs/pedagogie.md`. Les cinq références pédagogiques du catalogue sont séparées des références techniques des chapitres.
+- Banque validée : exactement 200 QCM, quotas principaux 20/50/30/30/40/30 et 60/100/40 par difficulté ; identifiants, propositions et références résolus.
+- **29 tests de logique** : quiz, progression, liens historiques, schéma, couverture, références, géométrie des graphiques, échappement des sorties, exemples sans variante et navigation principale sans obligation de lire les rappels.
+- **20 contrôles navigateur** : session du quiz, reprise, bilan, clavier et stockage indisponible ; navigation quiz/cours ; repères de lecture et préférences ; rendu des 65 chapitres à 360 px ; états et lignes des exemples guidés ; QCM de transfert ; tableaux des graphiques ; présentation des modules ; définitions repliables ; rappels par lien direct ; deux entrées Vite sous un chemin de dépôt. Certains contrôles regroupent plusieurs assertions.
+- Construction Vite après validation des données, puis test du site construit sous `/qr-entretien/`. Aucun interpréteur Python ni nouvelle API extérieure n’est ajouté à l’application.
+- Les extraits scientifiques modifiés sont vérifiés en Python avec NumPy, SciPy, librosa et PyTorch selon le thème. Les blocs partiels utilisent des données et objets de contexte explicites pendant la vérification. Aucun modèle audio complet n’a été entraîné pour cette révision.
+- Un problème de l’ancien exemple Dropout est corrigé : `eval()` peut laisser Dropout retourner son entrée ; `no_grad()` ne retire pas rétroactivement `requires_grad` à cette entrée. L’exemple observe désormais une opération nouvelle dans ce contexte pour illustrer correctement la désactivation de l’enregistrement du graphe.
 
-La passe inspirée de France-IOI ajoute une présentation des notions dans les six modules et un petit exemple avec sortie et variation dans chacun des 65 chapitres. Les pages de cours publiques citées ont été accessibles et réellement consultées. Deux références France-IOI s’ajoutent aux cinq références pédagogiques initiales. Les captures `france-ioi-module-desktop.png`, `france-ioi-first-example-desktop.png` et `france-ioi-first-example-mobile.png` ont été inspectées. La conservation stricte des identifiants, contextes, QCM et blocs non paragraphes existants a été vérifiée contre la version Git précédente.
+Les contrôles sont exécutés avec Node.js 24 et Microsoft Edge piloté par Playwright. Les captures du parcours dans `test-results/` sont des fichiers de vérification locaux, non publiés. Les vérifications du déploiement public sont effectuées séparément après la publication.
 
-Limites des contrôles locaux : pas de test sur téléphone physique, Safari ou Firefox ; pas d’audit formel d’accessibilité par lecteur d’écran. L’émulation mobile vérifie la mise en page dans Edge. Le déploiement et les vérifications sur le site public sont effectués séparément au moment de la publication. Aucune prétention à reproduire les véritables questions d’entretien de l’IRCAM, ni à garantir un effet individuel sur l’apprentissage.
+Le lanceur Windows a été corrigé et testé sans Node dans le PATH lors de la livraison précédente ; il est inchangé. Aucun test sur téléphone physique, Safari ou Firefox, ni audit formel par lecteur d’écran n’est revendiqué.
 
-Pour reproduire :
+## Reproduire
 
 ```powershell
-npm ci
 npm run validate
 npm run validate:courses
 npm test
@@ -32,4 +33,4 @@ npm run build
 npm run test:browser
 ```
 
-Si npm n’est pas dans le PATH, utiliser `node scripts/run.mjs` suivi du nom du script (`validate`, `test`, `build`, `test:browser`).
+Si npm n’est pas dans le PATH, utiliser `node scripts/run.mjs` suivi du nom du script.

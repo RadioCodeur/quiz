@@ -1,4 +1,4 @@
-# Refonte pédagogique — 10 novembre 2026
+# Refonte pédagogique — actualisation du 11 novembre 2026
 
 ## Le problème traité
 
@@ -24,19 +24,19 @@ Ces sources ont été consultées le 10 novembre 2026. Le registre utilisé par 
 
 Nous en retenons une progression de présentation : partir d’un usage compréhensible, montrer un cas très court et son résultat, expliquer les mots ou la syntaxe utilisés, puis modifier un seul élément pour rendre visible ce qui change. Les exemples, les nombres et le texte du site restent originaux et sont adaptés à l’IA audio ; aucune leçon ni aucun exercice France-IOI n’a été recopié.
 
-Les six modules annoncent désormais explicitement leurs notions et leurs étapes. Les 65 chapitres disposent de notions définies et d’un premier exemple avec sortie, explication et variation. Les introductions ont été clarifiées pour éviter l’usage d’un mot technique avant sa présentation. Les grands déroulés, schémas, QCM de transfert, identifiants et correspondances avec les 200 questions sont conservés.
+Cette première passe ajoutait systématiquement un cas court et une variation dans les 65 chapitres. Le retour du lecteur a montré la limite de ce gabarit : il savait déjà programmer, et le cumul de petits cas ne construisait pas un chemin assez fluide.
 
-## Ce que le lecteur retrouve à chaque étape
+## Révision à partir du niveau réel du lecteur
 
-1. Le problème concret du chapitre et ce qui sera utile ensuite.
-2. Le rappel des notions déjà rencontrées et leur place dans le projet.
-3. Une explication suivie, avec définitions introduites avant les détails.
-4. Un exemple dont on peut suivre les étapes, les valeurs et les lignes de code.
-5. Un schéma, tableau ou graphique pour représenter les relations.
-6. Trois idées à retenir, puis une question de transfert facultative et sa correction.
-7. Une transition explicite vers le prochain chapitre.
+Le lecteur indique un niveau 3–4 de France-IOI en Python algorithmique. La révision du 11 novembre suppose donc variables, listes, boucles et fonctions acquises. Deux rappels restent accessibles en complément, tandis que le parcours principal Python commence par un contrat de données puis les tableaux numériques. Les anciennes ancres et les repères de lecture restent valides.
 
-La présentation réduit la quantité d’éléments à suivre simultanément : pas de défilement automatique, de minuterie ou d’animation obligatoire ; le lecteur contrôle le déroulé et peut afficher toutes les étapes. Ce sont des choix d’ergonomie, sans promesse médicale ni garantie individuelle d’efficacité.
+Les pages publiques du parcours « Progresser » ont été consultées, notamment les explications intégrées aux découvertes [Préparation de l’onguent](https://www.france-ioi.org/algo/task.php?idChapter=651&idTask=2068), [Grand inventaire](https://www.france-ioi.org/algo/task.php?idChapter=651&idTask=2072), [Journée des cadeaux](https://www.france-ioi.org/algo/task.php?idChapter=651&idTask=2079) et [Punition](https://www.france-ioi.org/algo/task.php?idChapter=643&idTask=1876), ainsi que les cours [Structurer un programme](https://www.france-ioi.org/algo/course.php?idChapter=509&idCourse=1594) et [Précision des calculs](https://www.france-ioi.org/algo/course.php?idChapter=650&idCourse=1875). Il s’agit d’un échantillon lu des contenus publics des niveaux 1–2, pas d’une revendication d’accès aux corrections privées ou aux niveaux verrouillés.
+
+Le principe retenu est le besoin avant l’outil : montrer ce qu’une solution déjà connue ne permet pas de faire, introduire le moyen adapté, puis expliquer le résultat sur le même problème. [OpenClassrooms — Transformez vos données en tableaux](https://openclassrooms.com/fr/courses/7771531-decouvrez-les-librairies-python-pour-la-data-science/7857032-transformez-vos-donnees-en-tableaux), également consulté, montre comment le sens métier des lignes et colonnes précède les opérations. Ces références éditoriales ne sont pas présentées comme une évaluation expérimentale de notre site. Le texte, les données et les scénarios audio restent originaux.
+
+Les 65 chapitres ont été relus et réécrits autour de besoins suivis. Dans Python, deux signaux miniatures reviennent pour construire RMS, facteur de crête, tableau de caractéristiques et standardisation. Leur RMS identique motive réellement le deuxième descripteur. Le changement vers des formes ou données différentes est annoncé. Dans AudioML, le passage des classes exclusives aux mélanges est un changement de cahier des charges explicite. Dans Génération, VAE et diffusion sont des branches possibles, pas une succession d’améliorations garantie.
+
+Les repères de début sont raccourcis à trois éléments (entrée, action, résultat). Les définitions restent dépliables. Les exemples courts, variantes et encadrés répétitifs sont retirés lorsqu’ils n’apportent rien ; un déroulé résolu et une représentation utile restent présents. Les termes scientifiques sont définis dans le corps avant leur emploi. Les exemples de code sont lus, pas exécutés par l’interface.
 
 ## Progression et lien avec la préparation à l’entretien
 
@@ -44,7 +44,7 @@ L’[offre de doctorat IRCAM](https://www.ircam.fr/fr/offres-emplois/doctorante-
 
 | Cours | Fil conducteur | Compétences que l’on veut pouvoir expliquer |
 | --- | --- | --- |
-| Python scientifique — 13 chapitres | D’un fichier annoté à un exemple préparé pour un modèle | Lire des valeurs, références et fonctions ; organiser les métadonnées ; parcourir les données ; comprendre les tableaux, axes, réductions et calculs numériques ; assembler une préparation cohérente. |
+| Python scientifique — 13 chapitres | D’un fichier annoté à un exemple préparé pour un modèle | Lire les axes ; distinguer vues, copies et état partagé ; calculer RMS et facteur de crête ; standardiser sur le train ; conserver les cibles et assembler la préparation. |
 | Signal audio — 9 chapitres | Du microphone à une représentation exploitable | Relier échantillons, durée et cadence ; expliquer aliasing, niveaux et Fourier ; choisir une STFT ; interpréter mel, phase et reconstruction. |
 | PyTorch — 14 chapitres | Des exemples organisés à un modèle appris et évalué | Comprendre formes, paramètres, pertes et dérivées ; construire les batches et les masques ; lire une mise à jour ; distinguer entraînement et évaluation ; reprendre une expérience. |
 | Apprentissage audio — 9 chapitres | Construire un système de reconnaissance de sons | Définir la cible ; maintenir un prétraitement cohérent ; choisir une représentation et une architecture ; exploiter un modèle préentraîné ; vérifier les augmentations, les annotations et l’agrégation. |

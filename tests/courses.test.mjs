@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readCourses,validateCourses } from '../scripts/validate-courses.mjs';
 import { readBank } from '../scripts/read-bank.mjs';
-import { buildCoverage, normalizeProgress, resolveChapter, setChapterRead, courseHref, chapterMinutes, chapterText, mergeCourseReferences, courseStage } from '../src/course-model.js';
+import { buildCoverage, normalizeProgress, resolveChapter, setChapterRead, courseHref, chapterMinutes, chapterText, mergeCourseReferences, courseStage, chapterNavigation } from '../src/course-model.js';
 import { readFile } from 'node:fs/promises';
 import { plotGeometry, renderPlot, renderVisual, renderWalkthrough, renderCheckpoint, renderFirstExample } from '../src/learning-blocks.js';
 const courses=await readCourses();
@@ -104,19 +104,40 @@ test('chaque module annonce ses notions dans l’ordre des chapitres',()=>{
     assert.ok(course.chapters.every(ch=>ch.notions.length>=2&&ch.notions.every(n=>n.name&&n.explanation)));
   }
 });
-test('le petit exemple et sa sortie précèdent l’application complète',()=>{
+test('les cas courts restent facultatifs et les applications gardent leur explication',()=>{
   for(const course of courses)for(const chapter of course.chapters){
-    const index=chapter.blocks.findIndex(block=>block.type==='first-example');
-    assert.ok(index>=0&&index<=3);
-    assert.ok(index<chapter.blocks.findIndex(block=>block.type==='walkthrough'));
-    const block=chapter.blocks[index];
-    assert.ok(block.output&&block.explanation&&block.variant.change&&block.variant.output&&block.variant.explanation);
-    assert.ok(block.code.split('\n').length<=6);
+    assert.ok(chapter.progression.input&&chapter.progression.action&&chapter.progression.output);
+    for(const block of chapter.blocks.filter(block=>block.type==='first-example')){
+      assert.ok(block.output&&block.explanation);
+      if(block.variant)assert.ok(block.variant.change&&block.variant.output&&block.variant.explanation);
+    }
   }
 });
+
+test('le parcours principal rejoint le module suivant sans imposer les rappels facultatifs',()=>{
+  const course=courses.find(course=>course.themeId==='python-scientifique');
+  const main=course.chapters.filter(ch=>ch.readingRole!=='reference');
+  const reference=course.chapters.find(ch=>ch.readingRole==='reference');
+  assert.ok(reference);
+  assert.equal(chapterNavigation(course,main[0]).previous,null);
+  assert.equal(chapterNavigation(course,main.at(-1)).next,null);
+  for(let i=1;i<main.length;i++){
+    assert.equal(chapterNavigation(course,main[i-1]).next,main[i]);
+    assert.equal(chapterNavigation(course,main[i]).previous,main[i-1]);
+  }
+  assert.equal(resolveChapter(course,{chapterId:reference.id}),reference);
+});
+
 test('les sorties et les variantes du premier exemple restent du texte lisible',()=>{
   const rendered=renderFirstExample({title:'Un exemple',introduction:'Lire une valeur',language:'python',code:'print(3 < 4)',output:'True',explanation:'Une comparaison',variant:{change:'Remplacer 4 par 2',output:'False',explanation:'3 est supérieur à 2.'}});
   assert.ok(rendered.includes('print(3 &lt; 4)'));
   assert.ok(rendered.includes('Résultat expliqué')&&rendered.includes('True'));
   assert.ok(rendered.includes('Changeons une seule chose')&&rendered.includes('False'));
+});
+
+
+test('un exemple peut expliquer une sortie sans ajouter une variante répétitive',()=>{
+  const rendered=renderFirstExample({title:'Un résultat',introduction:'Une comparaison',language:'python',code:'print(2 < 3)',output:'True',explanation:'Le test est vrai.'});
+  assert.ok(rendered.includes('True')&&rendered.includes('print(2 &lt; 3)'));
+  assert.ok(!rendered.includes('first-example-variant'));
 });

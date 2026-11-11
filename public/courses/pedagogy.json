@@ -1,6 +1,6 @@
 {
   "title": "Comment ce parcours a été reconstruit",
-  "intro": "Un cours utile doit montrer le problème à résoudre avant de nommer l’outil. Chaque thème suit donc un projet, chaque chapitre reprend ce qui est déjà connu et prépare une étape suivante explicite.",
+  "intro": "Vous savez déjà programmer. Chaque module part donc d’un travail à accomplir en audio ou en recherche ; les outils arrivent lorsque ce travail en a besoin. Les définitions et les exemples servent à franchir cette étape précise.",
   "principles": [
     {
       "title": "Une destination visible",
@@ -11,12 +11,12 @@
       ]
     },
     {
-      "title": "Un cas simple, son résultat, puis une variation",
-      "text": "Avant l’exemple complet, un petit cas montre ce que fait la nouvelle notion. Le résultat est écrit et expliqué ; une variation ne change qu’un élément. Cette présentation est inspirée des pages de cours de France-IOI, avec des exemples audio originaux.",
+      "title": "Un problème suivi, plutôt qu’une collection de petits cas",
+      "text": "Le même dossier ou instrument revient d’un chapitre à l’autre. Une notion nouvelle répond à une limite de ce que nous savons déjà faire. Les cas courts sont gardés lorsqu’ils rendent une différence visible ; ils ne sont pas imposés à chaque chapitre.",
       "sourceIds": [
-        "ped-ies-guide",
-        "ped-france-ioi-calculs",
-        "ped-france-ioi-parametres"
+        "ped-france-ioi-onguent",
+        "ped-france-ioi-inventaire",
+        "ped-openclassrooms-tableaux"
       ]
     },
     {
@@ -29,7 +29,7 @@
     },
     {
       "title": "Revenir sur une idée sans tout recommencer",
-      "text": "Les rappels de début de chapitre et les liens vers le quiz vous permettent de retrouver les bases. Vous pouvez reprendre plus tard, sans calendrier ni série obligatoire.",
+      "text": "Deux rappels Python facultatifs restent à portée de main, hors du parcours principal. Les définitions se déplient si besoin ; les QCM et les repères de lecture permettent de revenir sur une idée à son rythme.",
       "sourceIds": [
         "ped-aero-retrieval"
       ]
@@ -85,6 +85,27 @@
       "url": "https://www.france-ioi.org/algo/course.php?iOrder=4&idChapter=493",
       "accessed": "2026-11-10",
       "role": "Page de cours publique consultée : repartir d’un usage connu, introduire le besoin supplémentaire, expliquer la syntaxe puis généraliser. Nos exemples restent originaux et adaptés à l’audio."
+    },
+    {
+      "id": "ped-france-ioi-onguent",
+      "title": "France-IOI — Préparation de l’onguent : introduction aux tableaux",
+      "url": "https://www.france-ioi.org/algo/task.php?idChapter=651&idTask=2068",
+      "accessed": "2026-11-11",
+      "role": "Partie explicative publique d’une découverte de niveau2 : faire apparaître la limite d’une solution connue avant d’introduire une structure plus adaptée. Ni le texte ni le scénario ne sont repris."
+    },
+    {
+      "id": "ped-france-ioi-inventaire",
+      "title": "France-IOI — Grand inventaire : modifier les éléments d’un tableau",
+      "url": "https://www.france-ioi.org/algo/task.php?idChapter=651&idTask=2072",
+      "accessed": "2026-11-11",
+      "role": "Même univers et nouveau besoin : la nouvelle opération prolonge la précédente. Les explications intégrées à l’énoncé ont été lues ; aucune résolution ni correction privée n’est revendiquée."
+    },
+    {
+      "id": "ped-openclassrooms-tableaux",
+      "title": "OpenClassrooms — Transformez vos données en tableaux",
+      "url": "https://openclassrooms.com/fr/courses/7771531-decouvrez-les-librairies-python-pour-la-data-science/7857032-transformez-vos-donnees-en-tableaux",
+      "accessed": "2026-11-11",
+      "role": "Exemple de présentation d’une organisation en lignes et colonnes à partir d’un métier concret, puis de ses opérations. Référence éditoriale, pas une preuve d’efficacité de ce site."
     }
   ]
 }

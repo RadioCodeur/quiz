@@ -33,11 +33,17 @@ export function chapterText(chapter) {
     ...(block.nodes??[]).flatMap(node=>[node.title,node.text]),
     ...(block.panels??[]).flatMap(panel=>[panel.title,...panel.items]),
   ].filter(Boolean).join(' '));
-  return [...Object.values(chapter.context??{}),...(chapter.notions??[]).flatMap(notion=>[notion.name,notion.explanation]),...blocks,chapter.checkpoint?.prompt,chapter.checkpoint?.explanation].filter(Boolean).join(' ');
+  return [...Object.values(chapter.progression??chapter.context??{}),...(chapter.notions??[]).flatMap(notion=>[notion.name,notion.explanation]),...blocks,chapter.checkpoint?.prompt,chapter.checkpoint?.explanation].filter(Boolean).join(' ');
 }
 
 export function courseStage(course,chapterId) {
   return course.journey?.stages.find(stage=>stage.chapterIds.includes(chapterId))??null;
+}
+
+export function chapterNavigation(course,chapter) {
+  const sequence=chapter.readingRole==='reference'?course.chapters:course.chapters.filter(item=>item.readingRole!=='reference');
+  const index=sequence.indexOf(chapter);
+  return {previous:sequence[index-1]??null,next:sequence[index+1]??null};
 }
 
 export function mergeCourseReferences(base,courses) {

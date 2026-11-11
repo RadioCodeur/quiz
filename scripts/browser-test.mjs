@@ -210,7 +210,8 @@ try {
       assert.equal(await page.locator('.chapter-context').count(),1);
       assert.equal(await page.locator('.introduced-notions li').count(),chapter.notions.length);
       assert.equal(await page.locator('.first-example').count(),chapter.blocks.filter(b=>b.type==='first-example').length);
-      assert.ok((await page.locator('.first-example-output').first().innerText()).trim().length>0);
+      assert.equal(await page.locator('.chapter-progression dd').count(),3);
+      if(chapter.blocks.some(b=>b.type==='first-example'))assert.ok((await page.locator('.first-example-output').first().innerText()).trim().length>0);
       assert.equal(await page.locator('.worked-example').count(),chapter.blocks.filter(b=>b.type==='walkthrough').length);
       assert.equal(await page.locator('.concept-visual').count(),chapter.blocks.filter(b=>b.type==='visual').length);
       assert.equal(await page.locator('.data-plot').count(),chapter.blocks.filter(b=>b.type==='plot').length);
@@ -291,6 +292,25 @@ try {
     await page.locator('.learning-methodology>summary').click();
     assert.equal(await page.locator('.method-principles section').count(),4);
     assert.ok(await page.locator('.learning-methodology a').count()>=5);
+  });
+  await check('parcours principal, rappels et définitions à la demande',async()=>{
+    const course=courses.find(course=>course.themeId==='python-scientifique');
+    const main=course.chapters.filter(ch=>ch.readingRole!=='reference');
+    await page.goto(`${base}/cours.html?theme=${course.themeId}#${main.at(-1).id}`);
+    await page.locator('#lesson-title').waitFor();
+    assert.ok((await page.locator('.chapter-next').getAttribute('href')).includes('theme=audio-signal'));
+    const definitions=page.locator('.introduced-notions');
+    assert.equal(await definitions.getAttribute('open'),null);
+    await definitions.locator('summary').click();
+    assert.equal(await definitions.locator('li').first().isVisible(),true);
+    const reference=course.chapters.find(ch=>ch.readingRole==='reference');
+    await page.goto(`${base}/cours.html?theme=${course.themeId}#${reference.id}`);
+    await page.locator('#lesson-title').waitFor();
+    assert.equal(await page.locator('#lesson-title').innerText(),reference.title);
+    await page.locator('#mark-read').check();
+    await page.reload();await page.locator('#lesson-title').waitFor();
+    assert.equal(await page.locator('#mark-read').isChecked(),true);
+    assert.deepEqual(await getSession(),quizSnapshot);
   });
   await check('cours : stockage bloqué et liens périmés restent utilisables',async()=>{
     const ctx=await browser.newContext({viewport:{width:360,height:800}});
