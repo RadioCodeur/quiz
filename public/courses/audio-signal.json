@@ -1,10 +1,10 @@
 {
   "themeId": "audio-signal",
   "title": "Signal audio : préparer des sons que l’on peut comparer",
-  "subtitle": "Le même extrait, du fichier stéréo à une représentation dont on comprend les pertes.",
+  "subtitle": "Deux vrais extraits à écouter, mesurer et transformer, de la forme d’onde au log-mel.",
   "intro": [
-    "Notre collection contient des voix et des percussions enregistrées avec des appareils différents. Avant de demander à un modèle de les reconnaître, il faut s’assurer qu’il compare des sons, et non des cadences, des gains ou des conventions de fichiers. Nous suivrons voix_01, un extrait stéréo de deux secondes à 48 kHz, et nous préparerons aussi percussion_01 avec les mêmes règles.",
-    "Vous savez déjà manipuler des tableaux en Python. Ici, le travail consiste à donner un sens physique à leurs axes et aux transformations. Les petits signaux construits pour un calcul seront annoncés comme tels : ils servent à isoler un effet, sans prétendre ressembler à une vraie voix. À la fin, nous saurons expliquer ce qu’un log-mel conserve, ce qu’il retire et pourquoi ce choix convient — ou non — à une tâche."
+    "Nous allons suivre la même narration parlée et le même passage de caisse claire tout au long du cours. Les deux extraits durent quatre secondes et sont mono. La parole provient de LibriSpeech, la percussion d’un enregistrement assemblé en battements accélérés ; les sources et les transformations sont documentées dans chaque atelier.",
+    "Vous savez manipuler des tableaux en Python. Ici, chaque calcul répond à une question audible : le son joue-t-il à la bonne vitesse, ses pics risquent-ils de saturer, où se trouvent une syllabe et une attaque, que perd une représentation mel ? Les schémas de principe sont distingués des images calculées depuis les fichiers réellement écoutables."
   ],
   "prerequisites": [],
   "objectives": [
@@ -17,8 +17,8 @@
   "chapters": [
     {
       "id": "echantillons-duree-canaux",
-      "title": "Deux secondes de son, quel que soit le fichier",
-      "summary": "Comment découper la même durée dans voix_01 et percussion_01 si leurs fichiers n’ont pas la même forme ?",
+      "title": "Partir de deux vrais sons et retrouver leurs secondes",
+      "summary": "Comment relier les valeurs du fichier à ce que nous entendons, avant de lui appliquer une transformation ?",
       "questionIds": [
         "sig-001",
         "sig-004",
@@ -27,84 +27,99 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Ouvrons voix_01. Avec notre convention, la ligne 0 contient le canal gauche et la ligne 1 le canal droit ; elles ont été enregistrées en même temps. Les 96 000 colonnes suivent le temps. Le fichier dure donc 96000 / 48000 = 2 secondes. Diviser le nombre total de cases, 192 000, par 48 000 donnerait quatre secondes : ce serait compter successivement deux canaux qui jouent ensemble."
+          "text": "Commençons par écouter une phrase parlée et plusieurs frappes de caisse claire. Nous gardons deux passages de quatre secondes : assez pour entendre les pauses, les syllabes et la succession des attaques. Ces fichiers précis nous accompagneront dans les comparaisons ; nous ne remplacerons pas discrètement la voix par un tableau inventé au chapitre suivant."
+        },
+        {
+          "type": "audio-lab",
+          "view": "overview",
+          "title": "Nos deux extraits de départ",
+          "introduction": "Écoutez une première fois sans chercher de formule. Regardez ensuite la forme d’onde correspondant au fichier joué.",
+          "observations": [
+            "La forme d’onde indique l’amplitude numérique en fonction du temps. Les creux entre groupes de parole et entre certaines frappes font partie du passage mesuré.",
+            "Une crête très étroite occupe peu de temps : elle ne dit pas à elle seule si tout le passage est fort.",
+            "Les deux fichiers sont mono. Leur source et les opérations de préparation sont indiquées dans les crédits."
+          ],
+          "conclusion": "Nous avons deux objets concrets : les transformations suivantes portent sur ces mêmes extraits."
         },
         {
           "type": "paragraph",
-          "text": "La fréquence d’échantillonnage, notée sr dans le code, est le nombre de mesures prises chaque seconde et par canal. Une mesure est un échantillon. Ici, deux indices voisins sont espacés de 1/48000 seconde. Si percussion_01 contient 88 200 valeurs par canal à 44,1 kHz, lui aussi dure deux secondes. Des longueurs de tableaux différentes peuvent donc représenter une même durée."
+          "text": "Un échantillon est une mesure du signal à un instant. La fréquence d’échantillonnage, notée sr, indique combien de mesures représentent une seconde, par canal. La source de parole est fournie à 16 kHz, celle de caisse claire à 22,05 kHz. Nos versions de référence sont interpolées à 48 kHz pour les manipuler à une cadence commune. Cette interpolation ajoute des positions calculées, pas des détails aigus absents des sources."
         },
         {
           "type": "paragraph",
-          "text": "Ce lien sert immédiatement au découpage : pour extraire la première demi-seconde de voix_01, on garde les 24 000 premières valeurs de chaque canal. La borne de fin du slice est exclue, comme en Python ordinaire. Le premier échantillon est à t=0 et le dernier de ce crop est juste avant 0,5 seconde ; la durée de fichier reste définie par N/sr."
+          "text": "Chaque référence contient 192 000 échantillons à 48 000 échantillons par seconde : 192000/48000 = 4 secondes. Pour découper la première demi-seconde, on conserve les 24 000 premières valeurs. Le dernier échantillon de ce morceau précède juste 0,5 seconde ; la durée représentée reste N/sr."
         },
         {
           "type": "walkthrough",
-          "title": "Lire les deux secondes de voix_01",
-          "goal": "Vérifier la durée avant tout découpage ou changement de cadence.",
+          "title": "Lire un vrai fichier avant de le transformer",
+          "goal": "Vérifier cadence, canaux et durée sur la référence de parole.",
           "language": "python",
+          "code": "import soundfile as sf\ny, sr = sf.read(\"public/media/audio/voice-original.wav\")\nnb_echantillons = y.shape[0]\nduree = nb_echantillons / sr\npremiere_demi_seconde = y[:round(0.5 * sr)]",
           "steps": [
             {
-              "title": "Avant : lire les axes",
-              "text": "Le tableau annoncé comme stéréo a deux canaux simultanés. On associe la première dimension aux canaux et la seconde au temps.",
-              "state": "stereo : (2, 96000), sr : 48000 Hz",
+              "title": "Lire la donnée et sa cadence",
+              "text": "Le chargeur renvoie le signal et la fréquence inscrite dans le fichier. Notre extrait est mono : y possède un seul axe, celui du temps.",
+              "state": "y.shape = (192000,), sr = 48000 Hz",
               "lines": [
                 1,
-                2,
-                3
+                2
               ]
             },
             {
-              "title": "Isoler la bonne quantité",
-              "text": "La durée dépend des 96 000 mesures de chaque canal. Compter 192 000 éléments mélangerait quantité de données stockées et durée physique.",
-              "state": "N = 96000 mesures par canal",
+              "title": "Convertir le compte en secondes",
+              "text": "Le nombre de mesures est divisé par le nombre de mesures par seconde. Aucune durée ne se déduit de la hauteur des pics.",
+              "state": "192000/48000 = 4 secondes",
               "lines": [
+                3,
                 4
               ]
             },
             {
-              "title": "Après : convertir en secondes",
-              "text": "Diviser N par sr donne 2. Les limites temporelles choisies s’appliquent aux deux canaux : aucune seconde n’est ajoutée par la stéréo.",
-              "state": "durée = 96000 / 48000 = 2 s",
+              "title": "Choisir une durée réelle",
+              "text": "Le découpage suit la cadence du fichier au lieu de supposer qu’un indice représente une seconde.",
+              "state": "24000 valeurs, soit 0,5 seconde",
               "lines": [
-                5,
-                6
+                5
               ]
             }
           ],
-          "result": "voix_01 dure deux secondes. Nous avons un repère de temps fiable ; la bande de fréquences représentable dépend encore de la cadence.",
-          "code": "# Convention : (canaux, echantillons)\n# stereo.shape == (2, 96000), sr en Hz\nsr = 48000\nchannels, samples = stereo.shape\nduration_seconds = samples / sr  # 2.0\nleft = stereo[0]  # premier canal, pas premiere seconde"
+          "result": "Le fichier audible et les nombres partagent le même axe temporel. Nous pouvons annoncer exactement la portion étudiée."
         },
         {
           "type": "paragraph",
-          "text": "Le code ci-dessus ne réalise aucune conversion audio : il lit la forme et calcule une durée. stereo[0] choisit tout le canal gauche, pas la première seconde. Certaines bibliothèques utilisent au contraire (échantillons, canaux). Avant de réutiliser un extrait de code, regardez la convention de la fonction qui a chargé le fichier ; une forme ne donne pas, à elle seule, le nom des axes."
-        },
-        {
-          "type": "paragraph",
-          "text": "On pourrait être tenté de faire passer voix_01 de 48 à 16 kHz en changeant simplement sr. Les mêmes valeurs seraient alors lues trois fois plus lentement : le son durerait six secondes et paraîtrait plus grave. Ce n’est pas notre objectif. Nous voulons décrire les deux mêmes secondes avec moins de mesures : cette opération demande de calculer un nouveau signal, et non de renommer une variable."
-        },
-        {
-          "type": "paragraph",
-          "text": "Pour l’instant, conservons les deux canaux et documentons la cadence. Un canal mono sera utilisé pour les calculs des chapitres suivants, avec une règle explicite de sélection ou de mélange. Nous reviendrons au mélange stéréo : il peut modifier le contenu, même quand les dimensions obtenues sont correctes."
+          "text": "Le cas stéréo ajoute un axe de canaux simultanés. Avec soundfile, un stéréo est généralement organisé en (échantillons, canaux) : un fichier de deux secondes à 48 kHz aurait la forme (96000, 2). Sa durée resterait deux secondes, pas quatre. D’autres bibliothèques placent les canaux avant le temps : on lit leur convention plutôt que deviner les axes à partir de la forme."
         },
         {
           "type": "visual",
-          "kind": "flow",
-          "title": "Le trajet de la mesure",
-          "nodes": [
-            {
-              "title": "Microphone",
-              "text": "Voix captée pendant deux secondes"
-            },
-            {
-              "title": "Conversion",
-              "text": "Une amplitude numérique toutes les 1/48000 s"
-            },
-            {
-              "title": "Tableau stéréo",
-              "text": "Deux canaux × 96000 échantillons = deux secondes"
-            }
+          "kind": "table",
+          "title": "Distinguer les axes et les secondes",
+          "columns": [
+            "Donnée",
+            "Forme",
+            "Durée"
           ],
-          "caption": "Les deux canaux de voix_01 couvrent les mêmes instants ; ils ne se succèdent pas."
+          "rows": [
+            [
+              "Notre fichier mono à 48 kHz",
+              "(192000,)",
+              "4 secondes"
+            ],
+            [
+              "Deux canaux simultanés sur la même durée, si on les construisait",
+              "(192000, 2), convention soundfile",
+              "Toujours 4 secondes"
+            ],
+            [
+              "Une demi-seconde mono à 48 kHz",
+              "(24000,)",
+              "0,5 seconde"
+            ]
+          ],
+          "caption": "Ajouter des canaux augmente le nombre de valeurs stockées, pas la durée. Les ateliers utilisent les fichiers mono annoncés."
+        },
+        {
+          "type": "paragraph",
+          "text": "Si nous gardions les 192 000 valeurs mais annoncions sr=16000 au lecteur, le son durerait douze secondes et jouerait plus grave. Changer l’étiquette de cadence ne convertit pas le signal. Au prochain chapitre, nous construirons réellement une autre suite de mesures pour conserver les mêmes quatre secondes."
         },
         {
           "type": "plot",
@@ -142,9 +157,9 @@
         }
       ],
       "takeaways": [
-        "Durée en secondes = nombre d’échantillons par canal / fréquence en hertz.",
-        "Les canaux simultanés augmentent le stockage, pas la durée.",
-        "Changer la fréquence de lecture n’est pas rééchantillonner le signal."
+        "La durée vaut le nombre d’échantillons par canal divisé par la cadence réelle.",
+        "Des canaux simultanés n’ajoutent pas de secondes.",
+        "Interpoler vers une cadence supérieure ne recrée pas les fréquences absentes de la source."
       ],
       "sourceIds": [
         "audio-load",
@@ -153,11 +168,11 @@
         "course-sig-tutorial"
       ],
       "context": {
-        "recall": "voix_01 est annoncé stéréo à 48 kHz ; son tableau a la forme (2, 96000), avec la convention (canaux, échantillons).",
-        "problem": "Comment découper la même durée dans voix_01 et percussion_01 si leurs fichiers n’ont pas la même forme ?",
-        "why": "Nous pouvons sélectionner deux secondes réelles sans confondre quantité de nombres et durée.",
-        "connection": "Relier les indices à des secondes et distinguer les canaux simultanés des instants successifs.",
-        "next": "La durée est claire. Reste à choisir une cadence commune : changer le nombre de mesures peut aussi retirer des fréquences."
+        "recall": "Deux extraits mono de quatre secondes sont disponibles et leurs sources sont documentées.",
+        "problem": "Comment relier les valeurs du fichier à ce que nous entendons, avant de lui appliquer une transformation ?",
+        "why": "Nous savons quelle portion de son chaque tableau représente.",
+        "connection": "Écouter, lire la forme et convertir les indices en secondes avec la cadence réelle.",
+        "next": "Nous allons réduire la cadence en recalculant le signal, au lieu de changer sa vitesse de lecture."
       },
       "checkpoint": {
         "prompt": "Un extrait stéréo a la forme (2, 240000), avec convention (canaux, temps), à 48 kHz. Combien dure-t-il ?",
@@ -197,15 +212,15 @@
         }
       ],
       "progression": {
-        "input": "voix_01 est annoncé stéréo à 48 kHz ; son tableau a la forme (2, 96000), avec la convention (canaux, échantillons).",
-        "action": "Relier les indices à des secondes et distinguer les canaux simultanés des instants successifs.",
-        "output": "Nous pouvons sélectionner deux secondes réelles sans confondre quantité de nombres et durée."
+        "input": "Deux extraits mono de quatre secondes sont disponibles et leurs sources sont documentées.",
+        "action": "Écouter, lire la forme et convertir les indices en secondes avec la cadence réelle.",
+        "output": "Nous savons quelle portion de son chaque tableau représente."
       }
     },
     {
       "id": "nyquist-repliement-reechantillonnage",
       "title": "Mettre les fichiers à la même cadence sans changer les sons",
-      "summary": "Nous choisissons 16 kHz pour un premier essai. Que perdons-nous en convertissant voix_01 depuis 48 kHz ?",
+      "summary": "Réduire la cadence vers 16 kHz conserve-t-il la durée, et quelle bande peut rester représentée ?",
       "questionIds": [
         "sig-002",
         "sig-003",
@@ -216,7 +231,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Imaginons que voix_01 soit enregistré à 48 kHz et percussion_01 à 44,1 kHz. Les donner tels quels à une même analyse avec sr=16000 fausserait à la fois le temps et les fréquences. Nous choisissons donc une cadence commune de 16 kHz pour ce premier essai. C’est un choix de préparation à tester, pas la bonne cadence universelle pour toute musique."
+          "text": "Nos références durent quatre secondes à 48 kHz. Pour alléger la préparation, essayons 16 kHz sans changer la vitesse de la parole ni le rythme des frappes. Il faut calculer de nouvelles valeurs et adapter la bande conservée. La cadence de 48 kHz était une convention de notre atelier, pas la cadence de prise de son des sources."
         },
         {
           "type": "paragraph",
@@ -233,47 +248,64 @@
         },
         {
           "type": "walkthrough",
-          "title": "Convertir un canal de voix_01",
-          "goal": "Conserver deux secondes en passant de 48 à 16 kHz.",
+          "title": "Quatre secondes, avec trois fois moins de mesures",
+          "goal": "Contrôler la durée après un vrai rééchantillonnage.",
           "language": "python",
           "steps": [
             {
-              "title": "Avant : annoncer le stock",
-              "text": "Deux secondes mono à 48 kHz contiennent 96 000 valeurs. La frontière fréquentielle de départ vaut 24 kHz.",
-              "state": "96000 échantillons ; Nyquist = 24000 Hz",
+              "title": "Décrire le fichier de référence",
+              "text": "Le mono de l’atelier contient 192000 valeurs à 48 kHz. La parole source venait de 16 kHz : son interpolation n’avait pas créé une bande réelle jusqu’à 24 kHz.",
+              "state": "192000 valeurs ; durée 4 s",
               "lines": [
+                1,
                 2,
                 3
               ]
             },
             {
-              "title": "Définir la nouvelle bande",
-              "text": "À 16 kHz, la frontière est 8 kHz. Un passe-bas doit atténuer ce qui dépasse la bande utile avant de décimer, sinon des composantes se replieraient.",
-              "state": "Nouveau Nyquist = 8000 Hz",
+              "title": "Calculer une suite à 16 kHz",
+              "text": "resample_poly applique un filtrage adapté avant la réduction du nombre de mesures. Ce n’est pas simplement une nouvelle valeur de sr.",
+              "state": "64000 valeurs après le rapport 1/3",
               "lines": [
                 4
               ]
             },
             {
-              "title": "Après : conserver la durée",
-              "text": "Le rapport 1/3 donne 32 000 valeurs à 16 kHz. La durée reste 32000/16000 = 2 secondes ; une bande de 10 à 12 kHz ne peut plus être conservée.",
-              "state": "32000 / 16000 = 2 s",
+              "title": "Contrôler la durée et écouter",
+              "text": "Le nombre de valeurs et la cadence sont divisés par trois. Leur quotient reste identique ; la voix ne doit pas parler trois fois plus lentement.",
+              "state": "64000/16000 = 4 secondes",
               "lines": [
                 5,
                 6
               ]
             }
           ],
-          "result": "La durée et les fréquences conservées ne changent pas de vitesse ; les détails au-dessus de la nouvelle bande utile sont retirés.",
-          "code": "from scipy.signal import resample_poly\n# x : un canal de voix_01, forme (96000,), cadence 48000 Hz\n# Deux secondes en entree\ny = resample_poly(x, up=1, down=3)\nsr_y = 16000\n# len(y) == 32000 : toujours deux secondes"
+          "result": "La cadence change, mais quatre secondes restent quatre secondes. Un écart audible éventuel relève du filtrage ou de la bande retirée, pas d’une vitesse volontairement modifiée.",
+          "code": "import soundfile as sf\nfrom scipy.signal import resample_poly\nx, sr = sf.read(\"public/media/audio/voice-original.wav\")\ny = resample_poly(x, up=1, down=3)\nsr_y = 16000\n# len(x)/sr == len(y)/sr_y == 4.0"
+        },
+        {
+          "type": "analysis-image",
+          "assetId": "resampling-bandwidth"
         },
         {
           "type": "paragraph",
-          "text": "Dans le code, x est un canal de voix_01. resample_poly calcule les nouveaux échantillons en appliquant un filtrage adapté au rapport de cadences ; nous ne faisons pas seulement x[::3]. La sortie contient 32 000 valeurs à 16 kHz, donc garde les deux secondes. Ce qui a été atténué au-dessus de la nouvelle bande ne réapparaîtra pas grâce à un réseau plus grand."
+          "text": "Le rééchantillonnage à 16 kHz devrait rester peu spectaculaire pour la parole, dont la source était déjà à 16 kHz. La caisse claire source était à 22,05 kHz : elle pouvait contenir des contributions entre 8 et 11,025 kHz, impossibles à représenter à 16 kHz. On compare ces fichiers particuliers sans généraliser à toutes les percussions."
+        },
+        {
+          "type": "audio-lab",
+          "view": "resample",
+          "title": "Même durée, autre bande disponible",
+          "introduction": "Comparez la référence, la version à 16 kHz et le passe-bas à 1 kHz. Les axes restent en secondes.",
+          "observations": [
+            "Une conversion correcte conserve durée et hauteur dans la bande retenue.",
+            "Une zone vide au-dessus de 8 kHz dans la version 16 kHz décrit une limite fréquentielle, pas une pause temporelle.",
+            "Le passe-bas 1 kHz change davantage le timbre ; c’est une autre transformation, clairement nommée."
+          ],
+          "conclusion": "Alléger une entrée peut retirer du brillant ou des consonnes avant même que le modèle intervienne."
         },
         {
           "type": "paragraph",
-          "text": "Pourquoi cela concerne-t-il nos percussions ? Leurs attaques peuvent contenir des détails aigus. Si notre distinction dépend d’une texture entre 10 et 12 kHz, la conversion à 16 kHz l’efface. Le tableau compare donc aussi 32 et 48 kHz. Avant d’arrêter la cadence, on écoute les versions et on compare le classifieur dans un protocole fixé ; on n’invente pas le gain que ces fréquences apporteraient."
+          "text": "Pour rendre un retrait de fréquences plus évident, l’atelier propose aussi un passe-bas à 1 kHz. Il atténue fortement les composantes supérieures : la voix peut perdre des détails de consonnes, la caisse claire son brillant. Ce filtre sévère n’est pas l’équivalent du rééchantillonnage à 16 kHz ; il isole un effet pour l’entendre."
         },
         {
           "type": "paragraph",
@@ -409,11 +441,11 @@
         "audio-scipy-signal"
       ],
       "context": {
-        "recall": "Nous savons que voix_01 dure deux secondes à 48 kHz et que modifier seulement sr changerait sa vitesse de lecture.",
-        "problem": "Nous choisissons 16 kHz pour un premier essai. Que perdons-nous en convertissant voix_01 depuis 48 kHz ?",
-        "why": "voix_01 contient maintenant 32 000 échantillons mono à 16 kHz : deux secondes, avec une bande utile plus étroite.",
-        "connection": "Filtrer puis rééchantillonner pour conserver la durée, tout en identifiant la nouvelle limite fréquentielle.",
-        "next": "Les fichiers partagent une horloge. Nous allons ensuite vérifier que leurs niveaux ne deviennent pas un raccourci pour le classifieur."
+        "recall": "Les références sont à 48 kHz, obtenues depuis des sources à 16 et 22,05 kHz.",
+        "problem": "Réduire la cadence vers 16 kHz conserve-t-il la durée, et quelle bande peut rester représentée ?",
+        "why": "La durée est conservée ; nous savons quelle bande reste représentable.",
+        "connection": "Rééchantillonner à 16 kHz avec filtrage et distinguer cette conversion d’un passe-bas sévère.",
+        "next": "La cadence est sous contrôle. Mesurons maintenant les niveaux et ce que chaque mesure raconte."
       },
       "checkpoint": {
         "prompt": "Le signal utile est limité aux fréquences inférieures à 6 kHz. Quelle cadence proposée laisse une marge au-dessus de deux fois cette limite ?",
@@ -453,15 +485,15 @@
         }
       ],
       "progression": {
-        "input": "Nous savons que voix_01 dure deux secondes à 48 kHz et que modifier seulement sr changerait sa vitesse de lecture.",
-        "action": "Filtrer puis rééchantillonner pour conserver la durée, tout en identifiant la nouvelle limite fréquentielle.",
-        "output": "voix_01 contient maintenant 32 000 échantillons mono à 16 kHz : deux secondes, avec une bande utile plus étroite."
+        "input": "Les références sont à 48 kHz, obtenues depuis des sources à 16 et 22,05 kHz.",
+        "action": "Rééchantillonner à 16 kHz avec filtrage et distinguer cette conversion d’un passe-bas sévère.",
+        "output": "La durée est conservée ; nous savons quelle bande reste représentable."
       }
     },
     {
       "id": "amplitude-puissance-decibels",
       "title": "Comparer le niveau de la voix et de la percussion",
-      "summary": "Comment repérer un extrait très faible sans confondre moyenne nulle et silence ?",
+      "summary": "La caisse claire a-t-elle un pic plus haut ou un niveau soutenu plus fort ? Ce ne sont pas la même question.",
       "questionIds": [
         "sig-007",
         "sig-008",
@@ -471,160 +503,203 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Une voix enregistrée loin du microphone peut avoir des valeurs dix fois plus petites qu’une percussion proche. Si tous les fichiers de voix sont faibles et toutes les percussions fortes, un classifieur peut apprendre ce raccourci. Nous voulons commencer par observer les niveaux ; décider ensuite de les corriger est une hypothèse sur la tâche, pas une opération à appliquer sans réfléchir."
+          "text": "Écoutons les mêmes quatre secondes de parole et de caisse claire. Quel fichier s’approche le plus de la limite numérique ? Lequel occupe davantage le signal sur la durée choisie ? Une frappe très brève et une voix soutenue peuvent donner des réponses différentes. Chaque mesure doit donc répondre à une question, puis aider une décision."
+        },
+        {
+          "type": "heading",
+          "text": "L’amplitude décrit un instant ; la crête surveille une limite"
         },
         {
           "type": "paragraph",
-          "text": "La moyenne brute ne suffit pas. Une suite [1, -1, 1, -1] a une moyenne nulle, mais elle n’est pas silencieuse. L’amplitude efficace, ou RMS, est définie par sqrt(mean(x ** 2)) : les carrés empêchent les contributions positives et négatives de s’annuler, puis la racine redonne une grandeur d’amplitude. Cette suite très courte est un calcul de contrôle, pas un extrait de voix réel."
-        },
-        {
-          "type": "first-example",
-          "title": "Un même écart de niveau, malgré un gain différent",
-          "introduction": "Comparons deux amplitudes positives, avec la première comme référence.",
-          "language": "python",
-          "code": "import numpy as np\na, b = 0.2, 0.4\nprint(round(20 * np.log10(b / a), 2))",
-          "output": "6.02",
-          "explanation": "La seconde amplitude est deux fois la première : le rapport vaut 2 et l’écart vaut environ +6,02 dB. Il s’agit d’un rapport numérique, pas d’un niveau acoustique calibré.",
-          "variant": {
-            "change": "Multiplier les deux amplitudes par le même gain 0,5 : a=0,1 et b=0,2.",
-            "output": "6.02",
-            "explanation": "Leur rapport reste 2. Un gain commun déplace les deux niveaux par rapport à une référence fixe, sans changer l’écart entre eux."
-          }
+          "text": "La forme d’onde représente x[n], l’amplitude à l’instant n. Son signe décrit deux sens de variation autour de zéro ; une valeur négative ne veut pas dire « moins audible ». Un fichier PCM lu en flottants normalisés fournit des valeurs rapportées à une échelle numérique. Ce ne sont pas directement des pascals : retrouver la pression captée demanderait de connaître la sensibilité du microphone, les gains et l’étalonnage de la chaîne."
         },
         {
           "type": "paragraph",
-          "text": "Le code calcule ensuite l’effet d’une amplitude divisée par deux. Le carré passe à un quart : dans une échelle proportionnelle au carré, la puissance est donc divisée par quatre. Nous parlons ici de grandeurs numériques relatives. Pour annoncer des watts, une pression acoustique ou un niveau sonore calibré, il faudrait connaître les unités et l’étalonnage du microphone."
+          "text": "La crête, peak = max(abs(x)), retient la plus grande excursion de la portion. Elle surveille notamment la marge avant pleine échelle. Une crête isolée peut pourtant occuper une fraction de milliseconde et ne décrit pas l’écoute entière. Dans un export PCM borné, dépasser la limite sans réduire le gain peut écrêter les pics : leurs sommets s’aplatissent et le timbre peut devenir plus rugueux. Nous mesurons ici la crête des échantillons. Le pic d’un signal reconstruit entre eux, appelé true peak, peut être plus haut : cette mesure simple ne remplace pas un contrôle inter-échantillons quand la chaîne de diffusion l’exige."
+        },
+        {
+          "type": "heading",
+          "text": "Le carré moyen et la RMS résument une durée"
+        },
+        {
+          "type": "paragraph",
+          "text": "La moyenne signée peut être presque nulle alors qu’une voix est audible : les alternances positives et négatives se compensent. Nous mettons donc chaque amplitude au carré, puis moyennons : meanSquare = mean(x²). Les signes ne s’annulent plus et les fortes excursions pèsent davantage. Ce carré moyen est en unités d’amplitude au carré. On l’appelle souvent puissance du signal, sans que cela en fasse des watts."
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans certains modèles physiques à impédance fixée, puissance ou intensité sont proportionnelles au carré d’une amplitude efficace. La puissance d’une tension sur une résistance suit par exemple V_RMS²/R. Nos fichiers ne donnent ni cette tension calibrée ni cette résistance. Leur carré moyen est un indicateur relatif comparable sous les mêmes conventions, pas la puissance acoustique émise par l’instrument ou la personne."
+        },
+        {
+          "type": "paragraph",
+          "text": "La racine du carré moyen redonne une amplitude : RMS = sqrt(mean(x²)). Une excursion constante positive qui aurait le même carré moyen que notre portion aurait cette valeur. La RMS résume mieux un niveau global que le pic seul, sans mesurer complètement le volume perçu. La portion compte : quatre secondes avec des pauses donnent une RMS plus faible que les seules syllabes actives. Nous gardons les mêmes quatre secondes pour toutes les variantes d’un fichier."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Quelle mesure pour quelle question ?",
+          "columns": [
+            "Mesure",
+            "Ce qu’elle décrit",
+            "Usage et limite"
+          ],
+          "rows": [
+            [
+              "x[n], amplitude",
+              "Un instant et son signe",
+              "Voir la forme ; pas résumer tout le niveau"
+            ],
+            [
+              "max(abs(x)), crête",
+              "La plus grande excursion",
+              "Surveiller la marge ; ne décrit pas la durée du pic"
+            ],
+            [
+              "mean(x²), carré moyen",
+              "Une moyenne en amplitude²",
+              "Comparer un contenu quadratique ; pas des watts sans calibration"
+            ],
+            [
+              "sqrt(mean(x²)), RMS",
+              "Une amplitude globale sur la portion",
+              "Comparer le niveau ; dépend des pauses et de la fenêtre"
+            ],
+            [
+              "peak/RMS, facteur de crête",
+              "Le contraste pic/niveau global",
+              "Décrire des attaques ; pas définir une classe musicale"
+            ]
+          ],
+          "caption": "Le réglage de volume du lecteur modifie votre écoute, pas les mesures du fichier. Le même signal donne plusieurs nombres parce que les questions diffèrent."
+        },
+        {
+          "type": "heading",
+          "text": "Les décibels comparent un rapport"
+        },
+        {
+          "type": "paragraph",
+          "text": "Les amplitudes couvrent de grands rapports. Le décibel les exprime comme des écarts : un facteur deux donne toujours le même nombre de dB. Pour une puissance P, on définit 10·log10(P/Pref). Si P est proportionnelle à A² dans les mêmes conditions, P/Pref = (A/Aref)². Le logarithme du carré vaut deux fois le logarithme : nous obtenons 20·log10(A/Aref). Le facteur 20 vient de ce carré ; on ne le choisit pas au hasard."
+        },
+        {
+          "type": "paragraph",
+          "text": "Diviser les amplitudes par deux divise crête et RMS par deux, mais carré moyen par quatre. Les deux calculs d’écart concordent : 20·log10(0,5) = 10·log10(0,25) ≈ −6,02 dB. La variante « gain÷2 » le rend audible sur les vrais fichiers. Un gain commun déplace leurs niveaux sans changer leur écart, leur facteur de crête ni leur structure temporelle."
+        },
+        {
+          "type": "heading",
+          "text": "dBFS, dB SPL et LUFS : préciser ce que l’on mesure"
+        },
+        {
+          "type": "paragraph",
+          "text": "Ici, les dBFS comparent une amplitude numérique à la référence fixe 1 : peak_dBFS = 20·log10(peak/1), RMS_dBFS = 20·log10(RMS/1). Zéro signifie égalité avec la référence. Un nombre négatif signifie inférieur à celle-ci, pas une énergie négative. Une sinusoïde de crête 1 possède une RMS de 1/√2, donc −3,01 dBFS RMS avec notre convention. Certains outils suivent la référence RMS d’AES17 et l’affichent 0 dBFS : on compare les références avant de comparer les outils."
+        },
+        {
+          "type": "paragraph",
+          "text": "Les dB SPL mesurent une pression acoustique : dans l’air, la référence usuelle est 20 micropascals et le calcul vaut 20·log10(p_RMS/20µPa). Nos enregistrements ne sont pas étalonnés ainsi. Nous ne pouvons pas en déduire le niveau réel dans la pièce, ni dire qu’une caisse claire est physiquement moins forte parce que son fichier a une RMS plus faible : distance, microphone et gain peuvent tout changer."
+        },
+        {
+          "type": "paragraph",
+          "text": "Les LUFS estiment une sonie de programme avec notamment une pondération fréquentielle et des règles d’intégration définies par ITU-R BS.1770. Ils servent à rendre la lecture de programmes cohérente quand une égalisation de RMS ne correspond pas assez au volume perçu. Ils ne donnent pas non plus le niveau acoustique dans votre casque. L’atelier affiche les mesures simples annoncées ; il ne rebaptise pas sa RMS en LUFS."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour un silence numérique exact, RMS=0 et le niveau logarithmique tend vers −∞. Un plancher positif rend l’affichage fini : il signifie « inférieur à cette limite d’affichage », pas « ce son a été ajouté au fichier ». Prendre log(power), le logarithme naturel, ne donne pas des décibels : base, facteur et référence sont nécessaires. Une compression logarithmique n’est pas non plus une standardisation statistique."
         },
         {
           "type": "walkthrough",
-          "title": "Passer d’une oscillation à une mesure de niveau",
-          "goal": "Interpréter une suite simple avant de normaliser les vrais enregistrements.",
+          "title": "Mesurer les quatre secondes réellement écoutées",
+          "goal": "Calculer chaque grandeur après avoir défini son rôle, puis la relier au tableau de l’atelier.",
           "language": "python",
+          "code": "import soundfile as sf\nimport numpy as np\nx, sr = sf.read(\"public/media/audio/voice-original.wav\")\npeak = np.max(np.abs(x))\nmean_square = np.mean(x ** 2)\nrms = np.sqrt(mean_square)\npeak_dbfs = 20 * np.log10(max(peak, 1e-12))\nrms_dbfs = 20 * np.log10(max(rms, 1e-12))\ncrest_db = peak_dbfs - rms_dbfs",
           "steps": [
             {
-              "title": "Avant : constater l’annulation",
-              "text": "Les quatre valeurs [1, -1, 1, -1] ont une moyenne nulle. Conclure au silence serait faux : elles changent fortement à chaque pas.",
-              "state": "Moyenne brute = 0",
+              "title": "Définir la portion",
+              "text": "x contient exactement le fichier joué, mono, sans ne sélectionner que les syllabes fortes. Les pauses participent à la mesure.",
+              "state": "Quatre secondes, sans normalisation propre à chaque fichier.",
               "lines": [
+                1,
                 2,
                 3
               ]
             },
             {
-              "title": "Construire une RMS",
-              "text": "Leurs carrés sont [1, 1, 1, 1]. La moyenne vaut 1 et la racine vaut 1. On dispose d’un résumé d’amplitude qui ne dépend pas de l’annulation des signes.",
-              "state": "RMS = √1 = 1",
+              "title": "Mesurer deux propriétés",
+              "text": "La crête cherche le plus grand module. Le carré moyen rassemble les valeurs ; sa racine revient à une amplitude.",
+              "state": "peak : amplitude ; mean_square : amplitude² ; rms : amplitude.",
               "lines": [
-                4
+                4,
+                5,
+                6
               ]
             },
             {
-              "title": "Après : comparer des amplitudes",
-              "text": "Si une amplitude de référence 1 devient 0,5, le rapport vaut 0,5 et 20 log10(0,5) vaut environ -6,02 dB. La puissance correspondante vaut 0,25.",
-              "state": "Amplitude divisée par 2 ; puissance divisée par 4",
+              "title": "Rapporter les amplitudes à 1",
+              "text": "Les deux niveaux utilisent 20log10 car leurs entrées sont des amplitudes. Le plancher protège seulement le logarithme d’une valeur nulle.",
+              "state": "dBFS crête et RMS, référence amplitude 1.",
               "lines": [
-                5,
-                6,
                 7,
                 8
               ]
-            }
-          ],
-          "result": "RMS, puissance et décibels ne sont pas interchangeables. Le signe du niveau en dB indique ici une valeur plus faible que la référence, pas une puissance négative.",
-          "code": "import numpy as np\nx = np.array([1., -1., 1., -1.])\nraw_mean = np.mean(x)  # 0\nrms = np.sqrt(np.mean(x ** 2))  # 1\namplitude = 0.5\npower = amplitude ** 2  # 0.25\ndb = 20 * np.log10(amplitude / 1.0)  # environ -6.02 dB\nlog_power = np.log(max(power, 1e-10))"
-        },
-        {
-          "type": "paragraph",
-          "text": "Les décibels expriment un rapport sur une échelle logarithmique. Pour une amplitude positive A, le rapport à Aref s’écrit 20 log10(A/Aref) ; pour une puissance P, 10 log10(P/Pref). Avec la référence fixe 1, une amplitude 0,5 donne environ -6,02 dB. Le nombre négatif signifie « inférieur à la référence », jamais une puissance négative. Les deux formules concordent parce que la puissance dépend du carré de l’amplitude."
-        },
-        {
-          "type": "paragraph",
-          "text": "Le logarithme rend de grands rapports plus faciles à comparer : chaque doublement d’amplitude ajoute environ 6 dB, comme sur le graphique. Il faut cependant traiter zéro, dont le logarithme n’est pas fini. Un plancher positif, par exemple max(power, 1e-10), borne les valeurs très faibles ; cette convention doit rester la même entre apprentissage et utilisation."
-        },
-        {
-          "type": "paragraph",
-          "text": "Ramener séparément chaque extrait à son propre maximum supprime une partie des différences de niveau entre fichiers. Cela peut aider notre reconnaissance voix/percussion si le volume est accidentel, mais gênerait une tâche qui doit estimer ce volume. Et prendre un logarithme ne standardise pas les données : obtenir une moyenne nulle et un écart-type unité est une autre transformation, construite avec les données d’entraînement."
-        },
-        {
-          "type": "visual",
-          "kind": "comparison",
-          "title": "Trois lectures de la même échelle",
-          "panels": [
-            {
-              "title": "Amplitude",
-              "items": [
-                "Valeur signée dans la forme d’onde",
-                "Module positif pour un coefficient spectral"
-              ]
             },
             {
-              "title": "Puissance",
-              "items": [
-                "Proportionnelle au carré du module",
-                "Facteurs de normalisation à préciser"
-              ]
-            },
-            {
-              "title": "Décibels",
-              "items": [
-                "Rapport à une référence",
-                "20 log10 pour une amplitude ; 10 log10 pour une puissance"
+              "title": "Mesurer le contraste des pics",
+              "text": "La différence des niveaux vaut 20log10(peak/RMS). Un facteur de crête plus grand signifie des pics plus hauts relativement au niveau global.",
+              "state": "crest_db = peak_dbfs − rms_dbfs.",
+              "lines": [
+                9
               ]
             }
           ],
-          "caption": "Forme d’onde et coefficients fréquentiels ne sont pas le même tableau ; on précise toujours la grandeur dont on parle."
+          "result": "Chaque sortie répond à une question : crête pour la marge, RMS pour le niveau global de cette portion, facteur de crête pour le contraste des attaques."
         },
         {
-          "type": "plot",
-          "title": "Le logarithme transforme des facteurs en écarts",
-          "xLabel": "Rapport d’amplitude A/Aref",
-          "yLabel": "Niveau relatif (dB)",
-          "series": [
-            {
-              "name": "20 log10(A/Aref)",
-              "points": [
-                [
-                  0.25,
-                  -12.0412
-                ],
-                [
-                  0.5,
-                  -6.0206
-                ],
-                [
-                  1,
-                  0
-                ],
-                [
-                  2,
-                  6.0206
-                ],
-                [
-                  4,
-                  12.0412
-                ]
-              ]
-            }
+          "type": "analysis-image",
+          "assetId": "level-comparison"
+        },
+        {
+          "type": "audio-lab",
+          "view": "level",
+          "title": "La voix et la caisse claire : mesurer pour conclure",
+          "introduction": "Comparez les références sans changer le volume du lecteur, puis les variantes gain÷2 et RMS accordée. Les chiffres viennent des WAV livrés.",
+          "observations": [
+            "Comparez crête et RMS séparément : le fichier au pic le plus haut n’a pas nécessairement le plus grand contraste de pics.",
+            "Gain÷2 déplace crête et RMS d’environ −6,02 dB ; le facteur de crête reste identique.",
+            "RMS accordée donne aux extraits le même carré moyen sur quatre secondes ; pics, attaques et timbres peuvent encore différer.",
+            "Amplifier puis écrêter n’est pas simplement hausser le niveau : regardez les sommets aplatis et écoutez les détails rugueux."
           ],
-          "caption": "Valeurs calculées puis arrondies à quatre décimales. Chaque doublement d’amplitude ajoute environ 6,02 dB, avec une référence fixe."
+          "conclusion": "Nous pouvons décider s’il faut garder de la marge, corriger un gain accidentel ou conserver un niveau utile à la tâche. Égaliser les RMS ne rend pas les sons identiques."
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans ces fichiers précis, la parole atteint environ −1,92 dBFS en crête et −18,36 dBFS RMS ; la caisse claire atteint −3,71 et −23,91 dBFS. La parole possède donc ici un pic et un niveau global plus élevés. Mais le facteur de crête de la percussion est plus grand : environ 20,20 dB contre 16,45 dB pour la voix. Ses pics dépassent davantage son niveau global. Nous décrivons ces passages enregistrés, pas une loi sur les instruments."
+        },
+        {
+          "type": "paragraph",
+          "text": "Après accord de RMS à 0,08, les deux fichiers affichent environ −21,94 dBFS RMS. La crête de la parole est alors près de −5,49 dBFS, celle de la percussion près de −1,73 dBFS. Même RMS, mais moins de marge pour les pics de percussion : augmenter encore le gain commun la ferait écrêter en premier. À l’écoute, elles gardent aussi leur rythme et leur timbre ; une sonie identique n’est pas garantie."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour le classifieur, la finalité est de distinguer un indice sonore d’un gain accidentel. Surveiller les crêtes évite l’écrêtage ; comparer les RMS révèle un possible raccourci de niveau ; le facteur de crête conserve un contraste temporel que l’égalisation ne supprime pas. Normaliser peut aider si le gain est accidentel, mais gêner une tâche qui doit estimer ce niveau. Aucune de ces mesures ne suffit à reconnaître les classes : il reste à observer leurs fréquences."
         }
       ],
       "takeaways": [
-        "La RMS mesure une amplitude globale sans annulation entre signes opposés.",
-        "Puissance non normalisée = module au carré.",
-        "Les décibels utilisent une référence ; un plancher positif évite log(0)."
+        "Amplitude instantanée, crête et RMS décrivent des propriétés différentes : annoncer portion et unités.",
+        "Le décibel exprime un rapport : 10log10 pour une puissance, 20log10 pour une amplitude liée quadratiquement.",
+        "Nos dBFS ne sont pas des dB SPL ; un même RMS laisse encore des pics, un timbre et une sonie différents."
       ],
       "sourceIds": [
         "audio-rms",
         "audio-features",
-        "audio-amplitude-db"
+        "audio-amplitude-db",
+        "course-sig-npl-spl",
+        "course-sig-smpte-levels",
+        "course-sig-itu-loudness",
+        "course-sig-power-db"
       ],
       "context": {
-        "recall": "Les fichiers ont une cadence commune, mais leur gain d’enregistrement peut différer.",
-        "problem": "Comment repérer un extrait très faible sans confondre moyenne nulle et silence ?",
-        "why": "Nous distinguons RMS, puissance et décibels, et pouvons contrôler l’échelle sans effacer une information utile par accident.",
-        "connection": "Mesurer une amplitude efficace, puis exprimer les rapports de niveau avec une référence fixe.",
-        "next": "Un niveau résume tout l’extrait. Pour distinguer timbre de voix et attaque de percussion, il faut aussi savoir où se répartissent les fréquences."
+        "recall": "Les fichiers réels ont une durée connue ; leur gain et la distribution des attaques peuvent différer.",
+        "problem": "La caisse claire a-t-elle un pic plus haut ou un niveau soutenu plus fort ? Ce ne sont pas la même question.",
+        "why": "Distinguer marge avant écrêtage, niveau global et contraste des pics, sans confondre niveaux numériques et acoustique calibrée.",
+        "connection": "Choisir une mesure par question, puis comparer les originaux et les variantes avec une référence fixe.",
+        "next": "Les niveaux ne suffisent pas à décrire le timbre. Regardons quelles fréquences contribuent à la voix et à la caisse claire."
       },
       "checkpoint": {
         "prompt": "Une amplitude positive vaut 0,5 avec une référence fixe de 1. Sans plancher ni écrêtage, quelle paire est cohérente ?",
@@ -651,22 +726,26 @@
       },
       "notions": [
         {
-          "name": "Amplitude efficace",
-          "explanation": "Un résumé de l’amplitude obtenu par racine de la moyenne des carrés, également appelé RMS."
+          "name": "Amplitude et crête",
+          "explanation": "L’amplitude est la valeur à un instant ; la crête est le plus grand module sur la portion."
         },
         {
-          "name": "Puissance non normalisée",
-          "explanation": "Une grandeur proportionnelle au carré du module de l’amplitude."
+          "name": "Carré moyen et RMS",
+          "explanation": "Le carré moyen agrège x² ; sa racine, la RMS, revient à une grandeur d’amplitude."
         },
         {
-          "name": "Décibel",
-          "explanation": "Une manière logarithmique d’exprimer un rapport à une référence précisée."
+          "name": "Décibel et référence",
+          "explanation": "Une échelle logarithmique de rapport, qui doit préciser grandeur et référence."
+        },
+        {
+          "name": "Facteur de crête",
+          "explanation": "Le rapport crête/RMS mesure combien les pics dépassent le niveau global de la portion."
         }
       ],
       "progression": {
-        "input": "Les fichiers ont une cadence commune, mais leur gain d’enregistrement peut différer.",
-        "action": "Mesurer une amplitude efficace, puis exprimer les rapports de niveau avec une référence fixe.",
-        "output": "Nous distinguons RMS, puissance et décibels, et pouvons contrôler l’échelle sans effacer une information utile par accident."
+        "input": "Les fichiers réels ont une durée connue ; leur gain et la distribution des attaques peuvent différer.",
+        "action": "Choisir une mesure par question, puis comparer les originaux et les variantes avec une référence fixe.",
+        "output": "Distinguer marge avant écrêtage, niveau global et contraste des pics, sans confondre niveaux numériques et acoustique calibrée."
       }
     },
     {
@@ -681,7 +760,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Regarder une courbe temporelle peut révéler une attaque ou une pause, mais comparez deux portions qui oscillent rapidement : leurs fréquences sont difficiles à lire à l’œil. La transformée de Fourier change de coordonnées. Elle décrit la portion par des contributions d’oscillations régulières, au lieu de la décrire par ses amplitudes successives. Nous ne changeons pas le son ; nous calculons une autre description."
+          "text": "Une mesure de niveau a résumé quatre secondes par quelques nombres, sans dire où les contributions se répartissent en fréquence. À l’oreille, la parole et la caisse claire restent différentes après accord de RMS. Fourier décrit la portion par ses contributions d’oscillations régulières, au lieu de ses seules amplitudes successives. Le calcul ne modifie pas le son."
         },
         {
           "type": "paragraph",
@@ -728,8 +807,12 @@
           "code": "import numpy as np\nx = np.array([1., 0., -1., 0., 1., 0., -1., 0.])\nsr = 8000\nD = np.fft.rfft(x)\nf = np.fft.rfftfreq(len(x), d=1/sr)\nmodules = np.abs(D)  # [0, 0, 4, 0, 0], aux arrondis pres"
         },
         {
+          "type": "illustration",
+          "assetId": "speech-praat"
+        },
+        {
           "type": "paragraph",
-          "text": "Le déroulé utilise volontairement huit valeurs d’un cosinus construit à 8 kHz. Il isole une contribution à 2 kHz et permet de vérifier exactement les axes ; ce n’est pas une miniature fidèle de voix_01. rfftfreq fabrique les fréquences correspondant à rfft, au lieu de nous laisser deviner une graduation. Pour le vrai extrait, nous utiliserons le même principe sur les portions à 16 kHz."
+          "text": "Le déroulé utilise volontairement huit valeurs d’un cosinus construit à 8 kHz. Il isole une contribution à 2 kHz et permet de vérifier exactement les axes ; ce n’est pas une miniature fidèle de notre extrait de parole. rfftfreq fabrique les fréquences correspondant à rfft, au lieu de nous laisser deviner une graduation. Pour le vrai extrait, nous utiliserons le même principe sur les portions à 16 kHz."
         },
         {
           "type": "paragraph",
@@ -874,8 +957,8 @@
     },
     {
       "id": "stft-fenetres-hop-trames",
-      "title": "Voir l’attaque de percussion et la voix tenue",
-      "summary": "Comment conserver l’évolution du son au lieu de résumer les deux secondes en un seul spectre ?",
+      "title": "Voir les syllabes et les attaques de caisse claire",
+      "summary": "Comment conserver l’évolution du son au lieu de résumer ses quatre secondes par un seul spectre ?",
       "questionIds": [
         "sig-005",
         "sig-006",
@@ -884,24 +967,23 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Une voix tenue peut garder certaines fréquences pendant plusieurs dizaines de millisecondes ; une percussion commence souvent par une attaque brève, puis décroît. Une FFT sur les deux secondes mélange ces moments. Pour montrer la différence au modèle, nous allons refaire la même analyse à plusieurs endroits, en observant chaque fois une petite portion."
+          "text": "La voix parlée alterne syllabes, parties voisées et consonnes bruitées. La caisse claire juxtapose des attaques et leurs décroissances. Une FFT des quatre secondes mélange ces moments sans dire quand ils apparaissent. Analysons donc une petite portion, avançons, puis recommençons en gardant l’ordre temporel."
         },
         {
           "type": "paragraph",
-          "text": "C’est la STFT, transformée de Fourier à court terme. Chaque analyse fournit une trame ; on range les trames côte à côte. L’axe horizontal avance dans le temps, l’axe vertical suit les fréquences. Une image du module ou de la puissance de cette matrice est un spectrogramme. La STFT complète contient aussi la phase : le dessin de puissance n’est déjà plus toute la transformée."
+          "text": "C’est la STFT, transformée de Fourier à court terme. Une fenêtre est la portion observée et les poids qu’on lui applique ; chaque résultat fréquentiel est une trame. La STFT range ces trames côte à côte. Le déplacement entre fenêtres est le hop, qui fixe le pas des colonnes. La durée observée et le hop sont différents, même s’ils s’expriment tous deux en millisecondes."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour dessiner cette matrice, nous gardons son module ou son module au carré : un spectrogramme. Horizontalement, on lit le temps en secondes ; verticalement, les fréquences en hertz ; la couleur décrit la grandeur et la référence de la barre. Une tache claire n’est pas un instrument reconnu : c’est une contribution plus importante dans cette zone temps-fréquence. La phase demeure dans la STFT complexe, mais pas dans l’image de puissance."
         },
         {
           "type": "paragraph",
           "text": "Fixons nos conventions : cadence 16 kHz, fenêtre de 400 valeurs, déplacement de 160 valeurs. La fenêtre observe 25 ms ; le déplacement, ou hop, vaut 10 ms. Les portions se recouvrent donc. Nous n’avons pas quatre cents instants indépendants résumés par une seule mesure, mais une description fréquentielle obtenue en pondérant ces quatre cents valeurs. Nous préciserons la pondération au chapitre suivant."
         },
         {
-          "type": "figure",
-          "kind": "stft",
-          "caption": "Des fenêtres glissent sur la forme d’onde. Chaque analyse fournit une colonne ; le hop mesure le déplacement entre deux fenêtres successives."
-        },
-        {
           "type": "walkthrough",
-          "title": "Analyser la première seconde de voix_01",
+          "title": "Analyser la première seconde de notre parole réelle",
           "goal": "Construire et lire une matrice fréquentielle dont chaque axe est expliqué.",
           "language": "python",
           "steps": [
@@ -911,8 +993,9 @@
               "state": "N = 16000 ; L = 400 ; H = 160",
               "lines": [
                 3,
-                5,
-                6
+                4,
+                6,
+                7
               ]
             },
             {
@@ -920,10 +1003,10 @@
               "text": "Sans padding, les débuts sont 0, 160, 320 et ainsi de suite. Chaque portion doit finir avant la longueur du signal ; une portion finale trop courte est exclue.",
               "state": "Début de trame j = j × 160",
               "lines": [
-                4,
                 5,
                 6,
-                7
+                7,
+                8
               ]
             },
             {
@@ -931,17 +1014,21 @@
               "text": "Le nombre vaut 1 + floor((16000 - 400)/160) = 98. Une FFT réelle de 400 points donne 201 fréquences, donc D a la forme (201, 98).",
               "state": "D : 201 bins × 98 trames",
               "lines": [
-                8,
-                9
+                9,
+                10
               ]
             }
           ],
           "result": "La grille temporelle est espacée de 10 ms, mais chaque analyse regarde 25 ms de signal. Ces deux durées répondent à deux questions différentes.",
-          "code": "import librosa\n\n# y : premiere seconde du mono prepare, forme (16000,), 16000 Hz\nD = librosa.stft(\n    y, n_fft=400, win_length=400,\n    hop_length=160, center=False\n)\n# D.shape == (201, 98)\n# 201 bins = 400 // 2 + 1 ; 98 trames completes"
+          "code": "import librosa\nimport soundfile as sf\ncomplet, sr = sf.read(\"public/media/audio/voice-resampled.wav\")\ny = complet[:sr]  # premiere seconde a 16000 Hz\nD = librosa.stft(\n    y, n_fft=400, win_length=400,\n    hop_length=160, center=False\n)\n# D.shape == (201, 98)\n# 201 bins ; 98 fenetres completes"
+        },
+        {
+          "type": "analysis-image",
+          "assetId": "stft-windowing"
         },
         {
           "type": "paragraph",
-          "text": "Pour vérifier les formes sans traiter deux secondes à la fois, le code prend la première seconde de l’extrait préparé, soit 16 000 valeurs. Sans centrage ni ajout de zéros aux bords, une fenêtre doit tenir entièrement dans cette seconde. Le nombre de trames vaut 1 + floor((16000-400)/160) = 98 ; chaque trame a 400//2+1 = 201 coefficients. Cette formule ne s’applique pas inchangée avec un autre réglage de bord."
+          "text": "Le contrôle de forme prend seulement la première seconde du fichier préparé à 16 kHz : 16000 valeurs. Avec 400 valeurs par fenêtre, 160 de hop et center=False, on obtient 1+floor((16000−400)/160)=98 trames complètes et 201 coefficients par trame. Les images de l’atelier emploient leurs réglages documentés sur quatre secondes : leur nombre de cases peut différer sans que le temps soit devenu autre chose que des secondes."
         },
         {
           "type": "paragraph",
@@ -950,6 +1037,19 @@
         {
           "type": "paragraph",
           "text": "Sur un spectrogramme réel, on cherchera par exemple des traces relativement stables pour une voix tenue et un début plus large en fréquence pour certaines percussions. Ce sont des indices à examiner, pas des règles universelles : des voix soufflées et des percussions résonantes peuvent contredire cette image simple. L’intérêt de la représentation est de rendre les différences inspectables avant de demander au réseau de les apprendre."
+        },
+        {
+          "type": "audio-lab",
+          "view": "stft",
+          "title": "Voir les syllabes et les attaques au bon moment",
+          "introduction": "Ces cartes sont calculées depuis les fichiers jouables. Suivez un coup de caisse claire ou un début de syllabe du temps vers la carte.",
+          "observations": [
+            "Une attaque brève peut produire une trace verticale : de nombreuses fréquences apparaissent près du même instant.",
+            "Une portion voisée peut montrer des lignes harmoniques ; une consonne bruitée ne suit pas forcément ce motif.",
+            "La barre indique une grandeur spectrale et sa référence, pas des dB SPL.",
+            "Ces cartes emploient une fenêtre de 25 ms. Le chapitre suivant comparera séparément 10 et 80 ms sur les mêmes sons, pour isoler le compromis temps-fréquence."
+          ],
+          "conclusion": "Nous pouvons inspecter quand et où les contributions apparaissent, avant de demander au modèle de les exploiter."
         },
         {
           "type": "visual",
@@ -991,8 +1091,8 @@
         "course-sig-shorttimefft"
       ],
       "context": {
-        "recall": "Nous savons calculer et lire une FFT sur une portion, mais voix_01 et percussion_01 évoluent pendant leur durée.",
-        "problem": "Comment conserver l’évolution du son au lieu de résumer les deux secondes en un seul spectre ?",
+        "recall": "Nous savons calculer et lire une FFT sur une portion, mais notre extrait de parole et notre passage de caisse claire évoluent pendant leur durée.",
+        "problem": "Comment conserver l’évolution du son au lieu de résumer ses quatre secondes par un seul spectre ?",
         "why": "Une STFT relie fréquences et instants ; nous savons justifier ses 201 lignes et ses 98 colonnes sur une seconde.",
         "connection": "Déplacer une fenêtre d’analyse, calculer une FFT à chaque position et ranger les résultats en colonnes.",
         "next": "Cette image dépend de la durée de chaque fenêtre. Nous allons régler ce compromis plutôt que chercher simplement plus de pixels."
@@ -1035,7 +1135,7 @@
         }
       ],
       "progression": {
-        "input": "Nous savons calculer et lire une FFT sur une portion, mais voix_01 et percussion_01 évoluent pendant leur durée.",
+        "input": "Nous savons calculer et lire une FFT sur une portion, mais notre extrait de parole et notre passage de caisse claire évoluent pendant leur durée.",
         "action": "Déplacer une fenêtre d’analyse, calculer une FFT à chaque position et ranger les résultats en colonnes.",
         "output": "Une STFT relie fréquences et instants ; nous savons justifier ses 201 lignes et ses 98 colonnes sur une seconde."
       }
@@ -1053,6 +1153,10 @@
         {
           "type": "paragraph",
           "text": "Supposons que le classifieur confonde une attaque très courte et une voix tenue. Une fenêtre longue peut diluer le début de l’attaque dans ce qui vient après. À l’inverse, pour séparer deux fréquences proches et durables, observer plus longtemps aide. La résolution désigne cette capacité à distinguer deux événements, dans le temps ou dans les fréquences ; elle ne se résume pas au nombre de cases du tableau."
+        },
+        {
+          "type": "paragraph",
+          "text": "Reprenez la comparaison des fenêtres sur les mêmes fichiers réels : concentrez-vous sur une frappe, puis une courte portion de voyelle. Une fenêtre courte localise mieux une transition ; une fenêtre longue précise certaines structures durables. Il faut demander quelle information aide la tâche, pas seulement quelle image paraît la plus détaillée."
         },
         {
           "type": "paragraph",
@@ -1099,6 +1203,14 @@
           ],
           "result": "Pour isoler une attaque brève, le choix B peut dégrader la localisation. Le choix A densifie le dessin sans résoudre miraculeusement deux composantes proches.",
           "code": "import numpy as np\n# y contient au moins 2048 echantillons reels, sr = 16000 Hz\nshort = y[:512]\nspectrum_512 = np.fft.rfft(short, n=512)\nspectrum_padded = np.fft.rfft(short, n=2048)\nlong = y[:2048]\nspectrum_long = np.fft.rfft(long, n=2048)\n# short : 32 ms observes ; long : 128 ms observes"
+        },
+        {
+          "type": "illustration",
+          "assetId": "stft-windows"
+        },
+        {
+          "type": "analysis-image",
+          "assetId": "stft-windows"
         },
         {
           "type": "paragraph",
@@ -1209,64 +1321,84 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Notre première seconde produit 201 valeurs fréquentielles par trame. Le modèle n’a pas forcément besoin de distinguer chacune de ces cases. On peut les regrouper en bandes : chaque bande additionne les puissances avec des poids définis. Un banc de filtres est simplement l’ensemble de ces règles de regroupement. Contrairement à une moyenne Python improvisée, ses poids et sa grille font partie de la définition de la représentation."
+          "text": "La STFT donne une contribution par bin fréquentiel et par trame. Nous pouvons regrouper les bins voisins si le modèle n’a pas besoin d’autant de détails. Un filtre mel est une série de poids appliqués aux bins ; un banc est l’ensemble de ces filtres. Chaque bande reçoit une somme pondérée de puissances, pas une simple sélection d’une fréquence centrale. Les poids souvent triangulaires et leur normalisation sont des conventions de construction."
         },
         {
           "type": "paragraph",
-          "text": "Les bandes mel suivent une échelle inspirée de la perception des hauteurs, avec en général une organisation plus fine dans le grave que dans l’aigu. Un log-mel applique ensuite un logarithme ou une conversion en décibels aux puissances regroupées. Ce choix met l’accent sur certains rapports et réduit les écarts d’échelle ; il ne simule pas à lui seul toute l’audition humaine."
+          "text": "L’échelle mel est inspirée de la perception des hauteurs. À espacement comparable sur cette échelle, les bandes sont généralement plus fines en hertz dans le grave et plus larges dans l’aigu. Cela ne signifie pas que l’oreille ignore les détails aigus ni que le mel reproduit toute l’audition. Deux conventions, comme Slaney et HTK, peuvent donner des regroupements différents."
         },
         {
           "type": "paragraph",
-          "text": "Reprenons notre première seconde : une matrice S de forme (201, 98), selon (fréquences, trames), projetée vers 64 bandes donne une matrice (64, 98). Le temps n’a pas été rééchantillonné. Les 64 bandes sont des caractéristiques calculées, et non 64 microphones. Si W contient les poids des filtres, la projection s’écrit W @ S ; les règles de produit matriciel du cours Python retrouvent ici une utilité très concrète."
+          "text": "Comparez STFT et mel du même fichier : le temps reste horizontal. Verticalement, les bins FFT sont remplacés par des bandes ; la couleur représente une puissance regroupée, éventuellement en dB. Sur un axe mel gradué en hertz, les écarts en hertz ne sont pas uniformes. Calculer le log-mel ajoute une compression logarithmique de ces valeurs, avec sa référence et son plancher. Ce calcul de représentation n’applique aucun effet au fichier joué."
         },
         {
-          "type": "figure",
-          "kind": "mel",
-          "caption": "Des poids fréquentiels regroupent plusieurs bins linéaires dans chaque bande mel. Le temps reste le même axe de trames."
+          "type": "paragraph",
+          "text": "Reprenons la première seconde préparée à 16 kHz. D est complexe, de forme (201,98). Après module au carré, la puissance P garde cette forme. Un banc W de 64 filtres s’écrit (64,201), donc W @ P donne (64,98). Nous projetons les puissances, pas directement les coefficients complexes. Le temps n’a pas été rééchantillonné."
         },
         {
           "type": "walkthrough",
-          "title": "Compresser une trame sans oublier ce qui disparaît",
-          "goal": "Comprendre la projection avant de lire une entrée log-mel de modèle.",
+          "title": "Construire le mel de notre première seconde de parole",
+          "goal": "Suivre la même donnée depuis les coefficients complexes jusqu’aux bandes puis aux décibels.",
           "language": "python",
           "steps": [
             {
-              "title": "Avant : conserver les détails",
-              "text": "Notre mini-trame inventée possède quatre puissances [2, 6, 4, 8]. Chaque case appartient à une fréquence distincte.",
-              "state": "Spectre pédagogique : quatre valeurs",
+              "title": "Reprendre le son annoncé",
+              "text": "Nous lisons la variante réelle à 16 kHz puis sa première seconde. Cette démonstration conserve center=False pour compter 98 fenêtres complètes ; les images du laboratoire couvrent quatre secondes avec center=True et 401 trames. La fenêtre reste une Hann de 25 ms et le hop de 10 ms.",
+              "state": "D.shape=(201,98), coefficients complexes.",
               "lines": [
-                3
-              ]
-            },
-            {
-              "title": "Appliquer deux bandes simplifiées",
-              "text": "La première moyenne les deux premières cases et donne 4 ; la seconde moyenne les deux dernières et donne 6. Ce jouet montre une somme pondérée, pas le vrai banc mel.",
-              "state": "Résumé : [4, 6]",
-              "lines": [
+                1,
+                2,
+                3,
                 4,
-                5
-              ]
-            },
-            {
-              "title": "Après : reconnaître l’ambiguïté",
-              "text": "Le spectre [4, 4, 6, 6] donnerait le même résumé. Avec un vrai banc passant de 201 bins à 64 bandes, une réduction analogue peut empêcher une inversion unique.",
-              "state": "Plusieurs entrées peuvent partager une sortie",
-              "lines": [
+                5,
                 6,
                 7
               ]
+            },
+            {
+              "title": "Définir la grandeur projetée",
+              "text": "Nous divisons les coefficients par la somme des poids de Hann avant leur carré. Cette normalisation est celle des images du laboratoire ; les nombres ne sont ni des watts ni une densité spectrale de puissance.",
+              "state": "power.shape=(201,98), P = |D / somme(fenêtre)|².",
+              "lines": [
+                8
+              ]
+            },
+            {
+              "title": "Regrouper avec un vrai banc",
+              "text": "Les 64 filtres Slaney normalisés en aire pondèrent les 201 bins jusqu’à 8 kHz. Le produit réalise une somme par bande et par trame ; l’ordre temporel ne change pas.",
+              "state": "weights.shape=(64,201) ; mel.shape=(64,98).",
+              "lines": [
+                9,
+                10
+              ]
+            },
+            {
+              "title": "Compresser l’échelle de lecture",
+              "text": "power_to_db applique 10log10 avec une référence fixe de 1. amin=1e-10 donne un plancher fixe de −100 dB ; top_db=None empêche de déplacer ce plancher selon le maximum de l’extrait. Les images emploient aussi une échelle commune de −100 à 0 dB.",
+              "state": "mel_db.shape=(64,98) ; référence spectrale 1 et plancher −100 dB.",
+              "lines": [
+                11
+              ]
             }
           ],
-          "result": "La projection conserve le nombre de trames et change l’axe fréquentiel. Son utilité se mesure pour la tâche, pas par une prétention à tout conserver.",
-          "code": "import numpy as np\n# Banc jouet de deux moyennes : ce ne sont pas de vrais filtres mel\npower = np.array([2., 6., 4., 8.])\nweights = np.array([[0.5, 0.5, 0., 0.], [0., 0., 0.5, 0.5]])\nsummary = weights @ power  # [4., 6.]\nother = np.array([4., 4., 6., 6.])\nsame_summary = weights @ other  # egalement [4., 6.]"
+          "result": "Le nombre de trames est inchangé : nous avons regroupé les fréquences puis comprimé les valeurs, sans transformer le fichier audible.",
+          "code": "import librosa\nimport numpy as np\nimport soundfile as sf\ncomplet, sr = sf.read(\"public/media/audio/voice-resampled.wav\")\ny = complet[:sr]\nfenetre = librosa.filters.get_window(\"hann\", 400, fftbins=True)\nD = librosa.stft(y, n_fft=400, hop_length=160, window=fenetre, center=False)\npower = np.abs(D / fenetre.sum()) ** 2\nweights = librosa.filters.mel(sr=sr, n_fft=400, n_mels=64, fmin=0, fmax=8000, htk=False, norm=\"slaney\")\nmel = weights @ power\nmel_db = librosa.power_to_db(mel, ref=1.0, amin=1e-10, top_db=None)"
+        },
+        {
+          "type": "illustration",
+          "assetId": "mel-hertz"
+        },
+        {
+          "type": "analysis-image",
+          "assetId": "mel-filterbank"
         },
         {
           "type": "paragraph",
-          "text": "Le déroulé réduit volontairement quatre puissances à deux nombres avec un banc de moyennes simplifié. Ce ne sont pas de vrais filtres mel. Deux spectres différents y produisent le même résumé : on voit ainsi la perte d’information au lieu de seulement l’annoncer. Avec un vrai banc mel aussi, une sortie plus compacte ne permet généralement pas de retrouver toutes les valeurs initiales."
+          "text": "Les vraies bandes sont visibles dans l’atelier. Un détail qui occupait plusieurs bins FFT peut être regroupé dans une bande ; deux spectres différents peuvent alors donner les mêmes sommes pondérées. La compression produit une entrée plus petite, mais ne fournit généralement pas assez d’équations pour retrouver chaque bin d’origine."
         },
         {
           "type": "paragraph",
-          "text": "La phase avait déjà disparu en passant de la STFT complexe à abs(D)**2. Le regroupement mel enlève d’autres détails fréquentiels. Un vocodeur peut apprendre à synthétiser un son plausible à partir de mel ; cela n’implique pas qu’il retrouve exactement voix_01. Pour une classification, perdre certaines différences peut être acceptable ; pour une reconstruction fidèle ou l’étude de hauteurs très proches, il faut réexaminer ce choix."
+          "text": "La phase avait déjà disparu en passant de la STFT complexe à abs(D)**2. Le regroupement mel enlève d’autres détails fréquentiels. Un vocodeur peut apprendre à synthétiser un son plausible à partir de mel ; cela n’implique pas qu’il retrouve exactement notre extrait de parole. Pour une classification, perdre certaines différences peut être acceptable ; pour une reconstruction fidèle ou l’étude de hauteurs très proches, il faut réexaminer ce choix."
         },
         {
           "type": "paragraph",
@@ -1293,9 +1425,22 @@
           "caption": "Le temps ne change pas dans cette projection ; la phase a déjà été retirée lors du calcul de puissance."
         },
         {
+          "type": "audio-lab",
+          "view": "mel",
+          "title": "Le même son, une autre description",
+          "introduction": "Comparez forme d’onde, spectrogramme et mel sans changer de fichier. La lecture reste reliée au même signal.",
+          "observations": [
+            "Les bandes regroupent les puissances : certaines harmoniques fines deviennent moins séparées, surtout dans l’aigu.",
+            "Le logarithme rend visibles des contributions faibles ; sa référence et son plancher se lisent avec la barre de couleurs.",
+            "Changer seulement la carte ne transforme pas le son joué : calculer un mel n’est pas appliquer un effet audio.",
+            "Une représentation compacte peut conserver des indices de classement tout en retirant des détails de reconstruction."
+          ],
+          "conclusion": "Le but est de fournir au modèle une description compacte, en sachant ce qui a été regroupé ou perdu."
+        },
+        {
           "type": "example",
           "title": "Outil réel : l’exemple Superflux de librosa",
-          "text": "La documentation officielle de librosa présente une détection d’attaques Superflux sur un extrait de trompette. Elle emploie un spectrogramme mel pour suivre des changements et comparer des courbes d’attaques. Cette application réelle élargit l’usage vu ici : la même famille de représentations sert aussi à repérer des débuts de notes. Notre collection voix/percussion et le mini-tableau à quatre valeurs restent des exemples construits pour expliquer les opérations."
+          "text": "La documentation officielle de librosa présente aussi Superflux, une détection d’attaques sur une trompette à partir d’une représentation mel. La même famille d’outils peut servir à repérer des débuts de notes. Nos images viennent de la narration et de la caisse claire documentées : elles servent à inspecter une entrée de classification, sans annoncer de performance mesurée."
         }
       ],
       "takeaways": [
@@ -1371,11 +1516,11 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Jusqu’ici, nos analyses utilisaient un canal mono annoncé comme tel. Revenons au fichier stéréo de départ : pourquoi ne pas toujours prendre la moyenne des deux canaux ? Parce qu’ils décrivent des pressions au même instant. Les additionner peut renforcer ou annuler certaines contributions. Un changement de forme de (2, N) à (N,) est donc aussi un changement du son."
+          "text": "Nos sources réelles sont mono. Ouvrons maintenant un cas distinct : un fichier stéréo dont on veut faire une moyenne mono. Deux canaux simultanés peuvent se renforcer ou se compenser selon leur relation. Pour rendre ce risque contrôlable sans inventer une prise de microphones, l’atelier construit aussi deux canaux depuis notre mono : l’un est l’original, l’autre sa polarité inversée."
         },
         {
           "type": "paragraph",
-          "text": "Le cas le plus clair est une inversion de polarité : le canal droit vaut -left. À chaque instant, leur moyenne vaut (left + right)/2 = 0. Le déroulé utilise quatre valeurs pour rendre cette annulation vérifiable. Nous n’affirmons pas que voix_01 possède ce défaut ; ce cas extrême explique pourquoi il faut écouter le mono et vérifier son niveau avant d’appliquer la conversion à toute la collection."
+          "text": "Le cas le plus clair est une inversion de polarité : le canal droit vaut -left. À chaque instant, leur moyenne vaut (left + right)/2 = 0. Le déroulé utilise quatre valeurs pour rendre cette annulation vérifiable. Nous n’affirmons pas que notre extrait de parole possède ce défaut ; ce cas extrême explique pourquoi il faut écouter le mono et vérifier son niveau avant d’appliquer la conversion à toute la collection."
         },
         {
           "type": "paragraph",
@@ -1428,6 +1573,19 @@
         {
           "type": "paragraph",
           "text": "Avec de vrais microphones, les décalages de prise produisent plutôt des annulations partielles selon les fréquences. Notre préparation doit choisir une politique explicite : garder certains canaux, mélanger avec contrôle, ou utiliser une architecture qui les reçoit séparément. La moyenne est une option, pas une garantie de neutralité ; mettre les canaux bout à bout serait encore une autre opération, qui modifierait aussi la durée."
+        },
+        {
+          "type": "audio-lab",
+          "view": "phase",
+          "title": "Ce qu’une image de module ne raconte pas",
+          "introduction": "Comparez la référence et les phases modifiées. Distinguez cette modification d’une simple inversion de polarité.",
+          "observations": [
+            "Inverser toute la polarité multiplie le signal par−1 : isolé, il peut paraître presque identique, mais s’annule avec l’original dans un mélange construit.",
+            "Modifier de nombreuses phases indépendamment peut disperser les attaques ou rendre le son plus bruité ; ce n’est pas une inversion globale.",
+            "Après synthèse et nouvelle analyse, la carte peut changer : une STFT aux phases arbitraires n’est pas nécessairement cohérente avec un unique signal temporel.",
+            "Les variantes transforment de vrais fichiers ; des microphones opposés ne sont pas prétendus présents dans les sources mono."
+          ],
+          "conclusion": "Une représentation suffisante pour reconnaître un son peut être insuffisante pour le restituer exactement."
         },
         {
           "type": "visual",
@@ -1761,9 +1919,9 @@
   "edition": 2,
   "journey": {
     "title": "Du dossier de voix et percussions à une entrée documentée",
-    "scenario": "Nous voulons distinguer voix et percussions sans que le format du fichier décide à la place du son. voix_01 dure deux secondes, avec deux canaux à 48 kHz ; les transformations sont examinées avant d’être appliquées à toute la collection.",
-    "startingPoint": "Des fichiers dont les canaux, cadences et niveaux peuvent différer.",
-    "destination": "Une représentation temps-fréquence comparable entre fichiers, avec des paramètres fixés et des pertes identifiées.",
+    "scenario": "Suivre deux extraits réels de quatre secondes — parole et caisse claire — et expliquer leurs mesures, leurs transformations audibles et leurs représentations.",
+    "startingPoint": "Deux enregistrements mono documentés, fournis à des cadences différentes.",
+    "destination": "Relier une écoute, une mesure et une représentation, puis justifier la préparation proposée à un modèle.",
     "stages": [
       {
         "title": "Donner un sens physique aux nombres",
@@ -1815,11 +1973,35 @@
       "title": "librosa — Exemple réel de détection d’attaques Superflux",
       "url": "https://librosa.org/doc/0.11.0/auto_examples/plot_superflux.html",
       "accessed": "2026-11-10"
+    },
+    {
+      "id": "course-sig-npl-spl",
+      "title": "NPL — Sound Pressure Level and Intensity Level",
+      "url": "https://resource.npl.co.uk/acoustics/techguides/concepts/spl.html",
+      "accessed": "2026-11-12"
+    },
+    {
+      "id": "course-sig-smpte-levels",
+      "title": "SMPTE ST2095-1:2023 — Références dBFS RMS et AES17",
+      "url": "https://pub.smpte.org/doc/st2095-1/20230927-pub/st2095-1-2023.pdf",
+      "accessed": "2026-11-12"
+    },
+    {
+      "id": "course-sig-itu-loudness",
+      "title": "ITU-R BS.1770-5 — Sonie de programme et crête vraie",
+      "url": "https://www.itu.int/rec/R-REC-BS.1770-5-202311-I/en",
+      "accessed": "2026-11-12"
+    },
+    {
+      "id": "course-sig-power-db",
+      "title": "librosa — power_to_db : puissance, référence et affichage",
+      "url": "https://librosa.org/doc/0.11.0/generated/librosa.power_to_db.html",
+      "accessed": "2026-11-12"
     }
   ],
   "moduleIntroduction": {
-    "startingPoint": "Vous connaissez les listes, les indices et les tableaux Python. Nous partons maintenant de fichiers audio : voix_01, stéréo, deux secondes à 48 kHz, sera notre exemple suivi.",
-    "goal": "Préparer voix_01 et percussion_01 avec la même chaîne, et justifier chaque changement : cadence, échelle, fenêtres, bandes mel, phase et délai.",
+    "startingPoint": "Nous disposons d’une voix parlée et d’une caisse claire réellement écoutables. Leurs passages de quatre secondes sont préparés à une cadence commune pour suivre les mêmes opérations.",
+    "goal": "Comparer leurs niveaux avec des références claires, lire leurs spectrogrammes et leurs bandes mel, puis entendre ce que certaines transformations conservent ou détruisent.",
     "concepts": [
       {
         "name": "Des mesures à une durée",

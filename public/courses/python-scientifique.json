@@ -88,6 +88,22 @@
         },
         {
           "type": "paragraph",
+          "text": "Les deux tableaux miniatures ci-dessous servent à calculer à la main. Pour les rattacher à la réalité, voici aussi les deux vrais enregistrements que vous retrouverez dans le module Signal : une narration et des frappes de caisse claire. Chaque extrait dure quatre secondes. Leurs WAV de référence contiennent donc 192 000 amplitudes à 48 kHz, et non quatre nombres inventés."
+        },
+        {
+          "type": "audio-lab",
+          "view": "overview",
+          "title": "Voici les fichiers derrière nos tableaux",
+          "introduction": "Écoutez d’abord la voix puis la percussion. Changez ensuite de représentation pour voir ce que chaque affichage conserve.",
+          "observations": [
+            "La forme d’onde montre comment les amplitudes signées varient au cours du temps. Elle n’affiche ni la classe ni directement les fréquences.",
+            "La voix alterne activité et pauses ; le montage de percussion juxtapose des frappes. Le nombre de valeurs ne décrit pas à lui seul cette organisation.",
+            "Les sources étaient mono à 16 kHz et 22,05 kHz. La référence commune à 48 kHz est une interpolation, qui ne recrée aucun aigu absent."
+          ],
+          "conclusion": "Notre unité de classement reste le fichier entier. Les centaines de milliers de valeurs d’un signal ne deviennent pas autant d’exemples annotés indépendants."
+        },
+        {
+          "type": "paragraph",
           "text": "On suppose ici les fichiers déjà décodés et leurs signaux disponibles en mémoire. Les questions de fréquence d’échantillonnage, de stéréo et de durée commune seront traitées dans le module Signal. Pour ce premier module, nous isolons le travail numérique. Même une préparation parfaitement codée ne prouvera pas que nos deux descripteurs suffisent à distinguer des voix et des percussions réelles : il faudra le mesurer."
         }
       ],
@@ -571,6 +587,22 @@
           "result": "Le RMS seul rendait nos deux jouets identiques ; ajouter un descripteur de pic les distingue numériquement.",
           "code": "import numpy as np\nS = np.array([[-.5, .5, -.5, .5], [0., 0., 0., 1.]])\nrms = np.sqrt((S ** 2).mean(axis=1))\npics = np.abs(S).max(axis=1)\ncretes = pics / np.maximum(rms, 1e-8)\nF = np.column_stack([rms, cretes])",
           "language": "python"
+        },
+        {
+          "type": "paragraph",
+          "text": "Le cas à quatre valeurs rendait le calcul vérifiable. Dans les vrais fichiers, le même calcul parcourt les 192 000 valeurs du WAV. Il ne dit pourtant pas tout : il résume quatre secondes en un seul nombre. Ouvrez les mesures ci-dessous, puis comparez les versions « RMS commun »."
+        },
+        {
+          "type": "audio-lab",
+          "view": "level",
+          "title": "Du RMS calculé à la différence que l’on entend",
+          "introduction": "Les mesures sont calculées sur les fichiers réellement écoutables. Elles ne proviennent pas de nos deux tableaux jouets.",
+          "observations": [
+            "Sur les références, le RMS de la voix est environ 0,121 ; celui de la percussion environ 0,064. Ces valeurs décrivent ces prises et leurs gains d’enregistrement.",
+            "Choisissez le RMS commun de 0,08. Les niveaux RMS deviennent égaux, mais la percussion conserve des crêtes plus marquées relativement à cette moyenne.",
+            "Choisissez le gain de 0,5 : la moyenne des carrés est divisée par quatre, le RMS par deux, et le niveau RMS baisse d’environ 6,02 dB."
+          ],
+          "conclusion": "Un résumé numérique permet de comparer un aspect précis. Une égalité de RMS n’est ni une égalité de timbre, ni une garantie de sonie perçue identique. Le module Signal explique ces grandeurs et leurs références."
         },
         {
           "type": "visual",

@@ -833,6 +833,12 @@
           "code": "import torch\n\n# Forme d'onde : B=8 extraits mono, T=16000 echantillons\nx = torch.randn(8, 16000)\nconv_wave = torch.nn.Conv1d(1, 16, kernel_size=5)\nh = conv_wave(x.unsqueeze(1))  # entree (8, 1, 16000)\n\n# Spectrogrammes : B=8, F=64 bandes, T=100 trames\nS = torch.randn(8, 64, 100)\nconv_spec = torch.nn.Conv2d(1, 8, kernel_size=3)\nz = conv_spec(S.unsqueeze(1))  # entree (8, 1, 64, 100)"
         },
         {
+          "type": "illustration",
+          "assetId": "cnn-convolution",
+          "title": "Ce que calcule réellement une petite convolution",
+          "caption": "Ce schéma numérique externe permet de suivre les produits et leur somme. Appliqué à un spectrogramme, le même principe parcourt des voisinages temps–fréquence ; ses poids sont ensuite appris, et ne constituent pas une règle acoustique universelle."
+        },
+        {
           "type": "paragraph",
           "text": "Cette lecture évite un piège courant : un reshape peut faire accepter les dimensions tout en mélangeant leur sens. Une permutation d’axes change leur ordre ; elle ne doit pas mélanger les valeurs de différents exemples. Et déplacer un motif en fréquence n’est pas la même invariance que le déplacer dans le temps : une transposition peut modifier une hauteur que la tâche doit précisément reconnaître."
         },
@@ -1253,6 +1259,18 @@
           "result": "Une règle d’augmentation inclut la mise à jour de la cible. Conserver automatiquement les anciennes étiquettes serait faux pour ces tâches."
         },
         {
+          "type": "audio-lab",
+          "view": "augmentation",
+          "title": "Une transformation audible est-elle une augmentation valable ?",
+          "introduction": "Nous n’entraînons aucun réseau ici : nous écoutons des transformations déterministes des fichiers pour décider ce qu’elles changent.",
+          "observations": [
+            "Le gain de 0,5 modifie le niveau, sans déplacer les événements temporels. Il peut convenir à une tâche de présence si les événements restent audibles.",
+            "Le passe-bas à 1 kHz retire une partie du timbre. Écoutez les consonnes et la caisse claire ; les indices utiles à un modèle peuvent disparaître même si le fichier reste de la même durée.",
+            "L’écrêtage déforme les pics. Le spectrogramme peut faire apparaître des composantes supplémentaires : ce n’est pas une simple variation de niveau."
+          ],
+          "conclusion": "La validité d’une augmentation dépend de la cible, de son intensité et des conditions d’usage. Une transformation qui garde le nom du fichier ne préserve pas automatiquement l’information nécessaire à la tâche."
+        },
+        {
           "type": "paragraph",
           "text": "Deuxième tâche distincte : estimer le tempo en battements par minute, BPM. Un time-stretch de rate=1,25 accélère le déroulement en visant une hauteur conservée : dix secondes deviennent environ huit secondes et 100 BPM deviennent 125 BPM. Garder la cible 100 serait faux. Ce n’est pas le simple changement de cadence de lecture du cours Signal, qui modifie aussi la hauteur."
         },
@@ -1416,6 +1434,10 @@
           ],
           "result": "Mixup régularise selon une hypothèse d’interpolation. Ce protocole ne garantit pas que toute combinaison de log-mel ressemble à un enregistrement acoustique naturel.",
           "code": "# x_a et x_b : memes axes et meme forme, donnees alignees\n# y_a et y_b : presences flottantes voix/percussion, taille 2\nlam = 0.25\nx_mix = lam * x_a + (1 - lam) * x_b\ny_mix = lam * y_a + (1 - lam) * y_b\n# Si y_a = [1, 0] et y_b = [0, 1], y_mix = [0.25, 0.75].\n# La perte doit accepter des cibles souples coherentes avec la tache."
+        },
+        {
+          "type": "analysis-image",
+          "assetId": "augmentation-mask"
         },
         {
           "type": "paragraph",

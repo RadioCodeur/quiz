@@ -85,6 +85,18 @@
           "result": "La chaîne devient un ensemble de causes testables plutôt qu’une boîte produisant un son final."
         },
         {
+          "type": "audio-lab",
+          "view": "phase",
+          "title": "Un spectrogramme n’est pas encore le son reconstruit",
+          "introduction": "Ce laboratoire ne fait pas tourner un codec appris. Il isole une difficulté que tout décodeur audio doit résoudre : produire une onde dont l’organisation temporelle est crédible.",
+          "observations": [
+            "Écoutez la référence puis la version à phases modifiées, à RMS rapproché. Comparez l’attaque et la netteté, plutôt que le seul volume.",
+            "La phase aléatoire sert de cible à une reconstruction STFT. Après retour en onde puis nouvelle STFT, la magnitude n’est pas garantie identique : les images montrent le WAV obtenu, pas une matrice cible présentée comme un résultat.",
+            "Une inversion de polarité conserve la magnitude et s’entend généralement très peu sur ce canal isolé ; une phase arbitraire fréquence par fréquence est une autre opération."
+          ],
+          "conclusion": "Reconstruire demande davantage qu’une bonne courbe d’énergie. Cette écoute illustre une perte d’information ; elle ne mesure pas la qualité d’un véritable codec ni d’un générateur entraîné."
+        },
+        {
           "type": "paragraph",
           "text": "Un codec est un système d’encodage et de décodage destiné au stockage ou à la transmission. Le codec neuronal EnCodec fournit un repère réel : il convertit le son en descriptions compactes puis le reconstruit. Un second modèle peut apprendre à inventer ces descriptions. Ce modèle génératif des codes est parfois appelé prior : il donne une distribution de codes plausibles, avant d’avoir un nouvel enregistrement à reconstruire."
         },

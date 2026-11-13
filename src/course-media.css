@@ -1,0 +1,31 @@
+.course-illustration,.audio-lab{margin:32px 0;padding:23px;border:1px solid #ccd8c0;border-radius:10px;background:#f7faf2;min-width:0}
+.course-illustration>h3,.audio-lab>header h3{font-size:22px;line-height:1.4;margin:0 0 16px}
+.illustration-enlarge{display:block;text-decoration:none;background:white;border:1px solid #dce4d4;border-radius:6px;overflow:hidden}
+.illustration-enlarge img{display:block;width:100%;height:auto;max-height:560px;object-fit:contain;padding:8px}
+.illustration-enlarge>span{display:block;text-align:right;padding:8px 12px;font-size:11px;color:#44633a}
+.course-illustration figcaption{font-size:14px;line-height:1.9}
+.image-reading{border-top:1px solid #d7e2cc;padding-top:15px;margin-top:16px}
+.image-reading>strong{font-size:13px}.image-reading ol,.lab-observations ol{padding-left:22px}.image-reading li,.lab-observations li{padding:4px 0}
+.media-credit{font-size:11px!important;line-height:1.8!important;color:#65755c;border-top:1px solid #dae4d0;margin:17px 0 0!important;padding-top:13px;overflow-wrap:anywhere}
+.media-credit>span{display:block;margin-top:4px}.audio-lab>header>.eyebrow{font-size:8px;line-height:1.8;color:#71885e}.audio-lab>header>p:not(.eyebrow){font-size:14px;line-height:1.9}
+.lab-controls{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:23px 0 12px}
+.lab-controls label{display:flex;flex-direction:column;gap:8px;font-size:12px;line-height:1.7;font-weight:600;min-width:0}
+.lab-controls select{width:100%;min-height:44px;background:#fff;border:1px solid #bfcfb0;border-radius:6px;font-size:12px;padding:9px;color:#31533b}
+.lab-controls .lab-volume{grid-column:1/-1;max-width:350px}.lab-volume input{min-height:30px;width:100%;accent-color:#315b43}
+.lab-listening-note{font-size:12px!important;line-height:1.8;color:#5c7250;margin:12px 0 20px}
+.lab-display{display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
+.lab-clip{background:#fff;border:1px solid #d8e3cc;border-radius:8px;padding:18px;min-width:0}
+.lab-clip h4{font-size:18px;line-height:1.5;margin:0 0 8px}.lab-clip header p{font-size:12px;color:#6b7f5e;margin:0 0 17px;line-height:1.7}
+.lab-clip audio{display:block;width:100%;max-width:100%;height:44px;margin:7px 0 17px}
+.lab-transform{font-size:13px;line-height:1.85}.lab-transcript{font-size:12px;line-height:1.8}.lab-transcript p{font-size:13px!important}.lab-transcript summary{min-height:44px;cursor:pointer}
+.lab-clip figure{margin:19px 0 10px}.lab-clip figure img{display:block;width:100%;height:auto;border:1px solid #e2e8da;border-radius:4px}
+.lab-clip figcaption{font-size:11px;line-height:1.8;color:#5f7357;margin-top:10px}.lab-clip figcaption>span{display:block;margin-top:5px}
+.lab-measures,.lab-protocol{border-top:1px solid #dce5d3;font-size:12px;line-height:1.8;margin-top:17px;padding-top:8px}
+.lab-measures>summary,.lab-protocol>summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:600;color:#4b6b3e}
+.lab-measures>summary:before,.lab-protocol>summary:before{content:'+';margin-right:9px}.lab-measures[open]>summary:before,.lab-protocol[open]>summary:before{content:'−'}
+.lab-measures dl{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}.lab-measures dl>div{padding:10px;border:1px solid #e0e8d7;background:#f7faf3;border-radius:5px}.lab-measures dt{font-size:11px;color:#617957}.lab-measures dd{margin:5px 0 0;font-size:14px;font-weight:650}.lab-measures>p{font-size:11px;line-height:1.8}
+.lab-observations{margin-top:23px;border-top:1px solid #d6e1ca;padding-top:17px;font-size:14px;line-height:1.9}.lab-observations h4{font-size:16px;margin:0 0 12px}.lab-observations>p{padding-top:12px;margin-bottom:0}
+.large-reading-text .lab-transform,.large-reading-text .lab-observations,.large-reading-text .course-illustration figcaption{font-size:17px}
+@media(max-width:740px){.course-illustration,.audio-lab{padding:19px 13px;margin:26px 0}.course-illustration>h3,.audio-lab>header h3{font-size:21px}.lab-controls{grid-template-columns:1fr;gap:14px}.lab-controls .lab-volume{grid-column:auto}.lab-clip{padding:13px 10px}.lab-measures dl{grid-template-columns:1fr 1fr;gap:8px}.lab-measures dd{font-size:13px}.lab-measures dt{font-size:10px}.image-reading{font-size:13px}.lab-observations{font-size:13px}}
+
+.lab-clip figure a{display:block;text-decoration:none}.lab-enlarge{display:block;font-size:11px;text-align:right;padding:8px 0;color:#44633a}

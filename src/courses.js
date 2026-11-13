@@ -1,17 +1,20 @@
 import './style.css';
 import './courses.css';
 import './learning.css';
+import './course-media.css';
 import { loadBank } from './bank.js';
 import { createStorage } from './storage.js';
 import { COURSE_ORDER, COURSE_STORAGE_KEY, courseHref, buildCoverage, chapterMinutes, normalizeProgress, setChapterRead, resolveChapter, courseStage, mergeCourseReferences, chapterNavigation } from './course-model.js';
 import { renderFigure } from './course-figures.js';
 import { renderVisual, renderPlot, renderWalkthrough, attachWalkthroughs, renderCheckpoint, attachCheckpoint, renderFirstExample } from './learning-blocks.js';
 
+import { renderIllustration, renderAudioLab, renderAnalysisImage, attachAudioLabs } from './course-media.js';
+
 const root = document.querySelector('#app');
 const storage = createStorage();
 const esc = value => String(value).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
 const portrait = `${import.meta.env.BASE_URL}images/professeur-squoinks.png`;
-let courses = [], themes = [], sources = [], bank = [], progress, coverage, pedagogy;
+let courses = [], themes = [], sources = [], bank = [], progress, coverage, pedagogy, audioMedia, illustrations;
 let serial = 0;
 const name = id => themes.find(t => t.id === id)?.label ?? id;
 const readKey = (course, chapter) => `${course.themeId}/${chapter.id}`;
@@ -28,6 +31,9 @@ function references(ids) {
   return `<details class="lesson-references"><summary>Pour aller à la source <span>Documentation et publications</span></summary><ul>${ids.map(id => sources.find(s => s.id === id)).filter(Boolean).map(s => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title)} ↗</a></li>`).join('')}</ul></details>`;
 }
 function renderBlock(block) {
+  if(block.type==='illustration')return renderIllustration(block,illustrations,import.meta.env.BASE_URL);
+  if(block.type==='audio-lab')return renderAudioLab(block,audioMedia,++serial,import.meta.env.BASE_URL);
+  if(block.type==='analysis-image')return renderAnalysisImage(block,audioMedia,import.meta.env.BASE_URL);
   if(block.type==='paragraph') return `<p>${esc(block.text)}</p>`;
   if(block.type==='heading') return `<h3>${esc(block.text)}</h3>`;
   if(block.type==='list') return `<div class="lesson-list">${block.title?`<h3>${esc(block.title)}</h3>`:''}<ul>${block.items.map(item=>`<li>${esc(item)}</li>`).join('')}</ul></div>`;
@@ -104,6 +110,7 @@ function showCourse(course, chapter) {
     root.querySelector('.lesson').scrollIntoView({block:'start',behavior:'instant'});
   });
   attachWalkthroughs(root,chapter.blocks);
+  attachAudioLabs(root,chapter.blocks,audioMedia,import.meta.env.BASE_URL);
   if(chapter.checkpoint)attachCheckpoint(root,chapter.checkpoint);
   if(window.matchMedia('(max-width:740px)').matches) root.querySelector('.chapter-toc').open=false;
   root.querySelector('#mark-read').addEventListener('change',event=>{
@@ -132,6 +139,7 @@ function nextCourse(course) {
 }
 
 function route({ focus=false } = {}) {
+  root.querySelectorAll('audio').forEach(audio=>audio.pause());
   const params=new URLSearchParams(location.search);
   const course=courses.find(c=>c.themeId===params.get('theme'));
   if(course) {
@@ -154,6 +162,14 @@ async function init() {
     const methodResponse=await fetch(`${import.meta.env.BASE_URL}courses/pedagogy.json`,{cache:'no-cache'});
     if(!methodResponse.ok)throw new Error('Méthode pédagogique indisponible');
     pedagogy=await methodResponse.json();
+    [audioMedia,illustrations]=await Promise.all(['audio-lab','illustrations'].map(async file=>{
+      const response=await fetch(`${import.meta.env.BASE_URL}media/${file}.json`,{cache:'no-cache'});
+      if(!response.ok)throw new Error('Médias du cours indisponibles');
+      return response.json();
+    }));
+    root.addEventListener('play',event=>{
+      if(event.target.tagName==='AUDIO')root.querySelectorAll('audio').forEach(audio=>{if(audio!==event.target)audio.pause();});
+    },true);
     coverage=buildCoverage(courses);
     if(bank.some(q=>!coverage.has(q.id))) throw new Error('Les cours ne couvrent pas toute la banque.');
     progress=normalizeProgress(storage.read(COURSE_STORAGE_KEY),courses);

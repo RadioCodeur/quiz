@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "images": [
+    {
+      "id": "speech-praat",
+      "src": "media/references/speech-praat.png",
+      "title": "Une parole réelle dans Praat : le mot japonais /minato/",
+      "alt": "Spectrogramme en niveaux de gris du mot minato : temps de 0 à environ 0,84 seconde horizontalement, fréquences de 0 à 10 kHz verticalement, avec des bandes sombres variables et une interruption vers 0,5 seconde.",
+      "caption": "Analyse d’une locutrice réelle, publiée par Ish ishwar. Ici, les régions sombres indiquent une contribution spectrale plus forte. L’image provient d’un autre enregistrement que les deux extraits de notre atelier ; elle sert à apprendre à lire une analyse de parole.",
+      "reading": [
+        "Suivez l’axe du bas : chaque colonne correspond à un petit voisinage temporel ; l’axe de gauche indique les fréquences en hertz.",
+        "Entre environ 0,15 et 0,42 seconde, plusieurs zones sombres restent visibles à des fréquences différentes : la voix n’est pas représentée par une seule courbe de hauteur.",
+        "Vers 0,5 seconde, une zone claire sépare deux régions vocales. Regardez ensuite comment les bandes sombres changent : un spectrogramme conserve une évolution que le RMS global effacerait.",
+        "L’auteur a appliqué une préaccentuation de 5 dB par octave. L’image ne fournit pas de barre de calibration : on ne peut pas y lire un niveau SPL ni comparer son obscurité à celle des graphiques de notre atelier."
+      ],
+      "credit": {
+        "author": "Ish ishwar",
+        "title": "Spectrogram -minato-.png",
+        "url": "https://commons.wikimedia.org/wiki/File:Spectrogram_-minato-.png",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+        "changes": "Fichier original inchangé ; explications françaises ajoutées séparément. La préaccentuation et les modifications Gimp appartiennent à l’image source."
+      },
+      "width": 1800,
+      "height": 1125,
+      "sha256": "92a7bf663789e06f8fd067cd299621242f5c19a5414a63302d29d1a8b8db5425",
+      "accessed": "2026-11-12",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Spectrogram_-minato-.png"
+    },
+    {
+      "id": "stft-windows",
+      "src": "media/references/stft-windows.svg",
+      "title": "Ce qu’une fenêtre courte ou longue permet de séparer",
+      "alt": "Deux grilles temps-fréquence : à gauche, cases étroites en temps et hautes en fréquence ; à droite, cases larges en temps et basses en fréquence.",
+      "caption": "Ce dessin représente des résolutions, pas des valeurs d’un enregistrement. Il aide à interpréter ensuite les deux véritables analyses du même son avec des fenêtres de durées différentes.",
+      "reading": [
+        "Dans chaque grille, le temps va vers la droite et la fréquence vers le haut. Les rectangles représentent une zone que l’analyse distingue difficilement en détails plus fins.",
+        "À gauche, les cases sont plus étroites horizontalement : une fenêtre courte situe mieux des changements rapprochés dans le temps, mais sépare moins bien des fréquences voisines.",
+        "À droite, les cases sont plus étendues en temps et plus fines en fréquence : une fenêtre plus longue aide à distinguer des composantes proches, au prix d’une localisation temporelle moins précise.",
+        "La grille est un repère qualitatif, sans échelle numérique. Le hop règle l’espacement des analyses successives ; réduire le hop ne remplace pas le choix de la durée de fenêtre."
+      ],
+      "credit": {
+        "author": "Д.Ильин, vectorisation d’après Johnteslade~commonswiki",
+        "title": "STFT - windows-en.svg",
+        "url": "https://commons.wikimedia.org/wiki/File:STFT_-_windows-en.svg",
+        "license": "CC0 1.0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "changes": "SVG original inchangé ; guide de lecture français ajouté séparément."
+      },
+      "width": 1032,
+      "height": 325,
+      "sha256": "7dc0b80c482cd3e019d8d0f06edbd6c0b6acf71a2deb9fd27ac89a85cdfec46f",
+      "accessed": "2026-11-12",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/9/97/STFT_-_windows-en.svg"
+    },
+    {
+      "id": "mel-hertz",
+      "src": "media/references/mel-hertz.svg",
+      "title": "Changer l’échelle des fréquences : des hertz aux mels",
+      "alt": "Courbe croissante mel en fonction de la fréquence en hertz ; sa pente diminue lorsque la fréquence augmente.",
+      "caption": "Cette courbe montre une convention de conversion entre hertz et mels, pas un spectrogramme ni une mesure de notre audition individuelle. Elle explique pourquoi un espacement régulier en mels ne donne pas un espacement régulier en hertz.",
+      "reading": [
+        "L’axe horizontal, « Hertz scale », indique une fréquence physique. L’axe vertical, « Mel scale », indique sa coordonnée dans cette convention perceptive.",
+        "La courbe monte mais s’aplatit : un même écart vertical en mels correspond à un intervalle de plus en plus large en hertz quand on se déplace vers les aigus.",
+        "Un banc de filtres régulièrement réparti en mels regroupe donc les fréquences différemment d’un banc uniformément espacé en hertz. Les filtres calculés dans notre atelier rendent ces regroupements visibles.",
+        "L’image utilise la formule logarithmique 1127,01048 × ln(1 + f/700), proche de la convention HTK. L’atelier utilise les paramètres mel annoncés par son calcul ; d’autres conventions, dont Slaney, ne coïncident pas exactement avec cette courbe."
+      ],
+      "credit": {
+        "author": "Krishna Vedala",
+        "title": "Mel-Hz plot.svg",
+        "url": "https://commons.wikimedia.org/wiki/File:Mel-Hz_plot.svg",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "changes": "SVG original inchangé ; guide de lecture français ajouté séparément."
+      },
+      "width": 950,
+      "height": 450,
+      "sha256": "d2a7bdcff8bd035cd40b3af61d25c067d3515f3b01b6b393a710eecb6b2d6730",
+      "accessed": "2026-11-12",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/a/aa/Mel-Hz_plot.svg"
+    },
+    {
+      "id": "cnn-convolution",
+      "src": "media/references/cnn-convolution.png",
+      "title": "Une convolution 2D : neuf contributions pour une sortie",
+      "alt": "Une matrice entourée de zéros, un filtre trois par trois et la matrice de sortie. Le détail inférieur multiplie les neuf valeurs de la région par celles du filtre et les additionne pour obtenir 7.",
+      "caption": "Exemple numérique de Daniel Voigt Godoy. La matrice est une démonstration, pas un spectrogramme mesuré. Dans un réseau audio 2D, la même mécanique peut parcourir les axes temps et fréquence d’une représentation réelle.",
+      "reading": [
+        "La zone en pointillés à gauche contient neuf valeurs. Le filtre central donne un poids à chacune des neuf positions ; il se déplace et réutilise les mêmes poids ailleurs.",
+        "Le détail du bas montre les produits correspondants. Leurs contributions non nulles valent 5, −8, 4 et 6 ; leur somme vaut 7, la case rouge du résultat.",
+        "Le cadre de zéros correspond au padding : il permet ici de conserver six lignes et six colonnes après application d’un filtre de taille trois avec un pas de un.",
+        "Les dimensions supplémentaires notent le lot et les canaux. Cette figure ne prouve pas qu’un filtre détecte une voix ou une percussion : cette spécialisation dépend des poids et de l’apprentissage."
+      ],
+      "credit": {
+        "author": "Daniel Voigt Godoy",
+        "title": "Convolutional neural network, convolution worked example.png",
+        "url": "https://commons.wikimedia.org/wiki/File:Convolutional_neural_network,_convolution_worked_example.png",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "changes": "Fichier original inchangé ; guide de lecture français ajouté séparément."
+      },
+      "width": 1426,
+      "height": 1000,
+      "sha256": "772620e38f5462452eff317ccdbe29b3a34377c52968229eeafa278defdb474d",
+      "accessed": "2026-11-12",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Convolutional_neural_network%2C_convolution_worked_example.png"
+    },
+    {
+      "id": "confusion-matrix",
+      "src": "media/references/confusion-matrix.png",
+      "title": "Situer les erreurs avant de choisir une métrique",
+      "alt": "Matrice binaire de confusion : classes réelles en colonnes, prédictions en lignes ; TP en haut à gauche, FP en haut à droite, FN en bas à gauche et TN en bas à droite.",
+      "caption": "Le dessin de Jackverr nomme les quatre issues possibles d’une décision binaire. Il ne contient pas de résultats expérimentaux. Nous pouvons y placer les décomptes d’un détecteur de voix en choisissant « voix présente » comme classe positive.",
+      "reading": [
+        "Lisez d’abord les axes : « Actual Values » décrit la réalité en colonnes ; « Predicted Values » décrit la prédiction en lignes. Toutes les matrices publiées n’utilisent pas cette orientation.",
+        "TP signifie voix présente et correctement détectée. FP signifie voix annoncée à tort ; FN signifie voix oubliée. TN signifie absence correctement reconnue.",
+        "Pour la précision, on compare TP à toutes les annonces positives, TP + FP. Pour le rappel, on compare TP à tous les positifs réels, TP + FN.",
+        "Si la tâche contient plusieurs présences simultanées, on peut compter ces quatre issues séparément par étiquette. Leur somme ou leur moyenne doit alors préciser la convention retenue."
+      ],
+      "credit": {
+        "author": "Jackverr",
+        "title": "ConfusionMatrix.png",
+        "url": "https://commons.wikimedia.org/wiki/File:ConfusionMatrix.png",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "changes": "Fichier original inchangé ; guide de lecture français ajouté séparément."
+      },
+      "width": 623,
+      "height": 382,
+      "sha256": "7ba8cbed7b693c3052963e7e915ea77dc13e98d3600427754bae59aa32568bb7",
+      "accessed": "2026-11-12",
+      "downloadUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6f/ConfusionMatrix.png"
+    }
+  ]
+}

@@ -312,6 +312,59 @@ try {
     assert.equal(await page.locator('#mark-read').isChecked(),true);
     assert.deepEqual(await getSession(),quizSnapshot);
   });
+  await check('médias : versions réelles, mesures, images décodées et lecture volontaire',async()=>{
+    await page.goto(`${base}/cours.html?theme=audio-signal#amplitude-puissance-decibels`);
+    await page.locator('[data-audio-lab]').waitFor();
+    const lab=page.locator('[data-audio-lab]').first();
+    assert.equal(await lab.locator('audio').count(),2);
+    assert.equal(await lab.locator('audio[autoplay]').count(),0);
+    assert.ok(await lab.locator('audio').evaluateAll(nodes=>nodes.every(node=>node.paused&&node.preload==='none'&&node.volume===.5)));
+    await lab.locator('[data-lab-version]').selectOption('rms-matched');
+    assert.ok(await lab.locator('audio').evaluateAll(nodes=>nodes.every(node=>node.src.endsWith('-rms-matched.wav')&&node.paused)));
+    await lab.locator('[data-lab-display]').selectOption('mel');
+    for(const img of await lab.locator('figure img').all()){
+      await img.scrollIntoViewIfNeeded();
+      await img.evaluate(image=>image.decode());
+      assert.ok(await img.evaluate(image=>image.naturalWidth>100));
+    }
+    await lab.locator('.lab-measures').first().locator('summary').click();
+    assert.ok((await lab.locator('.lab-measures').first().innerText()).includes('21,94'));
+    await lab.locator('[data-lab-version]').selectOption('quiet');
+    await lab.locator('audio').first().evaluate(async audio=>{
+      audio.load();
+      if(audio.readyState<1)await new Promise((resolve,reject)=>{audio.addEventListener('loadedmetadata',resolve,{once:true});audio.addEventListener('error',reject,{once:true});});
+    });
+    assert.ok(Math.abs(await lab.locator('audio').first().evaluate(audio=>audio.duration)-4)<.01);
+    assert.deepEqual(await getSession(),quizSnapshot);
+  });
+  await check('médias : une seule écoute, représentation sans arrêt et navigation qui coupe le son',async()=>{
+    const lab=page.locator('[data-audio-lab]').first(),first=lab.locator('audio').first(),second=lab.locator('audio').last();
+    await first.click();
+    await first.evaluate(audio=>audio.play());
+    assert.equal(await first.evaluate(audio=>audio.paused),false);
+    await second.evaluate(audio=>audio.play());
+    assert.equal(await first.evaluate(audio=>audio.paused),true);
+    assert.equal(await second.evaluate(audio=>audio.paused),false);
+    await page.evaluate(()=>{window.__mediaBefore=document.querySelector('[data-audio-lab] audio:last-of-type');});
+    const handle=await second.elementHandle();
+    await lab.locator('[data-lab-display]').selectOption('waveform');
+    assert.equal(await handle.evaluate(audio=>audio.isConnected),true);
+    assert.equal(await handle.evaluate(audio=>audio.paused),false);
+    await page.locator('.chapter-next').click();await page.locator('#lesson-title').waitFor();
+    assert.equal(await handle.evaluate(audio=>audio.paused),true);
+    await handle.dispose();
+    assert.deepEqual(await getSession(),quizSnapshot);
+  });
+  await check('illustrations : provenance, lecture guidée et fichiers locaux sur mobile',async()=>{
+    await page.goto(`${base}/cours.html?theme=audio-ml#architectures-axes-contexte`);
+    await page.locator('.course-illustration').first().waitFor();
+    const illustration=page.locator('.course-illustration').first();
+    await illustration.locator('img').scrollIntoViewIfNeeded();await illustration.locator('img').evaluate(image=>image.decode());
+    assert.ok((await illustration.locator('.media-credit').innerText()).includes('CC BY'));
+    assert.ok(await illustration.locator('.image-reading li').count()>=2);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    assert.ok(new URL(await illustration.locator('img').getAttribute('src'),page.url()).origin===new URL(base).origin);
+  });
   await check('cours : stockage bloqué et liens périmés restent utilisables',async()=>{
     const ctx=await browser.newContext({viewport:{width:360,height:800}});
     await ctx.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw new DOMException('Blocked','SecurityError');}}));

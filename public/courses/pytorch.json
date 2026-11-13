@@ -432,6 +432,14 @@
         },
         {
           "type": "paragraph",
+          "text": "Le mini-classifieur de ce module utilise trois descripteurs. Voici une autre entrée possible, issue cette fois des deux vrais sons du laboratoire : leurs cartes mel. Elles ont chacune 64 bandes et 401 trames. Ajouter un axe de canal au modèle donne (B,C,F,T)=(2,1,64,401). Cette dimension C n’invente pas un deuxième enregistrement : nos fichiers sources restent mono."
+        },
+        {
+          "type": "analysis-image",
+          "assetId": "tensor-axes"
+        },
+        {
+          "type": "paragraph",
           "text": "Au chargement, stack([a, b]) crée un nouvel axe à partir d’objets de même forme. cat([a, b], dim=...) allonge un axe existant. Deux portions successives d’un signal peuvent se concaténer dans le temps. Deux extraits indépendants doivent au contraire rester séparés par l’axe des exemples. Pour un spectrogramme (batch, temps, fréquences), permute(0, 2, 1) obtient (batch, fréquences, temps) en conservant les coordonnées ; reshape ne remplace pas cette permutation. Ainsi, deux signaux (1, T) concaténés sur l’axe zéro donnent (2, T), tandis que leur empilement crée (2, 1, T)."
         },
         {

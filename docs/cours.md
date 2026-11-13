@@ -48,3 +48,12 @@ npm run test:browser
 Si npm n’est pas dans le PATH, utiliser `node scripts/run.mjs validate:courses`, puis les mêmes noms de scripts (`test`, `build`, `test:browser`). La construction valide la banque et les cours avant de produire `dist/index.html` et `dist/cours.html`. Le test navigateur parcourt les 65 chapitres à 360 px et vérifie les deux pages sous `/qr-entretien/`.
 
 La publication utilise le workflow manuel GitHub Pages du dépôt, après validation et vérification dans le navigateur. Les principes pédagogiques et leur portée sont documentés dans `docs/pedagogie.md` et accessibles depuis le catalogue des cours.
+
+
+## Voir et écouter les données réelles
+
+La révision du 13 novembre 2026 ajoute deux extraits réels et leurs transformations : 18 WAV, 61 images calculées, cinq illustrations externes créditées, onze laboratoires d’écoute et douze blocs d’images commentées, répartis sur les six modules. La section niveaux explique amplitude, carré moyen, RMS, dBFS, dB SPL et LUFS avant le code, puis conclut sur les mesures des fichiers.
+
+Les nouveaux blocs `audio-lab` utilisent une vue parmi `overview`, `level`, `resample`, `stft`, `mel`, `phase`, `augmentation`. Les `illustration` référencent `public/media/illustrations.json` et les `analysis-image` référencent les figures de `public/media/audio-lab.json`. L’interface, les légendes et les crédits se trouvent dans `src/course-media.js` et `src/course-media.css`. La provenance et les conventions de mesure sont documentées dans `docs/audio-lab.md` et `docs/media-sources.md`.
+
+`validate:media` vérifie les chemins locaux, les licences déclarées, les fichiers, les empreintes et les mesures recalculées depuis le PCM. La construction lance ce contrôle. Les contenus et liens historiques des 200 QCM restent conservés.

@@ -1,0 +1,1052 @@
+{
+  "version": 1,
+  "generatedBy": "scripts/build-audio-media.py",
+  "sources": [
+    {
+      "id": "libri-voice",
+      "title": "The Ashiel Mystery — extrait lu",
+      "author": "Marion Bryce (texte), Garth Comira (lecture) ; corpus LibriSpeech",
+      "url": "https://www.openslr.org/12/",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "downloadUrl": "https://raw.githubusercontent.com/librosa/data/main/audio/5703-47212-0000.hq.ogg",
+      "metadataUrl": "https://github.com/librosa/data/blob/main/audio/5703-47212-0000.toml",
+      "localFile": "media/audio/sources/voice-source.ogg",
+      "licenseFile": "media/audio/sources/voice-license.txt",
+      "cropStart": 0.0,
+      "changes": "Quatre premières secondes, décodage mono puis interpolation de 16 à 48 kHz sans normalisation de niveau. Dérivés décrits individuellement. La bande de la source reste limitée par sa cadence de 16 kHz.",
+      "sha256": "f09254a0daf4b14b292868d46dc2e3c8e158d19fafff739ad4c3931e2ce7b1b0",
+      "bytes": 74634
+    },
+    {
+      "id": "librosa-snare",
+      "title": "Accelerating snare drum — montage de caisse claire",
+      "author": "Brian McFee (montage), sakebeats (enregistrement du sample)",
+      "url": "https://github.com/librosa/data/blob/main/audio/snare-accelerate.toml",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "downloadUrl": "https://raw.githubusercontent.com/librosa/data/main/audio/snare-accelerate.ogg",
+      "originalSampleUrl": "https://freesound.org/people/sakebeats/sounds/176345/",
+      "originalSampleLicense": "CC0",
+      "metadataUrl": "https://github.com/librosa/data/blob/main/audio/snare-accelerate.txt",
+      "localFile": "media/audio/sources/percussion-source.ogg",
+      "licenseFile": "media/audio/sources/percussion-license.txt",
+      "cropStart": 8.0,
+      "changes": "Secondes 8 à 12 du montage accéléré de frappes enregistrées ; décodage mono puis interpolation de 22,05 à 48 kHz sans normalisation de niveau. Ce n’est pas une nouvelle prise jouée en continu. Dérivés décrits individuellement.",
+      "sha256": "c4b237c784504cec7896e5c4b4e99e0774cf249129b627da94bbbea9e2c6605a",
+      "bytes": 121560
+    }
+  ],
+  "clips": [
+    {
+      "id": "voice",
+      "label": "Voix parlée",
+      "sourceId": "libri-voice",
+      "nativeSampleRate": 16000,
+      "cropStart": 0.0,
+      "duration": 4.0,
+      "variants": [
+        {
+          "id": "original",
+          "label": "Référence à 48 kHz (interpolée)",
+          "audio": "media/audio/voice-original.wav",
+          "sampleRate": 48000,
+          "duration": 4.0,
+          "description": "Extrait réel mono de 4 s ; source à 16 000 Hz interpolée à 48 000 Hz. Aucun gain de normalisation. Une cadence plus haute ne recrée pas les aigus absents.",
+          "metrics": {
+            "peak": 0.8021240234375,
+            "rms": 0.12074498188527522,
+            "meanSquare": 0.014579350650475439,
+            "peakDbfs": -1.9151695288248036,
+            "rmsDbfs": -18.362618186240418,
+            "crestDb": 16.447448657415617,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/voice-original-waveform.png",
+            "spectrogram": "media/figures/voice-original-stft.png",
+            "mel": "media/figures/voice-original-mel.png"
+          },
+          "parameters": {
+            "nativeSampleRate": 16000,
+            "cropStart": 0.0,
+            "gain": 1,
+            "resampler": "scipy.signal.resample_poly, fenêtre Kaiser par défaut",
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 1200,
+            "hopLength": 480,
+            "center": true,
+            "stftShape": [
+              601,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "f9a00073acdf7e48261b19963d1ed88e16cb09dfd97105497b77b42da389a6be",
+          "bytes": 384044
+        },
+        {
+          "id": "quiet",
+          "label": "Gain ÷ 2 (−6,02 dB)",
+          "audio": "media/audio/voice-quiet.wav",
+          "sampleRate": 48000,
+          "duration": 4.0,
+          "description": "Toutes les amplitudes sont divisées par 2. Le RMS et la crête baissent d’environ 6,02 dB ; la puissance moyenne est divisée par 4. Aucun ajustement automatique du lecteur.",
+          "metrics": {
+            "peak": 0.40106201171875,
+            "rms": 0.06037249401549904,
+            "meanSquare": 0.0036448380336514675,
+            "peakDbfs": -7.935769442104428,
+            "rmsDbfs": -24.38321765742242,
+            "crestDb": 16.447448215317994,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/voice-quiet-waveform.png",
+            "spectrogram": "media/figures/voice-quiet-stft.png",
+            "mel": "media/figures/voice-quiet-mel.png"
+          },
+          "parameters": {
+            "gain": 0.5,
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 1200,
+            "hopLength": 480,
+            "center": true,
+            "stftShape": [
+              601,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "05e3706a4edbb17389ddb63ed1d5f5d03b45182da29df9adb308bd82ad8e6fb0",
+          "bytes": 384044
+        },
+        {
+          "id": "rms-matched",
+          "label": "RMS commun 0,08",
+          "audio": "media/audio/voice-rms-matched.wav",
+          "sampleRate": 48000,
+          "duration": 4.0,
+          "description": "Gain constant choisi pour atteindre un RMS de 0,08. Les deux extraits ont ainsi presque le même RMS après quantification ; leurs pics et leurs timbres peuvent rester différents.",
+          "metrics": {
+            "peak": 0.531463623046875,
+            "rms": 0.08000000475043621,
+            "meanSquare": 0.0064000007600698156,
+            "peakDbfs": -5.490529123309257,
+            "rmsDbfs": -21.938199744389088,
+            "crestDb": 16.44767062107983,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/voice-rms-matched-waveform.png",
+            "spectrogram": "media/figures/voice-rms-matched-stft.png",
+            "mel": "media/figures/voice-rms-matched-mel.png"
+          },
+          "parameters": {
+            "gain": 0.6625534142363887,
+            "targetRms": 0.08,
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 1200,
+            "hopLength": 480,
+            "center": true,
+            "stftShape": [
+              601,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "5edb0651d413800347cd9fa2dc47eac41376753f8225f00696d25795c99c2706",
+          "bytes": 384044
+        },
+        {
+          "id": "resampled",
+          "label": "Rééchantillonné 16 kHz",
+          "audio": "media/audio/voice-resampled.wav",
+          "sampleRate": 16000,
+          "duration": 4.0,
+          "description": "Filtrage antirepliement puis calcul de trois fois moins de valeurs. Durée 4 s conservée ; aucune fréquence représentable au-dessus de 8 kHz.",
+          "metrics": {
+            "peak": 0.79742431640625,
+            "rms": 0.12077282965864229,
+            "meanSquare": 0.014586076383755427,
+            "peakDbfs": -1.9662105046478455,
+            "rmsDbfs": -18.360615164718666,
+            "crestDb": 16.394404660070823,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/voice-resampled-waveform.png",
+            "spectrogram": "media/figures/voice-resampled-stft.png",
+            "mel": "media/figures/voice-resampled-mel.png"
+          },
+          "parameters": {
+            "up": 1,
+            "down": 3,
+            "resampler": "scipy.signal.resample_poly, fenêtre Kaiser par défaut",
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 400,
+            "hopLength": 160,
+            "center": true,
+            "stftShape": [
+              201,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "903cae1ed582036f6cd93ee6143b120289aabb5ec1901b7e37540efc2ec6b1c4",
+          "bytes": 128044
+        },
+        {
+          "id": "lowpass",
+          "label": "Passe-bas 1 kHz",
+          "audio": "media/audio/voice-lowpass.wav",
+          "sampleRate": 48000,
+          "duration": 4.0,
+          "description": "Filtre Butterworth ordre 6 appliqué aller-retour : forte atténuation des aigus, durée conservée. Le niveau peut changer ; il n’est pas renormalisé.",
+          "metrics": {
+            "peak": 0.654449462890625,
+            "rms": 0.11759842945378075,
+            "meanSquare": 0.01382939060999585,
+            "peakDbfs": -3.6824776876925185,
+            "rmsDbfs": -18.591969565896793,
+            "crestDb": 14.909491878204273,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/voice-lowpass-waveform.png",
+            "spectrogram": "media/figures/voice-lowpass-stft.png",
+            "mel": "media/figures/voice-lowpass-mel.png"
+          },
+          "parameters": {
+            "cutoffHz": 1000,
+            "order": 6,
+            "filter": "Butterworth, sosfiltfilt aller-retour",
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 1200,
+            "hopLength": 480,
+            "center": true,
+            "stftShape": [
+              601,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "adad7708153092d26b492e93699ba51433e706500e5f3cc4f862ebba3ad5903a",
+          "bytes": 384044
+        },
+        {
+          "id": "clipped",
+          "label": "Gain × 4 puis écrêtage",
+          "audio": "media/audio/voice-clipped.wav",
+          "sampleRate": 48000,
+          "duration": 4.0,
+          "description": "Le gain × 4 aurait dépassé la pleine échelle. Nous limitons artificiellement à ±0,98 : les pics sont aplatis et des composantes nouvelles peuvent apparaître. C’est une démonstration de distorsion.",
+          "metrics": {
+            "peak": 0.980010986328125,
+            "rms": 0.3973278884653198,
+            "meanSquare": 0.15786945095230961,
+            "peakDbfs": -0.17538111319220828,
+            "rmsDbfs": -8.01701901444658,
+            "crestDb": 7.841637901254371,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/voice-clipped-waveform.png",
+            "spectrogram": "media/figures/voice-clipped-stft.png",
+            "mel": "media/figures/voice-clipped-mel.png"
+          },
+          "parameters": {
+            "gain": 4,
+            "clipThreshold": 0.98,
+            "preClipFraction": 0.06421354166666667,
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 1200,
+            "hopLength": 480,
+            "center": true,
+            "stftShape": [
+              601,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "ec3a9f8449fc85a384218b64afc288b9b5029d2bfcd768721a4808be24ac0e51",
+          "bytes": 384044
+        },
+        {
+          "id": "polarity-inverted",
+          "label": "Polarité inversée",
+          "audio": "media/audio/voice-polarity-inverted.wav",
+          "sampleRate": 48000,
+          "duration": 4.0,
+          "description": "Chaque amplitude est multipliée par −1. Écoutée seule, cette inversion conserve presque exactement RMS, crête et spectre ; le changement devient décisif lorsque des signaux se mélangent.",
+          "metrics": {
+            "peak": 0.8021240234375,
+            "rms": 0.12074498188527522,
+            "meanSquare": 0.014579350650475439,
+            "peakDbfs": -1.9151695288248036,
+            "rmsDbfs": -18.362618186240418,
+            "crestDb": 16.447448657415617,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/voice-polarity-inverted-waveform.png",
+            "spectrogram": "media/figures/voice-polarity-inverted-stft.png",
+            "mel": "media/figures/voice-polarity-inverted-mel.png"
+          },
+          "parameters": {
+            "gain": -1,
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 1200,
+            "hopLength": 480,
+            "center": true,
+            "stftShape": [
+              601,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "a9f4d216a226cb34cb9c1ff526af8724248c9a83571d7f1609ddd7959ea9c295",
+          "bytes": 384044
+        },
+        {
+          "id": "cancelled",
+          "label": "Deux canaux opposés : somme nulle",
+          "audio": "media/audio/voice-cancelled.wav",
+          "sampleRate": 48000,
+          "duration": 4.0,
+          "description": "Démonstration construite à partir de cette prise mono : gauche=x, droite=−x, puis (gauche+droite)/2. Ce ne sont pas deux microphones réels : les canaux artificiels s’annulent exactement.",
+          "metrics": {
+            "peak": 0.0,
+            "rms": 0.0,
+            "meanSquare": 0.0,
+            "peakDbfs": null,
+            "rmsDbfs": null,
+            "crestDb": null,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/voice-cancelled-waveform.png",
+            "spectrogram": "media/figures/voice-cancelled-stft.png",
+            "mel": "media/figures/voice-cancelled-mel.png"
+          },
+          "parameters": {
+            "construction": "(x + (-x)) / 2",
+            "artificialStereo": true,
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 1200,
+            "hopLength": 480,
+            "center": true,
+            "stftShape": [
+              601,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "a9e449b8270343d0c9339c600295ad669fde65d5b3a967649e6d7df7c5034528",
+          "bytes": 384044
+        },
+        {
+          "id": "phase-random",
+          "label": "Reconstruction avec phase aléatoire",
+          "audio": "media/audio/voice-phase-random.wav",
+          "sampleRate": 48000,
+          "duration": 4.0,
+          "description": "La cible conserve le module STFT et remplace sa phase par des angles aléatoires ; iSTFT reconstruit un signal. Le RMS est ensuite rapproché de la référence pour l’écoute. Une STFT à phase arbitraire n’est généralement pas cohérente : la STFT du WAV reconstruit n’a donc pas exactement le module cible.",
+          "metrics": {
+            "peak": 0.94378662109375,
+            "rms": 0.12074500785132683,
+            "meanSquare": 0.014579356921016976,
+            "peakDbfs": -0.5025236682008994,
+            "rmsDbfs": -18.36261631835133,
+            "crestDb": 17.860092650150428,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/voice-phase-random-waveform.png",
+            "spectrogram": "media/figures/voice-phase-random-stft.png",
+            "mel": "media/figures/voice-phase-random-mel.png"
+          },
+          "parameters": {
+            "seed": 20261112,
+            "rmsMatchingGain": 1.6055089015054407,
+            "target": "module STFT conservé avant projection iSTFT ; phase aléatoire",
+            "magnitudePreservedAfterReconstruction": false,
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 1200,
+            "hopLength": 480,
+            "center": true,
+            "stftShape": [
+              601,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "2e3e8b09a6354805b4fa90d3bbd9774b326bd9f2d9853a83f3070178c2dc3e1b",
+          "bytes": 384044
+        }
+      ],
+      "istftRoundTripMaxError": 4.440892098500626e-16
+    },
+    {
+      "id": "percussion",
+      "label": "Caisse claire",
+      "sourceId": "librosa-snare",
+      "nativeSampleRate": 22050,
+      "cropStart": 8.0,
+      "duration": 4.0,
+      "variants": [
+        {
+          "id": "original",
+          "label": "Référence à 48 kHz (interpolée)",
+          "audio": "media/audio/percussion-original.wav",
+          "sampleRate": 48000,
+          "duration": 4.0,
+          "description": "Extrait réel mono de 4 s ; source à 22 050 Hz interpolée à 48 000 Hz. Aucun gain de normalisation. Une cadence plus haute ne recrée pas les aigus absents.",
+          "metrics": {
+            "peak": 0.652587890625,
+            "rms": 0.06374860620912524,
+            "meanSquare": 0.004063884793606121,
+            "peakDbfs": -3.7072197842247423,
+            "rmsDbfs": -23.9105861229164,
+            "crestDb": 20.203366338691655,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/percussion-original-waveform.png",
+            "spectrogram": "media/figures/percussion-original-stft.png",
+            "mel": "media/figures/percussion-original-mel.png"
+          },
+          "parameters": {
+            "nativeSampleRate": 22050,
+            "cropStart": 8.0,
+            "gain": 1,
+            "resampler": "scipy.signal.resample_poly, fenêtre Kaiser par défaut",
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 1200,
+            "hopLength": 480,
+            "center": true,
+            "stftShape": [
+              601,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "fb67e1086465bf7bcb388829e653aefa5fb5beec9be6ff9f4f82f4d8bccca95f",
+          "bytes": 384044
+        },
+        {
+          "id": "quiet",
+          "label": "Gain ÷ 2 (−6,02 dB)",
+          "audio": "media/audio/percussion-quiet.wav",
+          "sampleRate": 48000,
+          "duration": 4.0,
+          "description": "Toutes les amplitudes sont divisées par 2. Le RMS et la crête baissent d’environ 6,02 dB ; la puissance moyenne est divisée par 4. Aucun ajustement automatique du lecteur.",
+          "metrics": {
+            "peak": 0.3262939453125,
+            "rms": 0.03187428257947732,
+            "meanSquare": 0.0010159698899563712,
+            "peakDbfs": -9.727819697504366,
+            "rmsDbfs": -29.931191629375036,
+            "crestDb": 20.20337193187067,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/percussion-quiet-waveform.png",
+            "spectrogram": "media/figures/percussion-quiet-stft.png",
+            "mel": "media/figures/percussion-quiet-mel.png"
+          },
+          "parameters": {
+            "gain": 0.5,
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 1200,
+            "hopLength": 480,
+            "center": true,
+            "stftShape": [
+              601,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "e26c6f9fae1f3cc1532d2a74aa26cdb1d609d7c68c76e6d278bf95cfab85f7fb",
+          "bytes": 384044
+        },
+        {
+          "id": "rms-matched",
+          "label": "RMS commun 0,08",
+          "audio": "media/audio/percussion-rms-matched.wav",
+          "sampleRate": 48000,
+          "duration": 4.0,
+          "description": "Gain constant choisi pour atteindre un RMS de 0,08. Les deux extraits ont ainsi presque le même RMS après quantification ; leurs pics et leurs timbres peuvent rester différents.",
+          "metrics": {
+            "peak": 0.8189697265625,
+            "rms": 0.07999997298814832,
+            "meanSquare": 0.00639999567810446,
+            "peakDbfs": -1.7346430351177244,
+            "rmsDbfs": -21.938203192936157,
+            "crestDb": 20.20356015781843,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/percussion-rms-matched-waveform.png",
+            "spectrogram": "media/figures/percussion-rms-matched-stft.png",
+            "mel": "media/figures/percussion-rms-matched-mel.png"
+          },
+          "parameters": {
+            "gain": 1.25492939779048,
+            "targetRms": 0.08,
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 1200,
+            "hopLength": 480,
+            "center": true,
+            "stftShape": [
+              601,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "cdea48ab87c6f50e3e5ecf693c86a0c8a0ddffec881ffb6b98c64178ed394532",
+          "bytes": 384044
+        },
+        {
+          "id": "resampled",
+          "label": "Rééchantillonné 16 kHz",
+          "audio": "media/audio/percussion-resampled.wav",
+          "sampleRate": 16000,
+          "duration": 4.0,
+          "description": "Filtrage antirepliement puis calcul de trois fois moins de valeurs. Durée 4 s conservée ; aucune fréquence représentable au-dessus de 8 kHz.",
+          "metrics": {
+            "peak": 0.6409912109375,
+            "rms": 0.0634660584298238,
+            "meanSquare": 0.004027940572617808,
+            "peakDbfs": -3.8629585068939716,
+            "rmsDbfs": -23.949169455599662,
+            "crestDb": 20.08621094870569,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/percussion-resampled-waveform.png",
+            "spectrogram": "media/figures/percussion-resampled-stft.png",
+            "mel": "media/figures/percussion-resampled-mel.png"
+          },
+          "parameters": {
+            "up": 1,
+            "down": 3,
+            "resampler": "scipy.signal.resample_poly, fenêtre Kaiser par défaut",
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 400,
+            "hopLength": 160,
+            "center": true,
+            "stftShape": [
+              201,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "f379519297c91205a7986c7f1bed97692b34d3055901ca4528fda3f82e6d7b0d",
+          "bytes": 128044
+        },
+        {
+          "id": "lowpass",
+          "label": "Passe-bas 1 kHz",
+          "audio": "media/audio/percussion-lowpass.wav",
+          "sampleRate": 48000,
+          "duration": 4.0,
+          "description": "Filtre Butterworth ordre 6 appliqué aller-retour : forte atténuation des aigus, durée conservée. Le niveau peut changer ; il n’est pas renormalisé.",
+          "metrics": {
+            "peak": 0.514190673828125,
+            "rms": 0.060953361326602354,
+            "meanSquare": 0.0037153122570113433,
+            "peakDbfs": -5.7775160934086225,
+            "rmsDbfs": -24.300046796697576,
+            "crestDb": 18.522530703288957,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/percussion-lowpass-waveform.png",
+            "spectrogram": "media/figures/percussion-lowpass-stft.png",
+            "mel": "media/figures/percussion-lowpass-mel.png"
+          },
+          "parameters": {
+            "cutoffHz": 1000,
+            "order": 6,
+            "filter": "Butterworth, sosfiltfilt aller-retour",
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 1200,
+            "hopLength": 480,
+            "center": true,
+            "stftShape": [
+              601,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "fc469cbec3d5eb2bcdb208f38cbb6beb6171811a190608fefd18455f285bef3f",
+          "bytes": 384044
+        },
+        {
+          "id": "clipped",
+          "label": "Gain × 4 puis écrêtage",
+          "audio": "media/audio/percussion-clipped.wav",
+          "sampleRate": 48000,
+          "duration": 4.0,
+          "description": "Le gain × 4 aurait dépassé la pleine échelle. Nous limitons artificiellement à ±0,98 : les pics sont aplatis et des composantes nouvelles peuvent apparaître. C’est une démonstration de distorsion.",
+          "metrics": {
+            "peak": 0.980010986328125,
+            "rms": 0.1947016772424443,
+            "meanSquare": 0.03790874312102096,
+            "peakDbfs": -0.17538111319220828,
+            "rmsDbfs": -14.212606145356848,
+            "crestDb": 14.03722503216464,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/percussion-clipped-waveform.png",
+            "spectrogram": "media/figures/percussion-clipped-stft.png",
+            "mel": "media/figures/percussion-clipped-mel.png"
+          },
+          "parameters": {
+            "gain": 4,
+            "clipThreshold": 0.98,
+            "preClipFraction": 0.02371875,
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 1200,
+            "hopLength": 480,
+            "center": true,
+            "stftShape": [
+              601,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "271e63ae2dd3ef9cb9f8118176efbe0eb03a08a6d714621ab4749d9aed9240da",
+          "bytes": 384044
+        },
+        {
+          "id": "polarity-inverted",
+          "label": "Polarité inversée",
+          "audio": "media/audio/percussion-polarity-inverted.wav",
+          "sampleRate": 48000,
+          "duration": 4.0,
+          "description": "Chaque amplitude est multipliée par −1. Écoutée seule, cette inversion conserve presque exactement RMS, crête et spectre ; le changement devient décisif lorsque des signaux se mélangent.",
+          "metrics": {
+            "peak": 0.652587890625,
+            "rms": 0.06374860620912524,
+            "meanSquare": 0.004063884793606121,
+            "peakDbfs": -3.7072197842247423,
+            "rmsDbfs": -23.9105861229164,
+            "crestDb": 20.203366338691655,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/percussion-polarity-inverted-waveform.png",
+            "spectrogram": "media/figures/percussion-polarity-inverted-stft.png",
+            "mel": "media/figures/percussion-polarity-inverted-mel.png"
+          },
+          "parameters": {
+            "gain": -1,
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 1200,
+            "hopLength": 480,
+            "center": true,
+            "stftShape": [
+              601,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "3cf4616a14675b2a15c42032b35643b30d2737758665c39bd9a1059a976e6abb",
+          "bytes": 384044
+        },
+        {
+          "id": "cancelled",
+          "label": "Deux canaux opposés : somme nulle",
+          "audio": "media/audio/percussion-cancelled.wav",
+          "sampleRate": 48000,
+          "duration": 4.0,
+          "description": "Démonstration construite à partir de cette prise mono : gauche=x, droite=−x, puis (gauche+droite)/2. Ce ne sont pas deux microphones réels : les canaux artificiels s’annulent exactement.",
+          "metrics": {
+            "peak": 0.0,
+            "rms": 0.0,
+            "meanSquare": 0.0,
+            "peakDbfs": null,
+            "rmsDbfs": null,
+            "crestDb": null,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/percussion-cancelled-waveform.png",
+            "spectrogram": "media/figures/percussion-cancelled-stft.png",
+            "mel": "media/figures/percussion-cancelled-mel.png"
+          },
+          "parameters": {
+            "construction": "(x + (-x)) / 2",
+            "artificialStereo": true,
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 1200,
+            "hopLength": 480,
+            "center": true,
+            "stftShape": [
+              601,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "a9e449b8270343d0c9339c600295ad669fde65d5b3a967649e6d7df7c5034528",
+          "bytes": 384044
+        },
+        {
+          "id": "phase-random",
+          "label": "Reconstruction avec phase aléatoire",
+          "audio": "media/audio/percussion-phase-random.wav",
+          "sampleRate": 48000,
+          "duration": 4.0,
+          "description": "La cible conserve le module STFT et remplace sa phase par des angles aléatoires ; iSTFT reconstruit un signal. Le RMS est ensuite rapproché de la référence pour l’écoute. Une STFT à phase arbitraire n’est généralement pas cohérente : la STFT du WAV reconstruit n’a donc pas exactement le module cible.",
+          "metrics": {
+            "peak": 0.741058349609375,
+            "rms": 0.06374861968376908,
+            "meanSquare": 0.00406388651158583,
+            "peakDbfs": -2.602951902068025,
+            "rmsDbfs": -23.910584286966344,
+            "crestDb": 21.30763238489832,
+            "digitalFullScaleFraction": 0.0
+          },
+          "figures": {
+            "waveform": "media/figures/percussion-phase-random-waveform.png",
+            "spectrogram": "media/figures/percussion-phase-random-stft.png",
+            "mel": "media/figures/percussion-phase-random-mel.png"
+          },
+          "parameters": {
+            "seed": 20261112,
+            "rmsMatchingGain": 1.6379556337672536,
+            "target": "module STFT conservé avant projection iSTFT ; phase aléatoire",
+            "magnitudePreservedAfterReconstruction": false,
+            "window": "Hann périodique",
+            "windowMs": 25,
+            "hopMs": 10,
+            "nFft": 1200,
+            "hopLength": 480,
+            "center": true,
+            "stftShape": [
+              601,
+              401
+            ],
+            "stftScale": "P = abs(STFT(x) / sum(fenetre)) ** 2 ; affichage 10 log10(max(P,1e-10)/1). Référence spectrale 1 commune, non calibrée en W ni en dB SPL.",
+            "melScale": "64 filtres Slaney normalisés en aire, 0–8000 Hz, appliqués à P ; affichage 10 log10(max(M,1e-10)/1), référence 1 fixe. Ce n’est pas le dBFS du RMS.",
+            "colorLimitsDb": [
+              -100,
+              0
+            ],
+            "spectrogramFrequencyLimitHz": 12000
+          },
+          "sha256": "50c3cf095b42cb53a19a2d68425d7992e9a4b81a6037c2fec720087594f21d1e",
+          "bytes": 384044
+        }
+      ],
+      "istftRoundTripMaxError": 2.7755575615628914e-16
+    }
+  ],
+  "figures": {
+    "stft-windows": {
+      "src": "media/figures/stft-window-comparison.png",
+      "title": "Même son : fenêtres courtes ou longues",
+      "caption": "Hann 10 ms et 80 ms, hop 10 ms, même référence de couleur. La précision en temps et la grille fréquentielle changent ; une fenêtre longue peut étaler une attaque. La résolution physique dépend aussi de la largeur du lobe de la fenêtre, pas seulement du pas des bins.",
+      "alt": "Même son : fenêtres courtes ou longues. Hann 10 ms et 80 ms, hop 10 ms, même référence de couleur. La précision en temps et la grille fréquentielle changent ; une fenêtre longue peut étaler une attaque. La résolution physique dépend aussi de la largeur du lobe de la fenêtre, pas seulement du pas des bins.",
+      "reading": [
+        "Les quatre cartes utilisent les deux mêmes WAV de référence et une seule échelle de couleur.",
+        "Les fenêtres de 10 ms localisent les attaques mais séparent moins les fréquences voisines.",
+        "Les fenêtres de 80 ms détaillent mieux les bandes fréquentielles mais étalent davantage les événements courts."
+      ],
+      "parameters": {},
+      "author": "Calcul et tracé pour ce cours, à partir des enregistrements crédités",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "sourceIds": [
+        "libri-voice",
+        "librosa-snare"
+      ],
+      "script": "scripts/build-audio-media.py"
+    },
+    "stft-windowing": {
+      "src": "media/figures/stft-real-window.png",
+      "title": "Une fenêtre appliquée à la voix réelle",
+      "caption": "Le signal n’est pas remplacé par un dessin idéal : ces 1200 valeurs proviennent de la référence voix à 48 kHz. Fenêtre 25 ms et déplacement 10 ms : les portions voisines se recouvrent.",
+      "alt": "Une fenêtre appliquée à la voix réelle. Le signal n’est pas remplacé par un dessin idéal : ces 1200 valeurs proviennent de la référence voix à 48 kHz. Fenêtre 25 ms et déplacement 10 ms : les portions voisines se recouvrent.",
+      "reading": [
+        "La première courbe est une portion de la voix enregistrée, et non une sinusoïde inventée.",
+        "Le poids de Hann s’approche de zéro aux bords pour adoucir la découpe.",
+        "La STFT répète le calcul spectral sur ces portions pondérées, ici avec recouvrement."
+      ],
+      "parameters": {},
+      "author": "Calcul et tracé pour ce cours, à partir des enregistrements crédités",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "sourceIds": [
+        "libri-voice"
+      ],
+      "script": "scripts/build-audio-media.py"
+    },
+    "mel-filterbank": {
+      "src": "media/figures/mel-filterbank.png",
+      "title": "Comment les bandes mel regroupent les fréquences",
+      "caption": "Filtres triangulaires Slaney, normalisés en aire. Ils sont plus larges dans les aigus ; la hauteur change avec cette normalisation. Le regroupement fait perdre des détails ; ce n’est pas seulement un changement d’étiquette de l’axe.",
+      "alt": "Comment les bandes mel regroupent les fréquences. Filtres triangulaires Slaney, normalisés en aire. Ils sont plus larges dans les aigus ; la hauteur change avec cette normalisation. Le regroupement fait perdre des détails ; ce n’est pas seulement un changement d’étiquette de l’axe.",
+      "reading": [
+        "Chaque triangle indique le poids donné aux fréquences d’une bande.",
+        "La normalisation en aire explique pourquoi les triangles larges sont moins hauts.",
+        "Les cartes utilisent 64 bandes ; les 16 triangles ici servent à rendre les recouvrements lisibles."
+      ],
+      "parameters": {},
+      "author": "Calcul et tracé pour ce cours, à partir des enregistrements crédités",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "sourceIds": [],
+      "script": "scripts/build-audio-media.py"
+    },
+    "level-comparison": {
+      "src": "media/figures/real-level-comparison.png",
+      "title": "Crête et RMS des deux enregistrements",
+      "caption": "À gauche, les références sans normalisation de niveau : la voix présente ici des valeurs plus élevées, mais la percussion possède un plus grand facteur de crête. À droite, les variantes réglées au même RMS de 0,08 : le pic de la percussion est plus élevé. Ces chiffres décrivent les fichiers et leurs gains, pas le niveau acoustique des sources en dB SPL.",
+      "alt": "Crête et RMS des deux enregistrements. À gauche, les références sans normalisation de niveau : la voix présente ici des valeurs plus élevées, mais la percussion possède un plus grand facteur de crête. À droite, les variantes réglées au même RMS de 0,08 : le pic de la percussion est plus élevé. Ces chiffres décrivent les fichiers et leurs gains, pas le niveau acoustique des sources en dB SPL.",
+      "reading": [
+        "La barre de crête est le maximum absolu ; la barre RMS résume les 4 secondes complètes, pauses comprises.",
+        "L’écart entre crête et RMS donne le facteur de crête : plus grand pour la percussion de cet exemple.",
+        "Une différence de dBFS entre fichiers ne révèle pas une différence de dB SPL entre les sources."
+      ],
+      "parameters": {},
+      "author": "Calcul et tracé pour ce cours, à partir des enregistrements crédités",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "sourceIds": [
+        "libri-voice",
+        "librosa-snare"
+      ],
+      "script": "scripts/build-audio-media.py"
+    },
+    "resampling-bandwidth": {
+      "src": "media/figures/resampling-bandwidth.png",
+      "title": "Le rééchantillonnage ne crée pas de bande nouvelle",
+      "caption": "La voix source était déjà à 16 kHz : l’interpolation 48 kHz ne lui ajoute aucun détail au-dessus de 8 kHz. La percussion source 22,05 kHz possède une bande plus large ; son passage à 16 kHz atténue le haut du spectre avant décimation. Welch, fenêtre 40 ms, même référence numérique 1.",
+      "alt": "Le rééchantillonnage ne crée pas de bande nouvelle. La voix source était déjà à 16 kHz : l’interpolation 48 kHz ne lui ajoute aucun détail au-dessus de 8 kHz. La percussion source 22,05 kHz possède une bande plus large ; son passage à 16 kHz atténue le haut du spectre avant décimation. Welch, fenêtre 40 ms, même référence numérique 1.",
+      "reading": [
+        "Les lignes comparent la référence interpolée à 48 kHz et sa version filtrée à 16 kHz, pas deux prises différentes.",
+        "La ligne verticale à 8 kHz repère la frontière de Nyquist de la version à 16 kHz.",
+        "La voix source était déjà à 16 kHz : augmenter sa cadence ne crée pas d’information nouvelle."
+      ],
+      "parameters": {},
+      "author": "Calcul et tracé pour ce cours, à partir des enregistrements crédités",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "sourceIds": [
+        "libri-voice",
+        "librosa-snare"
+      ],
+      "script": "scripts/build-audio-media.py"
+    },
+    "tensor-axes": {
+      "src": "media/figures/real-mel-tensor-axes.png",
+      "title": "Les axes d’un tenseur sur deux cartes réellement calculées",
+      "caption": "B choisit un extrait, C est ici un axe de canal modèle ajouté (taille 1), F les 64 bandes mel et T les 401 trames de 10 ms, avec centrage et padding. Ces deux images ne sont pas les canaux gauche et droit d’un fichier stéréo.",
+      "parameters": {
+        "shape": [
+          2,
+          1,
+          64,
+          401
+        ],
+        "hopMs": 10,
+        "windowMs": 25,
+        "padding": "center=True",
+        "nMels": 64,
+        "fmaxHz": 8000
+      },
+      "alt": "Les axes d’un tenseur sur deux cartes réellement calculées. B choisit un extrait, C est ici un axe de canal modèle ajouté (taille 1), F les 64 bandes mel et T les 401 trames de 10 ms, avec centrage et padding. Ces deux images ne sont pas les canaux gauche et droit d’un fichier stéréo.",
+      "reading": [
+        "B=0 et B=1 désignent deux enregistrements distincts.",
+        "C=1 est une dimension ajoutée au tableau pour le réseau ; les sources sont mono.",
+        "La forme (2,1,64,401) se déduit de l’empilement des cartes réelles et des paramètres STFT."
+      ],
+      "author": "Calcul et tracé pour ce cours, à partir des enregistrements crédités",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "sourceIds": [
+        "libri-voice",
+        "librosa-snare"
+      ],
+      "script": "scripts/build-audio-media.py"
+    },
+    "augmentation-mask": {
+      "src": "media/figures/real-mel-augmentation-mask.png",
+      "title": "Masquer une partie de l’entrée sans fabriquer un autre enregistrement",
+      "caption": "Nous mettons à zéro la puissance linéaire des bandes 20 à 33 et des trames 100 à 139 (centres de trames de 1,00 à 1,39 s). Les zones affichées au plancher sont des données masquées, pas une absence mesurée dans la prise. Aucune écoute correspondante n’est prétendue : c’est une transformation de l’entrée du modèle.",
+      "parameters": {
+        "frequencyMask": [
+          20,
+          34
+        ],
+        "timeMask": [
+          100,
+          140
+        ],
+        "maskedValue": 0,
+        "domain": "mel power, before log display",
+        "audioReconstructed": false
+      },
+      "alt": "Masquer une partie de l’entrée sans fabriquer un autre enregistrement. Nous mettons à zéro la puissance linéaire des bandes 20 à 33 et des trames 100 à 139 (centres de trames de 1,00 à 1,39 s). Les zones affichées au plancher sont des données masquées, pas une absence mesurée dans la prise. Aucune écoute correspondante n’est prétendue : c’est une transformation de l’entrée du modèle.",
+      "reading": [
+        "Le contenu de départ est la carte mel de la voix de référence.",
+        "La bande horizontale et la bande verticale sont des suppressions construites, documentées dans les paramètres.",
+        "On peut utiliser cette entrée pour entraîner le modèle ; elle ne constitue pas un nouveau WAV à écouter."
+      ],
+      "author": "Calcul et tracé pour ce cours, à partir des enregistrements crédités",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "sourceIds": [
+        "libri-voice"
+      ],
+      "script": "scripts/build-audio-media.py"
+    }
+  },
+  "measurementConvention": "WAV mono PCM16 relu après export. Crête=max(abs(x)), puissance numérique moyenne=mean(x**2), RMS=sqrt(puissance). dBFS(crête)=20log10(crête/1), dBFS(RMS)=20log10(RMS/1) : référence RMS1, sans décalage AES17. Pas de calibration en pascals, watts ou dB SPL.",
+  "displayConvention": "Écoutes sans normalisation automatique. Le curseur commun est initialisé à 0,5 et règle le volume de tous les lecteurs ; il ne change pas les mesures des fichiers. Aucune lecture automatique. Toutes les cartes STFT et mel utilisent une référence de couleur 1 fixe, jamais le maximum de chaque image.",
+  "buildVersions": {
+    "numpy": "2.3.5",
+    "librosa": "0.11.0",
+    "soundfile": "0.13.1"
+  }
+}

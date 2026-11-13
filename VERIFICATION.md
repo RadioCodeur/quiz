@@ -1,6 +1,6 @@
 # Vérification de la livraison
 
-Révision éditoriale du **11 novembre 2026**, adaptée à un lecteur connaissant déjà le Python algorithmique.
+Révision éditoriale du **13 novembre 2026**, adaptée à un lecteur connaissant déjà le Python algorithmique.
 
 ## Contenu et cohérence
 
@@ -13,8 +13,8 @@ Révision éditoriale du **11 novembre 2026**, adaptée à un lecteur connaissan
 ## Vérifications techniques
 
 - Banque validée : exactement 200 QCM, quotas principaux 20/50/30/30/40/30 et 60/100/40 par difficulté ; identifiants, propositions et références résolus.
-- **29 tests de logique** : quiz, progression, liens historiques, schéma, couverture, références, géométrie des graphiques, échappement des sorties, exemples sans variante et navigation principale sans obligation de lire les rappels.
-- **20 contrôles navigateur** : session du quiz, reprise, bilan, clavier et stockage indisponible ; navigation quiz/cours ; repères de lecture et préférences ; rendu des 65 chapitres à 360 px ; états et lignes des exemples guidés ; QCM de transfert ; tableaux des graphiques ; présentation des modules ; définitions repliables ; rappels par lien direct ; deux entrées Vite sous un chemin de dépôt. Certains contrôles regroupent plusieurs assertions.
+- **34 tests de logique** : quiz, progression, liens historiques, schéma, couverture, références, géométrie des graphiques, échappement des sorties, exemples sans variante et navigation principale sans obligation de lire les rappels.
+- **23 contrôles navigateur** : session du quiz, reprise, bilan, clavier et stockage indisponible ; navigation quiz/cours ; repères de lecture et préférences ; rendu des 65 chapitres à 360 px ; états et lignes des exemples guidés ; QCM de transfert ; tableaux des graphiques ; présentation des modules ; définitions repliables ; rappels par lien direct ; deux entrées Vite sous un chemin de dépôt. Certains contrôles regroupent plusieurs assertions.
 - Construction Vite après validation des données, puis test du site construit sous `/qr-entretien/`. Aucun interpréteur Python ni nouvelle API extérieure n’est ajouté à l’application.
 - Les extraits scientifiques modifiés sont vérifiés en Python avec NumPy, SciPy, librosa et PyTorch selon le thème. Les blocs partiels utilisent des données et objets de contexte explicites pendant la vérification. Aucun modèle audio complet n’a été entraîné pour cette révision.
 - Un problème de l’ancien exemple Dropout est corrigé : `eval()` peut laisser Dropout retourner son entrée ; `no_grad()` ne retire pas rétroactivement `requires_grad` à cette entrée. L’exemple observe désormais une opération nouvelle dans ce contexte pour illustrer correctement la désactivation de l’enregistrement du graphe.
@@ -34,3 +34,12 @@ npm run test:browser
 ```
 
 Si npm n’est pas dans le PATH, utiliser `node scripts/run.mjs` suivi du nom du script.
+
+
+## Images et écoutes — 13 novembre 2026
+
+Deux enregistrements réels sous CC BY 4.0, 18 WAV PCM16, 61 PNG calculés, cinq illustrations externes aux licences vérifiées ; attributions, modifications et fichiers sources conservés. Les schémas STFT à couleurs artificielles et mel qualitatif ont été retirés du cours Signal. Onze ateliers d’écoute et douze blocs d’images sont intégrés aux six modules.
+
+Les tests médias recalculent crête, RMS, carré moyen, dBFS et facteur de crête depuis les octets PCM exportés ; ils vérifient aussi gain de 0,5, RMS commun, durée après rééchantillonnage et chemins GitHub Pages. Le contrôle navigateur couvre le décodage des images et WAV, l’absence de lecture automatique, le volume commun, l’arrêt de l’autre lecteur, le maintien de l’écoute lors d’un changement d’image et l’arrêt à la navigation. Les légendes distinguent références spectrales, dBFS et dB SPL. L’application ne lance aucun entraînement ou traitement scientifique en direct.
+
+Les illustrations externes et les figures scientifiques représentatives sont inspectées ; des captures de l’interface finale sur ordinateur et à 360 px complètent ces contrôles. Les fichiers à régénérer et leurs dépendances sont décrits dans `docs/audio-lab.md`.

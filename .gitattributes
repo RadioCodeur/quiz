@@ -1,0 +1,3 @@
+# Preserve downloaded media byte for byte, including SVG and license files.
+public/media/references/* binary
+public/media/audio/sources/* binary

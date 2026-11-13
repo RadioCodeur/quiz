@@ -573,6 +573,12 @@
           "result": "Les mêmes décisions donnent plusieurs scores répondant à des questions différentes."
         },
         {
+          "type": "illustration",
+          "assetId": "confusion-matrix",
+          "title": "Localiser l’erreur avant de choisir la métrique",
+          "caption": "La figure externe place les prédictions en lignes et la réalité en colonnes. Fixons « percussion présente » comme classe positive : une fausse alerte et une percussion manquée occupent deux cases différentes. Changer d’orientation sans changer les formules ferait lire de mauvais dénominateurs."
+        },
+        {
           "type": "paragraph",
           "text": "Le F1 combine P et R par 2PR/(P+R) si le dénominateur est non nul. Le F1 macro calcule ce score séparément pour chaque classe puis en prend la moyenne non pondérée. Avec 0,9, 0,6 et 0,0, cette moyenne vaut 0,5. Elle ne se calcule pas en moyennant d’abord toutes les précisions. La balanced accuracy est encore autre chose : la moyenne des rappels des classes."
         },
@@ -1092,6 +1098,22 @@
             }
           ],
           "result": "Les jugements répondent à une tâche définie et gardent leur structure pour l’analyse."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une préférence peut être influencée par le niveau de lecture : « plus fort » peut sembler plus convaincant. Le laboratoire ci-dessous est une démonstration ouverte, avec des versions nommées, pas un test aveugle. Il aide à comprendre pourquoi le protocole d’écoute doit fixer le volume et préciser ce qu’il égalise."
+        },
+        {
+          "type": "audio-lab",
+          "view": "level",
+          "title": "Séparer le niveau et le jugement de timbre",
+          "introduction": "Comparez chaque fichier à lui-même avec un gain réduit, puis comparez voix et percussion avec un RMS commun.",
+          "observations": [
+            "Conservez le curseur de volume commun pour comparer les versions. Le logiciel n’égalise pas automatiquement les niveaux derrière votre dos.",
+            "Le gain de 0,5 rend le même contenu moins fort. Cela ne signifie pas que le modèle ou la représentation soit moins fidèle.",
+            "À RMS égal, voix et percussion ont encore des spectres et des enveloppes différents. Pour une étude perceptive, le RMS seul peut donc être insuffisant pour égaliser la sonie ; il faut annoncer la méthode retenue."
+          ],
+          "conclusion": "Un protocole doit décider si le niveau fait partie de ce que l’on juge, ou s’il faut le contrôler. Les lecteurs présents ici ne suffisent pas à conclure qu’une version est préférée par un groupe d’auditeurs."
         },
         {
           "type": "paragraph",
