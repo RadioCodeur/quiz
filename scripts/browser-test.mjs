@@ -191,7 +191,7 @@ try {
     await page.waitForFunction(title=>document.querySelector('#lesson-title')?.textContent===title,before);
     assert.deepEqual(await getSession(),quizSnapshot);
     await page.locator('.course-breadcrumb a').click();
-    assert.equal(await page.locator('.course-card').count(),6);
+    assert.equal(await page.locator('.course-card').count(),courses.length);
     assert.equal(await page.locator('.reading-resume').count(),1);
     await page.screenshot({path:'test-results/courses-desktop-overview.png',fullPage:true});
     await page.locator('.header-nav a').first().click();await page.locator('#next').waitFor();
@@ -417,7 +417,7 @@ try {
     assert.ok(p.url().includes('/qr-entretien/cours.html?theme='));
     assert.equal(await p.locator('.question-context').count(),1);
     await p.locator('.header-nav a').last().click();await p.locator('.course-card').first().waitFor();
-    assert.equal(await p.locator('.course-card').count(),6);
+    assert.equal(await p.locator('.course-card').count(),courses.length);
     await p.locator('.professor-hero img').evaluate(img=>img.decode());
     await p.locator('.header-nav a').first().click();await p.locator('#next').waitFor();
     assert.deepEqual(failed,[]);await p.close();

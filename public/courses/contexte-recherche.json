@@ -1,0 +1,1063 @@
+{
+  "themeId": "contexte-recherche",
+  "label": "Contexte et recherche",
+  "kind": "context",
+  "title": "Relier les modèles à la pratique musicale",
+  "subtitle": "L’offre IRCAM, les outils et les lectures deviennent des questions de recherche.",
+  "edition": 2,
+  "intro": [
+    "Nous avons appris des mécanismes. Nous allons maintenant comprendre les situations musicales et scientifiques dans lesquelles ils deviennent utiles.",
+    "Notre fil reste concret : aider une compositrice à reprendre ses matériaux sonores, avec un contrôle explicable et un budget réaliste."
+  ],
+  "objectives": [
+    "Relier les attentes de l’offre à des compétences démontrables.",
+    "Distinguer modèle appris, intégration sonore et composition.",
+    "Préparer des lectures et des questions de recherche argumentées."
+  ],
+  "prerequisites": [
+    "generation-controle",
+    "evaluation-recherche"
+  ],
+  "chapters": [
+    {
+      "id": "lire-offre-et-se-preparer",
+      "title": "Lire l’offre comme une question de recherche",
+      "summary": "Transformer les attentes de l’offre en choses que nous pouvons expliquer et montrer.",
+      "context": {
+        "recall": "Nous savons relier données, modèles, contrôle et évaluation.",
+        "problem": "Transformer les attentes de l’offre en choses que nous pouvons expliquer et montrer.",
+        "why": "Nous préparons une discussion de recherche reliée à des pratiques musicales.",
+        "connection": "Les chapitres techniques deviennent des outils pour poser des questions précises.",
+        "next": "Nous gardons les liens utiles pour approfondir les points encore fragiles."
+      },
+      "progression": {
+        "input": "Une question de recherche et des outils techniques.",
+        "action": "Relier les choix aux besoins de composition.",
+        "output": "Une explication argumentée, avec une limite et une question ouverte."
+      },
+      "notions": [
+        {
+          "name": "Problématique de recherche (research question)",
+          "explanation": "Une difficulté précise, dont nous pouvons tester une solution et discuter les limites."
+        },
+        {
+          "name": "Compétence et preuve (skill and evidence)",
+          "explanation": "Une compétence annoncée devient crédible avec un exemple expliqué et reproductible."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Imaginons une compositrice qui possède ses propres frappes métalliques. Elle veut produire des variantes, puis modifier seulement leur attaque."
+        },
+        {
+          "type": "paragraph",
+          "text": "Nous devons comprendre cette demande avant de proposer un grand modèle. Une problématique de recherche (research question) précise ce qui manque aux solutions existantes."
+        },
+        {
+          "type": "paragraph",
+          "text": "L’offre vise la génération audio contrôlable, la multimodalité et l’adaptation aux matériaux des compositeurs. Python, PyTorch, signal et GNU/Linux font partie des compétences demandées."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le tableau suivant est notre lecture pédagogique de l’annonce. Il relie les attentes aux cours, sans prédire les questions du jury."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Du besoin à une preuve explicable",
+          "columns": [
+            "Axe de l’offre",
+            "Ce que nous préparons",
+            "Preuve possible"
+          ],
+          "rows": [
+            [
+              "Génération contrôlable",
+              "Modifier une propriété ou une zone",
+              "Comparer une commande, sa sortie et une limite"
+            ],
+            [
+              "Audio, texte et partition",
+              "Aligner des conditions complémentaires",
+              "Dessiner les formes et leur résolution temporelle"
+            ],
+            [
+              "Matériaux des compositeurs",
+              "Adapter sans mémoriser",
+              "Séparer œuvres, prises et validation"
+            ],
+            [
+              "Calcul et données limités",
+              "Choisir un budget réaliste",
+              "Compter les paramètres et mesurer le temps"
+            ],
+            [
+              "Python, PyTorch et signal",
+              "Comprendre un pipeline reproductible",
+              "Exécuter et expliquer une boucle complète"
+            ],
+            [
+              "Recherche collective et pratique musicale",
+              "Discuter hypothèse, écoute et usage",
+              "Proposer une comparaison avec des utilisateurs"
+            ]
+          ],
+          "caption": "Les preuves proposées sont des pistes de préparation. Elles ne constituent pas des réalisations personnelles du lecteur."
+        },
+        {
+          "type": "walkthrough",
+          "title": "Une demande artistique devient une expérience",
+          "goal": "Construire une réponse vérifiable à partir des frappes métalliques.",
+          "steps": [
+            {
+              "title": "Préciser la commande",
+              "text": "Nous définissons ce que signifie une attaque plus douce pour cette compositrice.",
+              "state": "Même motif ; attaque modifiée ; reste conservé."
+            },
+            {
+              "title": "Fixer une comparaison",
+              "text": "Nous comparons une référence simple et une méthode conditionnée sur des prises réservées.",
+              "state": "Même corpus, même budget, mêmes consignes."
+            },
+            {
+              "title": "Chercher les désaccords",
+              "text": "Nous confrontons des mesures audio et une écoute sans annoncer la méthode.",
+              "state": "Respect du contrôle, timbre, diversité, utilisabilité."
+            }
+          ],
+          "result": "Ce tableau de raisonnement remplace un programme : le résultat est un protocole à discuter, sans score expérimental inventé.",
+          "calculationTable": true
+        },
+        {
+          "type": "list",
+          "title": "Retrouver les briques techniques",
+          "items": [
+            "Choisissez une preuve que vous pouvez réellement expliquer. Notez ensuite ce qui vous manque pour la reproduire."
+          ],
+          "links": [
+            {
+              "text": "Boucle PyTorch complète",
+              "themeId": "pytorch",
+              "chapterId": "boucle-entrainement-complete"
+            },
+            {
+              "text": "Contrôle multimodal",
+              "themeId": "generation-controle",
+              "chapterId": "controle-multimodal-formes"
+            },
+            {
+              "text": "Calcul limité",
+              "themeId": "generation-controle",
+              "chapterId": "efficacite-petit-budget"
+            },
+            {
+              "text": "Traces sous GNU/Linux",
+              "themeId": "evaluation-recherche",
+              "chapterId": "environnement-linux-et-traces"
+            },
+            {
+              "text": "Comparaisons et ablations",
+              "themeId": "evaluation-recherche",
+              "chapterId": "baselines-et-ablations"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Le piège à éviter",
+          "text": "L’offre ne prescrit ni CLAP, ni LoRA, ni un codec particulier. Nous devons justifier ces choix selon le besoin, les données et le budget."
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : je relie chaque outil à un besoin de composition et à une comparaison vérifiable. Je distingue ce que je maîtrise de ce que je souhaite approfondir."
+        }
+      ],
+      "takeaways": [
+        "Partir d’une difficulté artistique concrète.",
+        "Préparer des preuves explicables, avec leurs limites.",
+        "Relier contrôle, adaptation et évaluation."
+      ],
+      "checkpoint": {
+        "prompt": "Pourquoi partir d’une demande de modification d’attaque ?",
+        "options": [
+          {
+            "id": "0",
+            "text": "Elle permet de préciser un contrôle et de construire une comparaison."
+          },
+          {
+            "id": "1",
+            "text": "Elle impose automatiquement un Transformer."
+          },
+          {
+            "id": "2",
+            "text": "Elle garantit une meilleure qualité perceptive."
+          },
+          {
+            "id": "3",
+            "text": "Elle supprime le besoin de validation."
+          }
+        ],
+        "correctOptionId": "0",
+        "explanation": "Une demande précise rend les choix techniques discutables et les résultats évaluables."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-ctx-ircam-offer"
+      ]
+    },
+    {
+      "id": "outils-ircam-et-pratiques-musicales",
+      "title": "Situer les outils entre modèle, son et composition",
+      "summary": "Comprendre où interviennent RAVE, nn~, Max/MSP, OpenMusic et l’analyse musicale.",
+      "context": {
+        "recall": "Nous savons relier données, modèles, contrôle et évaluation.",
+        "problem": "Comprendre où interviennent RAVE, nn~, Max/MSP, OpenMusic et l’analyse musicale.",
+        "why": "Nous préparons une discussion de recherche reliée à des pratiques musicales.",
+        "connection": "Les chapitres techniques deviennent des outils pour poser des questions précises.",
+        "next": "Nous gardons les liens utiles pour approfondir les points encore fragiles."
+      },
+      "progression": {
+        "input": "Une question de recherche et des outils techniques.",
+        "action": "Relier les choix aux besoins de composition.",
+        "output": "Une explication argumentée, avec une limite et une question ouverte."
+      },
+      "notions": [
+        {
+          "name": "Composition assistée par ordinateur (computer-assisted composition)",
+          "explanation": "L’ordinateur aide à construire et transformer des structures musicales, avec ou sans apprentissage."
+        },
+        {
+          "name": "Recherche d’information musicale (music information retrieval, MIR)",
+          "explanation": "Des méthodes extraient des informations utiles : événements, tempo, timbre, accords ou similarités."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Notre compositrice veut essayer les variantes pendant qu’elle travaille. Un modèle entraîné dans Python ne constitue pas encore un instrument utilisable."
+        },
+        {
+          "type": "paragraph",
+          "text": "Nous séparons trois besoins : apprendre une représentation, l’exécuter dans un environnement musical et organiser la composition."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Chaque outil répond à une étape",
+          "columns": [
+            "Outil ou domaine",
+            "Rôle",
+            "Limite à garder en tête"
+          ],
+          "rows": [
+            [
+              "RAVE",
+              "Apprendre un autoencodeur variationnel audio",
+              "Le modèle original utilise un latent continu, pas une RVQ"
+            ],
+            [
+              "nn~",
+              "Exécuter un modèle exporté dans Max/MSP ou PureData",
+              "Compatibilité et coût doivent être vérifiés pour le modèle"
+            ],
+            [
+              "Max/MSP",
+              "Relier contrôleurs, événements et traitements audio",
+              "Un patch peut dépasser le délai disponible"
+            ],
+            [
+              "OpenMusic",
+              "Relier fonctions et objets musicaux dans un langage visuel",
+              "Composer avec des règles ne suppose pas de réseau appris"
+            ],
+            [
+              "MIR",
+              "Extraire des informations musicales depuis les enregistrements",
+              "Une mesure descriptive ne résume pas une intention artistique"
+            ]
+          ],
+          "caption": "Le tableau présente des rôles complémentaires. Il ne décrit pas une chaîne obligatoire ni une installation testée ici."
+        },
+        {
+          "type": "paragraph",
+          "text": "Max est un environnement de programmation visuelle. MSP fournit ses traitements de signal audio. Un patch (patch) relie graphiquement des objets et leurs messages."
+        },
+        {
+          "type": "paragraph",
+          "text": "nn~ relie ces environnements à libtorch. Le dépôt documente des modèles exportés en TorchScript, un format de programme et de poids utilisable hors de Python."
+        },
+        {
+          "type": "paragraph",
+          "text": "Nous devons vérifier l’export, les dimensions et la plateforme. La présence de nn~ ne garantit aucune latence particulière sur notre ordinateur."
+        },
+        {
+          "type": "paragraph",
+          "text": "OpenMusic est fondé sur Common Lisp. Il manipule des objets musicaux, notamment notation et événements MIDI. Sa maquette organise les matériaux dans le temps."
+        },
+        {
+          "type": "paragraph",
+          "text": "La composition assistée par ordinateur (computer-assisted composition) comprend aussi les règles et contraintes symboliques. Elle ne commence pas avec les modèles génératifs."
+        },
+        {
+          "type": "paragraph",
+          "text": "La recherche d’information musicale (music information retrieval, MIR) aide par exemple à regrouper des frappes proches. Elle peut aussi extraire des événements pour une commande."
+        },
+        {
+          "type": "walkthrough",
+          "title": "Du corpus à un geste musical",
+          "goal": "Situer les outils dans notre exemple, sans prétendre avoir construit ce dispositif.",
+          "steps": [
+            {
+              "title": "Organiser les matériaux",
+              "text": "Nous décrivons et regroupons les frappes. Une analyse MIR peut aider à trouver des familles.",
+              "state": "Corpus → descripteurs → sélection."
+            },
+            {
+              "title": "Préparer un traitement",
+              "text": "Nous entraînons ou adaptons une représentation. Un autoencodeur continu peut exposer des variations de timbre.",
+              "state": "Python → modèle → export à vérifier."
+            },
+            {
+              "title": "Essayer dans la pratique",
+              "text": "Nous relions un contrôle à un traitement dans Max/MSP, ou nous organisons des événements dans OpenMusic.",
+              "state": "Geste ou partition → transformation → écoute."
+            }
+          ],
+          "result": "Ce tableau de raisonnement situe les responsabilités. Il ne remplace ni un test d’intégration ni une mesure du délai audio.",
+          "calculationTable": true
+        },
+        {
+          "type": "list",
+          "title": "Passer du panorama au mécanisme",
+          "items": [
+            "Retenez le rôle de chaque outil avant de mémoriser son nom."
+          ],
+          "links": [
+            {
+              "text": "Latent continu et reconstruction",
+              "themeId": "generation-controle",
+              "chapterId": "representation-et-reconstruction"
+            },
+            {
+              "text": "Codecs et RVQ",
+              "themeId": "generation-controle",
+              "chapterId": "codecs-neuronaux-rvq"
+            },
+            {
+              "text": "Événements MIDI et audio",
+              "themeId": "generation-controle",
+              "chapterId": "symbolique-midi-et-audio"
+            },
+            {
+              "text": "Temps réel et budget",
+              "themeId": "generation-controle",
+              "chapterId": "efficacite-petit-budget"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Le piège à éviter",
+          "text": "Le RAVE original est un autoencodeur variationnel continu. Les codecs EnCodec et DAC utilisent une RVQ ; les noms ne désignent pas la même représentation."
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : je distingue le modèle appris, son environnement d’exécution et les outils de composition. Je vérifie leur articulation dans un usage musical concret."
+        }
+      ],
+      "takeaways": [
+        "Un modèle devient utile avec une interaction et une intégration.",
+        "Le symbolique et l’audio répondent à des besoins différents.",
+        "La compatibilité d’un outil ne prouve pas son délai réel."
+      ],
+      "checkpoint": {
+        "prompt": "Quel rôle correspond à nn~ ?",
+        "options": [
+          {
+            "id": "0",
+            "text": "Exécuter un modèle exporté dans un environnement musical compatible."
+          },
+          {
+            "id": "1",
+            "text": "Entraîner automatiquement tout modèle audio."
+          },
+          {
+            "id": "2",
+            "text": "Remplacer les partitions par des formes d’onde."
+          },
+          {
+            "id": "3",
+            "text": "Garantir un calcul instantané sur toute machine."
+          }
+        ],
+        "correctOptionId": "0",
+        "explanation": "nn~ assure une interface d’exécution. L’entraînement, l’export et les contraintes de calcul restent à vérifier."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-ctx-repo-rave",
+        "rev-ctx-ircam-nntilde",
+        "rev-ctx-ircam-max",
+        "rev-ctx-cycling74-msp",
+        "rev-ctx-ircam-openmusic",
+        "rev-ctx-ircam-openmusic-manual",
+        "rev-ctx-ircam-mir-ai4media"
+      ]
+    },
+    {
+      "id": "postgenai-et-interaction",
+      "title": "Après la génération : reprendre la main sur le résultat",
+      "summary": "Lire PostGenAI et AI-MADE à travers un cycle de composition modifiable.",
+      "context": {
+        "recall": "Nous savons relier données, modèles, contrôle et évaluation.",
+        "problem": "Lire PostGenAI et AI-MADE à travers un cycle de composition modifiable.",
+        "why": "Nous préparons une discussion de recherche reliée à des pratiques musicales.",
+        "connection": "Les chapitres techniques deviennent des outils pour poser des questions précises.",
+        "next": "Nous gardons les liens utiles pour approfondir les points encore fragiles."
+      },
+      "progression": {
+        "input": "Une question de recherche et des outils techniques.",
+        "action": "Relier les choix aux besoins de composition.",
+        "output": "Une explication argumentée, avec une limite et une question ouverte."
+      },
+      "notions": [
+        {
+          "name": "IA post-générative (post-generative AI)",
+          "explanation": "Une orientation vers des systèmes compréhensibles et contrôlables, au-delà de la production automatique."
+        },
+        {
+          "name": "Contrôlabilité (controllability)",
+          "explanation": "La capacité à modifier un aspect demandé, tout en préservant les autres propriétés utiles."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Une première variante plaît à notre compositrice, sauf sa fin. Régénérer tout le passage peut détruire ce qu’elle voulait conserver."
+        },
+        {
+          "type": "paragraph",
+          "text": "L’enjeu devient alors la reprise du résultat : sélectionner une zone, exprimer une intention, écouter et corriger."
+        },
+        {
+          "type": "paragraph",
+          "text": "Nous parlons ici d’IA post-générative (post-generative AI) comme d’une orientation de recherche. Ce nom ne désigne pas une architecture unique."
+        },
+        {
+          "type": "paragraph",
+          "text": "La page officielle présente AI-MADE dans PostGenAI, porté à l’IRCAM par l’équipe Analyse/Synthèse. Elle vise la génération et la manipulation d’audio professionnel."
+        },
+        {
+          "type": "paragraph",
+          "text": "Contrôle intuitif, expressivité et hybridation y occupent une place centrale. Le projet recherche aussi des représentations pertinentes et des modèles économes en calcul et données."
+        },
+        {
+          "type": "paragraph",
+          "text": "Ce sont des objectifs de recherche. Ils ne prouvent pas qu’un système résout déjà chaque difficulté musicale."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Une intention devient plusieurs critères",
+          "columns": [
+            "Demande",
+            "Ce que nous modifions",
+            "Ce que nous cherchons à préserver"
+          ],
+          "rows": [
+            [
+              "Adoucir la dernière attaque",
+              "Une région temporelle",
+              "Début du motif et identité du timbre"
+            ],
+            [
+              "Reprendre mon matériau",
+              "La distribution des sons produits",
+              "Diversité et séparation avec les prises de test"
+            ],
+            [
+              "Essayer pendant la composition",
+              "Le délai d’interaction",
+              "Qualité utile et stabilité de la commande"
+            ]
+          ],
+          "caption": "Ces situations sont des exemples pédagogiques. Leur réussite nécessite une expérience, puis une discussion avec les utilisateurs."
+        },
+        {
+          "type": "walkthrough",
+          "title": "Une boucle de reprise plutôt qu’un résultat unique",
+          "goal": "Décrire une interaction testable, étape par étape.",
+          "steps": [
+            {
+              "title": "Exprimer une intention",
+              "text": "Nous demandons quelle propriété doit changer et quels éléments doivent rester reconnaissables.",
+              "state": "Commande et éléments à préserver."
+            },
+            {
+              "title": "Produire des alternatives",
+              "text": "Nous proposons des variantes comparables, avec une commande traçable et un budget fixé.",
+              "state": "Référence simple et variantes conditionnées."
+            },
+            {
+              "title": "Vérifier la reprise",
+              "text": "Nous recueillons les choix, corrections et difficultés. Une belle sortie peut rester difficile à diriger.",
+              "state": "Écoute, respect de la commande et usage réel."
+            }
+          ],
+          "result": "Ce tableau de raisonnement prépare un protocole d’interaction. Aucun gain utilisateur n’est supposé sans étude.",
+          "calculationTable": true
+        },
+        {
+          "type": "list",
+          "title": "Les mécanismes derrière la reprise",
+          "items": [
+            "Nous pouvons désormais choisir une technique en fonction de la modification souhaitée."
+          ],
+          "links": [
+            {
+              "text": "Commande locale et intention",
+              "themeId": "generation-controle",
+              "chapterId": "conditions-et-intention-musicale"
+            },
+            {
+              "text": "Préserver des zones connues",
+              "themeId": "generation-controle",
+              "chapterId": "guidance-et-zones-connues"
+            },
+            {
+              "text": "Adapter à un petit corpus",
+              "themeId": "generation-controle",
+              "chapterId": "adaptation-lora-et-petit-corpus"
+            },
+            {
+              "text": "Écoute sans suggestion",
+              "themeId": "evaluation-recherche",
+              "chapterId": "ecoute-et-jugement-perceptif"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Le piège à éviter",
+          "text": "Un score de similarité élevé ne suffit pas à démontrer le contrôle. Il faut mesurer la propriété demandée et vérifier les éléments à préserver."
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : je comprends l’approche post-générative comme une reprise progressive du résultat par le musicien. Je veux évaluer cette interaction autant que la qualité sonore."
+        }
+      ],
+      "takeaways": [
+        "Partir d’une modification souhaitée et d’éléments à préserver.",
+        "Distinguer ambition de projet et résultat mesuré.",
+        "Évaluer le contrôle dans un cycle de travail."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle expérience correspond au besoin post-génératif présenté ici ?",
+        "options": [
+          {
+            "id": "0",
+            "text": "Modifier une fin de phrase, puis vérifier la conservation du début."
+          },
+          {
+            "id": "1",
+            "text": "Choisir uniquement la sortie ayant le meilleur score global."
+          },
+          {
+            "id": "2",
+            "text": "Multiplier les générations sans commande précise."
+          },
+          {
+            "id": "3",
+            "text": "Présenter une ambition de projet comme un résultat obtenu."
+          }
+        ],
+        "correctOptionId": "0",
+        "explanation": "Une reprise localisée rend explicites le changement souhaité et les propriétés à conserver."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-ctx-ircam-postgenai",
+        "rev-ctx-ircam-offer"
+      ]
+    },
+    {
+      "id": "huit-lectures-pour-discuter",
+      "title": "Huit lectures pour construire une discussion",
+      "summary": "Lire pour comprendre une contribution, sa preuve et sa limite.",
+      "context": {
+        "recall": "Nous savons relier données, modèles, contrôle et évaluation.",
+        "problem": "Lire pour comprendre une contribution, sa preuve et sa limite.",
+        "why": "Nous préparons une discussion de recherche reliée à des pratiques musicales.",
+        "connection": "Les chapitres techniques deviennent des outils pour poser des questions précises.",
+        "next": "Nous gardons les liens utiles pour approfondir les points encore fragiles."
+      },
+      "progression": {
+        "input": "Une question de recherche et des outils techniques.",
+        "action": "Relier les choix aux besoins de composition.",
+        "output": "Une explication argumentée, avec une limite et une question ouverte."
+      },
+      "notions": [
+        {
+          "name": "Contribution (contribution)",
+          "explanation": "Un apport précis par rapport à un problème et à des méthodes existantes."
+        },
+        {
+          "name": "Limite (limitation)",
+          "explanation": "Une condition ou une incertitude qui borne la conclusion démontrée."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Une pile d’articles peut donner l’impression de travailler sans préparer une réponse. Nous lisons pour expliquer un mécanisme, sa limite et une question."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une contribution (contribution) est ce que l’article apporte à un problème précis. Une limite (limitation) indique où sa démonstration ne suffit plus."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Lire avec une sortie claire",
+          "columns": [
+            "Pendant la lecture",
+            "Question à noter"
+          ],
+          "rows": [
+            [
+              "Problème",
+              "Quelle difficulté les auteurs veulent-ils résoudre ?"
+            ],
+            [
+              "Mécanisme",
+              "Quelles entrées, quelles sorties et quel apprentissage ?"
+            ],
+            [
+              "Évaluation",
+              "Quelle comparaison appuie la conclusion ?"
+            ],
+            [
+              "Transfert au sujet",
+              "Qu’est-ce qui reste à tester pour nos matériaux musicaux ?"
+            ]
+          ],
+          "caption": "Ne confondons pas résumé d’un article et reproduction de ses résultats."
+        },
+        {
+          "type": "walkthrough",
+          "title": "Une fiche plutôt qu’une collection de résumés",
+          "goal": "Préparer une lecture qui alimente la discussion.",
+          "steps": [
+            {
+              "title": "Dessiner",
+              "text": "Nous dessinons les entrées, le mécanisme et les sorties avant de relever les détails.",
+              "state": "Un schéma que nous pouvons expliquer sans l’article."
+            },
+            {
+              "title": "Interroger une preuve",
+              "text": "Nous cherchons la référence de comparaison et ce qui a réellement été mesuré.",
+              "state": "Une affirmation reliée à une figure ou une expérience."
+            },
+            {
+              "title": "Relier au besoin",
+              "text": "Nous formulons une question sur nos données, notre contrôle ou notre budget.",
+              "state": "Une question précise, sans annoncer une solution acquise."
+            }
+          ],
+          "result": "Ce tableau de raisonnement constitue une méthode de lecture. Il ne nécessite pas de programme artificiel.",
+          "calculationTable": true
+        },
+        {
+          "type": "heading",
+          "text": "Attention Is All You Need"
+        },
+        {
+          "type": "list",
+          "title": "Ce que nous en retenons",
+          "items": [
+            "Une requête sélectionne les informations utiles parmi des clés et valeurs.",
+            "Position, résidus et normalisation rendent le bloc complet.",
+            "Le masque causal empêche l’accès au futur."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Question à poser : Quelle portée temporelle musicale perdons-nous si nous raccourcissons le contexte pour réduire le calcul ?"
+        },
+        {
+          "type": "heading",
+          "text": "RAVE: A variational autoencoder for fast and high-quality neural audio synthesis"
+        },
+        {
+          "type": "list",
+          "title": "Ce que nous en retenons",
+          "items": [
+            "Le latent continu compresse et expose des possibilités de transformation sonore.",
+            "L’apprentissage sépare représentation et qualité de synthèse.",
+            "Le compromis de compacité doit rester perceptivement acceptable."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Question à poser : Comment vérifier qu’une dimension latente correspond à un contrôle perceptif stable sur les matériaux du compositeur ?"
+        },
+        {
+          "type": "heading",
+          "text": "High Fidelity Neural Audio Compression"
+        },
+        {
+          "type": "list",
+          "title": "Ce que nous en retenons",
+          "items": [
+            "La RVQ transforme un signal en plusieurs suites de codes discrets.",
+            "Reconstruction et discrimination perceptive guident l’apprentissage du codec.",
+            "Le codec fixe les informations disponibles au générateur ultérieur."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Question à poser : Quels détails musicaux disparaissent dans le codec, même si le générateur prédit parfaitement ses codes ?"
+        },
+        {
+          "type": "heading",
+          "text": "Denoising Diffusion Probabilistic Models"
+        },
+        {
+          "type": "list",
+          "title": "Ce que nous en retenons",
+          "items": [
+            "L’entraînement apprend à prédire un bruit connu.",
+            "La génération inverse progressivement une corruption.",
+            "Le conditionnement et la guidance modifient cette génération."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Question à poser : Comment évaluer séparément fidélité sonore, respect du contrôle et diversité quand nous augmentons la guidance ?"
+        },
+        {
+          "type": "heading",
+          "text": "Flow Matching for Generative Modeling"
+        },
+        {
+          "type": "list",
+          "title": "Ce que nous en retenons",
+          "items": [
+            "Nous apprenons une vitesse reliant des distributions.",
+            "L’entraînement régresse des cibles définies sur des chemins.",
+            "La génération nécessite ensuite un solveur numérique."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Question à poser : À budget d’évaluations du réseau identique, quel protocole comparerait équitablement diffusion et flow matching sur notre corpus audio ?"
+        },
+        {
+          "type": "heading",
+          "text": "Large-scale Contrastive Language-Audio Pretraining with Feature Fusion and Keyword-to-Caption Augmentation"
+        },
+        {
+          "type": "list",
+          "title": "Ce que nous en retenons",
+          "items": [
+            "Audio et descriptions textuelles partagent un espace de représentation.",
+            "La similarité permet recherche et classification sans nouvel exemple étiqueté.",
+            "La représentation sémantique reste différente d’une commande temporelle précise."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Question à poser : Un score CLAP élevé reflète-t-il les intentions musicales du compositeur ou seulement des étiquettes générales ?"
+        },
+        {
+          "type": "heading",
+          "text": "LoRA: Low-Rank Adaptation of Large Language Models"
+        },
+        {
+          "type": "list",
+          "title": "Ce que nous en retenons",
+          "items": [
+            "Nous gardons le modèle initial et apprenons une correction de faible rang.",
+            "Le rang et les couches ciblées limitent les paramètres adaptés.",
+            "Le corpus personnel doit rester séparé du protocole d’évaluation."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Question à poser : Comment distinguer personnalisation réussie et mémorisation du petit corpus, à coût d’entraînement fixé ?"
+        },
+        {
+          "type": "heading",
+          "text": "Music Transformer: Generating music with long-term structure"
+        },
+        {
+          "type": "list",
+          "title": "Ce que nous en retenons",
+          "items": [
+            "La représentation symbolique permet des contrôles explicites sur les notes.",
+            "L’attention relative modélise les relations entre événements.",
+            "Le rendu sonore reste une étape distincte."
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Question à poser : Quand faut-il contrôler la structure par des événements symboliques plutôt que demander directement une forme d’onde ?"
+        },
+        {
+          "type": "list",
+          "title": "Revenir aux explications du cours",
+          "items": [
+            "Commencez par le mécanisme dont vous avez besoin. Les liens bibliographiques complets se trouvent dans les sources de ce chapitre."
+          ],
+          "links": [
+            {
+              "text": "Transformer complet",
+              "themeId": "audio-ml",
+              "chapterId": "transformer-complet"
+            },
+            {
+              "text": "RAVE, EnCodec et DAC",
+              "themeId": "generation-controle",
+              "chapterId": "codecs-neuronaux-rvq"
+            },
+            {
+              "text": "DDPM et flow matching",
+              "themeId": "generation-controle",
+              "chapterId": "objectifs-diffusion-et-flow"
+            },
+            {
+              "text": "CLAP et conditions",
+              "themeId": "generation-controle",
+              "chapterId": "controle-multimodal-formes"
+            },
+            {
+              "text": "LoRA et personnalisation",
+              "themeId": "generation-controle",
+              "chapterId": "adaptation-lora-et-petit-corpus"
+            },
+            {
+              "text": "Music Transformer et événements",
+              "themeId": "generation-controle",
+              "chapterId": "symbolique-midi-et-audio"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Le piège à éviter",
+          "text": "Une amélioration publiée dans une configuration ne garantit pas le même résultat sur nos sons. Nous relevons le protocole avant de reprendre une conclusion."
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : je peux présenter le problème, le mécanisme et une limite de mes lectures. Je les relie à une expérience possible sur le sujet."
+        }
+      ],
+      "takeaways": [
+        "Relier chaque lecture à un mécanisme explicable.",
+        "Distinguer une preuve publiée de notre propre vérification.",
+        "Préparer une question qui concerne le sujet de thèse."
+      ],
+      "checkpoint": {
+        "prompt": "Que doit contenir une bonne fiche de lecture ?",
+        "options": [
+          {
+            "id": "0",
+            "text": "Un problème, un mécanisme, une preuve et une limite."
+          },
+          {
+            "id": "1",
+            "text": "Uniquement le titre et le nombre de citations."
+          },
+          {
+            "id": "2",
+            "text": "Une promesse de reproduire tous les scores."
+          },
+          {
+            "id": "3",
+            "text": "Un résumé sans lien avec le sujet."
+          }
+        ],
+        "correctOptionId": "0",
+        "explanation": "La fiche sert à discuter des choix et de leur portée, plutôt qu’à accumuler des noms."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-ctx-paper-transformer",
+        "rev-ctx-paper-rave",
+        "rev-ctx-paper-encodec",
+        "rev-ctx-paper-ddpm",
+        "rev-ctx-paper-flowmatching",
+        "rev-ctx-paper-clap",
+        "rev-ctx-paper-lora",
+        "rev-ctx-paper-musictransformer"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "rev-ctx-ircam-offer",
+      "title": "IRCAM — Doctorant.e : composition musicale assistée par IA",
+      "url": "https://www.ircam.fr/fr/offres-emplois/doctorante--composition-musicale-assiste-par-ia",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-ctx-repo-rave",
+      "title": "RAVE — dépôt officiel ACIDS-IRCAM",
+      "url": "https://github.com/acids-ircam/RAVE/blob/master/README.md",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-ctx-ircam-nntilde",
+      "title": "nn~ — dépôt officiel ACIDS-IRCAM",
+      "url": "https://github.com/acids-ircam/nn_tilde/blob/master/README.md",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-ctx-ircam-max",
+      "title": "IRCAM — Programmation et création interactive avec Max",
+      "url": "https://www.ircam.fr/fr/formations/formations-professionnelles/programmation-et-creation-interactive-max",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-ctx-cycling74-msp",
+      "title": "Cycling ’74 — How MSP Works",
+      "url": "https://docs.cycling74.com/learn/articles/03_msphowmspworks/",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-ctx-ircam-openmusic",
+      "title": "OpenMusic — site officiel maintenu par l’équipe Représentations musicales",
+      "url": "https://openmusic-project.github.io/openmusic/",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-ctx-ircam-openmusic-manual",
+      "title": "OpenMusic — documentation officielle actuelle",
+      "url": "https://openmusic-project.github.io/openmusic/doc/om-manual/OM-Documentation",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-ctx-ircam-mir-ai4media",
+      "title": "IRCAM — AI4Media",
+      "url": "https://www.ircam.fr/en/research/projects/138-2",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-ctx-ircam-postgenai",
+      "title": "IRCAM — PostGenAI@Paris et AI-MADE",
+      "url": "https://www.ircam.fr/en/research/projects/199-2",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-ctx-paper-transformer",
+      "title": "Attention Is All You Need",
+      "url": "https://arxiv.org/html/1706.03762v7",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-ctx-paper-rave",
+      "title": "RAVE: A variational autoencoder for fast and high-quality neural audio synthesis",
+      "url": "https://arxiv.org/html/2111.05011v2",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-ctx-paper-encodec",
+      "title": "High Fidelity Neural Audio Compression",
+      "url": "https://arxiv.org/html/2210.13438v1",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-ctx-paper-ddpm",
+      "title": "Denoising Diffusion Probabilistic Models",
+      "url": "https://arxiv.org/html/2006.11239v2",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-ctx-paper-flowmatching",
+      "title": "Flow Matching for Generative Modeling",
+      "url": "https://arxiv.org/html/2210.02747v2",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-ctx-paper-clap",
+      "title": "Large-scale Contrastive Language-Audio Pretraining with Feature Fusion and Keyword-to-Caption Augmentation",
+      "url": "https://arxiv.org/html/2211.06687v4",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-ctx-paper-lora",
+      "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+      "url": "https://arxiv.org/html/2106.09685v2",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-ctx-paper-musictransformer",
+      "title": "Music Transformer: Generating music with long-term structure",
+      "url": "https://arxiv.org/html/1809.04281v3",
+      "accessed": "2026-11-17"
+    }
+  ],
+  "journey": {
+    "title": "Du besoin artistique à la question scientifique",
+    "scenario": "Une compositrice souhaite transformer ses propres frappes sans perdre son intention.",
+    "startingPoint": "Des mécanismes techniques que nous savons expliquer.",
+    "destination": "Une discussion reliée à l’offre, aux outils et aux lectures.",
+    "scope": [
+      "Justifier un choix selon une demande.",
+      "Relier les outils aux usages.",
+      "Interroger une preuve et ses limites."
+    ],
+    "stages": [
+      {
+        "title": "Comprendre la demande",
+        "chapterIds": [
+          "lire-offre-et-se-preparer"
+        ]
+      },
+      {
+        "title": "Situer les outils et l’interaction",
+        "chapterIds": [
+          "outils-ircam-et-pratiques-musicales",
+          "postgenai-et-interaction"
+        ]
+      },
+      {
+        "title": "Construire sa discussion",
+        "chapterIds": [
+          "huit-lectures-pour-discuter"
+        ]
+      }
+    ]
+  },
+  "moduleIntroduction": {
+    "startingPoint": "Nous connaissons les briques de génération, de contrôle et d’évaluation.",
+    "goal": "Nous pouvons les relier au contexte IRCAM, sans inventer des attentes ou des résultats.",
+    "concepts": [
+      {
+        "name": "Lire l’offre comme une question de recherche",
+        "explanation": "Transformer les attentes de l’offre en choses que nous pouvons expliquer et montrer.",
+        "chapterId": "lire-offre-et-se-preparer"
+      },
+      {
+        "name": "Situer les outils entre modèle, son et composition",
+        "explanation": "Comprendre où interviennent RAVE, nn~, Max/MSP, OpenMusic et l’analyse musicale.",
+        "chapterId": "outils-ircam-et-pratiques-musicales"
+      },
+      {
+        "name": "Après la génération : reprendre la main sur le résultat",
+        "explanation": "Lire PostGenAI et AI-MADE à travers un cycle de composition modifiable.",
+        "chapterId": "postgenai-et-interaction"
+      },
+      {
+        "name": "Huit lectures pour construire une discussion",
+        "explanation": "Lire pour comprendre une contribution, sa preuve et sa limite.",
+        "chapterId": "huit-lectures-pour-discuter"
+      }
+    ]
+  }
+}

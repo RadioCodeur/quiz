@@ -75,3 +75,9 @@ Six chapitres ajoutés, 77 au total, sans modifier les 200 QCM. Scripts CPU exé
 Le test causal vérifie un écart nul dans le passé après modification du futur ; sans masque, l’écart est 0,204499. Les interfaces multimodales vérifient leurs formes, sans prétendre charger CLAP. La RVQ miniature reconstruit ses valeurs avec une erreur quadratique moyenne de 0,006250. La quantification compare des projections synthétiques ; ni qualité perceptive, ni mémoire résidente, ni accélération ne sont mesurées.
 
 Validation des cours, 43 tests Node, construction et 25 contrôles navigateur réussis. Les 77 chapitres passent le contrôle de rendu à 360 px ; les liens techniques ouvrent les bonnes cibles. Les six nouveaux chapitres respectent les limites de prose et terminent par une formulation orale.
+
+## Lot D — contexte et recherche
+
+Quatre chapitres ajoutés, 81 au total. Les références du nouveau module correspondent à des pages réellement ouvertes du registre documentaire de 37 sources. Les huit lectures ont chacune trois idées et une question de recherche. Chaque chapitre relie des mécanismes techniques existants. Aucun résultat de projet ou usage personnel n’est inventé.
+
+Validation, 45 tests Node et construction réussis. Les 25 contrôles navigateur passent, dont le rendu des 81 chapitres à 360 px et la construction sous le sous-répertoire de publication. Une valeur fixe de six cartes dans ce dernier contrôle a été remplacée par le nombre de modules enregistrés.

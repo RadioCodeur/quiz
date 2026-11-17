@@ -1,0 +1,1042 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Références primaires vérifiées pour les lots B et D ; pas une mesure externe de qualité ou de vitesse.",
+  "accessed": "2026-11-17",
+  "sources": [
+    {
+      "id": "paper-rave",
+      "title": "RAVE: A variational autoencoder for fast and high-quality neural audio synthesis",
+      "url": "https://arxiv.org/html/2111.05011v2",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Le modèle original est un autoencodeur variationnel continu pour l’audio.",
+        "L’apprentissage sépare représentation spectrale et affinage adversarial.",
+        "Les auteurs étudient le compromis entre compacité du latent et fidélité sonore."
+      ],
+      "limits": [
+        "Ne pas présenter le RAVE original comme un codec RVQ à jetons.",
+        "Les résultats de vitesse dépendent du matériel et de la configuration des auteurs ; aucune reproduction ici."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/codecs-neuronaux-rvq",
+        "generation-controle/quantification-et-tokens",
+        "generation-controle/representation-et-reconstruction",
+        "generation-controle/vae-et-echantillonnage",
+        "contexte-recherche"
+      ],
+      "year": 2021,
+      "readSections": [
+        "Résumé",
+        "3.1 Two-stage training procedure",
+        "3.2 Latent representation compactness"
+      ]
+    },
+    {
+      "id": "repo-rave",
+      "title": "RAVE — dépôt officiel ACIDS-IRCAM",
+      "url": "https://github.com/acids-ircam/RAVE/blob/master/README.md",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Le dépôt distingue les configurations continues v1/v2 et une configuration discrete.",
+        "L’export streaming utilise des convolutions mises en cache pour l’intégration audio.",
+        "Les méthodes encode/decode exposent le latent à Max/MSP ou PureData via nn~."
+      ],
+      "limits": [
+        "La branche courante dépasse l’article original ; préciser la configuration utilisée.",
+        "Un export compatible ne garantit pas la latence sur la machine du lecteur."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/codecs-neuronaux-rvq",
+        "generation-controle/quantification-et-tokens",
+        "generation-controle/representation-et-reconstruction",
+        "generation-controle/efficacite-petit-budget",
+        "generation-controle/adaptation-lora-et-petit-corpus",
+        "contexte-recherche"
+      ],
+      "verificationMethod": "GitHub connector fetch README.md"
+    },
+    {
+      "id": "paper-encodec",
+      "title": "High Fidelity Neural Audio Compression",
+      "url": "https://arxiv.org/html/2210.13438v1",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "EnCodec combine encodeur, quantification vectorielle résiduelle et décodeur.",
+        "La RVQ quantifie successivement les résidus non encore représentés.",
+        "La perte combine reconstruction, discrimination perceptive et engagement du quantificateur.",
+        "Le balancier contrôle la contribution relative des gradients des pertes."
+      ],
+      "limits": [
+        "Les nombres de codebooks et cadences dépendent du modèle et du débit.",
+        "Le codec reconstruit un signal ; un modèle génératif supplémentaire peut apprendre ses codes."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/codecs-neuronaux-rvq",
+        "generation-controle/quantification-et-tokens",
+        "generation-controle/representation-et-reconstruction"
+      ],
+      "year": 2022,
+      "readSections": [
+        "3.1 Encoder & Decoder Architecture",
+        "3.2 Residual Vector Quantization",
+        "3.4 Training objective"
+      ]
+    },
+    {
+      "id": "repo-encodec",
+      "title": "EnCodec — dépôt officiel Meta",
+      "url": "https://github.com/facebookresearch/encodec/blob/main/README.md",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Deux variantes publiées distinguent mono causal et stéréo non causal.",
+        "Le débit choisi détermine le nombre de codebooks employés.",
+        "Les codes discrets peuvent servir à des modèles de langage audio."
+      ],
+      "limits": [
+        "Les deux variantes n’ont pas le même entraînement ni les mêmes contraintes de causalité.",
+        "L’ancien README décrit ses propres dépendances ; ne pas les substituer aux versions CPU vérifiées du cours."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/codecs-neuronaux-rvq",
+        "generation-controle/quantification-et-tokens",
+        "generation-controle/representation-et-reconstruction",
+        "generation-controle/efficacite-petit-budget",
+        "generation-controle/adaptation-lora-et-petit-corpus"
+      ],
+      "verificationMethod": "GitHub connector fetch README.md"
+    },
+    {
+      "id": "paper-dac",
+      "title": "High-Fidelity Audio Compression with Improved RVQGAN",
+      "url": "https://arxiv.org/html/2306.06546v2",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "DAC transforme l’audio en codes discrets par RVQ.",
+        "L’article améliore quantification, activations périodiques et apprentissage adversarial.",
+        "La reconstruction compare plusieurs résolutions spectrales ; le feature matching complète les pertes."
+      ],
+      "limits": [
+        "Les comparaisons de fidélité de l’article ne prouvent pas une supériorité sur tout corpus.",
+        "Distinguer débit compressé, fréquence d’échantillonnage et cadence de jetons."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/codecs-neuronaux-rvq",
+        "generation-controle/quantification-et-tokens",
+        "generation-controle/representation-et-reconstruction"
+      ],
+      "year": 2023,
+      "readSections": [
+        "3 The Improved RVQGAN Model",
+        "3.5 Loss functions"
+      ]
+    },
+    {
+      "id": "repo-dac",
+      "title": "Descript Audio Codec — dépôt officiel",
+      "url": "https://github.com/descriptinc/descript-audio-codec/blob/main/README.md",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Le dépôt fournit entraînement, encodage et décodage.",
+        "Les variantes de poids acceptent différentes fréquences d’échantillonnage.",
+        "L’encodage expose codes, latents et représentation reconstruisible."
+      ],
+      "limits": [
+        "Les coûts et la qualité n’ont pas été mesurés ici.",
+        "Les poids se téléchargent à la première utilisation ; les exemples locaux doivent rester autonomes."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/codecs-neuronaux-rvq",
+        "generation-controle/quantification-et-tokens",
+        "generation-controle/representation-et-reconstruction"
+      ],
+      "verificationMethod": "GitHub connector fetch README.md"
+    },
+    {
+      "id": "paper-transformer",
+      "title": "Attention Is All You Need",
+      "url": "https://arxiv.org/html/1706.03762v7",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "L’attention pondère les valeurs selon les compatibilités entre requêtes et clés.",
+        "Les têtes utilisent des projections apprises distinctes.",
+        "Position, résidus, normalisation et réseau point par point complètent l’attention.",
+        "Le masque du décodeur interdit de consulter les positions futures."
+      ],
+      "limits": [
+        "L’architecture originale applique la normalisation après la connexion résiduelle.",
+        "Un bloc moderne pré-normalisé doit être présenté comme une variante.",
+        "L’attention dense conserve un coût quadratique en longueur pour sa matrice de scores."
+      ],
+      "technicalChapterTargets": [
+        "audio-ml/transformer-complet",
+        "audio-ml/similarites-contraste-attention"
+      ],
+      "year": 2017,
+      "readSections": [
+        "3.1 Encoder and Decoder Stacks",
+        "3.2 Attention",
+        "3.3 Position-wise Feed-Forward Networks",
+        "3.5 Positional Encoding",
+        "4 Why Self-Attention"
+      ]
+    },
+    {
+      "id": "repo-transformer-t2t",
+      "title": "Tensor2Tensor — implémentation historique Google",
+      "url": "https://github.com/tensorflow/tensor2tensor/blob/master/README.md",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Tensor2Tensor rassemble des modèles et problèmes de recherche.",
+        "Le dépôt déclare sa dépréciation et oriente vers un successeur."
+      ],
+      "limits": [
+        "Référence historique du Transformer, pas recommandation d’installation pour les notebooks PyTorch.",
+        "Ne pas présenter cette bibliothèque comme un outil activement développé sans vérification supplémentaire."
+      ],
+      "technicalChapterTargets": [
+        "audio-ml/transformer-complet",
+        "audio-ml/similarites-contraste-attention"
+      ],
+      "verificationMethod": "GitHub connector fetch README.md"
+    },
+    {
+      "id": "paper-clap",
+      "title": "Large-scale Contrastive Language-Audio Pretraining with Feature Fusion and Keyword-to-Caption Augmentation",
+      "url": "https://arxiv.org/html/2211.06687v4",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "CLAP apprend des représentations audio et texte à partir de paires.",
+        "La similarité entre représentations sert à la recherche texte vers audio.",
+        "La fusion de caractéristiques traite des extraits de durées variables.",
+        "L’article évalue aussi la classification avec et sans supervision adaptée."
+      ],
+      "limits": [
+        "CLAP est un modèle de représentation, pas un générateur audio.",
+        "Une proximité sémantique globale ne garantit ni synchronisation temporelle ni justesse musicale.",
+        "La version ouverte inclut une révision de 2024 ; le travail initial date de 2022 et d’ICASSP 2023."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/controle-multimodal-formes",
+        "generation-controle/conditions-et-intention-musicale",
+        "audio-ml/embeddings-transfert-domaines"
+      ],
+      "year": 2023,
+      "readSections": [
+        "Résumé",
+        "3 Model Architecture",
+        "3.2 Downstream Tasks in Inference Stage"
+      ]
+    },
+    {
+      "id": "repo-clap",
+      "title": "CLAP — dépôt officiel LAION",
+      "url": "https://github.com/LAION-AI/CLAP/blob/main/README.md",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "L’API fournit séparément des embeddings audio et texte.",
+        "Les checkpoints diffèrent selon données, encodeur et activation de la fusion.",
+        "Le README distingue des variantes adaptées à la musique, à la parole et à l’audio général."
+      ],
+      "limits": [
+        "Les caractéristiques et domaines du checkpoint doivent être indiqués.",
+        "Le score CLAP ne remplace pas une écoute ni une mesure de satisfaction du compositeur."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/controle-multimodal-formes",
+        "generation-controle/conditions-et-intention-musicale"
+      ],
+      "verificationMethod": "GitHub connector fetch README.md"
+    },
+    {
+      "id": "paper-lora",
+      "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+      "url": "https://arxiv.org/html/2106.09685v2",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "LoRA gèle les poids initiaux et apprend une mise à jour factorisée de faible rang.",
+        "Deux matrices représentent la correction d’une matrice de poids.",
+        "La correction peut être fusionnée aux poids pour l’inférence."
+      ],
+      "limits": [
+        "Les expériences originales portent sur le langage ; les gains audio doivent être vérifiés séparément.",
+        "Moins de paramètres entraînables ne signifie pas une réduction identique de toute la mémoire.",
+        "Le rang, les couches ciblées et le corpus déterminent les compromis."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/efficacite-petit-budget",
+        "generation-controle/adaptation-lora-et-petit-corpus"
+      ],
+      "year": 2021,
+      "readSections": [
+        "4.1 Low-Rank-Parametrized Update Matrices",
+        "4.2 Applying LoRA to Transformer"
+      ]
+    },
+    {
+      "id": "repo-lora",
+      "title": "LoRA / loralib — dépôt officiel Microsoft",
+      "url": "https://github.com/microsoft/LoRA/blob/main/README.md",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Le dépôt fournit des couches PyTorch avec mise à jour LoRA.",
+        "Il montre comment sélectionner les paramètres entraînables et sauvegarder uniquement l’adaptation.",
+        "Ses exemples ciblent notamment les projections de requêtes et de valeurs."
+      ],
+      "limits": [
+        "La meilleure sélection de couches varie selon architecture et tâche.",
+        "Un adaptateur sauvegardé suppose encore les poids du modèle de base."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/efficacite-petit-budget",
+        "generation-controle/adaptation-lora-et-petit-corpus"
+      ],
+      "verificationMethod": "GitHub connector fetch README.md"
+    },
+    {
+      "id": "paper-ddpm",
+      "title": "Denoising Diffusion Probabilistic Models",
+      "url": "https://arxiv.org/html/2006.11239v2",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Le processus direct ajoute progressivement un bruit gaussien.",
+        "L’objectif simplifié prédit le bruit injecté à un instant choisi.",
+        "L’échantillonnage inverse applique une succession d’étapes apprises de débruitage."
+      ],
+      "limits": [
+        "L’article original évalue des images, pas les exemples audio du cours.",
+        "Une perte de prédiction du bruit n’est pas une mesure directe de qualité perceptive.",
+        "Le nombre d’étapes d’un solveur ne se confond pas avec le nombre d’itérations d’entraînement."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/objectifs-diffusion-et-flow",
+        "generation-controle/diffusion-et-bruit",
+        "generation-controle/guidance-et-zones-connues"
+      ],
+      "year": 2020,
+      "readSections": [
+        "3.1 Forward process",
+        "3.2 Reverse process",
+        "3.4 Simplified training objective"
+      ]
+    },
+    {
+      "id": "repo-ddpm",
+      "title": "DDPM — dépôt officiel des auteurs",
+      "url": "https://github.com/hojonathanho/diffusion/blob/master/README.md",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Le dépôt contient les scripts d’entraînement et d’évaluation de DDPM.",
+        "L’environnement historique utilise TensorFlow et une infrastructure cloud."
+      ],
+      "limits": [
+        "Ce dépôt valide la provenance de l’implémentation originale.",
+        "Ne pas promettre son exécution directe dans les notebooks PyTorch modernes."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/objectifs-diffusion-et-flow",
+        "generation-controle/diffusion-et-bruit",
+        "generation-controle/guidance-et-zones-connues"
+      ],
+      "verificationMethod": "GitHub connector fetch README.md"
+    },
+    {
+      "id": "paper-cfg",
+      "title": "Classifier-Free Diffusion Guidance",
+      "url": "https://arxiv.org/html/2207.12598v1",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "L’apprentissage retire aléatoirement le conditionnement pour apprendre aussi la prédiction sans condition.",
+        "L’inférence combine prédictions conditionnelle et non conditionnelle.",
+        "La force de guidance règle un compromis de fidélité et de diversité."
+      ],
+      "limits": [
+        "Les conventions de coefficient diffèrent : préciser la formule employée.",
+        "Une guidance forte ne garantit pas plus de qualité ou de contrôle.",
+        "La méthode classique demande deux évaluations du modèle ; elles peuvent être regroupées dans un batch."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/objectifs-diffusion-et-flow",
+        "generation-controle/diffusion-et-bruit",
+        "generation-controle/guidance-et-zones-connues"
+      ],
+      "year": 2022,
+      "readSections": [
+        "3.2 Classifier-free guidance",
+        "Algorithm 1",
+        "Algorithm 2",
+        "5 Discussion"
+      ]
+    },
+    {
+      "id": "paper-flowmatching",
+      "title": "Flow Matching for Generative Modeling",
+      "url": "https://arxiv.org/html/2210.02747v2",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Flow matching apprend un champ de vitesses le long de chemins de probabilités.",
+        "L’entraînement peut régresser une vitesse cible sans simuler toute une trajectoire.",
+        "Les chemins possibles incluent certaines formulations de diffusion.",
+        "L’échantillonnage intègre une équation différentielle."
+      ],
+      "limits": [
+        "Sans simulation pendant l’entraînement ne signifie pas génération sans étapes.",
+        "Le chemin linéaire bruit-donnée est une version pédagogique simplifiée, pas toute la méthode.",
+        "Aucun avantage audio de vitesse ou de qualité n’est mesuré ici."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/objectifs-diffusion-et-flow",
+        "generation-controle/diffusion-et-bruit",
+        "generation-controle/guidance-et-zones-connues"
+      ],
+      "year": 2023,
+      "readSections": [
+        "2 Preliminaries: Continuous Normalizing Flows",
+        "3 Flow Matching",
+        "3.2 Conditional Flow Matching"
+      ]
+    },
+    {
+      "id": "repo-flowmatching",
+      "title": "Flow Matching — bibliothèque officielle Meta",
+      "url": "https://github.com/facebookresearch/flow_matching/blob/main/README.md",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "La bibliothèque PyTorch propose des chemins, pertes et solveurs.",
+        "Elle contient des exemples continus, discrets et riemanniens.",
+        "Le dépôt accompagne Flow Matching Guide and Code de 2024."
+      ],
+      "limits": [
+        "Ce dépôt accompagne le guide de 2024, pas un instantané exact de l’article initial.",
+        "Ses exemples texte et image ne constituent pas un benchmark audio."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/objectifs-diffusion-et-flow",
+        "generation-controle/diffusion-et-bruit",
+        "generation-controle/guidance-et-zones-connues"
+      ],
+      "verificationMethod": "GitHub connector fetch README.md"
+    },
+    {
+      "id": "paper-musictransformer",
+      "title": "Music Transformer: Generating music with long-term structure",
+      "url": "https://arxiv.org/html/1809.04281v3",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Le modèle traite des séquences musicales symboliques.",
+        "L’attention relative représente les distances entre événements.",
+        "L’algorithme réduit la mémoire intermédiaire du calcul des positions relatives.",
+        "L’article étudie continuation et harmonisation conditionnée par mélodie."
+      ],
+      "limits": [
+        "La réduction annoncée ne rend pas toute l’attention dense linéaire.",
+        "Les événements MIDI ne codent pas directement le timbre d’une forme d’onde.",
+        "La cohérence à long terme reste une question d’évaluation, pas une garantie."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/symbolique-midi-et-audio",
+        "generation-controle/autoregression-et-causalite"
+      ],
+      "year": 2018,
+      "readSections": [
+        "3.1 Data representation",
+        "3.4 Memory efficient implementation of relative position-based attention",
+        "3.5 Relative local attention",
+        "4 Experiments"
+      ]
+    },
+    {
+      "id": "repo-musictransformer",
+      "title": "Magenta — Score2Perf and Music Transformer",
+      "url": "https://github.com/magenta/magenta/blob/main/magenta/models/score2perf/README.md",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Score2Perf génère des performances avec ou sans partition de conditionnement.",
+        "Le dépôt distingue prétraitement des données et entraînement.",
+        "La sortie de génération se sauvegarde en fichiers MIDI."
+      ],
+      "limits": [
+        "Dépendances et services cloud historiques ; ne pas promettre leur fonctionnement immédiat.",
+        "Les estimations de coût du README ne sont pas des devis actuels."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/symbolique-midi-et-audio",
+        "generation-controle/autoregression-et-causalite"
+      ],
+      "verificationMethod": "GitHub connector fetch README.md"
+    },
+    {
+      "id": "page-musictransformer",
+      "title": "Magenta — Music Transformer: Generating Music with Long-Term Structure",
+      "url": "https://magenta.tensorflow.org/music-transformer",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "La page des auteurs présente continuations, conditionnement et exemples d’échecs.",
+        "Une représentation événementielle permet des performances expressives.",
+        "Les sons présentés sont rendus par un instrument de synthèse distinct du modèle symbolique."
+      ],
+      "limits": [
+        "Page de démonstration de 2018 ; les exemples sélectionnés ne constituent pas une évaluation indépendante.",
+        "Ne pas confondre rendu audio et production directe de forme d’onde."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/symbolique-midi-et-audio",
+        "generation-controle/autoregression-et-causalite"
+      ],
+      "year": 2018
+    },
+    {
+      "id": "ircam-offer",
+      "title": "IRCAM — Doctorant.e : composition musicale assistée par IA",
+      "url": "https://www.ircam.fr/fr/offres-emplois/doctorante--composition-musicale-assiste-par-ia",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "La thèse porte sur des outils génératifs audio contrôlables pour une composition itérative.",
+        "Le contrôle combine notamment audio, partitions et texte.",
+        "L’adaptation doit tenir compte des matériaux et langages artistiques des compositeurs.",
+        "Python, PyTorch, traitement du signal et GNU/Linux figurent parmi les compétences demandées.",
+        "MIR et composition assistée par ordinateur constituent des atouts."
+      ],
+      "limits": [
+        "L’offre n’impose pas LoRA, CLAP ou un codec particulier.",
+        "Le cours prépare les axes annoncés sans prédire les questions exactes d’entretien.",
+        "L’annonce peut changer ; les informations administratives doivent être relues avant candidature."
+      ],
+      "technicalChapterTargets": [
+        "contexte-recherche",
+        "generation-controle/objectifs-diffusion-et-flow",
+        "generation-controle/diffusion-et-bruit",
+        "generation-controle/guidance-et-zones-connues",
+        "generation-controle/controle-multimodal-formes",
+        "generation-controle/conditions-et-intention-musicale",
+        "generation-controle/efficacite-petit-budget",
+        "generation-controle/adaptation-lora-et-petit-corpus"
+      ]
+    },
+    {
+      "id": "ircam-postgenai",
+      "title": "IRCAM — PostGenAI@Paris et AI-MADE",
+      "url": "https://www.ircam.fr/en/research/projects/199-2",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "L’IRCAM pilote AI-MADE au sein de PostGenAI via l’équipe Analyse/Synthèse.",
+        "AI-MADE vise génération et manipulation d’audio professionnel.",
+        "Le projet privilégie contrôle intuitif, style, expressivité et hybridation.",
+        "Il cherche des représentations latentes perceptivement pertinentes et des modèles économes en calcul et données."
+      ],
+      "limits": [
+        "Une ambition de projet n’est pas un résultat déjà obtenu.",
+        "IA post-générative désigne ici une orientation vers compréhension et interaction maîtrisée ; ce n’est pas une architecture unique."
+      ],
+      "technicalChapterTargets": [
+        "contexte-recherche",
+        "generation-controle/controle-multimodal-formes",
+        "generation-controle/conditions-et-intention-musicale",
+        "generation-controle/efficacite-petit-budget",
+        "generation-controle/adaptation-lora-et-petit-corpus"
+      ]
+    },
+    {
+      "id": "ircam-nntilde",
+      "title": "nn~ — dépôt officiel ACIDS-IRCAM",
+      "url": "https://github.com/acids-ircam/nn_tilde/blob/master/README.md",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "nn~ relie Max/MSP ou PureData à l’interface C++ libtorch.",
+        "Il charge des modèles exportés en TorchScript.",
+        "Les méthodes et attributs disponibles dépendent du modèle exporté.",
+        "Les buffers et dimensions influencent intégration et charge de calcul."
+      ],
+      "limits": [
+        "nn~ fournit une interface d’exécution ; il ne remplace pas l’entraînement d’un modèle.",
+        "Vérifier version et plateforme avant installation, particulièrement sous Windows.",
+        "La compatibilité d’export TorchScript doit être validée pour le modèle et l’environnement choisis."
+      ],
+      "technicalChapterTargets": [
+        "contexte-recherche",
+        "generation-controle/efficacite-petit-budget",
+        "generation-controle/adaptation-lora-et-petit-corpus"
+      ],
+      "verificationMethod": "GitHub connector fetch README.md"
+    },
+    {
+      "id": "ircam-openmusic",
+      "title": "OpenMusic — site officiel maintenu par l’équipe Représentations musicales",
+      "url": "https://openmusic-project.github.io/openmusic/",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "OpenMusic est un langage visuel fondé sur Common Lisp.",
+        "Les patches relient fonctions et structures de données musicales.",
+        "Il manipule notamment notation, piano-roll MIDI et signal sonore.",
+        "La maquette organise les matériaux musicaux dans le temps."
+      ],
+      "limits": [
+        "La composition assistée par ordinateur ne suppose pas nécessairement un modèle appris.",
+        "Les fonctions audio peuvent dépendre de bibliothèques additionnelles."
+      ],
+      "technicalChapterTargets": [
+        "contexte-recherche",
+        "generation-controle/symbolique-midi-et-audio",
+        "generation-controle/autoregression-et-causalite"
+      ]
+    },
+    {
+      "id": "ircam-openmusic-manual",
+      "title": "OpenMusic — documentation officielle actuelle",
+      "url": "https://openmusic-project.github.io/openmusic/doc/om-manual/OM-Documentation",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Un patch relie graphiquement objets musicaux et fonctions de traitement.",
+        "Le manuel distingue environnement principal, tutoriel et bibliothèques spécialisées."
+      ],
+      "limits": [
+        "Certaines bibliothèques ne sont pas décrites dans ce manuel.",
+        "Ce lien actuel remplace un ancien manuel support.ircam.fr inaccessible pendant la recherche."
+      ],
+      "technicalChapterTargets": [
+        "contexte-recherche",
+        "generation-controle/symbolique-midi-et-audio",
+        "generation-controle/autoregression-et-causalite"
+      ]
+    },
+    {
+      "id": "ircam-max",
+      "title": "IRCAM — Programmation et création interactive avec Max",
+      "url": "https://www.ircam.fr/fr/formations/formations-professionnelles/programmation-et-creation-interactive-max",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Max sert à construire instruments, effets et dispositifs interactifs audio/MIDI.",
+        "Il relie sons, images, capteurs et données.",
+        "Des outils IRCAM analysent ou explorent des corpus dans cet environnement."
+      ],
+      "limits": [
+        "Max est un environnement de programmation ; la génération neuronale n’est qu’un usage possible.",
+        "La page de formation ne fournit pas de mesure de latence."
+      ],
+      "technicalChapterTargets": [
+        "contexte-recherche",
+        "generation-controle/efficacite-petit-budget",
+        "generation-controle/adaptation-lora-et-petit-corpus"
+      ],
+      "openedBy": "agent ircam_tools_sources"
+    },
+    {
+      "id": "cycling74-msp",
+      "title": "Cycling ’74 — How MSP Works",
+      "url": "https://docs.cycling74.com/learn/articles/03_msphowmspworks/",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Les objets Max échangent des messages déclenchés par événements.",
+        "Les connexions MSP définissent un réseau de traitement des signaux audio.",
+        "Des objets dédiés relient contrôle par messages et signaux."
+      ],
+      "limits": [
+        "Le temps réel exige un calcul assez rapide pour les échéances audio.",
+        "La documentation ne garantit pas qu’un modèle neuronal quelconque respecte ces échéances.",
+        "Ne pas généraliser une cadence fixe de contrôle à toutes les configurations."
+      ],
+      "technicalChapterTargets": [
+        "contexte-recherche",
+        "generation-controle/efficacite-petit-budget",
+        "generation-controle/adaptation-lora-et-petit-corpus"
+      ],
+      "openedBy": "agent ircam_tools_sources"
+    },
+    {
+      "id": "ircam-mir-ai4media",
+      "title": "IRCAM — AI4Media",
+      "url": "https://www.ircam.fr/en/research/projects/138-2",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Le projet cite tempo, tonalité, accords, transcription et séparation parmi les analyses musicales.",
+        "La page distingue analyse d’enregistrements et synthèse instrumentale depuis MIDI.",
+        "Ces tâches illustrent l’extraction d’informations utiles à partir de musique."
+      ],
+      "limits": [
+        "Présentation d’un projet particulier, pas définition exhaustive du MIR.",
+        "Dates 2020–2024 et statut ongoing incohérents ; ne pas en déduire l’actualité du projet."
+      ],
+      "technicalChapterTargets": [
+        "contexte-recherche",
+        "audio-ml/embeddings-transfert-domaines",
+        "evaluation-recherche"
+      ],
+      "openedBy": "agent ircam_tools_sources"
+    },
+    {
+      "id": "stms-analysis-synthesis",
+      "title": "STMS — Sound Analysis-Synthesis",
+      "url": "https://www.stms-lab.fr/team/analyse-et-synthese-des-sons",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "L’équipe étudie analyse, transformation et synthèse des signaux sonores.",
+        "L’analyse extrait et structure des informations du signal.",
+        "Fréquence fondamentale et spectre relient description acoustique, hauteur et timbre."
+      ],
+      "limits": [
+        "Présentation générale d’équipe ; aucune performance d’architecture particulière ne peut en être déduite."
+      ],
+      "technicalChapterTargets": [
+        "contexte-recherche",
+        "audio-signal",
+        "audio-ml"
+      ],
+      "openedBy": "agent ircam_tools_sources"
+    },
+    {
+      "id": "ircam-atiam",
+      "title": "ATIAM — Enseignements",
+      "url": "https://www.atiam.ircam.fr/enseignement/",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Le programme distingue représentations audio et symboliques.",
+        "Hauteur, structure, transcription et séparation relèvent du traitement musical.",
+        "Programmation symbolique, audio temps réel et interaction relient analyse et création."
+      ],
+      "limits": [
+        "Source pédagogique institutionnelle ; elle ne donne pas de recette universelle de système complet."
+      ],
+      "technicalChapterTargets": [
+        "contexte-recherche",
+        "generation-controle/symbolique-midi-et-audio",
+        "generation-controle/autoregression-et-causalite"
+      ],
+      "openedBy": "agent ircam_tools_sources"
+    },
+    {
+      "id": "paper-adapters",
+      "title": "Parameter-Efficient Transfer Learning for NLP",
+      "url": "https://arxiv.org/abs/1902.00751",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Les adapters ajoutent de petits modules entraînables à un réseau préentraîné gelé.",
+        "Chaque tâche peut conserver des paramètres additionnels compacts."
+      ],
+      "limits": [
+        "Les expériences originales concernent le langage, pas la personnalisation audio.",
+        "L’ajout de couches peut modifier le coût d’inférence ; mesurer le système final."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/efficacite-petit-budget",
+        "generation-controle/adaptation-lora-et-petit-corpus"
+      ],
+      "year": 2019
+    },
+    {
+      "id": "paper-distillation",
+      "title": "Distilling the Knowledge in a Neural Network",
+      "url": "https://arxiv.org/abs/1503.02531",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "La distillation entraîne un modèle à reproduire les prédictions d’un enseignant.",
+        "Elle cherche à simplifier le déploiement d’un ensemble ou modèle plus coûteux."
+      ],
+      "limits": [
+        "Le coût de création des cibles de l’enseignant doit être compté.",
+        "Une distillation de diffusion ou d’audio nécessite un objectif et une validation adaptés."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/efficacite-petit-budget",
+        "generation-controle/adaptation-lora-et-petit-corpus"
+      ],
+      "year": 2015
+    },
+    {
+      "id": "paper-latentdiffusion",
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "url": "https://arxiv.org/abs/2112.10752",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "La diffusion opère dans l’espace compressé d’un autoencodeur préentraîné.",
+        "Le décodeur transforme les latents générés en observation.",
+        "La cross-attention permet plusieurs formes de conditionnement."
+      ],
+      "limits": [
+        "Article original sur l’image ; il soutient le principe, sans prouver des gains audio.",
+        "La compression introduit un compromis de détail et un plafond de reconstruction."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/objectifs-diffusion-et-flow",
+        "generation-controle/diffusion-et-bruit",
+        "generation-controle/guidance-et-zones-connues",
+        "generation-controle/controle-multimodal-formes",
+        "generation-controle/conditions-et-intention-musicale"
+      ],
+      "year": 2022
+    },
+    {
+      "id": "paper-film",
+      "title": "FiLM: Visual Reasoning with a General Conditioning Layer",
+      "url": "https://arxiv.org/abs/1709.07871",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "FiLM module chaque caractéristique par une transformation affine conditionnelle.",
+        "Le conditionnement produit les coefficients multiplicatifs et additifs."
+      ],
+      "limits": [
+        "Le travail original concerne le raisonnement visuel.",
+        "Une modulation globale ne garantit pas un alignement temporel fin."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/controle-multimodal-formes",
+        "generation-controle/conditions-et-intention-musicale"
+      ],
+      "year": 2018
+    },
+    {
+      "id": "midi-message-summary",
+      "title": "MIDI Association — Summary of MIDI 1.0 Messages",
+      "url": "https://midi.org/summary-of-midi-1-0-messages",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Note On et Note Off portent numéro de note et vélocité.",
+        "Control Change et Pitch Bend décrivent d’autres commandes de performance.",
+        "Les messages transmettent des instructions ; un instrument produit leur rendu sonore."
+      ],
+      "limits": [
+        "Ce tableau est une synthèse MIDI 1.0, pas la spécification complète.",
+        "Les jetons d’un modèle peuvent ajouter leurs propres événements temporels ; ils ne sont pas nécessairement des octets MIDI bruts."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/symbolique-midi-et-audio",
+        "generation-controle/autoregression-et-causalite"
+      ]
+    },
+    {
+      "id": "pytorch-quantization-overview",
+      "title": "PyTorch / torchao — Quantization Overview",
+      "url": "https://docs.pytorch.org/ao/stable/contributing/quantization_overview.html",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "La quantification représente des valeurs par des formats de précision réduite.",
+        "Les formats quantifiés peuvent ajouter des paramètres comme échelle et zéro.",
+        "Les gains de calcul nécessitent des opérations et un placement mémoire adaptés."
+      ],
+      "limits": [
+        "Ne pas confondre réduction théorique du stockage des poids et mémoire totale du système.",
+        "Un format plus petit ne garantit pas une accélération sur tout matériel.",
+        "Aucune nouvelle dépendance torchao n’est nécessaire au seul exemple arithmétique du cours."
+      ],
+      "technicalChapterTargets": [
+        "generation-controle/efficacite-petit-budget"
+      ],
+      "readSections": [
+        "Quantization Primitive Ops",
+        "Efficient kernels",
+        "Quantized Tensors"
+      ]
+    },
+    {
+      "id": "ircam-nntilde-forum",
+      "title": "IRCAM Forum — nn~",
+      "url": "https://forum.ircam.fr/projects/detail/nn/",
+      "accessed": "2026-11-17",
+      "opened": true,
+      "claims": [
+        "Le Forum IRCAM propose une fiche officielle nn~."
+      ],
+      "limits": [
+        "La page s’ouvre, mais le contenu technique ne figure pas dans le texte extrait.",
+        "Les faits d’intégration proviennent du README officiel ACIDS-IRCAM, source ircam-nntilde."
+      ],
+      "technicalChapterTargets": [
+        "contexte-recherche"
+      ]
+    }
+  ],
+  "readingList": [
+    {
+      "order": 1,
+      "title": "Attention Is All You Need",
+      "url": "https://arxiv.org/html/1706.03762v7",
+      "sourceId": "paper-transformer",
+      "takeaways": [
+        "Une requête sélectionne les informations utiles parmi des clés et valeurs.",
+        "Position, résidus et normalisation rendent le bloc complet.",
+        "Le masque causal empêche l’accès au futur."
+      ],
+      "criticalQuestion": "Quelle portée temporelle musicale perdons-nous si nous raccourcissons le contexte pour réduire le calcul ?"
+    },
+    {
+      "order": 2,
+      "title": "RAVE: A variational autoencoder for fast and high-quality neural audio synthesis",
+      "url": "https://arxiv.org/html/2111.05011v2",
+      "sourceId": "paper-rave",
+      "takeaways": [
+        "Le latent continu compresse et expose des possibilités de transformation sonore.",
+        "L’apprentissage sépare représentation et qualité de synthèse.",
+        "Le compromis de compacité doit rester perceptivement acceptable."
+      ],
+      "criticalQuestion": "Comment vérifier qu’une dimension latente correspond à un contrôle perceptif stable sur les matériaux du compositeur ?"
+    },
+    {
+      "order": 3,
+      "title": "High Fidelity Neural Audio Compression",
+      "url": "https://arxiv.org/html/2210.13438v1",
+      "sourceId": "paper-encodec",
+      "companionSourceIds": [
+        "paper-dac"
+      ],
+      "takeaways": [
+        "La RVQ transforme un signal en plusieurs suites de codes discrets.",
+        "Reconstruction et discrimination perceptive guident l’apprentissage du codec.",
+        "Le codec fixe les informations disponibles au générateur ultérieur."
+      ],
+      "criticalQuestion": "Quels détails musicaux disparaissent dans le codec, même si le générateur prédit parfaitement ses codes ?"
+    },
+    {
+      "order": 4,
+      "title": "Denoising Diffusion Probabilistic Models",
+      "url": "https://arxiv.org/html/2006.11239v2",
+      "sourceId": "paper-ddpm",
+      "companionSourceIds": [
+        "paper-cfg"
+      ],
+      "takeaways": [
+        "L’entraînement apprend à prédire un bruit connu.",
+        "La génération inverse progressivement une corruption.",
+        "Le conditionnement et la guidance modifient cette génération."
+      ],
+      "criticalQuestion": "Comment évaluer séparément fidélité sonore, respect du contrôle et diversité quand nous augmentons la guidance ?"
+    },
+    {
+      "order": 5,
+      "title": "Flow Matching for Generative Modeling",
+      "url": "https://arxiv.org/html/2210.02747v2",
+      "sourceId": "paper-flowmatching",
+      "takeaways": [
+        "Nous apprenons une vitesse reliant des distributions.",
+        "L’entraînement régresse des cibles définies sur des chemins.",
+        "La génération nécessite ensuite un solveur numérique."
+      ],
+      "criticalQuestion": "À budget d’évaluations du réseau identique, quel protocole comparerait équitablement diffusion et flow matching sur notre corpus audio ?"
+    },
+    {
+      "order": 6,
+      "title": "Large-scale Contrastive Language-Audio Pretraining with Feature Fusion and Keyword-to-Caption Augmentation",
+      "url": "https://arxiv.org/html/2211.06687v4",
+      "sourceId": "paper-clap",
+      "takeaways": [
+        "Audio et descriptions textuelles partagent un espace de représentation.",
+        "La similarité permet recherche et classification sans nouvel exemple étiqueté.",
+        "La représentation sémantique reste différente d’une commande temporelle précise."
+      ],
+      "criticalQuestion": "Un score CLAP élevé reflète-t-il les intentions musicales du compositeur ou seulement des étiquettes générales ?"
+    },
+    {
+      "order": 7,
+      "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+      "url": "https://arxiv.org/html/2106.09685v2",
+      "sourceId": "paper-lora",
+      "takeaways": [
+        "Nous gardons le modèle initial et apprenons une correction de faible rang.",
+        "Le rang et les couches ciblées limitent les paramètres adaptés.",
+        "Le corpus personnel doit rester séparé du protocole d’évaluation."
+      ],
+      "criticalQuestion": "Comment distinguer personnalisation réussie et mémorisation du petit corpus, à coût d’entraînement fixé ?"
+    },
+    {
+      "order": 8,
+      "title": "Music Transformer: Generating music with long-term structure",
+      "url": "https://arxiv.org/html/1809.04281v3",
+      "sourceId": "paper-musictransformer",
+      "takeaways": [
+        "La représentation symbolique permet des contrôles explicites sur les notes.",
+        "L’attention relative modélise les relations entre événements.",
+        "Le rendu sonore reste une étape distincte."
+      ],
+      "criticalQuestion": "Quand faut-il contrôler la structure par des événements symboliques plutôt que demander directement une forme d’onde ?"
+    }
+  ],
+  "readingListSelection": "Huit lectures principales. DAC complète EnCodec ; CFG complète DDPM. Les références complémentaires restent disponibles pour les chapitres techniques.",
+  "inaccessibleAttempts": [
+    {
+      "url": "https://github.com/descriptinc/descript-audio-codec",
+      "result": "Timeout lors de la première ouverture web ; dépôt et README ensuite obtenus par le connecteur GitHub.",
+      "replacementUrl": "https://github.com/descriptinc/descript-audio-codec/blob/main/README.md",
+      "resolved": true
+    },
+    {
+      "url": "https://support.ircam.fr/docs/om/om6-manual/co/01-Presentation.html",
+      "result": "403 Forbidden.",
+      "replacementUrl": "https://openmusic-project.github.io/openmusic/doc/om-manual/OM-Documentation",
+      "resolved": true
+    },
+    {
+      "url": "https://www.ircam.fr/fr/recherche/projets/84",
+      "result": "Timeout de l’ouverture ; le résultat de recherche seul n’est pas employé comme preuve.",
+      "replacementUrl": "https://openmusic-project.github.io/openmusic/",
+      "resolved": true
+    },
+    {
+      "url": "https://ismir2002.ircam.fr/topics-fr.html",
+      "result": "Cache miss pendant la consultation de l’agent délégué.",
+      "replacementUrl": "https://www.ircam.fr/en/research/projects/138-2",
+      "resolved": true
+    },
+    {
+      "url": "https://docs.pytorch.org/ao/stable/quantization_overview.html",
+      "result": "404 ; page déplacée. La nouvelle URL officielle a été ouverte avec succès.",
+      "replacementUrl": "https://docs.pytorch.org/ao/stable/contributing/quantization_overview.html",
+      "resolved": true
+    },
+    {
+      "url": "https://forum.ircam.fr/projects/detail/nn/",
+      "result": "Page ouverte, mais extraction limitée à la navigation et aux onglets.",
+      "replacementUrl": "https://github.com/acids-ircam/nn_tilde/blob/master/README.md",
+      "resolved": true
+    }
+  ],
+  "editorialGuardrails": [
+    "Présenter séparément VAE continu et codec discret ; nommer la configuration réelle de RAVE.",
+    "Distinguer mémoire des paramètres entraînables, activations, états d’optimiseur et mémoire d’inférence.",
+    "Un coût analytique calculé ne constitue pas une mesure de temps ou de qualité.",
+    "La compatibilité avec un environnement temps réel ne garantit pas une latence acceptable sur toute machine.",
+    "Les ambitions de PostGenAI/AI-MADE ne sont pas des résultats expérimentaux.",
+    "Un modèle de représentation audio-texte ne garantit ni alignement temporel ni contrôle musical exact.",
+    "Les exemples illustratifs doivent être identifiés ; aucune supériorité de modèle n’est inférée sans protocole.",
+    "Les pages non accessibles n’entrent pas dans les sources citées ouvertes."
+  ],
+  "verificationSummary": {
+    "sourceCount": 37,
+    "primaryReadingCount": 8,
+    "unresolvedRequiredSourceCount": 0,
+    "notBenchmarked": "Aucun modèle externe téléchargé ou évalué. Aucun résultat chiffré de qualité ou de vitesse reproduit.",
+    "scope": "Recherche documentaire seulement ; aucun cours ou script d’exécution modifié."
+  }
+}

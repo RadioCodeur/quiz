@@ -11,12 +11,14 @@ export async function readCourses() {
 
 export function validateCourses(courses, { bank, themes, sources }) {
   const themeIds=new Set(themes.map(t=>t.id));
+  const courseIds=new Set(courses.map(course=>course.themeId));
   const allRefs=[...sources,...courses.flatMap(course=>course.references??[])];
   const refs=new Set(allRefs.map(s=>s.id));
   assert.equal(refs.size,allRefs.length,'Les identifiants de références restent uniques');
   for(const source of allRefs){assert.ok(source.id&&source.title&&new URL(source.url).protocol==='https:',`Référence complète : ${source.id}`);assert.match(source.accessed,/^\d{4}-\d{2}-\d{2}$/);}
-  assert.equal(courses.length,6);
-  assert.deepEqual(new Set(courses.map(c=>c.themeId)),themeIds);
+  assert.deepEqual(courseIds,new Set(COURSE_ORDER),'Tous les modules enregistrés sont présents');
+  assert.equal(courseIds.size,courses.length,'Modules uniques');
+  for(const id of themeIds)assert.ok(courseIds.has(id),`Thème du quiz couvert : ${id}`);
   const ids=new Map(bank.map(q=>[q.id,q]));
   const coverage=new Map();
   let chapters=0, words=0, figures=0, examples=0, code=0, visuals=0, plots=0, walkthroughs=0, checkpoints=0, firstExamples=0, introducedNotions=0;
@@ -26,12 +28,14 @@ export function validateCourses(courses, { bank, themes, sources }) {
     check(course.title?.trim()&&course.subtitle?.trim(),'titre et sous-titre');
     check(Array.isArray(course.intro)&&course.intro.length>=2&&course.intro.every(p=>typeof p==='string'&&p.trim()),'introduction complète');
     check(Array.isArray(course.objectives)&&course.objectives.length>=3,'objectifs explicites');
-    check(Array.isArray(course.prerequisites)&&course.prerequisites.every(id=>themeIds.has(id)&&id!==course.themeId),'prérequis valides');
-    check(Array.isArray(course.chapters)&&course.chapters.length>=6,'au moins six chapitres');
+    check(Array.isArray(course.prerequisites)&&course.prerequisites.every(id=>courseIds.has(id)&&id!==course.themeId),'prérequis valides');
+    check(course.kind===undefined||['context','interview'].includes(course.kind),'format de module connu');
+    check(themeIds.has(course.themeId)||course.kind,'format explicite des modules complémentaires');
+    check(Array.isArray(course.chapters)&&course.chapters.length>=(course.kind?1:6),'chapitres adaptés au format du module');
     check(new Set(course.chapters.map(ch=>ch.id)).size===course.chapters.length,'IDs de chapitres uniques');
     const moduleIntroduction=course.moduleIntroduction;
     check(moduleIntroduction?.startingPoint?.trim()&&moduleIntroduction.goal?.trim(),'présentation du module');
-    check(moduleIntroduction.concepts?.length>=5&&moduleIntroduction.concepts.length<=8,'cinq à huit jalons annoncés');
+    check(moduleIntroduction.concepts?.length>=Math.min(5,course.chapters.length)&&moduleIntroduction.concepts.length<=8,'jalons annoncés selon le nombre de chapitres');
     let previousConceptIndex=-1;
     for(const concept of moduleIntroduction.concepts){
       const chapterIndex=course.chapters.findIndex(ch=>ch.id===concept.chapterId);

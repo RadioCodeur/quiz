@@ -49,7 +49,7 @@ test('cours : marquer et démarquer un chapitre sans modifier la session de quiz
 
 test('la refonte conserve les anciens liens et repères des 57 chapitres',async()=>{
   const previous=JSON.parse(await readFile(new URL('./fixtures/course-ids-v1.json',import.meta.url),'utf8'));
-  for(const course of courses)for(const id of previous[course.themeId])assert.ok(course.chapters.some(ch=>ch.id===id),`${course.themeId}/${id}`);
+  for(const course of courses)for(const id of previous[course.themeId]??[])assert.ok(course.chapters.some(ch=>ch.id===id),`${course.themeId}/${id}`);
 });
 test('la destination annoncée du cours couvre tout le chemin sans saut de chapitre',()=>{
   for(const course of courses){

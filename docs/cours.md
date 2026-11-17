@@ -81,3 +81,9 @@ Six chapitres complètent les modules techniques : Transformer complet dans Audi
 Les interfaces texte, audio et MIDI sont des représentations pédagogiques explicitement simulées. Aucun modèle préentraîné n’est téléchargé ni évalué. La comparaison de quantification rapporte l’erreur d’une projection synthétique et le stockage logique des poids ; elle ne démontre ni qualité audio ni accélération. Les différences entre RAVE continu et EnCodec/DAC à RVQ sont explicites.
 
 Les blocs `list` peuvent porter `links: [{text, themeId, chapterId}]`. Le rendu produit des liens internes ; le validateur exige une cible existante. Les 65 chapitres initiaux, leurs correspondances QCM, leurs références et leurs checkpoints restent protégés par les tests de contrat.
+
+## Lot D — contexte IRCAM et recherche
+
+Le septième module contient quatre chapitres : lire l’offre, situer les outils musicaux, comprendre le cycle post-génératif et préparer huit lectures. Chacun contient des liens techniques explicites. Le registre des modules est distinct des six thèmes du quiz ; le nouveau module ne modifie aucune couverture de question.
+
+`kind: "context"` autorise un module court avec quatre jalons. Ses exemples sont des tableaux de raisonnement explicitement nommés, sans programme artificiel : le résultat attendu est un choix argumenté ou un protocole. Cette adaptation de R1 est visible dans chaque walkthrough. Le registre documentaire `scripts/verify/research-sources.json` conserve les pages primaires ouvertes, les faits utilisables et les limites d’interprétation.
