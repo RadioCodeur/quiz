@@ -365,6 +365,15 @@ try {
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
     assert.ok(new URL(await illustration.locator('img').getAttribute('src'),page.url()).origin===new URL(base).origin);
   });
+  await check('notebook : Colab et téléchargement depuis le chapitre PyTorch',async()=>{
+    await page.goto(`${base}/cours.html?theme=pytorch#retropropagation-a-la-main`);
+    await page.locator('.chapter-notebook').waitFor();
+    const colab=page.locator('.chapter-notebook a').first(),download=page.locator('.chapter-notebook a[download]');
+    assert.equal(await colab.getAttribute('href'),'https://colab.research.google.com/github/RadioCodeur/quiz/blob/main/public/notebooks/retropropagation-a-la-main.ipynb');
+    const notebook=await page.request.get(new URL(await download.getAttribute('href'),page.url()).href);
+    assert.equal(notebook.status(),200);assert.equal((await notebook.json()).nbformat,4);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+  });
   await check('cours : stockage bloqué et liens périmés restent utilisables',async()=>{
     const ctx=await browser.newContext({viewport:{width:360,height:800}});
     await ctx.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw new DOMException('Blocked','SecurityError');}}));

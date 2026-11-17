@@ -69,3 +69,9 @@ export function resolveChapter(course, { chapterId, questionId } = {}) {
     ?? course.chapters.find(ch => ch.questionIds.includes(questionId))
     ?? course.chapters[0];
 }
+
+
+export function notebookLinks(path,base='./') {
+  if(!/^notebooks\/[a-z0-9-]+\.ipynb$/.test(path??''))throw new Error('Chemin de notebook invalide');
+  return {download:`${base}${path}`,colab:`https://colab.research.google.com/github/RadioCodeur/quiz/blob/main/public/${path}`};
+}

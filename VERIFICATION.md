@@ -56,3 +56,12 @@ Les vingt programmes sont réellement exécutés sur PyTorch/TorchAudio 2.10.0+c
 L’audit CPU des autres modules est préparé dans `scripts/verify/existing-corpus.py`. Il a trouvé deux incohérences à corriger au lot F : tirage aléatoire VAE/diffusion décrit comme un bruit fixe. Le lot A ne les masque pas et n’est pas présenté comme la livraison finale du prompt complet.
 
 Construction et 23 contrôles navigateur du lot A réussis, dont les 71 chapitres rendus à 360 px.
+
+
+## Lot C — notebooks exécutables
+
+Vingt notebooks Jupyter 4.5 exécutés de bout en bout, avec deux solutions supplémentaires vérifiées par document. Script : `scripts/verify/notebooks.py`. Résultats et empreintes du JSON écrit : `scripts/verify/notebooks-results.json`. Python 3.11.9, PyTorch/TorchAudio 2.10.0, CPU, un thread ; nbformat 5.11.1 et nbclient 0.11.0. Temps individuels mesurés : 5.391–8.222s, sous 120 s. Les notebooks livrés contiennent les sorties réellement obtenues. Les exercices ne cassent pas l’exécution complète : leurs trous sont dans des cellules Markdown.
+
+Les notebooks sont vérifiés localement avec Jupyter. L’interface Colab connectée n’est pas exécutée par l’agent ; ses URL et les fichiers GitHub publics sont contrôlés après push. Cette limite ne remplace pas le contrôle CPU de toutes les cellules.
+
+Lot C : 40 tests Node, construction Vite et 24 contrôles navigateur réussis.

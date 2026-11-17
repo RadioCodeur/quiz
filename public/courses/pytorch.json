@@ -188,7 +188,8 @@
         ],
         "correctOptionId": "b",
         "explanation": "backward remplit les gradients. La mise à jour est une opération supplémentaire."
-      }
+      },
+      "notebook": "notebooks/pytorch-en-une-page.ipynb"
     },
     {
       "id": "du-pipeline-au-modele",
@@ -356,7 +357,8 @@
         "input": "Des descripteurs numériques et une annotation par extrait.",
         "action": "Lire un score par classe et par extrait.",
         "output": "Deux scores par extrait et une convention de classes stable."
-      }
+      },
+      "notebook": "notebooks/du-pipeline-au-modele.ipynb"
     },
     {
       "id": "tenseur-forme-type-device",
@@ -538,7 +540,8 @@
         "input": "Deux extraits, trois descripteurs et deux cibles entières.",
         "action": "Vérifier la forme, le type et le placement des données.",
         "output": "Des entrées et des cibles qui peuvent participer au même calcul."
-      }
+      },
+      "notebook": "notebooks/tenseur-forme-type-device.ipynb"
     },
     {
       "id": "organiser-les-axes",
@@ -724,7 +727,8 @@
         "input": "X contient deux extraits et trois descripteurs par extrait.",
         "action": "Choisir une opération d’organisation selon son intention.",
         "output": "Une transformation justifiée par sa forme et son contenu."
-      }
+      },
+      "notebook": "notebooks/organiser-les-axes.ipynb"
     },
     {
       "id": "selection-diffusion-reduction",
@@ -899,7 +903,8 @@
         "input": "Chaque ligne de X conserve son sens et sa cible.",
         "action": "Réduire des exemples ou des classes selon le résultat attendu.",
         "output": "Une référence par descripteur et une prédiction par extrait."
-      }
+      },
+      "notebook": "notebooks/selection-diffusion-reduction.ipynb"
     },
     {
       "id": "dataset-et-batches",
@@ -1085,7 +1090,8 @@
         "input": "Des séquences annotées dont les durées ne coïncident pas.",
         "action": "Construire un lot sans perdre les longueurs réelles.",
         "output": "Un batch rectangulaire accompagné de ses informations de validité."
-      }
+      },
+      "notebook": "notebooks/dataset-et-batches.ipynb"
     },
     {
       "id": "moyennes-masquees",
@@ -1258,7 +1264,8 @@
         "input": "Deux séquences complétées de longueurs réelles deux et un.",
         "action": "Exclure le remplissage de la somme et du compte.",
         "output": "Le tableau X utilisé au début, indépendant du padding."
-      }
+      },
+      "notebook": "notebooks/moyennes-masquees.ipynb"
     },
     {
       "id": "construire-un-module",
@@ -1450,7 +1457,8 @@
         "input": "X fournit trois descripteurs par extrait, sans influence du remplissage.",
         "action": "Rassembler les paramètres et les calculs dans un module.",
         "output": "Un modèle aux paramètres et états fixes bien identifiés."
-      }
+      },
+      "notebook": "notebooks/construire-un-module.ipynb"
     },
     {
       "id": "choisir-la-perte",
@@ -1630,7 +1638,8 @@
         "input": "Deux logits et une classe attendue par extrait.",
         "action": "Faire correspondre la perte à la signification des cibles.",
         "output": "Un coût dont les cibles et la réduction sont justifiés."
-      }
+      },
+      "notebook": "notebooks/choisir-la-perte.ipynb"
     },
     {
       "id": "autograd-et-derivees",
@@ -1842,7 +1851,8 @@
         "input": "La perte donne un coût, mais les poids ne bougent pas encore.",
         "action": "Distinguer perte, gradient et paramètre.",
         "output": "Des gradients stockés, distincts de la perte et des nouveaux poids."
-      }
+      },
+      "notebook": "notebooks/autograd-et-derivees.ipynb"
     },
     {
       "id": "retropropagation-a-la-main",
@@ -2035,7 +2045,8 @@
         ],
         "correctOptionId": "c",
         "explanation": "Le trajet passe du carré à y, de y à h, puis de h à w1. Les trois dérivées sont multipliées."
-      }
+      },
+      "notebook": "notebooks/retropropagation-a-la-main.ipynb"
     },
     {
       "id": "une-iteration-entrainement",
@@ -2216,7 +2227,8 @@
         "input": "Les gradients indiquent une influence locale sur notre coût.",
         "action": "Remettre à zéro, calculer, dériver, puis mettre à jour.",
         "output": "Des paramètres modifiés une fois à partir du lot annoncé."
-      }
+      },
+      "notebook": "notebooks/une-iteration-entrainement.ipynb"
     },
     {
       "id": "entrainer-ou-evaluer",
@@ -2394,7 +2406,8 @@
         "input": "Des poids ajustés sur les données d’apprentissage.",
         "action": "Fixer le comportement des couches et désactiver le suivi inutile.",
         "output": "Une validation sans mise à jour, avec des réglages explicites."
-      }
+      },
+      "notebook": "notebooks/entrainer-ou-evaluer.ipynb"
     },
     {
       "id": "detacher-geler-journaliser",
@@ -2590,7 +2603,8 @@
         "input": "Des scores et des pertes à conserver pour suivre l’expérience.",
         "action": "Extraire des valeurs pour le journal de l’expérience.",
         "output": "Des journaux légers et un gel de paramètres précisément défini."
-      }
+      },
+      "notebook": "notebooks/detacher-geler-journaliser.ipynb"
     },
     {
       "id": "moyennes-et-microbatches",
@@ -2758,7 +2772,8 @@
         "input": "Des pertes moyennes par lot et une mémoire parfois limitée.",
         "action": "Reconstruire une moyenne à partir de groupes inégaux.",
         "output": "Une mesure cohérente et un pas éventuellement construit par microbatches."
-      }
+      },
+      "notebook": "notebooks/moyennes-et-microbatches.ipynb"
     },
     {
       "id": "sauvegarder-et-reprendre",
@@ -2945,7 +2960,8 @@
         "input": "Un classifieur, une préparation et un optimiseur qui ont chacun un état.",
         "action": "Conserver le modèle et l’historique nécessaire à l’optimiseur.",
         "output": "Un checkpoint dont les possibilités et les limites sont explicites."
-      }
+      },
+      "notebook": "notebooks/sauvegarder-et-reprendre.ipynb"
     },
     {
       "id": "optimiseurs-regularisation-pratique",
@@ -3169,7 +3185,8 @@
         ],
         "correctOptionId": "c",
         "explanation": "Le calcul additionne numel() × element_size() des paramètres. Les autres états et allocations restent exclus."
-      }
+      },
+      "notebook": "notebooks/optimiseurs-regularisation-pratique.ipynb"
     },
     {
       "id": "boucle-entrainement-complete",
@@ -3365,7 +3382,8 @@
         ],
         "correctOptionId": "c",
         "explanation": "step modifie les paramètres. La validation doit observer le modèle fixé par l’entraînement."
-      }
+      },
+      "notebook": "notebooks/boucle-entrainement-complete.ipynb"
     },
     {
       "id": "conv-mel-autoencodeur",
@@ -3591,7 +3609,8 @@
         ],
         "correctOptionId": "b",
         "explanation": "L’autoencodeur produit une carte de la bonne forme. Une onde fidèle demande d’autres choix, notamment pour les informations absentes de cette représentation."
-      }
+      },
+      "notebook": "notebooks/conv-mel-autoencodeur.ipynb"
     },
     {
       "id": "lire-erreurs-pytorch",
@@ -3768,7 +3787,8 @@
         ],
         "correctOptionId": "a",
         "explanation": "Ce cas utilise une classe entière par exemple. Les cibles doivent suivre ce contrat ; les logits restent flottants."
-      }
+      },
+      "notebook": "notebooks/lire-erreurs-pytorch.ipynb"
     }
   ],
   "edition": 2,

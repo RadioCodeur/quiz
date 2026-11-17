@@ -1,0 +1,351 @@
+{
+  "python": "3.11.9",
+  "torch": "2.10.0",
+  "torchaudio": "2.10.0",
+  "nbformat": "5.11.1",
+  "nbclient": "0.11.0",
+  "device": "cpu",
+  "limitSeconds": 120,
+  "notebooks": [
+    {
+      "path": "public/notebooks/autograd-et-derivees.ipynb",
+      "sourceSha256": "462bc9fc4149f55b27905c9f8dd196c27ef956c09eca8d9f2d08d321a6fdc8b2",
+      "notebookSha256": "71ce83a08d400318674e44cc0cffb9983035047cfe8bbaac41303021422d00d7",
+      "elapsedSeconds": 6.889,
+      "device": "cpu",
+      "codeCells": 2,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "1.0 -4.0\n"
+        ],
+        [
+          "12.0\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/boucle-entrainement-complete.ipynb",
+      "sourceSha256": "64d9c1517d6c970d01f88875615332cf6f29327d7bc04d3d849668a59af8fcfa",
+      "notebookSha256": "619225750b04c797094b40a689f38bbd95caebf03992c21683e8ca7f050df85f",
+      "elapsedSeconds": 7.966,
+      "device": "cpu",
+      "codeCells": 3,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "formes du lot : (2, 3) (2,)\n"
+        ],
+        [
+          "perte moyenne par exemple : 0.32\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/choisir-la-perte.ipynb",
+      "sourceSha256": "10da02582ee6dd03e848cf49610c73ec8f0fb711f51f9e876947c904a1dea770",
+      "notebookSha256": "344964f259109c9cc784ef396ef654ba537453203d9a34d408cf01a3fc6b8a7d",
+      "elapsedSeconds": 5.998,
+      "device": "cpu",
+      "codeCells": 2,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "0.31326165795326233\n"
+        ],
+        [
+          "0.6931471824645996\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/construire-un-module.ipynb",
+      "sourceSha256": "159afc809bc920ef440d423cde88aa846825b39766fe83a8022b899bc4481e7e",
+      "notebookSha256": "d8a69f670904c34e488abd91c23acd28fa035eb36746ab85e9daa6900504d37c",
+      "elapsedSeconds": 5.85,
+      "device": "cpu",
+      "codeCells": 2,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "['reference', 'linear.weight']\n"
+        ],
+        [
+          "(4, 1)\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/conv-mel-autoencodeur.ipynb",
+      "sourceSha256": "9ce2b9428e85877007f2996b8a6de432b802e26ed9f96812fb21248b35f314d6",
+      "notebookSha256": "6bb65dfec991896c3237e8e22df59e46bf5c65411a464912b60ed75401f7e7a6",
+      "elapsedSeconds": 8.222,
+      "device": "cpu",
+      "codeCells": 3,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "forme après convolution : (2, 4, 32, 48)\n"
+        ],
+        [
+          "MSE : 0.25\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/dataset-et-batches.ipynb",
+      "sourceSha256": "64bde30e7222343d3ddac099397a1b4c895b8ee24ee60fd40e971e7c22f46e6f",
+      "notebookSha256": "ead752a54b77d1b3574be17631d6c104d38d35dfa40cebe72c0998920b257905",
+      "elapsedSeconds": 5.701,
+      "device": "cpu",
+      "codeCells": 2,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "2 (tensor([3., 4.]), 1)\n"
+        ],
+        [
+          "(2, 2, 1) [[True, True], [True, False]]\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/detacher-geler-journaliser.ipynb",
+      "sourceSha256": "cc5dd733878cd5d313bf562c411e183c6dc3eced368a80978518ff30c8b2b516",
+      "notebookSha256": "436727da6fc6d5d734518691f30681274be295729347b2a0b8b49e680de9fe08",
+      "elapsedSeconds": 5.547,
+      "device": "cpu",
+      "codeCells": 2,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "1.0 float\n"
+        ],
+        [
+          "[True, True]\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/du-pipeline-au-modele.ipynb",
+      "sourceSha256": "cfd48704bfa3bf4dd29d2dcd9c2bd7acb79e13e1059c526ea0981da98ad9c7af",
+      "notebookSha256": "63379df4d0d59cb2ee8f0f86c726ad4d79a06335acc4bc6234976a5d27f3c234",
+      "elapsedSeconds": 5.625,
+      "device": "cpu",
+      "codeCells": 2,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "[1, 0]\n"
+        ],
+        [
+          "2\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/entrainer-ou-evaluer.ipynb",
+      "sourceSha256": "737b52d5f58e48f627a1835e666f5f0d75ed80cb4bee18979bcc9b2b9a43a881",
+      "notebookSha256": "30f5fc74eb4d9a0bffdc82517e9e8a135afcf352a64129a2c6da37450166b8f8",
+      "elapsedSeconds": 5.732,
+      "device": "cpu",
+      "codeCells": 2,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "[[2.0]] False\n"
+        ],
+        [
+          "True True\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/lire-erreurs-pytorch.ipynb",
+      "sourceSha256": "d71583270e75ed4a8bff7ebc5cc922c8a6b81b58d760f6fe7519dfbf982fbe8b",
+      "notebookSha256": "8233b85790ba1b1ee2d0451ed04dca0026cf3eb22f0ff8a6f479c0ab918b8f17",
+      "elapsedSeconds": 7.378,
+      "device": "cpu",
+      "codeCells": 3,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "cibles : torch.int64 (2,)\n"
+        ],
+        [
+          "ordre après transposition : [0, 3, 1, 4, 2, 5]\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/moyennes-et-microbatches.ipynb",
+      "sourceSha256": "63610f4fedfdfe168eb746f4c7973713ed3ab8eb29322b6601203640caca155c",
+      "notebookSha256": "abd16282ba4400fd47f36fbe4396d0ac8c4cb8399b73462614cde617a4a9a3d2",
+      "elapsedSeconds": 5.495,
+      "device": "cpu",
+      "codeCells": 2,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "2.0\n"
+        ],
+        [
+          "11.0\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/moyennes-masquees.ipynb",
+      "sourceSha256": "61b9407839ee2f16b53d668f3ca2c95d1d9a4ed14375051e3552ce2c6774ae16",
+      "notebookSha256": "69a353587df8a942152cee2817a6f075d8444af5bcd4494406a52c8f224be480",
+      "elapsedSeconds": 5.391,
+      "device": "cpu",
+      "codeCells": 2,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "[[2.0], [6.0]]\n"
+        ],
+        [
+          "14.0 3 4.666666507720947\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/optimiseurs-regularisation-pratique.ipynb",
+      "sourceSha256": "e98ce0f28bc99f0b1a4c0b4ab5eedb31d7f1b56ff6c36841f59460941a6df15f",
+      "notebookSha256": "1c85ebff64b57c00f379f9b46e6aaeeef25abcec0e995493a1503e6a097304c7",
+      "elapsedSeconds": 7.154,
+      "device": "cpu",
+      "codeCells": 3,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "poids après SGD : 0.800000011920929\n"
+        ],
+        [
+          "arrêt à l’époque : 4\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/organiser-les-axes.ipynb",
+      "sourceSha256": "1a2fe569566d83d84bb52efe01a1750fe85db7accfd5cdbd3105206df2163534",
+      "notebookSha256": "8b720dee335880a82fa0125b121c07c453124c68799875d7db06ba887172560a",
+      "elapsedSeconds": 5.622,
+      "device": "cpu",
+      "codeCells": 2,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "(2, 1, 64, 5)\n"
+        ],
+        [
+          "[[0, 3], [1, 4], [2, 5]]\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/pytorch-en-une-page.ipynb",
+      "sourceSha256": "fbd566f19f92448f2d45918384ca2b2e8895d01eedacbd93980424301a07531e",
+      "notebookSha256": "800aeba60430a5ac1edce96947d3f7fafbc9094a6c39fe3493e5a07abec3836d",
+      "elapsedSeconds": 5.732,
+      "device": "cpu",
+      "codeCells": 3,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "gradient : 36.0\n"
+        ],
+        [
+          "poids avant et après : 2.0 1.600000023841858\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/retropropagation-a-la-main.ipynb",
+      "sourceSha256": "4dbfccb35869b5719a2964b702032444e495ddeaa401856db82494d09be89cb1",
+      "notebookSha256": "90e6fc5d5d7a17067c597ade7003cdd8b7cfb4cba912c39fb350b89260913e82",
+      "elapsedSeconds": 5.655,
+      "device": "cpu",
+      "codeCells": 3,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "gradients manuels : 24.0 -72.0\n"
+        ],
+        [
+          "gradients pour la cible -2 : 16.0 -48.0\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/sauvegarder-et-reprendre.ipynb",
+      "sourceSha256": "599be466396761fa4a0195c2da53ed38df9e71580b169c6eb72bfb355e27e2a8",
+      "notebookSha256": "30956531741858cc138ce178672b5f36343b63f1eb5d36451d1f969a61c80900",
+      "elapsedSeconds": 7.685,
+      "device": "cpu",
+      "codeCells": 2,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "True\n"
+        ],
+        [
+          "2 1\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/selection-diffusion-reduction.ipynb",
+      "sourceSha256": "439a869f0b2e01426e2a2aaa38c5156ee5172ff288dcc53983a89bc40e9a5824",
+      "notebookSha256": "c3f7524367363f0fb988117125e7233014a0123c6eee322913ff43696147ba61",
+      "elapsedSeconds": 5.563,
+      "device": "cpu",
+      "codeCells": 2,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "[[2.0, 5.0]] [[-1.0, -2.0], [1.0, 2.0]]\n"
+        ],
+        [
+          "[[0.20000000298023224, 0.800000011920929], [0.4000000059604645, 0.6000000238418579]] [1, 1]\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/tenseur-forme-type-device.ipynb",
+      "sourceSha256": "d5f361fccda4b84381ebdd4e76cc515807b070ca62c3e02cc20ffe3e1c2c5191",
+      "notebookSha256": "dc1787683f72c45b16b108d86cf1f87e11e999251e244daeba0e5e164d49062e",
+      "elapsedSeconds": 5.853,
+      "device": "cpu",
+      "codeCells": 2,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "(4, 3) torch.float32\n"
+        ],
+        [
+          "torch.int64 cpu\n"
+        ]
+      ]
+    },
+    {
+      "path": "public/notebooks/une-iteration-entrainement.ipynb",
+      "sourceSha256": "1e2f4a165d55e06f82114187e057356cddf617620a6f24a8dcded3276abb8baa",
+      "notebookSha256": "e7943cb483a178ed37b31ce8bb83b94e23712047ae748a301268613cabcc636d",
+      "elapsedSeconds": 7.963,
+      "device": "cpu",
+      "codeCells": 2,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "1.7000000476837158\n"
+        ],
+        [
+          "1.2799999713897705\n"
+        ]
+      ]
+    }
+  ]
+}

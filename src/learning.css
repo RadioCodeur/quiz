@@ -19,3 +19,5 @@
 .copy-course-code{float:right;min-height:36px;padding:5px 10px;border:1px solid #b8c9a8;border-radius:5px;background:#f7faf1;color:#36583d;font-size:11px}.lesson-code .code-label{overflow:auto;line-height:36px}
 
 .concept-flow.has-arrow-labels{flex-direction:column;gap:59px}.concept-flow.has-arrow-labels>li:not(:last-child):after{content:none}.flow-connector{position:absolute;left:10px;right:10px;bottom:-52px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;line-height:19px;color:#41633b}.flow-connector>span:first-child{font-size:23px}
+
+.chapter-notebook{padding:20px;background:#edf3e4;border:1px solid #c6d5b8;border-radius:8px;margin:22px 0}.chapter-notebook>strong{font-size:15px}.chapter-notebook>p{font-size:13px;line-height:1.8}.chapter-notebook>div{display:flex;flex-wrap:wrap;gap:10px}.chapter-notebook .button{font-size:12px;min-height:44px;padding:11px 14px}

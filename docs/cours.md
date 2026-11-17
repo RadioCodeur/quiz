@@ -64,3 +64,10 @@ Les nouveaux blocs `audio-lab` utilisent une vue parmi `overview`, `level`, `res
 Le module PyTorch comprend vingt chapitres : les quatorze identifiants historiques sont conservés, et six chapitres introduisent la carte des briques, la rétropropagation manuelle, la boucle complète, le diagnostic, le pilotage de l’apprentissage et l’autoencodeur mel. Le calcul à deux poids et tous les programmes sont réellement exécutés sur CPU. Le script de boucle complète apparaît une fois et possède un bouton de copie. Les libellés des arêtes du graphe sont affichés entre ses nœuds.
 
 Les sources, scripts et résultats du lot sont dans `scripts/verify/pytorch-existing.py`, `pytorch-existing-cases.py`, `pytorch-existing-results.json`, `pytorch-additions.py` et `pytorch-additions-results.json`. Les preuves portent l’empreinte du code affiché. La page reste une lecture de code ; les notebooks du lot C seront séparés.
+
+
+## Lot C — vingt notebooks CPU
+
+Chaque chapitre PyTorch possède son fichier dans `public/notebooks/`, un téléchargement et un lien Colab. Les cellules du cours sont complètes ; les deux exercices à trous sont en Markdown pour préserver « Tout exécuter ». Les deux solutions restent repliées en fin de document. Aucun paquet ni dataset n’est téléchargé pendant l’exécution.
+
+Les vingt notebooks et leurs quarante solutions ont été exécutés avec de vrais noyaux Jupyter sur CPU. Les durées mesurées, démarrage compris, vont de 5.391 à 8.222 secondes sur la machine de contrôle. Le seuil demandé est 120 secondes par notebook ; il ne prédit pas le temps sur tout matériel. `scripts/verify/notebooks.py` conserve les sorties et les empreintes dans `notebooks-results.json`. Le moteur dépend de nbformat 5.11.1 et nbclient 0.11.0, installés dans un environnement local isolé.
