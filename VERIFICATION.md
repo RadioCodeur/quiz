@@ -43,3 +43,16 @@ Deux enregistrements réels sous CC BY 4.0, 18 WAV PCM16, 61 PNG calculés, cinq
 Les tests médias recalculent crête, RMS, carré moyen, dBFS et facteur de crête depuis les octets PCM exportés ; ils vérifient aussi gain de 0,5, RMS commun, durée après rééchantillonnage et chemins GitHub Pages. Le contrôle navigateur couvre le décodage des images et WAV, l’absence de lecture automatique, le volume commun, l’arrêt de l’autre lecteur, le maintien de l’écoute lors d’un changement d’image et l’arrêt à la navigation. Les légendes distinguent références spectrales, dBFS et dB SPL. L’application ne lance aucun entraînement ou traitement scientifique en direct.
 
 Les illustrations externes et les figures scientifiques représentatives sont inspectées ; des captures de l’interface finale sur ordinateur et à 360 px complètent ces contrôles. Les fichiers à régénérer et leurs dépendances sont décrits dans `docs/audio-lab.md`.
+
+
+## Refonte entretien — lot A, 17 novembre 2026
+
+Le module PyTorch contient vingt chapitres, dont six nouveaux ; le total passe à 71. Les 65 identifiants initiaux, leurs questions et leurs checkpoints sont protégés par `tests/revision-contracts.test.mjs`. Aucun QCM ajouté.
+
+Les vingt programmes sont réellement exécutés sur PyTorch/TorchAudio 2.10.0+cpu, Python 3.11.9, avec un thread. Les versions publiées ont été vérifiées sur les pages de release officielles. Scripts : `scripts/verify/pytorch-existing.py` et `pytorch-additions.py`. Les JSON voisins conservent empreintes, sorties et assertions complémentaires. Le calcul demandé produit h=6, y=−6, L=36 et gradients 24/−72. Le programme complet effectue cinq époques puis un rechargement identique ; les pertes affichées sont celles enregistrées. Les cinq erreurs présentées sont réellement provoquées et corrigées. Le décalage de device est démontré avec meta/CPU, sans prétendre mesurer un GPU.
+
+38 tests Node passent. L’audit de prose PyTorch ne trouve aucune phrase de plus de 30 mots, aucun dépassement de 1100 mots et aucune fin orale manquante. Les checkpoints historiques sont conservés et exclus de cette contrainte éditoriale. Commande : `node scripts/audit-prose.mjs --theme=pytorch --strict`.
+
+L’audit CPU des autres modules est préparé dans `scripts/verify/existing-corpus.py`. Il a trouvé deux incohérences à corriger au lot F : tirage aléatoire VAE/diffusion décrit comme un bruit fixe. Le lot A ne les masque pas et n’est pas présenté comme la livraison finale du prompt complet.
+
+Construction et 23 contrôles navigateur du lot A réussis, dont les 71 chapitres rendus à 360 px.

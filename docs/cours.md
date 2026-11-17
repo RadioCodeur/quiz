@@ -4,7 +4,7 @@ La page **Cours** est accessible dans le header. Le quiz reste la page principal
 
 ## Contenu
 
-Six cours, **65 chapitres** dont deux rappels Python facultatifs. L’ordre conseillé est Python → signal audio → PyTorch → apprentissage audio → génération et contrôle → évaluation et recherche. Les identifiants historiques sont conservés : les liens du quiz et les repères personnels restent valides, même si le parcours Python a été réordonné.
+Six cours, **71 chapitres** dont deux rappels Python facultatifs. L’ordre conseillé est Python → signal audio → PyTorch → apprentissage audio → génération et contrôle → évaluation et recherche. Les identifiants historiques sont conservés : les liens du quiz et les repères personnels restent valides, même si le parcours Python a été réordonné.
 
 Le public connaît le Python algorithmique. Le parcours principal démarre donc sur le besoin numérique ; les rappels sur les valeurs et les indices restent en fin de sommaire et la navigation « suivant » ne les impose pas. Les six modules suivent un problème explicite : préparer une sonothèque, homogénéiser ses signaux, apprendre un classifieur, adapter la tâche aux mélanges, construire un instrument de percussion, puis vérifier une amélioration.
 
@@ -45,7 +45,7 @@ npm run build
 npm run test:browser
 ```
 
-Si npm n’est pas dans le PATH, utiliser `node scripts/run.mjs validate:courses`, puis les mêmes noms de scripts (`test`, `build`, `test:browser`). La construction valide la banque et les cours avant de produire `dist/index.html` et `dist/cours.html`. Le test navigateur parcourt les 65 chapitres à 360 px et vérifie les deux pages sous `/qr-entretien/`.
+Si npm n’est pas dans le PATH, utiliser `node scripts/run.mjs validate:courses`, puis les mêmes noms de scripts (`test`, `build`, `test:browser`). La construction valide la banque et les cours avant de produire `dist/index.html` et `dist/cours.html`. Le test navigateur parcourt les 71 chapitres à 360 px et vérifie les deux pages sous `/qr-entretien/`.
 
 La publication utilise le workflow manuel GitHub Pages du dépôt, après validation et vérification dans le navigateur. Les principes pédagogiques et leur portée sont documentés dans `docs/pedagogie.md` et accessibles depuis le catalogue des cours.
 
@@ -57,3 +57,10 @@ La révision du 13 novembre 2026 ajoute deux extraits réels et leurs transforma
 Les nouveaux blocs `audio-lab` utilisent une vue parmi `overview`, `level`, `resample`, `stft`, `mel`, `phase`, `augmentation`. Les `illustration` référencent `public/media/illustrations.json` et les `analysis-image` référencent les figures de `public/media/audio-lab.json`. L’interface, les légendes et les crédits se trouvent dans `src/course-media.js` et `src/course-media.css`. La provenance et les conventions de mesure sont documentées dans `docs/audio-lab.md` et `docs/media-sources.md`.
 
 `validate:media` vérifie les chemins locaux, les licences déclarées, les fichiers, les empreintes et les mesures recalculées depuis le PCM. La construction lance ce contrôle. Les contenus et liens historiques des 200 QCM restent conservés.
+
+
+## Lot A — introduction PyTorch, 17 novembre 2026
+
+Le module PyTorch comprend vingt chapitres : les quatorze identifiants historiques sont conservés, et six chapitres introduisent la carte des briques, la rétropropagation manuelle, la boucle complète, le diagnostic, le pilotage de l’apprentissage et l’autoencodeur mel. Le calcul à deux poids et tous les programmes sont réellement exécutés sur CPU. Le script de boucle complète apparaît une fois et possède un bouton de copie. Les libellés des arêtes du graphe sont affichés entre ses nœuds.
+
+Les sources, scripts et résultats du lot sont dans `scripts/verify/pytorch-existing.py`, `pytorch-existing-cases.py`, `pytorch-existing-results.json`, `pytorch-additions.py` et `pytorch-additions-results.json`. Les preuves portent l’empreinte du code affiché. La page reste une lecture de code ; les notebooks du lot C seront séparés.

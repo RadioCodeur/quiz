@@ -28,7 +28,7 @@ export function chapterMinutes(chapter) {
 export function chapterText(chapter) {
   const blocks=chapter.blocks.map(block=>[
     block.text,block.title,block.caption,block.goal,block.result,block.introduction,block.explanation,block.variant?.change,block.variant?.explanation,block.conclusion,...(block.observations??[]),...(block.reading??[]),
-    ...(block.items??[]),
+    ...(block.items??[]),...(block.columns??[]),...(block.rows??[]).flat(),
     ...(block.steps??[]).flatMap(step=>[step.title,step.text]),
     ...(block.nodes??[]).flatMap(node=>[node.title,node.text]),
     ...(block.panels??[]).flatMap(panel=>[panel.title,...panel.items]),

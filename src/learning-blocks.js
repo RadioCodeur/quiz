@@ -11,7 +11,7 @@ export function renderFirstExample(block) {
 export function renderVisual(block) {
   let body;
   if (block.kind === 'flow') {
-    body = `<ol class="concept-flow">${block.nodes.map((node,index) => `<li><span class="flow-index">${index+1}</span><strong>${escape(node.title)}</strong><p>${escape(node.text)}</p></li>`).join('')}</ol>`;
+    body = `<ol class="concept-flow ${block.nodes.some(node=>node.arrowLabel)?'has-arrow-labels':''}">${block.nodes.map((node,index) => `<li><span class="flow-index">${index+1}</span><strong>${escape(node.title)}</strong><p>${escape(node.text)}</p>${node.arrowLabel&&index<block.nodes.length-1?`<div class="flow-connector"><span aria-hidden="true">↓</span><span>${escape(node.arrowLabel)}</span></div>`:''}</li>`).join('')}</ol>`;
   } else if (block.kind === 'comparison') {
     body = `<div class="concept-comparison">${block.panels.map(panel => `<section><h4>${escape(panel.title)}</h4><ul>${panel.items.map(item=>`<li>${escape(item)}</li>`).join('')}</ul></section>`).join('')}</div>`;
   } else {

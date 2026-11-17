@@ -37,7 +37,7 @@ function renderBlock(block) {
   if(block.type==='paragraph') return `<p>${esc(block.text)}</p>`;
   if(block.type==='heading') return `<h3>${esc(block.text)}</h3>`;
   if(block.type==='list') return `<div class="lesson-list">${block.title?`<h3>${esc(block.title)}</h3>`:''}<ul>${block.items.map(item=>`<li>${esc(item)}</li>`).join('')}</ul></div>`;
-  if(block.type==='code') return `<figure class="lesson-code"><div class="code-label">${esc(block.language ?? 'python')} · EXEMPLE COMMENTÉ</div><pre><code>${esc(block.code)}</code></pre>${block.caption?`<figcaption>${esc(block.caption)}</figcaption>`:''}</figure>`;
+  if(block.type==='code') return `<figure class="lesson-code"><div class="code-label">${esc(block.language ?? 'python')} · EXEMPLE COMMENTÉ <button type="button" class="copy-course-code">Copier le code</button></div><pre><code>${esc(block.code)}</code></pre>${block.caption?`<figcaption>${esc(block.caption)}</figcaption>`:''}</figure>`;
   if(block.type==='callout') return `<aside class="lesson-callout ${esc(block.tone)}"><span class="callout-symbol" aria-hidden="true">${block.tone==='analogy'?'↔':block.tone==='pitfall'?'!':'↳'}</span><div><h3>${esc(block.label)}</h3><p>${esc(block.text)}</p></div></aside>`;
   if(block.type==='example') return `<section class="real-example"><p class="eyebrow">UNE UTILISATION CONCRÈTE</p><h3>${esc(block.title)}</h3><p>${esc(block.text)}</p></section>`;
   if(block.type==='figure') return renderFigure(block.kind,block.caption,++serial);
@@ -109,6 +109,11 @@ function showCourse(course, chapter) {
     const heading=root.querySelector('#lesson-title');heading.tabIndex=-1;heading.focus({preventScroll:true});
     root.querySelector('.lesson').scrollIntoView({block:'start',behavior:'instant'});
   });
+  root.querySelectorAll('.copy-course-code').forEach(button=>button.addEventListener('click',async()=>{
+    const code=button.closest('.lesson-code').querySelector('code').textContent;
+    try{await navigator.clipboard.writeText(code);button.textContent='Code copié';}
+    catch{button.textContent='Sélectionnez le code pour le copier';}
+  }));
   attachWalkthroughs(root,chapter.blocks);
   attachAudioLabs(root,chapter.blocks,audioMedia,import.meta.env.BASE_URL);
   if(chapter.checkpoint)attachCheckpoint(root,chapter.checkpoint);

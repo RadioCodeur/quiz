@@ -15,3 +15,7 @@
 .first-example-variant>summary{cursor:pointer;min-height:44px;font-size:13px;font-weight:650;line-height:1.8}
 .reference-label{display:block;font-size:10px;color:#728163;margin-top:5px}
 @media(max-width:740px){.chapter-context .chapter-progression{grid-template-columns:1fr;gap:13px}.chapter-context{padding:18px 16px}.chapter-progression dt{font-size:11px}.chapter-progression dd{font-size:13px}.introduced-notions>summary>span{font-size:12px}}
+
+.copy-course-code{float:right;min-height:36px;padding:5px 10px;border:1px solid #b8c9a8;border-radius:5px;background:#f7faf1;color:#36583d;font-size:11px}.lesson-code .code-label{overflow:auto;line-height:36px}
+
+.concept-flow.has-arrow-labels{flex-direction:column;gap:59px}.concept-flow.has-arrow-labels>li:not(:last-child):after{content:none}.flow-connector{position:absolute;left:10px;right:10px;bottom:-52px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;line-height:19px;color:#41633b}.flow-connector>span:first-child{font-size:23px}
