@@ -1,0 +1,1793 @@
+{
+  "python-scientifique": {
+    "du-son-aux-donnees": {
+      "questionIds": [],
+      "sourceIds": [
+        "course-py-carpentry-fundamentals"
+      ],
+      "checkpoint": {
+        "prompt": "Deux signaux contiennent chacun 8 valeurs. Le premier est à 4 valeurs/s, le second à 8 valeurs/s. Que peut-on conclure ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Ils durent tous deux 8 secondes."
+          },
+          {
+            "id": "b",
+            "text": "Le premier dure 2 secondes et le second 1 seconde."
+          },
+          {
+            "id": "c",
+            "text": "Le premier dure 1 seconde et le second 2 secondes."
+          },
+          {
+            "id": "d",
+            "text": "Leur durée est obligatoirement identique."
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "La durée vaut nombre de valeurs divisé par valeurs par seconde. Un même effectif ne représente donc pas toujours la même durée."
+      }
+    },
+    "tableaux-et-indexation": {
+      "questionIds": [
+        "py-008",
+        "py-010",
+        "py-011",
+        "py-015"
+      ],
+      "sourceIds": [
+        "numpy-indexing",
+        "numpy-copies",
+        "numpy-argsort",
+        "course-py-numpy-beginners"
+      ],
+      "checkpoint": {
+        "prompt": "x = np.array([2, 4, 6]), y = x[[0, 2]], puis y[0] = 99. Quelle est la valeur de x[0] ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "99"
+          },
+          {
+            "id": "b",
+            "text": "6"
+          },
+          {
+            "id": "c",
+            "text": "2"
+          },
+          {
+            "id": "d",
+            "text": "0"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "La liste d’indices réalise une sélection avancée, donc une copie. Modifier y ne remplace pas les données de x."
+      }
+    },
+    "references-et-copies": {
+      "questionIds": [
+        "py-001",
+        "py-012"
+      ],
+      "sourceIds": [
+        "python-structures",
+        "python-classes"
+      ],
+      "checkpoint": {
+        "prompt": "a = [[1], [2]], b = a.copy(), puis b[0] = [8]. Que vaut a ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "[[8], [2]]"
+          },
+          {
+            "id": "b",
+            "text": "[[1, 8], [2]]"
+          },
+          {
+            "id": "c",
+            "text": "[[1], [2]]"
+          },
+          {
+            "id": "d",
+            "text": "[[8], [8]]"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "La liste extérieure b est indépendante. Remplacer sa première case ne modifie pas la première case de a ; aucun append n’a touché la sous-liste partagée."
+      }
+    },
+    "reduire-les-bons-axes": {
+      "questionIds": [
+        "py-009",
+        "py-016"
+      ],
+      "sourceIds": [
+        "numpy-mean",
+        "course-py-numpy-beginners"
+      ],
+      "checkpoint": {
+        "prompt": "X est (6, 100), six extraits de cent valeurs. Quelle forme doit avoir un RMS calculé séparément pour chaque extrait ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "(100,)"
+          },
+          {
+            "id": "b",
+            "text": "(6, 100)"
+          },
+          {
+            "id": "c",
+            "text": "(6,)"
+          },
+          {
+            "id": "d",
+            "text": "Un seul scalaire"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "On résume les cent temps de chaque extrait. L’axe des six extraits reste donc présent et l’axe temporel est réduit."
+      }
+    },
+    "broadcasting-et-algebre": {
+      "questionIds": [
+        "py-017",
+        "py-019"
+      ],
+      "sourceIds": [
+        "numpy-broadcast",
+        "numpy-matmul"
+      ],
+      "checkpoint": {
+        "prompt": "Une observation [1, 2, 3] est combinée avec les poids [2, -1, 0.5] par produit scalaire. Quel score obtient-on ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "6"
+          },
+          {
+            "id": "b",
+            "text": "1.5"
+          },
+          {
+            "id": "c",
+            "text": "4.5"
+          },
+          {
+            "id": "d",
+            "text": "[2, -2, 1.5]"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Les contributions sont 2, -2 et 1,5. Le produit scalaire les additionne pour produire un unique score égal à 1,5."
+      }
+    },
+    "standardiser-et-preserver-precision": {
+      "questionIds": [
+        "py-018",
+        "py-020"
+      ],
+      "sourceIds": [
+        "numpy-mean",
+        "numpy-broadcast"
+      ],
+      "checkpoint": {
+        "prompt": "Une moyenne a été calculée en float32 et a perdu un petit terme par arrondi. Que permet une conversion de ce résultat en float64 ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Retrouver exactement tous les termes perdus."
+          },
+          {
+            "id": "b",
+            "text": "Conserver le résultat obtenu dans un type plus précis, sans retrouver l’information perdue."
+          },
+          {
+            "id": "c",
+            "text": "Recalculer automatiquement la moyenne depuis les données."
+          },
+          {
+            "id": "d",
+            "text": "Supprimer nécessairement toute fuite du test."
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Le changement de type intervient après le calcul. Pour améliorer l’accumulation, il faut choisir son dtype au moment de la réduction."
+      }
+    },
+    "fonctions-et-arguments": {
+      "questionIds": [
+        "py-002"
+      ],
+      "sourceIds": [
+        "python-functions",
+        "course-py-carpentry-functions"
+      ],
+      "checkpoint": {
+        "prompt": "Une fonction calcule 4, l’affiche avec print, puis se termine sans return explicite. Que reçoit r = cette_fonction() ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "4"
+          },
+          {
+            "id": "b",
+            "text": "Le texte \"4\""
+          },
+          {
+            "id": "c",
+            "text": "Une liste [4]"
+          },
+          {
+            "id": "d",
+            "text": "None"
+          }
+        ],
+        "correctOptionId": "d",
+        "explanation": "Afficher ne transmet pas le nombre comme valeur de retour. Sans return donnant une valeur, la fonction renvoie None."
+      }
+    },
+    "valeurs-par-defaut": {
+      "questionIds": [
+        "py-013"
+      ],
+      "sourceIds": [
+        "python-functions",
+        "course-py-carpentry-functions"
+      ],
+      "checkpoint": {
+        "prompt": "Une fonction avec stock=None crée [] uniquement si stock is None. Vous lui passez explicitement une liste vide L, puis elle ajoute 7 à stock. Que devient L ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Elle reste vide, car None impose une copie."
+          },
+          {
+            "id": "b",
+            "text": "Elle devient [7], car la liste fournie est utilisée."
+          },
+          {
+            "id": "c",
+            "text": "Elle devient None."
+          },
+          {
+            "id": "d",
+            "text": "L’appel échoue toujours avec une liste vide."
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "La fonction ne crée une liste que lorsque stock est None. Une liste explicitement fournie conserve son identité et peut être modifiée."
+      }
+    },
+    "parcourir-et-filtrer": {
+      "questionIds": [
+        "py-004",
+        "py-005",
+        "py-006",
+        "py-014"
+      ],
+      "sourceIds": [
+        "python-structures",
+        "python-classes"
+      ],
+      "checkpoint": {
+        "prompt": "g produit les carrés de 1 puis 2. Vous faites a = list(g), puis b = list(g) sans recréer g. Que vaut b ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "[1, 4]"
+          },
+          {
+            "id": "b",
+            "text": "[2, 4]"
+          },
+          {
+            "id": "c",
+            "text": "[]"
+          },
+          {
+            "id": "d",
+            "text": "None"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "Le premier parcours a consommé les deux résultats. Le même générateur n’a plus de valeur à produire lors du second parcours."
+      }
+    },
+    "lire-fonctions-objets": {
+      "questionIds": [
+        "py-003",
+        "py-007"
+      ],
+      "sourceIds": [
+        "python-structures",
+        "python-classes"
+      ],
+      "checkpoint": {
+        "prompt": "meta ne contient pas \"duree\". Après d = meta.get(\"duree\", 0), quelle affirmation est vraie ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "meta contient maintenant \"duree\": 0."
+          },
+          {
+            "id": "b",
+            "text": "d vaut 0 et meta est inchangé."
+          },
+          {
+            "id": "c",
+            "text": "d vaut toujours None."
+          },
+          {
+            "id": "d",
+            "text": "Une KeyError est nécessairement levée."
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "get lit sans insérer la clé. La valeur de repli est renvoyée à l’appelant, et le dictionnaire conserve son contenu initial."
+      }
+    },
+    "assembler-pipeline-scientifique": {
+      "questionIds": [],
+      "sourceIds": [
+        "course-py-numpy-beginners",
+        "numpy-mean",
+        "course-py-carpentry-functions"
+      ],
+      "checkpoint": {
+        "prompt": "Deux classes ont exactement le même RMS pour tous leurs extraits, et le modèle ne reçoit que ce RMS. Quelle conclusion est justifiée ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Un réseau plus profond garantit leur séparation."
+          },
+          {
+            "id": "b",
+            "text": "La précision float64 recrée les signaux supprimés."
+          },
+          {
+            "id": "c",
+            "text": "Ce seul descripteur ne contient pas d’information permettant de distinguer ces classes dans ce scénario."
+          },
+          {
+            "id": "d",
+            "text": "Changer les noms des fichiers suffit."
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "Le modèle observe les mêmes valeurs pour les deux classes dans le scénario annoncé. Il faut une information discriminante supplémentaire, pas seulement un calcul plus complexe sur la même entrée."
+      }
+    },
+    "valeurs-noms-et-calculs": {
+      "questionIds": [],
+      "sourceIds": [
+        "course-py-carpentry-fundamentals"
+      ],
+      "checkpoint": {
+        "prompt": "gain = 2 puis resultat = 3 * gain puis gain = 5. Que vaut resultat sans nouvelle instruction de calcul ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "15"
+          },
+          {
+            "id": "b",
+            "text": "5"
+          },
+          {
+            "id": "c",
+            "text": "6"
+          },
+          {
+            "id": "d",
+            "text": "3"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "resultat a reçu 3 × 2 au moment de son affectation. Le changement ultérieur de gain ne le recalcule pas."
+      }
+    },
+    "listes-et-indices": {
+      "questionIds": [],
+      "sourceIds": [
+        "python-structures",
+        "course-py-carpentry-arrays"
+      ],
+      "checkpoint": {
+        "prompt": "Pour signal = [4, 7, 9, 2], quel résultat donne signal[1:3] ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "[4, 7, 9]"
+          },
+          {
+            "id": "b",
+            "text": "[7, 9]"
+          },
+          {
+            "id": "c",
+            "text": "[7, 9, 2]"
+          },
+          {
+            "id": "d",
+            "text": "9"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Les positions 1 et 2 sont incluses et la position 3 est exclue. Le résultat est une liste contenant 7 puis 9."
+      }
+    }
+  },
+  "audio-signal": {
+    "echantillons-duree-canaux": {
+      "questionIds": [
+        "sig-001",
+        "sig-004",
+        "sig-012"
+      ],
+      "sourceIds": [
+        "audio-load",
+        "audio-mono",
+        "audio-resample",
+        "course-sig-tutorial"
+      ],
+      "checkpoint": {
+        "prompt": "Un extrait stéréo a la forme (2, 240000), avec convention (canaux, temps), à 48 kHz. Combien dure-t-il ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "10 secondes"
+          },
+          {
+            "id": "b",
+            "text": "5 secondes"
+          },
+          {
+            "id": "c",
+            "text": "2,5 secondes"
+          },
+          {
+            "id": "d",
+            "text": "48 000 secondes"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Chaque canal contient 240 000 échantillons : 240000 / 48000 = 5 secondes. Les deux canaux sont simultanés et ne s’additionnent pas dans ce calcul."
+      }
+    },
+    "nyquist-repliement-reechantillonnage": {
+      "questionIds": [
+        "sig-002",
+        "sig-003",
+        "sig-020",
+        "sig-025",
+        "sig-026"
+      ],
+      "sourceIds": [
+        "audio-resample",
+        "audio-scipy-signal"
+      ],
+      "checkpoint": {
+        "prompt": "Le signal utile est limité aux fréquences inférieures à 6 kHz. Quelle cadence proposée laisse une marge au-dessus de deux fois cette limite ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "8 kHz"
+          },
+          {
+            "id": "b",
+            "text": "10 kHz"
+          },
+          {
+            "id": "c",
+            "text": "12 kHz"
+          },
+          {
+            "id": "d",
+            "text": "16 kHz"
+          }
+        ],
+        "correctOptionId": "d",
+        "explanation": "16 kHz place Nyquist à 8 kHz, au-dessus de la bande utile. Les cadences inférieures ou égales à 12 kHz n’offrent pas la marge demandée ; un filtre réel a aussi besoin d’une transition."
+      }
+    },
+    "amplitude-puissance-decibels": {
+      "questionIds": [
+        "sig-007",
+        "sig-008",
+        "sig-010",
+        "sig-022"
+      ],
+      "sourceIds": [
+        "audio-rms",
+        "audio-features",
+        "audio-amplitude-db",
+        "course-sig-npl-spl",
+        "course-sig-smpte-levels",
+        "course-sig-itu-loudness",
+        "course-sig-power-db"
+      ],
+      "checkpoint": {
+        "prompt": "Une amplitude positive vaut 0,5 avec une référence fixe de 1. Sans plancher ni écrêtage, quelle paire est cohérente ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Puissance 0,5 et niveau -3 dB"
+          },
+          {
+            "id": "b",
+            "text": "Puissance 0,25 et niveau environ -6 dB"
+          },
+          {
+            "id": "c",
+            "text": "Puissance -0,25 et niveau -6 dB"
+          },
+          {
+            "id": "d",
+            "text": "Puissance 2 et niveau +6 dB"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Le carré de 0,5 vaut 0,25. Le rapport d’amplitudes donne 20 log10(0,5) ≈ -6,02 dB ; la puissance reste non négative."
+      }
+    },
+    "fourier-coefficients-frequences": {
+      "questionIds": [
+        "sig-013",
+        "sig-014",
+        "sig-024"
+      ],
+      "sourceIds": [
+        "audio-rfft",
+        "audio-rfftfreq",
+        "audio-stft"
+      ],
+      "checkpoint": {
+        "prompt": "Une FFT de 12 points analyse un signal à 12 000 Hz. Quelle fréquence correspond au bin d’indice 3 ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "3 Hz"
+          },
+          {
+            "id": "b",
+            "text": "1000 Hz"
+          },
+          {
+            "id": "c",
+            "text": "3000 Hz"
+          },
+          {
+            "id": "d",
+            "text": "6000 Hz"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "Les bins sont séparés de 12000 / 12 = 1000 Hz. L’indice 3 correspond à 3 × 1000 = 3000 Hz, avec l’indice 0 à la fréquence nulle."
+      }
+    },
+    "stft-fenetres-hop-trames": {
+      "questionIds": [
+        "sig-005",
+        "sig-006",
+        "sig-015"
+      ],
+      "sourceIds": [
+        "audio-stft",
+        "audio-rfft",
+        "course-sig-shorttimefft"
+      ],
+      "checkpoint": {
+        "prompt": "Sans padding, N = 1000, fenêtre L = 200 et hop H = 100. Combien de trames complètes obtient-on ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "8"
+          },
+          {
+            "id": "b",
+            "text": "9"
+          },
+          {
+            "id": "c",
+            "text": "10"
+          },
+          {
+            "id": "d",
+            "text": "200"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "La première commence à 0 et la dernière à 800. Le compte vaut 1 + floor((1000 - 200)/100) = 9."
+      }
+    },
+    "resolution-fuite-zero-padding": {
+      "questionIds": [
+        "sig-016",
+        "sig-017",
+        "sig-018"
+      ],
+      "sourceIds": [
+        "audio-scipy-signal",
+        "audio-stft",
+        "audio-rfft",
+        "course-sig-shorttimefft"
+      ],
+      "checkpoint": {
+        "prompt": "Vous gardez les mêmes 1024 mesures et passez seulement la FFT de 1024 à 4096 points en ajoutant des zéros. Quelle conclusion est justifiée ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Quatre fois plus de son a été observé"
+          },
+          {
+            "id": "b",
+            "text": "Les transitoires durent quatre fois moins longtemps"
+          },
+          {
+            "id": "c",
+            "text": "La grille fréquentielle est plus dense"
+          },
+          {
+            "id": "d",
+            "text": "Deux fréquences proches seront toujours séparées"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "Les valeurs observées n’ont pas changé. Le zero-padding échantillonne plus finement leur spectre, sans garantir une meilleure séparation physique."
+      }
+    },
+    "mel-representation-compressee": {
+      "questionIds": [
+        "sig-011",
+        "sig-021"
+      ],
+      "sourceIds": [
+        "audio-mel",
+        "audio-features",
+        "audio-amplitude-db",
+        "course-sig-superflux"
+      ],
+      "checkpoint": {
+        "prompt": "S a la forme (513, 40), selon (fréquences, trames). Un banc mel de 80 bandes est appliqué sans changer le temps. Quelle forme obtient-on ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "(80, 40)"
+          },
+          {
+            "id": "b",
+            "text": "(513, 80)"
+          },
+          {
+            "id": "c",
+            "text": "(40, 80)"
+          },
+          {
+            "id": "d",
+            "text": "(80, 513, 40)"
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "La projection remplace les 513 bins par 80 bandes et conserve les 40 trames. Les bandes ne sont pas de nouveaux canaux audio."
+      }
+    },
+    "phase-canaux-annulations": {
+      "questionIds": [
+        "sig-009",
+        "sig-019",
+        "sig-029"
+      ],
+      "sourceIds": [
+        "audio-stft",
+        "audio-rfft",
+        "audio-mono",
+        "audio-griffinlim"
+      ],
+      "checkpoint": {
+        "prompt": "Deux canaux sont x et -x. Pour un signal x non nul, quelle opération peut produire un signal mono entièrement nul ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Concaténer les canaux dans le temps"
+          },
+          {
+            "id": "b",
+            "text": "Prendre la valeur absolue du premier canal"
+          },
+          {
+            "id": "c",
+            "text": "Moyenner les deux canaux à chaque instant"
+          },
+          {
+            "id": "d",
+            "text": "Augmenter seulement la taille de FFT"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "La moyenne est (x + (-x))/2 = 0 à chaque instant. Les autres opérations ne réalisent pas cette annulation des deux contributions opposées."
+      }
+    },
+    "reconstruction-streaming-limites": {
+      "questionIds": [
+        "sig-023",
+        "sig-027",
+        "sig-028",
+        "sig-030"
+      ],
+      "sourceIds": [
+        "audio-istft",
+        "audio-stft",
+        "audio-griffinlim",
+        "course-sig-shorttimefft"
+      ],
+      "checkpoint": {
+        "prompt": "Une analyse live utilise une fenêtre centrée de 1024 valeurs à 16 kHz. Quel ordre de grandeur décrit le contexte situé après son centre ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Environ 1 ms"
+          },
+          {
+            "id": "b",
+            "text": "Environ 8 ms"
+          },
+          {
+            "id": "c",
+            "text": "Environ 32 ms"
+          },
+          {
+            "id": "d",
+            "text": "Environ 1 seconde"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "La demi-fenêtre contient environ 512 échantillons : 512 / 16000 = 0,032 seconde. Cela ne représente pas toute la latence du système, qui comprend aussi calcul et buffers."
+      }
+    }
+  },
+  "audio-ml": {
+    "tache-cibles-pertes": {
+      "questionIds": [
+        "aml-001",
+        "aml-002",
+        "aml-007"
+      ],
+      "sourceIds": [
+        "audio-cross-entropy",
+        "audio-bce",
+        "audio-panns",
+        "course-aml-roc"
+      ],
+      "checkpoint": {
+        "prompt": "Un extrait contient à la fois pluie et sirène, et l’outil doit signaler chaque présence. Quelle sortie convient ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Un seul argmax pluie ou sirène"
+          },
+          {
+            "id": "b",
+            "text": "Deux logits binaires, avec deux cibles de présence"
+          },
+          {
+            "id": "c",
+            "text": "La fréquence d’échantillonnage seule"
+          },
+          {
+            "id": "d",
+            "text": "Une perte sur la durée du fichier"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Deux questions de présence autorisent deux réponses positives. Un seul argmax imposerait une exclusivité absente de la tâche."
+      }
+    },
+    "pretraitement-entrees-coherentes": {
+      "questionIds": [
+        "aml-005",
+        "aml-021",
+        "aml-022"
+      ],
+      "sourceIds": [
+        "audio-load",
+        "audio-resample",
+        "audio-features",
+        "audio-standardization",
+        "audio-panns"
+      ],
+      "checkpoint": {
+        "prompt": "Vous calculez une moyenne et un écart-type par bande pour votre nouveau pipeline. Sur quelles trames faut-il les ajuster avant d’évaluer sur des fichiers réservés ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Toutes les trames de train et test"
+          },
+          {
+            "id": "b",
+            "text": "Les trames réelles d’entraînement, hors padding"
+          },
+          {
+            "id": "c",
+            "text": "Le test uniquement"
+          },
+          {
+            "id": "d",
+            "text": "Les trames choisies grâce aux étiquettes de test"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Les statistiques apprises font partie du système. Les ajuster sur l’entraînement hors padding conserve un test réservé et une échelle liée à de vraies observations."
+      }
+    },
+    "durees-padding-masques": {
+      "questionIds": [
+        "aml-009",
+        "aml-010",
+        "aml-011"
+      ],
+      "sourceIds": [
+        "audio-pad-sequence",
+        "audio-attention"
+      ],
+      "checkpoint": {
+        "prompt": "Une séquence réelle [2, 4] est complétée par six zéros. Quelle moyenne temporelle masquée doit-elle garder ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "0,75"
+          },
+          {
+            "id": "b",
+            "text": "3"
+          },
+          {
+            "id": "c",
+            "text": "6"
+          },
+          {
+            "id": "d",
+            "text": "8"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "La somme des valeurs réelles vaut 6 et leur nombre reste 2. Le padding ne doit pas augmenter le dénominateur : 6 / 2 = 3."
+      }
+    },
+    "embeddings-transfert-domaines": {
+      "questionIds": [
+        "aml-003",
+        "aml-004",
+        "aml-020",
+        "aml-027"
+      ],
+      "sourceIds": [
+        "audio-panns",
+        "audio-wav2vec",
+        "audio-transfer",
+        "audio-clap"
+      ],
+      "checkpoint": {
+        "prompt": "Un encodeur préentraîné est gelé et l’optimiseur ne reçoit que head.parameters(). Que doit encore faire le programme pour classifier un nouveau fichier ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Calculer le passage avant de l’encodeur"
+          },
+          {
+            "id": "b",
+            "text": "Réinitialiser tous les poids gelés"
+          },
+          {
+            "id": "c",
+            "text": "Calculer les gradients de tous les poids gelés"
+          },
+          {
+            "id": "d",
+            "text": "Remplacer l’embedding par l’étiquette de test"
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le gel empêche l’apprentissage de ces paramètres, mais l’encodeur doit encore produire la description de la nouvelle entrée. Sinon la tête n’a pas ses caractéristiques."
+      }
+    },
+    "architectures-axes-contexte": {
+      "questionIds": [
+        "aml-017",
+        "aml-018",
+        "aml-028"
+      ],
+      "sourceIds": [
+        "audio-conv1d",
+        "audio-conv2d",
+        "audio-ast",
+        "audio-panns"
+      ],
+      "checkpoint": {
+        "prompt": "S est un batch de 4 spectrogrammes mono, chacun de 80 bandes et 100 trames. Quelle entrée respecte (B, C, F, T) pour Conv2d ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "(4, 80, 100, 1)"
+          },
+          {
+            "id": "b",
+            "text": "(1, 4, 80, 100)"
+          },
+          {
+            "id": "c",
+            "text": "(4, 1, 80, 100)"
+          },
+          {
+            "id": "d",
+            "text": "(80, 4, 100, 1)"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "Le batch vient d’abord, puis l’unique canal, puis les bandes et les trames. Les 80 bandes ne représentent pas 80 microphones."
+      }
+    },
+    "annotations-faibles-agregation": {
+      "questionIds": [
+        "aml-012",
+        "aml-019",
+        "aml-023",
+        "aml-026"
+      ],
+      "sourceIds": [
+        "audio-panns",
+        "audio-clap",
+        "course-aml-dcase"
+      ],
+      "checkpoint": {
+        "prompt": "Un fichier positif contient une sirène pendant une seconde sur trente. Un crop de deux secondes est choisi sans utiliser d’annotation temporelle. Que peut-on conclure ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Le crop contient forcément la sirène"
+          },
+          {
+            "id": "b",
+            "text": "Le crop peut ne pas contenir la sirène"
+          },
+          {
+            "id": "c",
+            "text": "Le crop devient forcément stéréo"
+          },
+          {
+            "id": "d",
+            "text": "Le crop fournit les frontières exactes de la sirène"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "La présence quelque part dans trente secondes ne garantit pas la présence dans toute portion de deux secondes. Une cible de crop exige une stratégie cohérente avec cette annotation faible."
+      }
+    },
+    "augmentations-cibles-validation": {
+      "questionIds": [
+        "aml-006",
+        "aml-008",
+        "aml-015",
+        "aml-016"
+      ],
+      "sourceIds": [
+        "audio-pitch-shift",
+        "audio-time-stretch",
+        "audio-specaugment"
+      ],
+      "checkpoint": {
+        "prompt": "Un extrait annoté à 120 BPM est ralenti avec un time-stretch de rate = 0,8. Quelle cible de tempo est cohérente ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "96 BPM"
+          },
+          {
+            "id": "b",
+            "text": "120 BPM"
+          },
+          {
+            "id": "c",
+            "text": "150 BPM"
+          },
+          {
+            "id": "d",
+            "text": "0,8 BPM"
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le nombre de battements par minute est multiplié par la vitesse : 120 × 0,8 = 96. La durée est divisée par 0,8 ; ce n’est pas la même opération sur la cible."
+      }
+    },
+    "masquage-mixup-representations": {
+      "questionIds": [
+        "aml-013",
+        "aml-014",
+        "aml-024"
+      ],
+      "sourceIds": [
+        "audio-specaugment",
+        "audio-mixup",
+        "audio-mel",
+        "audio-panns"
+      ],
+      "checkpoint": {
+        "prompt": "Un mixup utilise x = 0,2 x_a + 0,8 x_b. Avec y_a = [1,0] et y_b = [0,1], quelle cible suit ce même protocole ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "[1,0]"
+          },
+          {
+            "id": "b",
+            "text": "[0,8 ; 0,2]"
+          },
+          {
+            "id": "c",
+            "text": "[1,1]"
+          },
+          {
+            "id": "d",
+            "text": "[0,2 ; 0,8]"
+          }
+        ],
+        "correctOptionId": "d",
+        "explanation": "Les mêmes coefficients s’appliquent aux entrées et aux cibles : 0,2×[1,0] + 0,8×[0,1] = [0,2 ; 0,8]."
+      }
+    },
+    "similarites-contraste-attention": {
+      "questionIds": [
+        "aml-025",
+        "aml-029",
+        "aml-030"
+      ],
+      "sourceIds": [
+        "audio-clap",
+        "audio-attention",
+        "audio-ast"
+      ],
+      "checkpoint": {
+        "prompt": "Dans MultiheadAttention, key_padding_mask booléen utilise True pour ignorer une clé. Si valid = [True, True, False], quel masque faut-il fournir ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "[True, True, False]"
+          },
+          {
+            "id": "b",
+            "text": "[False, False, True]"
+          },
+          {
+            "id": "c",
+            "text": "[True, False, True]"
+          },
+          {
+            "id": "d",
+            "text": "[False, False, False]"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Le masque doit signaler les positions à ignorer, donc inverser le masque de validité. Ici seule la troisième clé est du padding."
+      }
+    }
+  },
+  "generation-controle": {
+    "representation-et-reconstruction": {
+      "questionIds": [
+        "gen-001",
+        "gen-006",
+        "gen-008",
+        "gen-028"
+      ],
+      "sourceIds": [
+        "gr-vae",
+        "gr-encodec"
+      ],
+      "checkpoint": {
+        "prompt": "Les vrais codes reconstruisent déjà mal les attaques. Quelle comparaison est utile en priorité ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Mesurer la reconstruction du codec sur les mêmes attaques"
+          },
+          {
+            "id": "b",
+            "text": "Changer uniquement le texte du prompt"
+          },
+          {
+            "id": "c",
+            "text": "Conclure que le prior a mémorisé les attaques"
+          },
+          {
+            "id": "d",
+            "text": "Augmenter uniquement la température"
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Les vrais codes testent la chaîne sans erreur de prédiction du prior. Ils localisent une limite présente avant la génération."
+      }
+    },
+    "quantification-et-tokens": {
+      "questionIds": [
+        "gen-014",
+        "gen-027",
+        "gen-038"
+      ],
+      "sourceIds": [
+        "gr-vqvae",
+        "gr-encodec",
+        "gr-musicgen",
+        "course-gen-audiocraft"
+      ],
+      "checkpoint": {
+        "prompt": "On passe de quatre à huit indices par trame, à durée et cadence fixes. Que double-t-on directement ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "La durée du son"
+          },
+          {
+            "id": "b",
+            "text": "La taille du vocabulaire"
+          },
+          {
+            "id": "c",
+            "text": "Le nombre de trames"
+          },
+          {
+            "id": "d",
+            "text": "Le nombre d’indices"
+          }
+        ],
+        "correctOptionId": "d",
+        "explanation": "Ajouter des flux double les indices sans doubler les instants temporels ni nécessairement les pas d’un schéma parallèle."
+      }
+    },
+    "autoregression-et-causalite": {
+      "questionIds": [
+        "gen-003",
+        "gen-011",
+        "gen-012",
+        "gen-025"
+      ],
+      "sourceIds": [
+        "gr-wavenet",
+        "gr-musicgen"
+      ],
+      "checkpoint": {
+        "prompt": "La loss est excellente, mais chaque logit peut lire les tokens ultérieurs du morceau. Quel problème examiner d’abord ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Une fuite de la cible par le contexte futur"
+          },
+          {
+            "id": "b",
+            "text": "Un vocabulaire nécessairement trop petit"
+          },
+          {
+            "id": "c",
+            "text": "Une température forcément trop basse"
+          },
+          {
+            "id": "d",
+            "text": "Un besoin de supprimer tous les préfixes"
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "La future réponse est une information absente lors de la génération. L’apprentissage ne respecte plus le contrat causal."
+      }
+    },
+    "echantillonnage-contexte-et-cout": {
+      "questionIds": [
+        "gen-013",
+        "gen-026",
+        "gen-035",
+        "gen-039"
+      ],
+      "sourceIds": [
+        "gr-softmax",
+        "gr-wavenet",
+        "gr-transformer",
+        "gr-pitfalls"
+      ],
+      "checkpoint": {
+        "prompt": "On double L en attention dense, à batch et dimension cachée constants. Que devient le compte de paires de positions ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Il est divisé par deux"
+          },
+          {
+            "id": "b",
+            "text": "Il est multiplié par quatre"
+          },
+          {
+            "id": "c",
+            "text": "Il est multiplié par deux"
+          },
+          {
+            "id": "d",
+            "text": "Il ne change pas"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Le tableau des comparaisons possède L × L cases. À longueur 2L, il contient 4L² paires, sans imposer ce facteur à tous les autres calculs."
+      }
+    },
+    "conditions-et-intention-musicale": {
+      "questionIds": [
+        "gen-005",
+        "gen-007",
+        "gen-015",
+        "gen-016",
+        "gen-017",
+        "gen-037"
+      ],
+      "sourceIds": [
+        "gr-musicgen",
+        "gr-symbolic"
+      ],
+      "checkpoint": {
+        "prompt": "Le tempo moyen est correct, mais les changements arrivent tard. Quelle analyse sert la demande ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Comparer seulement les tempos moyens"
+          },
+          {
+            "id": "b",
+            "text": "Renommer la condition sans observer la sortie"
+          },
+          {
+            "id": "c",
+            "text": "Comparer les trajectoires et événements dans le temps"
+          },
+          {
+            "id": "d",
+            "text": "Comparer seulement les niveaux moyens"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "L’objectif concerne l’évolution temporelle. Une moyenne efface précisément les décalages à examiner."
+      }
+    },
+    "vae-et-echantillonnage": {
+      "questionIds": [
+        "gen-002",
+        "gen-009",
+        "gen-010"
+      ],
+      "sourceIds": [
+        "gr-vae"
+      ],
+      "checkpoint": {
+        "prompt": "logvar vaut ln(9), mu reste fixé. Quel facteur multiplie eps ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "0,5 × ln(9)"
+          },
+          {
+            "id": "b",
+            "text": "3"
+          },
+          {
+            "id": "c",
+            "text": "9"
+          },
+          {
+            "id": "d",
+            "text": "ln(9)"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Le facteur est l’écart-type : sqrt(9) = 3. Le logarithme est une paramétrisation de la variance, pas une échelle directe du bruit."
+      }
+    },
+    "kl-et-latent-inutilise": {
+      "questionIds": [
+        "gen-029",
+        "gen-030"
+      ],
+      "sourceIds": [
+        "gr-vae",
+        "gr-vqvae"
+      ],
+      "checkpoint": {
+        "prompt": "D passe de 4 à 8 avec des contributions identiques, une somme latente et une moyenne du batch. Que devient la KL ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Elle reste identique"
+          },
+          {
+            "id": "b",
+            "text": "Elle devient nulle"
+          },
+          {
+            "id": "c",
+            "text": "Elle double"
+          },
+          {
+            "id": "d",
+            "text": "Elle est divisée par deux"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "La somme contient deux fois plus de contributions. Une moyenne sur D suivrait une autre convention."
+      }
+    },
+    "diffusion-et-bruit": {
+      "questionIds": [
+        "gen-004",
+        "gen-022",
+        "gen-023",
+        "gen-024"
+      ],
+      "sourceIds": [
+        "gr-ddpm",
+        "gr-audioldm"
+      ],
+      "checkpoint": {
+        "prompt": "On remplace eps par x0 dans la cible sans adapter le sampler. Que faut-il vérifier ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Un doublement obligatoire de la durée audio"
+          },
+          {
+            "id": "b",
+            "text": "Une conversion automatique en autorégression"
+          },
+          {
+            "id": "c",
+            "text": "L’impossibilité de fournir t au réseau"
+          },
+          {
+            "id": "d",
+            "text": "La cohérence entre quantité prédite et équations du sampler"
+          }
+        ],
+        "correctOptionId": "d",
+        "explanation": "Prédire x0 peut être valide, mais le sampler doit interpréter cette sortie avec les conversions correspondantes."
+      }
+    },
+    "guidance-et-zones-connues": {
+      "questionIds": [
+        "gen-031",
+        "gen-032",
+        "gen-036",
+        "gen-040"
+      ],
+      "sourceIds": [
+        "gr-cfg",
+        "gr-audioldm"
+      ],
+      "checkpoint": {
+        "prompt": "L’extérieur du trou est identique à l’original, mais la frontière produit un clic. Que conclure ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "La conservation est respectée, le raccord reste à améliorer"
+          },
+          {
+            "id": "b",
+            "text": "Le masque n’a conservé aucune valeur"
+          },
+          {
+            "id": "c",
+            "text": "La présence du texte rend le clic impossible"
+          },
+          {
+            "id": "d",
+            "text": "Toute guidance doit nécessairement être supprimée"
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Conserver des valeurs et produire une transition continue sont deux exigences différentes."
+      }
+    },
+    "adaptation-lora-et-petit-corpus": {
+      "questionIds": [
+        "gen-018",
+        "gen-019",
+        "gen-020",
+        "gen-021",
+        "gen-033",
+        "gen-034"
+      ],
+      "sourceIds": [
+        "gr-lora",
+        "gr-module",
+        "gr-transfer"
+      ],
+      "checkpoint": {
+        "prompt": "On divise r par deux à dimensions de base fixes. Quel compte diminue directement de moitié ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Le nombre de couches de la base"
+          },
+          {
+            "id": "b",
+            "text": "Les paramètres des deux facteurs LoRA"
+          },
+          {
+            "id": "c",
+            "text": "Les poids de W0"
+          },
+          {
+            "id": "d",
+            "text": "La durée de l’audio produit"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "La paire comporte r × (d_out + d_in) paramètres. Cette réduction ne supprime ni la base ni tous les calculs du forward."
+      }
+    }
+  },
+  "evaluation-recherche": {
+    "question-de-recherche-et-baseline": {
+      "questionIds": [],
+      "sourceIds": [
+        "gr-dummy",
+        "gr-reporting",
+        "gr-cv"
+      ],
+      "checkpoint": {
+        "prompt": "Une adaptation améliore le contrôle, mais augmente nettement les artefacts. Que rapporte-t-on ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Un compromis entre deux critères définis"
+          },
+          {
+            "id": "b",
+            "text": "Un gain général parce qu’un critère progresse"
+          },
+          {
+            "id": "c",
+            "text": "Un échec impossible à interpréter"
+          },
+          {
+            "id": "d",
+            "text": "Seulement les sorties sans artefacts"
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Les deux propriétés répondent à la décision d’usage. En masquer une transformerait la question après observation des résultats."
+      }
+    },
+    "environnement-linux-et-traces": {
+      "questionIds": [],
+      "sourceIds": [
+        "course-eval-linux",
+        "course-eval-venv",
+        "course-eval-packaging",
+        "course-eval-ssh",
+        "course-eval-cuda",
+        "course-eval-config",
+        "course-eval-logging"
+      ],
+      "checkpoint": {
+        "prompt": "Le script fonctionne en local mais SSH indique que le paquet Python est absent. Quel premier contrôle est pertinent ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Vérifier l’interpréteur et l’environnement sur le serveur"
+          },
+          {
+            "id": "b",
+            "text": "Augmenter le nombre de couches du modèle"
+          },
+          {
+            "id": "c",
+            "text": "Réutiliser le score local comme score distant"
+          },
+          {
+            "id": "d",
+            "text": "Supposer que SSH a copié les paquets locaux"
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "SSH ouvre un contexte distant. Le paquet local n’est pas automatiquement installé dans l’environnement utilisé sur le serveur."
+      }
+    },
+    "splits-et-fuites": {
+      "questionIds": [
+        "eval-001",
+        "eval-002",
+        "eval-017",
+        "eval-019",
+        "eval-025"
+      ],
+      "sourceIds": [
+        "gr-cv",
+        "gr-groups",
+        "gr-pitfalls"
+      ],
+      "checkpoint": {
+        "prompt": "Deux prises d’une même interprète se trouvent dans des ensembles différents, alors qu’on vise de nouvelles interprètes. Que corriger ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Normaliser leurs noms de fichiers"
+          },
+          {
+            "id": "b",
+            "text": "Augmenter seulement le batch"
+          },
+          {
+            "id": "c",
+            "text": "Grouper les prises par interprète avant le split"
+          },
+          {
+            "id": "d",
+            "text": "Mélanger leurs fenêtres plus finement"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "La nouveauté revendiquée est l’interprète. Une séparation par enregistrement seule ne l’écarte pas du train."
+      }
+    },
+    "metriques-et-seuils": {
+      "questionIds": [
+        "eval-003",
+        "eval-005",
+        "eval-007",
+        "eval-008",
+        "eval-009",
+        "eval-011"
+      ],
+      "sourceIds": [
+        "gr-dummy",
+        "gr-precision",
+        "gr-recall",
+        "gr-confusion",
+        "gr-f1",
+        "gr-metrics",
+        "gr-threshold"
+      ],
+      "checkpoint": {
+        "prompt": "Une classe rare est presque toujours manquée alors que la majorité est bien reconnue. Que montrer pour voir ce problème ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "La seule accuracy sans effectifs"
+          },
+          {
+            "id": "b",
+            "text": "Le seul nombre de fichiers"
+          },
+          {
+            "id": "c",
+            "text": "La seule moyenne des probabilités maximales"
+          },
+          {
+            "id": "d",
+            "text": "Des scores par classe et un agrégat macro annoncé"
+          }
+        ],
+        "correctOptionId": "d",
+        "explanation": "La majorité peut dominer l’accuracy. Les scores par classe rendent l’erreur visible ; l’agrégat doit correspondre à la question."
+      }
+    },
+    "boucle-evaluation-et-surapprentissage": {
+      "questionIds": [
+        "eval-004",
+        "eval-010",
+        "eval-012"
+      ],
+      "sourceIds": [
+        "gr-module",
+        "gr-metrics",
+        "gr-curves"
+      ],
+      "checkpoint": {
+        "prompt": "Le dernier batch est plus petit et sa loss moyenne est élevée. Comment garder une moyenne par exemple ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Pondérer chaque moyenne par l’effectif du batch"
+          },
+          {
+            "id": "b",
+            "text": "Donner le même poids à chaque batch"
+          },
+          {
+            "id": "c",
+            "text": "Supprimer automatiquement le dernier batch"
+          },
+          {
+            "id": "d",
+            "text": "Remplacer sa loss par la précédente"
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "L’unité de la moyenne est l’exemple. Le poids d’un batch correspond donc à son nombre d’exemples."
+      }
+    },
+    "baselines-et-ablations": {
+      "questionIds": [
+        "eval-013",
+        "eval-029"
+      ],
+      "sourceIds": [
+        "gr-musicgen",
+        "gr-reporting",
+        "gr-dummy",
+        "gr-transfer"
+      ],
+      "checkpoint": {
+        "prompt": "Le modèle complet gagne, mais seul le décodeur et la condition changent ensemble. Quel essai isole la condition ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Garder seulement la meilleure sortie de chacun"
+          },
+          {
+            "id": "b",
+            "text": "Comparer avec et sans condition à décodeur fixé"
+          },
+          {
+            "id": "c",
+            "text": "Comparer sur deux corpus sans base commune"
+          },
+          {
+            "id": "d",
+            "text": "Augmenter le budget du seul modèle complet"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Un contrôle fixe le décodeur et les autres conditions de comparaison. Il teste une hypothèse plus précise que le modèle complet contre la base."
+      }
+    },
+    "ecoute-et-jugement-perceptif": {
+      "questionIds": [
+        "eval-014",
+        "eval-016",
+        "eval-020"
+      ],
+      "sourceIds": [
+        "gr-mushra",
+        "gr-audioldm"
+      ],
+      "checkpoint": {
+        "prompt": "Une percussion place l’accent demandé, mais sa résonance sature. Comment recueillir ce résultat utilement ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "La retirer parce qu’elle est ambiguë"
+          },
+          {
+            "id": "b",
+            "text": "Déduire sa qualité de la seule conformité"
+          },
+          {
+            "id": "c",
+            "text": "Noter séparément conformité et qualité acoustique"
+          },
+          {
+            "id": "d",
+            "text": "Lui attribuer automatiquement un score maximal"
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "Les deux propriétés peuvent diverger. Le protocole doit rendre cette divergence observable au lieu de forcer un jugement unique."
+      }
+    },
+    "fad-et-limites-des-proxies": {
+      "questionIds": [
+        "eval-015",
+        "eval-028"
+      ],
+      "sourceIds": [
+        "gr-fad",
+        "gr-audioldm"
+      ],
+      "checkpoint": {
+        "prompt": "Une méthode est choisie uniquement pour améliorer un embedding donné. Quel contrôle cherche un progrès au-delà de cet évaluateur ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Le même embedding sous un autre nom"
+          },
+          {
+            "id": "b",
+            "text": "Plus de décimales du même score"
+          },
+          {
+            "id": "c",
+            "text": "Une écoute limitée aux meilleurs scores de ce proxy"
+          },
+          {
+            "id": "d",
+            "text": "Une écoute aveugle et des critères complémentaires indépendants"
+          }
+        ],
+        "correctOptionId": "d",
+        "explanation": "L’optimisation peut exploiter les angles morts de la représentation. Un contrôle complémentaire observe d’autres propriétés pertinentes."
+      }
+    },
+    "variabilite-et-incertitude": {
+      "questionIds": [
+        "eval-018",
+        "eval-021",
+        "eval-022",
+        "eval-026"
+      ],
+      "sourceIds": [
+        "gr-bootstrap",
+        "gr-groups",
+        "gr-mushra",
+        "gr-reporting"
+      ],
+      "checkpoint": {
+        "prompt": "Chaque prise produit cent extraits très corrélés. Pour l’incertitude due au choix des prises, que rééchantillonner ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Les prises entières avec leurs extraits"
+          },
+          {
+            "id": "b",
+            "text": "Les seuls extraits corrects"
+          },
+          {
+            "id": "c",
+            "text": "Chaque extrait comme une source indépendante"
+          },
+          {
+            "id": "d",
+            "text": "Les seules meilleures notes de chaque auditeur"
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Rééchantillonner les groupes conserve la dépendance interne. Traiter les extraits comme indépendants peut sous-estimer l’incertitude visée."
+      }
+    },
+    "generalisation-et-compte-rendu": {
+      "questionIds": [
+        "eval-006",
+        "eval-023",
+        "eval-024",
+        "eval-027",
+        "eval-030"
+      ],
+      "sourceIds": [
+        "gr-cv",
+        "gr-timesplit",
+        "gr-nested",
+        "gr-randomness",
+        "gr-reporting"
+      ],
+      "checkpoint": {
+        "prompt": "La méthode réussit en studio mais échoue avec des téléphones. Quelle formulation est défendable ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Mélanger les domaines dans le rapport suffit à corriger le problème"
+          },
+          {
+            "id": "b",
+            "text": "Le résultat actuel dépend du domaine et ne démontre pas la robustesse téléphone"
+          },
+          {
+            "id": "c",
+            "text": "Le score studio garantit la robustesse de tous les microphones"
+          },
+          {
+            "id": "d",
+            "text": "L’échec prouve que tous les résultats studio sont faux"
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "La mesure reste liée aux conditions évaluées. Le décalage de domaine limite la portée de la conclusion et appelle un test adapté."
+      }
+    }
+  }
+}

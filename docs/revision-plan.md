@@ -69,4 +69,14 @@ L’accès à l’interface Colab connectée n’est pas supposé. L’URL publi
 - [x] B — Six chapitres ajoutés, preuves CPU ; 43 tests et 25 contrôles navigateur réussis.
 - [x] D — Quatre chapitres, huit lectures et liens techniques ; 45 tests et 25 contrôles navigateur réussis.
 - [x] E — 25 réponses, pitch et glossaire de 160 termes ; 48 tests et 27 contrôles navigateur réussis.
-- [ ] F — Parcours et audit
+- [x] F — Parcours rapide, neuf tableaux justifiés, audit des 107 chapitres et exécutions CPU complètes ; 51 tests et 28 contrôles navigateur réussis.
+
+## Adaptations appliquées
+
+Les sections de contexte emploient des tableaux de raisonnement. L’oral emploie des réponses modèles et un gabarit personnel, sans imposer de code artificiel. Le chapitre des niveaux conserve sa profondeur avec une justification de longueur affichée. Les checkpoints historiques restent inchangés conformément à V5.
+
+Les vingt sources de notebooks sont publiques. Le lien Colab a répondu HTTP 200 ; aucune session Colab authentifiée n’a été disponible. Les vingt notebooks et leurs quarante solutions ont donc été vérifiés dans de vrais noyaux CPU locaux. Les rapports et temps individuels sont conservés.
+
+Les deux bruits aléatoires incompatibles avec les calculs manuels VAE/diffusion ont été fixés puis réexécutés. La relecture finale a aussi rendu les conclusions orales prononçables et développé CLAP au premier usage.
+
+La liste exhaustive des 42 créations et 65 chapitres historiques révisés est dans `docs/revision-report.md`. Les preuves, limites et commandes finales sont dans `VERIFICATION.md`. Le commit final est ensuite poussé et le workflow manuel Pages est contrôlé jusqu’à sa fin.

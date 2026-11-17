@@ -8,6 +8,7 @@ export function proseFields(chapter){
   const fields=[];
   const add=(path,value)=>{if(typeof value==='string'&&value.trim())fields.push({path,text:value});};
   add('summary',chapter.summary);
+  add('lengthJustification',chapter.lengthJustification);
   for(const [key,value] of Object.entries(chapter.context??{}))add(`context.${key}`,value);
   for(const [key,value] of Object.entries(chapter.progression??{}))add(`progression.${key}`,value);
   for(const [i,notion] of (chapter.notions??[]).entries())add(`notions.${i}`,notion.explanation);
@@ -16,11 +17,16 @@ export function proseFields(chapter){
     for(const key of ['items','observations','reading'])for(const [j,value] of (b[key]??[]).entries())add(`blocks.${i}.${key}.${j}`,value);
     for(const [j,step] of (b.steps??[]).entries()){add(`blocks.${i}.steps.${j}.title`,step.title);add(`blocks.${i}.steps.${j}.text`,step.text);}
     for(const [j,node] of (b.nodes??[]).entries()){add(`blocks.${i}.nodes.${j}.title`,node.title);add(`blocks.${i}.nodes.${j}.text`,node.text);}
+    for(const [j,panel] of (b.panels??[]).entries()){add(`blocks.${i}.panels.${j}.title`,panel.title);for(const [k,item] of (panel.items??[]).entries())add(`blocks.${i}.panels.${j}.items.${k}`,item);}
     if(b.variant){add(`blocks.${i}.variant.change`,b.variant.change);add(`blocks.${i}.variant.explanation`,b.variant.explanation);}
   }
   for(const [i,value] of chapter.takeaways.entries())add(`takeaways.${i}`,value);
   // Existing checkpoint wording is protected by V5; code, formula states and bibliography are separate from prose.
   return fields;
+}
+export function auditModule(course){
+  const texts=[...course.intro,...course.objectives,...['title','scenario','startingPoint','destination'].map(key=>course.journey[key]),...course.journey.scope,...course.journey.stages.map(stage=>stage.title),course.moduleIntroduction.startingPoint,course.moduleIntroduction.goal,...course.moduleIntroduction.concepts.flatMap(concept=>[concept.name,concept.explanation])];
+  return texts.flatMap(text=>[...segmenter.segment(text)].map(part=>({sentence:part.segment.trim(),words:wordCount(part.segment)}))).filter(sentence=>sentence.words>30);
 }
 export function auditChapter(course,chapter){
   const sentences=proseFields(chapter).flatMap(field=>[...segmenter.segment(field.text)].map(part=>({...field,sentence:part.segment.trim(),words:wordCount(part.segment)})));

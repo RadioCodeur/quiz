@@ -1,0 +1,51 @@
+{
+  "python": "3.11.9",
+  "device": "cpu",
+  "commands": [
+    {
+      "script": "pytorch-existing.py",
+      "arguments": [],
+      "exitCode": 0,
+      "seconds": 5.527
+    },
+    {
+      "script": "pytorch-additions.py",
+      "arguments": [],
+      "exitCode": 0,
+      "seconds": 7.711
+    },
+    {
+      "script": "b-attention-control.py",
+      "arguments": [],
+      "exitCode": 0,
+      "seconds": 3.167
+    },
+    {
+      "script": "b-codecs-symbolic.py",
+      "arguments": [],
+      "exitCode": 0,
+      "seconds": 3.042
+    },
+    {
+      "script": "b-diffusion-efficiency.py",
+      "arguments": [],
+      "exitCode": 0,
+      "seconds": 3.132
+    },
+    {
+      "script": "existing-corpus.py",
+      "arguments": [
+        "--strict"
+      ],
+      "exitCode": 0,
+      "seconds": 13.275
+    },
+    {
+      "script": "notebooks.py",
+      "arguments": [],
+      "exitCode": 0,
+      "seconds": 143.862
+    }
+  ],
+  "notebooksReexecuted": true
+}

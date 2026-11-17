@@ -30,11 +30,11 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Imaginez une petite sonothèque de studio. Nous voudrions retrouver les prises de voix parmi les percussions, sans écouter chaque fichier. Nous disposons déjà de fichiers annotés : quelqu’un a indiqué leur classe. Notre travail, dans ce module, est de préparer les nombres qu’un futur classifieur pourra lire. Apprendre la règle de classement viendra avec PyTorch."
+          "text": "Imaginez une petite sonothèque de studio. Nous voudrions retrouver les prises de voix parmi les percussions, sans écouter chaque fichier. Nous disposons déjà de fichiers annotés : quelqu’un a indiqué leur classe. Notre travail, dans ce module, est de préparer les nombres qu’un futur classifieur pourra lire. Ces nombres sont des descripteurs (features), des résumés calculés du son. La cible (target) est sa classe attendue. Apprendre la règle de classement viendra avec PyTorch."
         },
         {
           "type": "paragraph",
-          "text": "Les variables, boucles, conditions, listes et fonctions sont supposées connues. Le saut qui nous intéresse est ailleurs : un tableau de nombres possède des axes, ses sélections peuvent partager la mémoire, et une moyenne peut détruire l’information dont on avait besoin. Les deux rappels Python en fin de sommaire sont facultatifs. Vous pouvez lire directement le parcours principal."
+          "text": "Les variables, boucles, conditions, listes et fonctions sont supposées connues. Le saut qui nous intéresse est ailleurs. Un tableau possède des axes ; ses sélections peuvent partager la mémoire. Une moyenne peut aussi détruire l’information dont nous avions besoin. Les deux rappels Python en fin de sommaire sont facultatifs. Vous pouvez lire directement le parcours principal."
         },
         {
           "type": "visual",
@@ -61,12 +61,12 @@
         },
         {
           "type": "paragraph",
-          "text": "Pour pouvoir vérifier nos calculs à la main, nous utiliserons deux signaux miniatures : [-0.5, 0.5, -0.5, 0.5] et [0, 0, 0, 1]. Ce sont des jouets numériques, pas des enregistrements réalistes. Ils ont volontairement la même amplitude quadratique moyenne, mais des pics différents. Ce choix nous permettra de voir pourquoi un seul résumé ne suffit pas toujours."
+          "text": "Nous utiliserons une valeur efficace (root mean square, RMS), qui résume les amplitudes à partir de leurs carrés. Le facteur de crête (crest factor) compare le maximum absolu au RMS. Pour pouvoir vérifier nos calculs à la main, nous utiliserons deux signaux miniatures : [-0.5, 0.5, -0.5, 0.5] et [0, 0, 0, 1]. Ce sont des jouets numériques, pas des enregistrements réalistes. Ils ont volontairement la même amplitude quadratique moyenne, mais des pics différents. Ce choix nous permettra de voir pourquoi un seul résumé ne suffit pas toujours."
         },
         {
           "type": "walkthrough",
           "title": "Fixer le résultat attendu avant de coder",
-          "goal": "Décrire le contrat de notre préparation.",
+          "goal": "Établir un tableau de calcul raisonné pour fixer les entrées et sorties, avant de choisir un programme.",
           "steps": [
             {
               "title": "Une ligne par fichier",
@@ -84,7 +84,8 @@
               "state": "y : (N,), convention 0=voix, 1=percussion."
             }
           ],
-          "result": "Nous savons reconnaître la sortie attendue avant de choisir les opérations NumPy."
+          "result": "Ce tableau de calcul fixe notre contrat de données. Il organise les fichiers, les colonnes et les cibles ; aucun programme numérique supplémentaire n’est nécessaire ici.",
+          "calculationTable": true
         },
         {
           "type": "paragraph",
@@ -103,8 +104,14 @@
           "conclusion": "Notre unité de classement reste le fichier entier. Les centaines de milliers de valeurs d’un signal ne deviennent pas autant d’exemples annotés indépendants."
         },
         {
+          "type": "callout",
+          "text": "On suppose ici les fichiers déjà décodés et leurs signaux disponibles en mémoire. Les questions de fréquence d’échantillonnage, de stéréo et de durée commune seront traitées dans le module Signal. Pour ce premier module, nous isolons le travail numérique. Même une préparation parfaitement codée ne prouvera pas que nos deux descripteurs suffisent à distinguer des voix et des percussions réelles : il faudra le mesurer.",
+          "tone": "pitfall",
+          "label": "Une préparation correcte ne prouve pas que les descripteurs suffisent"
+        },
+        {
           "type": "paragraph",
-          "text": "On suppose ici les fichiers déjà décodés et leurs signaux disponibles en mémoire. Les questions de fréquence d’échantillonnage, de stéréo et de durée commune seront traitées dans le module Signal. Pour ce premier module, nous isolons le travail numérique. Même une préparation parfaitement codée ne prouvera pas que nos deux descripteurs suffisent à distinguer des voix et des percussions réelles : il faudra le mesurer."
+          "text": "À dire en entretien : nous préparons une ligne de descripteurs par extrait, avec sa cible. Le contrat annonce les axes et les associations avant tout apprentissage."
         }
       ],
       "takeaways": [
@@ -140,15 +147,15 @@
       },
       "notions": [
         {
-          "name": "Cible",
+          "name": "Cible (target)",
           "explanation": "La réponse attendue pour un exemple : ici 0 pour voix, 1 pour percussion."
         },
         {
-          "name": "Descripteur",
+          "name": "Descripteur (feature)",
           "explanation": "Un nombre calculé pour résumer une propriété du son ; il conserve certaines informations et en élimine d’autres."
         },
         {
-          "name": "Observation",
+          "name": "Observation (observation)",
           "explanation": "Un exemple présenté au modèle : ici un extrait entier, et non un échantillon individuel du signal."
         }
       ],
@@ -178,7 +185,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Avec une liste, signal * 2 répète les éléments. Pour amplifier chaque valeur, vous écririez une compréhension. NumPy propose directement cette opération numérique sur un tableau : 2 * signal multiplie chaque amplitude. C’est un premier exemple de vectorisation : on décrit une opération sur un ensemble de valeurs, au lieu de parcourir ses éléments dans une boucle Python. Cela rend le calcul compact et permet à NumPy d’utiliser ses routines optimisées ; le coût mémoire et la taille des données comptent toujours."
+          "text": "Avec une liste, signal * 2 répète les éléments. Pour amplifier chaque valeur, vous écririez une compréhension. NumPy propose directement cette opération numérique sur un tableau (array) : 2 * signal multiplie chaque amplitude. C’est un premier exemple de vectorisation (vectorization) : on décrit une opération sur un ensemble de valeurs, au lieu de parcourir ses éléments dans une boucle Python. Cela rend le calcul compact et permet à NumPy d’utiliser ses routines optimisées ; le coût mémoire et la taille des données comptent toujours."
         },
         {
           "type": "first-example",
@@ -191,7 +198,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Empilons maintenant nos deux extraits en lignes. S.shape vaut (2, 4) : axe 0 pour les extraits, axe 1 pour les instants. Un axe n’a aucune signification acoustique intrinsèque ; c’est nous qui fixons cette convention. Dire seulement « une matrice 2 par 4 » laisse donc une ambiguïté que des noms d’axes lèvent immédiatement."
+          "text": "Empilons maintenant nos deux extraits en lignes. La forme (shape) S.shape vaut (2, 4) : axe (axis) 0 pour les extraits, axe 1 pour les instants. Un axe n’a aucune signification acoustique intrinsèque ; c’est nous qui fixons cette convention. Dire seulement « une matrice 2 par 4 » laisse donc une ambiguïté que des noms d’axes lèvent immédiatement."
         },
         {
           "type": "walkthrough",
@@ -260,6 +267,16 @@
         {
           "type": "paragraph",
           "text": "Une dernière question reste ouverte : sélectionner une portion crée-t-il de nouvelles données ? L’égalité des valeurs affichées ne permet pas de le savoir. Avant de modifier un morceau de signal pour une expérience, il faut comprendre ce lien mémoire."
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Des tailles compatibles peuvent cacher des axes confondus",
+          "text": "NumPy connaît la taille des axes, pas leur rôle acoustique. Nous nommons donc extraits, instants et canaux avant de lire une sélection."
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : une opération NumPy traite des valeurs selon leurs axes. Je distingue les positions sélectionnées, la forme obtenue et le sens physique conservé."
         }
       ],
       "takeaways": [
@@ -298,15 +315,15 @@
       },
       "notions": [
         {
-          "name": "ndarray",
+          "name": "Tableau numérique (ndarray)",
           "explanation": "Le tableau numérique de NumPy : des valeurs de même type de stockage, disposées selon un ou plusieurs axes."
         },
         {
-          "name": "shape",
+          "name": "Forme (shape)",
           "explanation": "Le tuple des tailles des axes. Une forme (2, 4) signifie deux lignes de quatre valeurs."
         },
         {
-          "name": "Indexation avancée",
+          "name": "Indexation avancée (advanced indexing)",
           "explanation": "Une sélection par tableau d’indices ou masque, qui produit une copie des données sélectionnées."
         }
       ],
@@ -334,11 +351,11 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Supposons que nous voulions atténuer la fin du premier extrait, puis comparer avant et après. L’instruction travail = S ne crée pas une seconde version du tableau : les deux noms désignent le même objet. Modifier travail modifie alors S. C’est le même mécanisme que pour une liste Python mutable, c’est-à-dire dont le contenu peut changer."
+          "text": "Supposons que nous voulions atténuer la fin du premier extrait, puis comparer avant et après. L’instruction travail = S ne crée pas une seconde version du tableau : les deux noms désignent le même objet. Ces deux noms sont des alias (aliases) du même objet. Modifier travail modifie alors S. C’est le même mécanisme que pour une liste Python mutable, c’est-à-dire dont le contenu peut changer."
         },
         {
           "type": "paragraph",
-          "text": "NumPy ajoute un cas plus discret. fin = S[:, 2:] est un autre tableau, avec sa propre forme, mais il regarde une partie du même stockage. Ce résultat est une vue. À l’inverse, S[[0, 1]] utilise une liste d’indices : cette indexation avancée crée une copie. Le critère n’est donc pas « ai-je utilisé des crochets ? », mais quelle sorte de sélection ils expriment."
+          "text": "NumPy ajoute un cas plus discret. fin = S[:, 2:] est un autre tableau, avec sa propre forme, mais il regarde une partie du même stockage. Ce résultat est une vue (view), un accès différent au même stockage. À l’inverse, S[[0, 1]] utilise une liste d’indices : cette indexation avancée crée une copie. Le critère n’est donc pas « ai-je utilisé des crochets ? », mais quelle sorte de sélection ils expriment."
         },
         {
           "type": "walkthrough",
@@ -410,12 +427,18 @@
           "caption": "La dernière ligne concerne un tableau de nombres ; un tableau de dtype object demanderait aussi de raisonner sur ses objets internes."
         },
         {
-          "type": "paragraph",
-          "text": "Avant conversion en NumPy, notre collection peut être une liste de listes. Sa méthode .copy() ne copie que le contenant extérieur. Avec original = [[1.], [2.]] puis travail = original.copy(), travail[0].append(3.) modifie aussi original[0]. Remplacer travail[0] par une nouvelle liste n’a pas cet effet : on remplace une référence au lieu de modifier l’objet partagé. deepcopy peut copier récursivement des structures imbriquées quand cette indépendance est nécessaire."
+          "type": "callout",
+          "text": "Avant conversion en NumPy, notre collection peut être une liste de listes. Sa méthode .copy() réalise une copie superficielle (shallow copy) : seul le contenant extérieur devient indépendant. Avec original = [[1.], [2.]] puis travail = original.copy(), travail[0].append(3.) modifie aussi original[0]. Remplacer travail[0] par une nouvelle liste n’a pas cet effet : la référence change, sans modifier l’objet partagé. Une copie profonde (deep copy), avec deepcopy, peut copier récursivement des structures imbriquées si nécessaire.",
+          "tone": "pitfall",
+          "label": "Copier le contenant ne copie pas tous les objets internes"
         },
         {
           "type": "paragraph",
           "text": "Dans la suite, nos calculs de résumé ne modifieront pas S. Les expressions comme S ** 2 construisent leurs résultats, et nous pourrons refaire une mesure sur les mêmes valeurs. Ce choix simplifie les vérifications : une différence de résultat proviendra du calcul choisi, pas d’un original modifié par une expérience précédente."
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : un autre nom ou une vue peut encore partager les données d’origine. Pour préserver un original, je vérifie le niveau auquel la copie rend les valeurs indépendantes."
         }
       ],
       "takeaways": [
@@ -452,15 +475,15 @@
       },
       "notions": [
         {
-          "name": "Alias",
+          "name": "Alias (alias)",
           "explanation": "Un autre nom pour le même objet ; b = a ne copie pas cet objet."
         },
         {
-          "name": "Vue NumPy",
+          "name": "Vue NumPy (view)",
           "explanation": "Un autre accès à un stockage partagé. Un slice simple de notre tableau est une vue."
         },
         {
-          "name": "Copie superficielle",
+          "name": "Copie superficielle (shallow copy)",
           "explanation": "Un nouveau contenant dont les éléments désignent encore les mêmes objets internes."
         }
       ],
@@ -492,7 +515,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Le RMS effectue trois opérations dans cet ordre : carré de chaque amplitude, moyenne des carrés, puis racine carrée. La racine remet le résultat à l’échelle d’une amplitude. Sur la première ligne, les quatre carrés valent .25 ; leur moyenne vaut .25 ; la racine vaut .5. Nous voulons refaire ce calcul séparément pour la seconde ligne."
+          "text": "La valeur efficace (root mean square, RMS) effectue trois opérations dans cet ordre : carré de chaque amplitude, moyenne des carrés, puis racine carrée. La racine remet le résultat à l’échelle d’une amplitude. Sur la première ligne, les quatre carrés valent .25 ; leur moyenne vaut .25 ; la racine vaut .5. Nous voulons refaire ce calcul séparément pour la seconde ligne."
         },
         {
           "type": "plot",
@@ -569,7 +592,7 @@
             },
             {
               "title": "Comparer pic et amplitude globale",
-              "text": "Le rapport donne 1 pour la variation régulière et 2 pour le signal concentré sur un pic. np.maximum impose un dénominateur positif pour un éventuel silence.",
+              "text": "Ce rapport est le facteur de crête (crest factor). Il donne 1 pour la variation régulière et 2 pour le signal concentré sur un pic. np.maximum impose un dénominateur positif pour un éventuel silence.",
               "state": "cretes=[1.,2.].",
               "lines": [
                 5
@@ -633,12 +656,20 @@
           "caption": "L’axe désigne les valeurs rassemblées. Les autres axes décrivent ce que l’on conserve."
         },
         {
-          "type": "paragraph",
-          "text": "Cela ne démontre pas qu’une voix réelle possède toujours un facteur de crête inférieur à celui d’une percussion. Une consonne peut être très transitoire ; une percussion tenue peut être régulière. Le calcul nous donne une représentation à tester, pas une loi de classification. Cette distinction entre une mesure correcte et une mesure utile reviendra dans le module Audio ML."
+          "type": "callout",
+          "text": "Cela ne démontre pas qu’une voix réelle possède toujours un facteur de crête inférieur à celui d’une percussion. Une consonne peut être très transitoire ; une percussion tenue peut être régulière. Le calcul nous donne une représentation à tester, pas une loi de classification. Cette distinction entre une mesure correcte et une mesure utile reviendra dans le module Audio ML.",
+          "tone": "pitfall",
+          "label": "Une différence entre nos jouets ne définit pas une classe musicale"
+        },
+        {
+          "type": "callout",
+          "text": "Pour réutiliser une moyenne dans une soustraction, sa forme compte aussi. S.mean(axis=1) vaut [0., .25], de forme (2,). Avec keepdims=True, la même moyenne a la forme (2, 1). Les valeurs n’ont pas changé ; l’axe du temps reste présent avec une seule position. Nous allons voir pourquoi cela permet de soustraire la bonne moyenne à chaque extrait.",
+          "tone": "tip",
+          "label": "Pour aller plus loin : garder un axe avec keepdims"
         },
         {
           "type": "paragraph",
-          "text": "Pour réutiliser une moyenne dans une soustraction, sa forme compte aussi. S.mean(axis=1) vaut [0., .25], de forme (2,). Avec keepdims=True, la même moyenne a la forme (2, 1). Les valeurs n’ont pas changé ; l’axe du temps reste présent avec une seule position. Nous allons voir pourquoi cela permet de soustraire la bonne moyenne à chaque extrait."
+          "text": "À dire en entretien : je choisis l’axe à réduire selon la question posée. Le RMS évite l’annulation des signes, mais ne conserve ni les pics ni toute l’organisation temporelle."
         }
       ],
       "takeaways": [
@@ -675,15 +706,15 @@
       },
       "notions": [
         {
-          "name": "Réduction",
+          "name": "Réduction (reduction)",
           "explanation": "Un calcul qui rassemble plusieurs valeurs en une seule, comme une somme, une moyenne ou un maximum."
         },
         {
-          "name": "RMS",
+          "name": "Valeur efficace (root mean square, RMS)",
           "explanation": "Root mean square : racine de la moyenne des carrés. C’est un résumé d’amplitude qui ne s’annule pas entre valeurs positives et négatives."
         },
         {
-          "name": "Facteur de crête",
+          "name": "Facteur de crête (crest factor)",
           "explanation": "Le maximum des valeurs absolues divisé par le RMS ; il mesure ici combien le pic dépasse l’amplitude globale."
         }
       ],
@@ -711,7 +742,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Partons de F, notre tableau à deux colonnes. Pour retirer une référence à chaque descripteur, nous pouvons écrire F - np.array([.5, 1.5]). NumPy réutilise la première correction dans toute la première colonne, la seconde dans toute la deuxième. Ce mécanisme s’appelle le broadcasting. La petite référence n’est pas une troisième observation : elle décrit une correction commune."
+          "text": "Partons de F, notre tableau à deux colonnes. Pour retirer une référence à chaque descripteur, nous pouvons écrire F - np.array([.5, 1.5]). NumPy réutilise la première correction dans toute la première colonne, la seconde dans toute la deuxième. Ce mécanisme est la diffusion (broadcasting), une réutilisation compatible des valeurs entre axes. La petite référence n’est pas une troisième observation : elle décrit une correction commune."
         },
         {
           "type": "visual",
@@ -742,8 +773,10 @@
           "caption": "À partir de la droite, deux tailles doivent être identiques ou l’une doit valoir 1. Un axe absent est traité comme un axe de taille 1."
         },
         {
-          "type": "paragraph",
-          "text": "Ce dernier cas explique keepdims : pour retirer la moyenne de chaque ligne d’un signal (2, 4), il faut une correction (2, 1). Garder seulement (2,) ne convient pas ici. Plus dangereux, avec un tableau carré, une mauvaise intention peut tout de même donner des formes compatibles. NumPy vérifie les tailles, pas le sens « extraits » ou « temps »."
+          "type": "callout",
+          "text": "Ce dernier cas explique keepdims : pour retirer la moyenne de chaque ligne d’un signal (2, 4), il faut une correction (2, 1). Garder seulement (2,) ne convient pas ici. Plus dangereux, avec un tableau carré, une mauvaise intention peut tout de même donner des formes compatibles. NumPy vérifie les tailles, pas le sens « extraits » ou « temps ».",
+          "tone": "tip",
+          "label": "Pour aller plus loin : une forme correcte ne valide pas les axes"
         },
         {
           "type": "walkthrough",
@@ -782,7 +815,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Autre besoin concret : retrouver les sons les plus proches d’un extrait. La distance euclidienne au carré additionne les carrés des écarts entre descripteurs. Si X contient N observations à D coordonnées et Y en contient M, nous voulons une distance pour chaque paire, donc un tableau (N, M)."
+          "text": "Autre besoin concret : retrouver les sons les plus proches d’un extrait. La distance euclidienne au carré (squared Euclidean distance) additionne les carrés des écarts entre descripteurs. Si X contient N observations à D coordonnées et Y en contient M, nous voulons une distance pour chaque paire, donc un tableau (N, M)."
         },
         {
           "type": "code",
@@ -795,8 +828,14 @@
           "text": "Dans le cas général, les formes (N, 1, D) et (1, M, D) se diffusent en (N, M, D). Chaque paire conserve d’abord ses D différences de coordonnées ; sum(axis=-1) rassemble ces contributions et produit (N, M). Ici, les deux observations sont comparées à la première : la distance à elle-même vaut 0 ; celle de la seconde vaut 1. Nous changerons ensuite l’échelle des descripteurs avant d’utiliser de telles distances pour une recherche réelle."
         },
         {
+          "type": "callout",
+          "text": "Cette écriture est commode, mais son tableau intermédiaire peut être volumineux. Sept sons face à cinq sons et trois coordonnées restent minuscules ; cent mille sons face à cent mille autres ne le sont plus. La vectorisation facilite le calcul, sans supprimer son coût. Avant de comparer nos descripteurs ou de les pondérer, une dernière difficulté apparaît : ils ne sont pas nécessairement sur la même échelle.",
+          "tone": "pitfall",
+          "label": "La vectorisation ne supprime pas le coût mémoire"
+        },
+        {
           "type": "paragraph",
-          "text": "Cette écriture est commode, mais son tableau intermédiaire peut être volumineux. Sept sons face à cinq sons et trois coordonnées restent minuscules ; cent mille sons face à cent mille autres ne le sont plus. La vectorisation facilite le calcul, sans supprimer son coût. Avant de comparer nos descripteurs ou de les pondérer, une dernière difficulté apparaît : ils ne sont pas nécessairement sur la même échelle."
+          "text": "À dire en entretien : la diffusion réutilise des valeurs, tandis que le produit matriciel additionne des contributions. Je vérifie aussi le sens des axes et la taille des intermédiaires."
         }
       ],
       "takeaways": [
@@ -833,15 +872,15 @@
       },
       "notions": [
         {
-          "name": "Broadcasting",
+          "name": "Diffusion (broadcasting)",
           "explanation": "La règle de NumPy qui permet une opération élément par élément entre certaines formes différentes, sans écrire les répétitions soi-même."
         },
         {
-          "name": "Produit matriciel",
+          "name": "Produit matriciel (matrix multiplication)",
           "explanation": "Un calcul qui somme des produits : chaque sortie combine plusieurs coordonnées au lieu de traiter chacune séparément."
         },
         {
-          "name": "Distance euclidienne au carré",
+          "name": "Distance euclidienne au carré (squared Euclidean distance)",
           "explanation": "La somme des carrés des écarts entre coordonnées de deux observations."
         }
       ],
@@ -869,11 +908,11 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Le facteur de crête est un rapport sans unité ; le RMS dépend de l’échelle des amplitudes. Si nous comparons directement deux observations par une distance, la colonne dont les nombres varient davantage peut dominer cette distance. La standardisation propose une référence simple : où se situe chaque valeur par rapport à une moyenne, en unités de dispersion ? Ce n’est pas une obligation universelle, mais un choix à examiner selon la représentation et le modèle."
+          "text": "Le facteur de crête est un rapport sans unité ; le RMS dépend de l’échelle des amplitudes. Si nous comparons directement deux observations par une distance, la colonne dont les nombres varient davantage peut dominer cette distance. La standardisation (standardization) propose une référence simple : où se situe chaque valeur par rapport à une moyenne, en unités de dispersion ? Ce n’est pas une obligation universelle, mais un choix à examiner selon la représentation et le modèle."
         },
         {
           "type": "paragraph",
-          "text": "Nous calculons la moyenne mu et l’écart-type sigma sur les exemples d’entraînement uniquement. Puis nous conservons ces nombres pour transformer la validation, le test et les fichiers futurs. Recalculer la référence sur le test adapterait la préparation aux données censées évaluer le système. Le principe est le même que pour un modèle : ce qui s’apprend doit être fixé avant son évaluation finale."
+          "text": "Nous calculons la moyenne mu et l’écart-type (standard deviation) sigma sur les exemples d’entraînement uniquement. Puis nous conservons ces nombres pour transformer la validation, le test et les fichiers futurs. Recalculer la référence sur le test adapterait la préparation aux données censées évaluer le système. Le principe est le même que pour un modèle : ce qui s’apprend doit être fixé avant son évaluation finale."
         },
         {
           "type": "walkthrough",
@@ -940,12 +979,20 @@
           "caption": "Nos deux jouets ne constituent pas un protocole expérimental ; ils servent seulement à vérifier la transformation."
         },
         {
-          "type": "paragraph",
-          "text": "Le plancher 1e-8 répond exactement à « comment éviter un dénominateur trop petit ? ». Il ne rend pas le résultat toujours raisonnable. Une colonne constante à l’entraînement mais différente sur un nouveau fichier peut produire une énorme valeur après division. Il faut alors examiner la colonne, envisager sa suppression ou choisir une autre convention. NaN, infinis et changements d’unités doivent aussi être contrôlés séparément."
+          "type": "callout",
+          "text": "Le plancher 1e-8 répond exactement à « comment éviter un dénominateur trop petit ? ». Il ne rend pas le résultat toujours raisonnable. Une colonne constante à l’entraînement mais différente sur un nouveau fichier peut produire une énorme valeur après division. Il faut alors examiner la colonne, envisager sa suppression ou choisir une autre convention. NaN, infinis et changements d’unités doivent aussi être contrôlés séparément.",
+          "tone": "pitfall",
+          "label": "Un dénominateur protégé ne rend pas la colonne informative"
+        },
+        {
+          "type": "callout",
+          "text": "Les nombres flottants (floating-point numbers) sont des approximations. Avec un tableau float32, une longue moyenne peut accumuler des arrondis : np.mean(x, dtype=np.float64) choisit une accumulation plus précise. Convertir seulement le résultat en float64 ne retrouve pas les petits termes déjà perdus. Nous choisissons donc le type avant le calcul concerné. Ce réglage de précision est distinct de la standardisation : l’un change la manière de calculer, l’autre transforme les données.",
+          "tone": "tip",
+          "label": "Pour aller plus loin : choisir la précision avant l’accumulation"
         },
         {
           "type": "paragraph",
-          "text": "Enfin, les flottants sont des approximations. Avec un tableau float32, une longue moyenne peut accumuler des arrondis : np.mean(x, dtype=np.float64) choisit une accumulation plus précise. Convertir seulement le résultat en float64 ne retrouve pas les petits termes déjà perdus. Nous choisissons donc le type avant le calcul concerné. Ce réglage de précision est distinct de la standardisation : l’un change la manière de calculer, l’autre transforme les données."
+          "text": "À dire en entretien : je fixe moyenne et écart-type sur l’entraînement, puis je réutilise ces références. Protéger une division ne remplace pas le contrôle des colonnes et des valeurs."
         }
       ],
       "takeaways": [
@@ -982,15 +1029,15 @@
       },
       "notions": [
         {
-          "name": "Entraînement, validation, test",
+          "name": "Entraînement, validation et test (training, validation, test)",
           "explanation": "L’entraînement ajuste les paramètres ; la validation guide les choix ; le test est réservé à l’évaluation finale."
         },
         {
-          "name": "Standardisation",
+          "name": "Standardisation (standardization)",
           "explanation": "Soustraire une moyenne de référence puis diviser par un écart-type de référence, colonne par colonne."
         },
         {
-          "name": "Écart-type",
+          "name": "Écart-type (standard deviation)",
           "explanation": "La racine de la moyenne des écarts à la moyenne mis au carré ; il décrit la dispersion des valeurs."
         }
       ],
@@ -1017,7 +1064,11 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Vous savez déjà définir une fonction. La question utile ici est ce qu’elle a le droit de décider. Une fonction qui reçoit un fichier de test ne doit pas choisir une nouvelle moyenne à partir de ce fichier. Nous lui fournissons donc F, mu et sigma : ses entrées racontent le protocole. Elle applique une règle déjà fixée et renvoie un résultat."
+          "text": "Vous savez déjà définir une fonction. Son contrat (contract) annonce ses entrées, son résultat et ses modifications éventuelles. Une fonction qui reçoit un fichier de test ne doit pas choisir une nouvelle moyenne à partir de ce fichier. Nous lui fournissons donc F, mu et sigma : ses entrées racontent le protocole. Elle applique une règle déjà fixée et renvoie un résultat."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour vérifier la fonction, nous pouvons prédire un cas à la main : une valeur égale à sa moyenne devient zéro ; un écart égal à un écart-type devient un. Un tel contrôle vérifie le calcul. Il ne vérifie pas l’origine de la moyenne : pour cela, il faut aussi examiner où les références ont été ajustées et quelles données elles ont observées."
         },
         {
           "type": "walkthrough",
@@ -1085,12 +1136,14 @@
           "caption": "print sert à observer ; return transmet les données à l’étape suivante."
         },
         {
-          "type": "paragraph",
-          "text": "Pour vérifier la fonction, nous pouvons prédire un cas à la main : une valeur égale à sa moyenne devient zéro ; un écart égal à un écart-type devient un. Un tel contrôle vérifie le calcul. Il ne vérifie pas l’origine de la moyenne : pour cela, il faut aussi examiner où les références ont été ajustées et quelles données elles ont observées."
+          "type": "callout",
+          "text": "Un effet de bord (side effect) modifie autre chose que le résultat renvoyé. Certaines fonctions modifient volontairement leurs entrées pour éviter une allocation. C’est un contrat possible, mais il faut le dire et le tester : un appel précédent pourrait autrement changer la comparaison suivante. Dans notre version lisible, nous privilégions un résultat distinct. Nous verrons plus loin comment conserver les références dans un objet lorsqu’il devient pénible de les transmettre partout.",
+          "tone": "pitfall",
+          "label": "Une modification des entrées doit appartenir au contrat"
         },
         {
           "type": "paragraph",
-          "text": "Il existe des fonctions qui modifient volontairement leurs entrées pour éviter une allocation. C’est un contrat possible, mais il faut le dire et le tester : un appel précédent pourrait autrement changer la comparaison suivante. Dans notre version lisible, nous privilégions un résultat distinct. Nous verrons plus loin comment conserver les références dans un objet lorsqu’il devient pénible de les transmettre partout."
+          "text": "À dire en entretien : une fonction de transformation applique des références déjà fixées. Son contrat précise les entrées, le résultat renvoyé et les effets éventuels sur les données fournies."
         }
       ],
       "takeaways": [
@@ -1127,11 +1180,11 @@
       },
       "notions": [
         {
-          "name": "Contrat",
+          "name": "Contrat (contract)",
           "explanation": "La description des entrées attendues, du résultat renvoyé et des éventuelles modifications."
         },
         {
-          "name": "Effet de bord",
+          "name": "Effet de bord (side effect)",
           "explanation": "Une modification observable en dehors du résultat renvoyé : changer le tableau fourni ou un état global, par exemple."
         }
       ],
@@ -1158,7 +1211,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Nous voulons signaler les fichiers problématiques sans interrompre toute la préparation. Une fonction ajoute un nom de fichier à un journal. Si personne ne fournit ce journal, elle devrait en créer un. Écrire journal=[] dans la définition semble naturel, mais cette liste est créée une fois, à la définition. Les appels suivants qui omettent l’argument reçoivent le même objet."
+          "text": "Nous voulons signaler les fichiers problématiques sans interrompre toute la préparation. Une fonction ajoute un nom de fichier à un journal. Si personne ne fournit ce journal, elle devrait en créer un. Écrire journal=[] comme valeur par défaut (default value) semble naturel, mais cette liste est créée une fois, à la définition. Les appels suivants qui omettent l’argument reçoivent le même objet."
         },
         {
           "type": "first-example",
@@ -1176,7 +1229,7 @@
           "steps": [
             {
               "title": "Reconnaître l’absence",
-              "text": "Le test is None distingue une absence de journal d’une liste vide fournie volontairement.",
+              "text": "None joue le rôle de sentinelle (sentinel), une valeur qui signale l’absence. Le test is None distingue cette absence d’une liste vide fournie volontairement.",
               "state": "Un appel sans journal entre dans la condition.",
               "lines": [
                 1,
@@ -1231,12 +1284,18 @@
           "caption": "Le même code peut être correct dans les deux cas si son contrat rend le partage explicite."
         },
         {
-          "type": "paragraph",
-          "text": "Copier le résultat à la fin de la version fautive ne retire pas les messages qui se sont déjà accumulés dans le défaut. Changer append en extend ne change pas non plus la durée de vie de cet objet. Le bon diagnostic vient du suivi de l’état entre les appels, exactement comme pour les alias et les vues."
+          "type": "callout",
+          "text": "Copier le résultat à la fin de la version fautive ne retire pas les messages qui se sont déjà accumulés dans le défaut. Changer append en extend ne change pas non plus la durée de vie de cet objet. Le bon diagnostic vient du suivi de l’état entre les appels, exactement comme pour les alias et les vues.",
+          "tone": "pitfall",
+          "label": "Le partage existe avant le retour de la fonction"
         },
         {
           "type": "paragraph",
           "text": "Ce piège ne concerne pas seulement les journaux. Des listes d’exemples, dictionnaires de cache ou réglages mutables peuvent survivre de la même façon. À présent que nos fonctions sont isolées, nous pouvons les appliquer à toute la collection. Il reste à ne pas perdre l’association entre un résultat et sa cible."
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : une valeur par défaut est créée lors de la définition. Pour créer une liste propre à chaque appel, je teste une sentinelle puis construis la liste dans la fonction."
         }
       ],
       "takeaways": [
@@ -1273,11 +1332,11 @@
       },
       "notions": [
         {
-          "name": "Valeur par défaut",
+          "name": "Valeur par défaut (default value)",
           "explanation": "L’objet évalué lorsque Python exécute la définition de la fonction, puis réutilisé pour les appels qui omettent cet argument."
         },
         {
-          "name": "Sentinelle None",
+          "name": "Sentinelle None (sentinel)",
           "explanation": "Une valeur choisie pour exprimer ici « aucun journal n’a été fourni » ; la fonction peut alors créer sa propre liste."
         }
       ],
@@ -1376,12 +1435,18 @@
           "caption": "Pour des valeurs [-2, 0, 3], [x*x for x in valeurs if x>0] garde seulement 3 puis produit 9 : ordre du filtre et de la transformation."
         },
         {
-          "type": "paragraph",
-          "text": "Sur un gros corpus, charger et transformer tous les fichiers d’un coup peut dépasser la mémoire. Un générateur permet de préparer un extrait à la demande. Mais il décrit un parcours en cours, pas un stock qu’on peut relire librement : g = (i * 2 for i in range(3)) donne [0, 2, 4] au premier list(g), puis [] au second. Il faut recréer le générateur pour recommencer."
+          "type": "callout",
+          "text": "Sur un gros corpus, charger et transformer tous les fichiers d’un coup peut dépasser la mémoire. Un générateur (generator) permet de préparer un extrait à la demande. Mais il décrit un parcours en cours, pas un stock qu’on peut relire librement. Ainsi, g = (i * 2 for i in range(3)) donne [0, 2, 4] au premier list(g), puis [] au second. Il faut recréer le générateur pour recommencer.",
+          "tone": "pitfall",
+          "label": "Un générateur consommé ne constitue plus une nouvelle passe"
         },
         {
           "type": "paragraph",
           "text": "Lors de plusieurs passages sur les données, cette différence devient concrète : une première passe de diagnostic peut avoir épuisé le flux destiné à l’entraînement. Lire à la demande ne signifie pas non plus qu’aucune mémoire n’est utilisée ; chaque élément produit et chaque étape peut conserver des données. Nous choisissons une liste lorsque nous voulons un résultat disponible et reparcourable, un générateur lorsque la production progressive répond à un besoin réel."
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : je filtre ensemble le fichier et toutes ses informations associées. Je distingue aussi une collection réutilisable d’un générateur dont le parcours peut être épuisé."
         }
       ],
       "takeaways": [
@@ -1418,11 +1483,11 @@
       },
       "notions": [
         {
-          "name": "zip",
+          "name": "Parcours conjoint (zip)",
           "explanation": "Un parcours conjoint ; par défaut il s’arrête au plus court des parcours fournis."
         },
         {
-          "name": "Générateur",
+          "name": "Générateur (generator)",
           "explanation": "Un producteur de valeurs à la demande, dont l’itération avance et peut être épuisée."
         }
       ],
@@ -1450,11 +1515,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Un triplet (nom, durée, cible) convient pour un exemple, mais ses positions deviennent pénibles à suivre quand on ajoute la source ou la fréquence d’échantillonnage. Un dictionnaire permet d’écrire meta[\"cible\"] plutôt que ligne[2]. Le gain principal est de rendre le sens visible. Il ne suffit pas qu’un nombre se trouve à la bonne position : il faut savoir ce qu’il représente."
-        },
-        {
-          "type": "paragraph",
-          "text": "Une clé absente demande une décision. meta.get(\"duree\", 0) renvoie 0 si duree manque, sans ajouter le champ. C’est pratique pour une valeur d’affichage facultative. Pour notre préparation, une durée inconnue ne vaut pourtant pas une durée nulle : ce défaut pourrait exclure un fichier pour une mauvaise raison. Nous pouvons préférer meta[\"duree\"], qui signale l’absence par KeyError, ou un contrôle explicite avant le calcul."
+          "text": "Un triplet (nom, durée, cible) convient pour un exemple, mais ses positions deviennent pénibles à suivre quand on ajoute la source ou la fréquence d’échantillonnage. Un dictionnaire (dictionary), collection de champs nommés, permet d’écrire meta[\"cible\"] plutôt que ligne[2]. Le gain principal est de rendre le sens visible. Il ne suffit pas qu’un nombre se trouve à la bonne position : il faut savoir ce qu’il représente."
         },
         {
           "type": "walkthrough",
@@ -1463,7 +1524,7 @@
           "steps": [
             {
               "title": "Construire une instance",
-              "text": "__init__ initialise ici un attribut sur l’objet qui vient d’être construit. self désigne cet objet pendant la méthode.",
+              "text": "__init__ initialise ici un attribut d’instance (instance attribute), une information propre à l’objet construit. self désigne cet objet pendant la méthode.",
               "state": "a.gain=1. ; b.gain=1.",
               "lines": [
                 1,
@@ -1490,6 +1551,12 @@
           "result": "Une classe devient pertinente lorsqu’un état et les opérations qui l’utilisent forment un ensemble cohérent.",
           "code": "class Reglage:\n    def __init__(self):\n        self.gain = 1.\n\na = Reglage()\nb = Reglage()\na.gain = 0.5",
           "language": "python"
+        },
+        {
+          "type": "callout",
+          "text": "Une clé absente demande une décision. meta.get(\"duree\", 0) renvoie 0 si duree manque, sans ajouter le champ. C’est pratique pour une valeur d’affichage facultative. Pour notre préparation, une durée inconnue ne vaut pourtant pas une durée nulle : ce défaut pourrait exclure un fichier pour une mauvaise raison. Nous pouvons préférer meta[\"duree\"], qui signale l’absence par KeyError, ou un contrôle explicite avant le calcul.",
+          "tone": "pitfall",
+          "label": "Une donnée absente n’est pas une mesure nulle"
         },
         {
           "type": "visual",
@@ -1521,6 +1588,10 @@
         {
           "type": "paragraph",
           "text": "Nous avons maintenant deux sortes de données à conserver. Les métadonnées suivent le fichier ; les statistiques de préparation suivent la version du système. Sauvegarder le modèle sans ces statistiques reviendrait à changer l’échelle de ses entrées lors de la prochaine utilisation. Réunissons enfin les étapes en un seul chemin lisible."
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : les métadonnées décrivent un extrait ; l’état d’un préparateur conserve ses références. Je traite explicitement les champs manquants et l’appartenance des réglages aux instances."
         }
       ],
       "takeaways": [
@@ -1557,11 +1628,11 @@
       },
       "notions": [
         {
-          "name": "Métadonnée",
+          "name": "Métadonnée (metadata)",
           "explanation": "Une information décrivant le fichier ou sa collecte, par opposition aux amplitudes du signal : nom, durée, source, classe."
         },
         {
-          "name": "Attribut d’instance",
+          "name": "Attribut d’instance (instance attribute)",
           "explanation": "Une information attachée à un objet particulier, par exemple les statistiques de ce préparateur."
         }
       ],
@@ -1586,7 +1657,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Revenons à notre sonothèque. Pour chaque fichier, nous devons obtenir deux nombres dans un ordre fixe : RMS, puis facteur de crête. Une ligne de X représente un fichier ; y contient sa classe au même indice. Cela paraît modeste, mais nous pouvons désormais expliquer chaque opération qui produit cette sortie, et les cas où elle serait trompeuse."
+          "text": "Revenons à notre sonothèque. La chaîne de traitements (pipeline) relie la sortie de chaque étape à l’entrée de la suivante. Pour chaque fichier, nous devons obtenir deux nombres dans un ordre fixe : RMS, puis facteur de crête. Une ligne de X représente un fichier ; y contient sa classe au même indice. Cela paraît modeste, mais nous pouvons désormais expliquer chaque opération qui produit cette sortie, et les cas où elle serait trompeuse."
         },
         {
           "type": "walkthrough",
@@ -1673,12 +1744,18 @@
           "caption": "Dans un protocole réel, les groupes train/validation/test sont fixés avant tout ajustement de la préparation."
         },
         {
-          "type": "paragraph",
-          "text": "Le RMS identique de nos deux jouets a joué un rôle essentiel : il nous a obligés à demander ce qui restait dans la représentation. Le facteur de crête a conservé une différence, mais a perdu presque tout l’ordre temporel. Deux sons peuvent encore partager ces deux nombres et sonner très différemment. Ajouter un réseau plus profond ne peut pas recréer une information absente de ses entrées."
+          "type": "callout",
+          "text": "Le RMS identique de nos deux jouets a joué un rôle essentiel : il nous a obligés à demander ce qui restait dans la représentation. Le facteur de crête a conservé une différence, mais a perdu presque tout l’ordre temporel. Deux sons peuvent encore partager ces deux nombres et sonner très différemment. Ajouter un réseau plus profond ne peut pas recréer une information absente de ses entrées.",
+          "tone": "pitfall",
+          "label": "Un réseau ne recrée pas une information absente de son entrée"
         },
         {
           "type": "paragraph",
-          "text": "Le module Signal répondra justement à cette limite en examinant le temps et les fréquences. PyTorch montrera ensuite comment apprendre des poids plutôt que choisir W à la main. À l’oral, vous pouvez déjà décrire une démarche : définir un exemple, annoncer les axes, justifier les mesures, conserver les cibles, fixer les statistiques sur le train et vérifier le résultat sur un cas calculable. Chaque outil rencontré a servi à une de ces décisions."
+          "text": "Le module Signal répondra justement à cette limite en examinant le temps et les fréquences. PyTorch montrera ensuite comment apprendre des poids plutôt que choisir W à la main. Nous pouvons maintenant expliquer la démarche : définir un exemple, annoncer les axes, justifier les mesures et conserver les cibles. Les statistiques viennent du train ; un cas calculable permet de contrôler le résultat. Chaque outil rencontré a servi à une de ces décisions."
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : je peux expliquer chaque frontière entre le fichier et les caractéristiques données au modèle. Une chaîne correcte reste à évaluer, car ses descripteurs peuvent perdre une information indispensable."
         }
       ],
       "takeaways": [
@@ -1716,11 +1793,11 @@
       },
       "notions": [
         {
-          "name": "Pipeline",
+          "name": "Chaîne de traitements (pipeline)",
           "explanation": "Une chaîne de traitements dont la sortie d’une étape devient l’entrée de la suivante."
         },
         {
-          "name": "Contrat de données",
+          "name": "Contrat de données (data contract)",
           "explanation": "Les axes, unités, champs requis et associations qui doivent rester vrais entre deux étapes."
         }
       ],
@@ -1745,7 +1822,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Ce rappel s’adresse à quelqu’un qui souhaite revoir la lecture d’un calcul. Si vous utilisez déjà des variables et des fonctions sans difficulté, passez au parcours principal : le calcul scientifique y introduit les notions nouvelles."
+          "text": "Ce rappel s’adresse à quelqu’un qui souhaite revoir la lecture d’un calcul. Si vous utilisez déjà des variables et des fonctions sans difficulté, passez au parcours principal : le calcul scientifique y introduit les notions nouvelles. Pour vérifier la durée, divisons 32000 échantillons par 16000 échantillons par seconde : nous obtenons 2.0 secondes."
         },
         {
           "type": "walkthrough",
@@ -1810,6 +1887,16 @@
             ]
           ],
           "caption": "Python calcule les nombres ; les noms et conventions doivent porter les unités."
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une valeur mémorisée n’est pas une formule active",
+          "text": "Changer le nombre d’échantillons ne relance pas une ancienne division. Nous devons demander explicitement un nouveau calcul."
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : une affectation mémorise le résultat calculé à cet instant. Pour obtenir une durée correcte, je conserve les unités et recalcule après un changement d’entrée."
         }
       ],
       "takeaways": [
@@ -1845,11 +1932,11 @@
       },
       "notions": [
         {
-          "name": "Valeur calculée",
+          "name": "Valeur calculée (computed value)",
           "explanation": "Le résultat d’une opération effectuée à un moment donné."
         },
         {
-          "name": "Unité",
+          "name": "Unité (unit)",
           "explanation": "Ce que mesure une valeur ; elle ne provient pas automatiquement de son type Python."
         }
       ],
@@ -1875,7 +1962,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Ce rappel ne présuppose aucune connaissance de NumPy. Le parcours principal utilise les mêmes notations de plages, puis explique leurs différences de forme et de partage mémoire."
+          "text": "Ce rappel ne présuppose aucune connaissance de NumPy. Le parcours principal utilise les mêmes notations de plages, puis explique leurs différences de forme et de partage mémoire. Un indice (index) désigne une position ; une plage (slice) en sélectionne plusieurs. Ici, 1:4 retient les positions 1, 2 et 3, soit 20., 30. et 40."
         },
         {
           "type": "walkthrough",
@@ -1941,8 +2028,14 @@
           "caption": "Ces nombres illustrent l’indexation, pas des amplitudes audio normalisées."
         },
         {
+          "type": "callout",
+          "text": "Pour une liste, un slice crée une nouvelle liste extérieure. Pour un tableau NumPy numérique, une sélection simple peut au contraire être une vue partageant le stockage. C’est cette différence, détaillée dans le parcours principal, qui peut surprendre même lorsqu’on connaît déjà très bien les listes.",
+          "tone": "pitfall",
+          "label": "Une même notation peut avoir un autre effet mémoire dans NumPy"
+        },
+        {
           "type": "paragraph",
-          "text": "Pour une liste, un slice crée une nouvelle liste extérieure. Pour un tableau NumPy numérique, une sélection simple peut au contraire être une vue partageant le stockage. C’est cette différence, détaillée dans le parcours principal, qui peut surprendre même lorsqu’on connaît déjà très bien les listes."
+          "text": "À dire en entretien : une plage inclut le début et exclut la fin. Je distingue les positions retenues, les valeurs obtenues et le partage mémoire éventuel."
         }
       ],
       "takeaways": [
@@ -1979,11 +2072,11 @@
       },
       "notions": [
         {
-          "name": "Indice",
+          "name": "Indice (index)",
           "explanation": "Un numéro de position dans une collection."
         },
         {
-          "name": "Slice",
+          "name": "Plage (slice)",
           "explanation": "Une plage début:fin:pas, avec une borne de fin exclue."
         }
       ],

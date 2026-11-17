@@ -8,7 +8,7 @@
       "sourceSha256": "25cebe72dce67bdc9da013a29fbd3ba20a9b7552f40823bf5523a2d6b1e5b903",
       "codeSha256": "25cebe72dce67bdc9da013a29fbd3ba20a9b7552f40823bf5523a2d6b1e5b903",
       "stdout": "DDPM : xt=1.00, cible=-1.00, MSE=0.25\nCFG : bruit guidé=-1.10\nFlow : point=-0.25, vitesse=3.00, MSE=0.25\nEuler depuis z : -0.25",
-      "elapsedSeconds": 0.001622,
+      "elapsedSeconds": 0.001555,
       "values": {
         "xt": 1.0,
         "perte_ddpm": 0.25,
@@ -23,7 +23,7 @@
       "sourceSha256": "b92c499c9a4fbb09003c8ba058dac5b8e93668aac72104598b4f5116f35dedd9",
       "codeSha256": "b92c499c9a4fbb09003c8ba058dac5b8e93668aac72104598b4f5116f35dedd9",
       "stdout": "À la main : 0.400 -> 0.333\nParamètres : projection=4096, adapter=1024, fraction=0.25\nFloat32 : MSE=0.00000000 ; poids=16384 octets\n8 bits : poids logiques=4096 octets, MSE=0.00003770\n3 bits : poids logiques=1536 octets, MSE=0.06974661\n256 échantillons à 48 kHz : 5.333 ms",
-      "elapsedSeconds": 0.005202,
+      "elapsedSeconds": 0.006133,
       "quantization": [
         {
           "bits": 8,

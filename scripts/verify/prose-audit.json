@@ -1,0 +1,965 @@
+[
+  {
+    "themeId": "python-scientifique",
+    "chapterId": "du-son-aux-donnees",
+    "words": 814,
+    "meanSentenceWords": 12.1,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "python-scientifique",
+    "chapterId": "tableaux-et-indexation",
+    "words": 614,
+    "meanSentenceWords": 12.9,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "python-scientifique",
+    "chapterId": "references-et-copies",
+    "words": 584,
+    "meanSentenceWords": 12.38,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "python-scientifique",
+    "chapterId": "reduire-les-bons-axes",
+    "words": 824,
+    "meanSentenceWords": 12.31,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "python-scientifique",
+    "chapterId": "broadcasting-et-algebre",
+    "words": 694,
+    "meanSentenceWords": 13.62,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "python-scientifique",
+    "chapterId": "standardiser-et-preserver-precision",
+    "words": 616,
+    "meanSentenceWords": 13.06,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "python-scientifique",
+    "chapterId": "fonctions-et-arguments",
+    "words": 505,
+    "meanSentenceWords": 13.09,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "python-scientifique",
+    "chapterId": "valeurs-par-defaut",
+    "words": 516,
+    "meanSentenceWords": 12.47,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "python-scientifique",
+    "chapterId": "parcourir-et-filtrer",
+    "words": 519,
+    "meanSentenceWords": 12.83,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "python-scientifique",
+    "chapterId": "lire-fonctions-objets",
+    "words": 534,
+    "meanSentenceWords": 13.02,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "python-scientifique",
+    "chapterId": "assembler-pipeline-scientifique",
+    "words": 597,
+    "meanSentenceWords": 13.04,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "python-scientifique",
+    "chapterId": "valeurs-noms-et-calculs",
+    "words": 302,
+    "meanSentenceWords": 10.21,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "python-scientifique",
+    "chapterId": "listes-et-indices",
+    "words": 300,
+    "meanSentenceWords": 9.63,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-signal",
+    "chapterId": "echantillons-duree-canaux",
+    "words": 766,
+    "meanSentenceWords": 12.68,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-signal",
+    "chapterId": "nyquist-repliement-reechantillonnage",
+    "words": 874,
+    "meanSentenceWords": 13.09,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-signal",
+    "chapterId": "amplitude-puissance-decibels",
+    "words": 1795,
+    "meanSentenceWords": 13.89,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": "Ce chapitre conserve ensemble amplitude, carré moyen, RMS et références des décibels. Les écoutes et mesures de voix et de percussion relient ces grandeurs à une même décision pratique. Séparer les définitions des conversions et des conclusions interromprait la comparaison détaillée demandée par le lecteur."
+  },
+  {
+    "themeId": "audio-signal",
+    "chapterId": "fourier-coefficients-frequences",
+    "words": 840,
+    "meanSentenceWords": 13.52,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-signal",
+    "chapterId": "stft-fenetres-hop-trames",
+    "words": 919,
+    "meanSentenceWords": 14.1,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-signal",
+    "chapterId": "resolution-fuite-zero-padding",
+    "words": 845,
+    "meanSentenceWords": 13.01,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-signal",
+    "chapterId": "mel-representation-compressee",
+    "words": 1067,
+    "meanSentenceWords": 13.61,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-signal",
+    "chapterId": "phase-canaux-annulations",
+    "words": 910,
+    "meanSentenceWords": 12.55,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-signal",
+    "chapterId": "reconstruction-streaming-limites",
+    "words": 771,
+    "meanSentenceWords": 13.31,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "pytorch-en-une-page",
+    "words": 512,
+    "meanSentenceWords": 9,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "du-pipeline-au-modele",
+    "words": 461,
+    "meanSentenceWords": 7.93,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "tenseur-forme-type-device",
+    "words": 474,
+    "meanSentenceWords": 8.96,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "organiser-les-axes",
+    "words": 467,
+    "meanSentenceWords": 8.53,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "selection-diffusion-reduction",
+    "words": 423,
+    "meanSentenceWords": 8.85,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "dataset-et-batches",
+    "words": 450,
+    "meanSentenceWords": 7.71,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "moyennes-masquees",
+    "words": 456,
+    "meanSentenceWords": 8.76,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "construire-un-module",
+    "words": 466,
+    "meanSentenceWords": 8.68,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "choisir-la-perte",
+    "words": 476,
+    "meanSentenceWords": 8.17,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "autograd-et-derivees",
+    "words": 460,
+    "meanSentenceWords": 8.74,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "retropropagation-a-la-main",
+    "words": 484,
+    "meanSentenceWords": 8.59,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "une-iteration-entrainement",
+    "words": 477,
+    "meanSentenceWords": 8.56,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "entrainer-ou-evaluer",
+    "words": 467,
+    "meanSentenceWords": 8.48,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "detacher-geler-journaliser",
+    "words": 502,
+    "meanSentenceWords": 9.54,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "moyennes-et-microbatches",
+    "words": 471,
+    "meanSentenceWords": 9.07,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "sauvegarder-et-reprendre",
+    "words": 487,
+    "meanSentenceWords": 9.35,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "optimiseurs-regularisation-pratique",
+    "words": 683,
+    "meanSentenceWords": 11.28,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "boucle-entrainement-complete",
+    "words": 545,
+    "meanSentenceWords": 10.07,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "conv-mel-autoencodeur",
+    "words": 632,
+    "meanSentenceWords": 10.52,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "pytorch",
+    "chapterId": "lire-erreurs-pytorch",
+    "words": 568,
+    "meanSentenceWords": 9.9,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-ml",
+    "chapterId": "tache-cibles-pertes",
+    "words": 837,
+    "meanSentenceWords": 10.87,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-ml",
+    "chapterId": "pretraitement-entrees-coherentes",
+    "words": 764,
+    "meanSentenceWords": 11.26,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-ml",
+    "chapterId": "durees-padding-masques",
+    "words": 738,
+    "meanSentenceWords": 11.15,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-ml",
+    "chapterId": "embeddings-transfert-domaines",
+    "words": 807,
+    "meanSentenceWords": 11.96,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-ml",
+    "chapterId": "architectures-axes-contexte",
+    "words": 753,
+    "meanSentenceWords": 11.31,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-ml",
+    "chapterId": "annotations-faibles-agregation",
+    "words": 728,
+    "meanSentenceWords": 10.62,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-ml",
+    "chapterId": "augmentations-cibles-validation",
+    "words": 878,
+    "meanSentenceWords": 10.67,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-ml",
+    "chapterId": "masquage-mixup-representations",
+    "words": 768,
+    "meanSentenceWords": 11.14,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-ml",
+    "chapterId": "similarites-contraste-attention",
+    "words": 838,
+    "meanSentenceWords": 11.2,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "audio-ml",
+    "chapterId": "transformer-complet",
+    "words": 793,
+    "meanSentenceWords": 8.97,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "generation-controle",
+    "chapterId": "representation-et-reconstruction",
+    "words": 837,
+    "meanSentenceWords": 11.15,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "generation-controle",
+    "chapterId": "quantification-et-tokens",
+    "words": 766,
+    "meanSentenceWords": 12,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "generation-controle",
+    "chapterId": "codecs-neuronaux-rvq",
+    "words": 783,
+    "meanSentenceWords": 9.72,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "generation-controle",
+    "chapterId": "symbolique-midi-et-audio",
+    "words": 784,
+    "meanSentenceWords": 9.98,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "generation-controle",
+    "chapterId": "autoregression-et-causalite",
+    "words": 650,
+    "meanSentenceWords": 10.28,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "generation-controle",
+    "chapterId": "echantillonnage-contexte-et-cout",
+    "words": 720,
+    "meanSentenceWords": 11.25,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "generation-controle",
+    "chapterId": "conditions-et-intention-musicale",
+    "words": 688,
+    "meanSentenceWords": 10.8,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "generation-controle",
+    "chapterId": "controle-multimodal-formes",
+    "words": 912,
+    "meanSentenceWords": 10.04,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "generation-controle",
+    "chapterId": "vae-et-echantillonnage",
+    "words": 757,
+    "meanSentenceWords": 11.15,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "generation-controle",
+    "chapterId": "kl-et-latent-inutilise",
+    "words": 659,
+    "meanSentenceWords": 11.17,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "generation-controle",
+    "chapterId": "diffusion-et-bruit",
+    "words": 674,
+    "meanSentenceWords": 10.9,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "generation-controle",
+    "chapterId": "objectifs-diffusion-et-flow",
+    "words": 811,
+    "meanSentenceWords": 10.74,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "generation-controle",
+    "chapterId": "guidance-et-zones-connues",
+    "words": 634,
+    "meanSentenceWords": 10.88,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "generation-controle",
+    "chapterId": "adaptation-lora-et-petit-corpus",
+    "words": 728,
+    "meanSentenceWords": 12.1,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "generation-controle",
+    "chapterId": "efficacite-petit-budget",
+    "words": 891,
+    "meanSentenceWords": 10.48,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "evaluation-recherche",
+    "chapterId": "question-de-recherche-et-baseline",
+    "words": 617,
+    "meanSentenceWords": 10.19,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "evaluation-recherche",
+    "chapterId": "environnement-linux-et-traces",
+    "words": 731,
+    "meanSentenceWords": 10.71,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "evaluation-recherche",
+    "chapterId": "splits-et-fuites",
+    "words": 649,
+    "meanSentenceWords": 10.04,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "evaluation-recherche",
+    "chapterId": "metriques-et-seuils",
+    "words": 731,
+    "meanSentenceWords": 10.84,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "evaluation-recherche",
+    "chapterId": "boucle-evaluation-et-surapprentissage",
+    "words": 639,
+    "meanSentenceWords": 10.37,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "evaluation-recherche",
+    "chapterId": "baselines-et-ablations",
+    "words": 623,
+    "meanSentenceWords": 11.14,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "evaluation-recherche",
+    "chapterId": "ecoute-et-jugement-perceptif",
+    "words": 817,
+    "meanSentenceWords": 10.84,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "evaluation-recherche",
+    "chapterId": "fad-et-limites-des-proxies",
+    "words": 685,
+    "meanSentenceWords": 10.5,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "evaluation-recherche",
+    "chapterId": "variabilite-et-incertitude",
+    "words": 728,
+    "meanSentenceWords": 11.28,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "evaluation-recherche",
+    "chapterId": "generalisation-et-compte-rendu",
+    "words": 772,
+    "meanSentenceWords": 10.47,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "contexte-recherche",
+    "chapterId": "lire-offre-et-se-preparer",
+    "words": 443,
+    "meanSentenceWords": 9.76,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "contexte-recherche",
+    "chapterId": "outils-ircam-et-pratiques-musicales",
+    "words": 544,
+    "meanSentenceWords": 9.73,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "contexte-recherche",
+    "chapterId": "postgenai-et-interaction",
+    "words": 426,
+    "meanSentenceWords": 9.53,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "contexte-recherche",
+    "chapterId": "huit-lectures-pour-discuter",
+    "words": 796,
+    "meanSentenceWords": 9.52,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-boucle-pytorch",
+    "words": 398,
+    "meanSentenceWords": 10.67,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-autograd",
+    "words": 402,
+    "meanSentenceWords": 10.98,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-batches-masques",
+    "words": 397,
+    "meanSentenceWords": 10.88,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-evaluation-pytorch",
+    "words": 399,
+    "meanSentenceWords": 11,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-diagnostic-pytorch",
+    "words": 411,
+    "meanSentenceWords": 11.29,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-niveaux-audio",
+    "words": 434,
+    "meanSentenceWords": 11.47,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-stft-mel",
+    "words": 409,
+    "meanSentenceWords": 11.8,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-phase-reconstruction",
+    "words": 413,
+    "meanSentenceWords": 11.71,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-reechantillonnage",
+    "words": 422,
+    "meanSentenceWords": 12.15,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-attention-transformer",
+    "words": 418,
+    "meanSentenceWords": 10.95,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-codecs-rvq",
+    "words": 420,
+    "meanSentenceWords": 10.93,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-autoregression",
+    "words": 418,
+    "meanSentenceWords": 11.3,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-vae",
+    "words": 415,
+    "meanSentenceWords": 11.09,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-diffusion-flow",
+    "words": 430,
+    "meanSentenceWords": 11.49,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-guidance",
+    "words": 425,
+    "meanSentenceWords": 11.09,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-controle-multimodal",
+    "words": 433,
+    "meanSentenceWords": 10.49,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-adaptation",
+    "words": 421,
+    "meanSentenceWords": 11.26,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-budget-temps-reel",
+    "words": 431,
+    "meanSentenceWords": 11.67,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-protocole-recherche",
+    "words": 408,
+    "meanSentenceWords": 11.07,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-fuites-et-generalisation",
+    "words": 431,
+    "meanSentenceWords": 11.32,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-evaluation-perceptive",
+    "words": 425,
+    "meanSentenceWords": 11.37,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-motivation-ircam",
+    "words": 422,
+    "meanSentenceWords": 11.4,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-dialogue-compositeur",
+    "words": 418,
+    "meanSentenceWords": 11.09,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-echec-et-incertitude",
+    "words": 409,
+    "meanSentenceWords": 10.93,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "oral-symbolique-ou-audio",
+    "words": 427,
+    "meanSentenceWords": 11.28,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  },
+  {
+    "themeId": "entretien",
+    "chapterId": "pitch-recherche-deux-minutes",
+    "words": 634,
+    "meanSentenceWords": 11.25,
+    "longSentences": [],
+    "interviewEnding": true,
+    "lengthJustification": null
+  }
+]

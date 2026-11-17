@@ -7,17 +7,17 @@
     "pytorch-en-une-page": {
       "codeSha256": "fb4940bfb6788be4e423e8b0fa536d12507430b05af501bfca8aa31efbb9bb15",
       "stdout": "6.0 36.0 24.0",
-      "elapsedSeconds": 0.004293
+      "elapsedSeconds": 0.002374
     },
     "retropropagation-a-la-main": {
       "codeSha256": "8e0a69516f937c516e8a0e9a95c9aa5e2a6b2052d05df935c2d18376df4eb9bb",
       "stdout": "h, y, L : 6.0 -6.0 36.0\ndL/dy, dL/dh : -12.0 12.0\nw1.grad, w2.grad : 24.0 -72.0",
-      "elapsedSeconds": 0.002648
+      "elapsedSeconds": 0.001055
     },
     "boucle-entrainement-complete": {
       "codeSha256": "243995c68dbc8133b83d1f2bd97f8c2ee3b5c11448f5dcbd507b52ccd2ccad45",
       "stdout": "Perte de deux scores égaux : 0.693147\nepoch 1: train=0.783676, val=0.444391\nepoch 2: train=0.325945, val=0.156877\nepoch 3: train=0.114880, val=0.050986\nepoch 4: train=0.040490, val=0.017714\nepoch 5: train=0.014973, val=0.007170\nRechargement identique : True",
-      "elapsedSeconds": 2.075573,
+      "elapsedSeconds": 2.008496,
       "losses": [
         [
           0.7836760729551315,
@@ -44,18 +44,18 @@
     "lire-erreurs-pytorch": {
       "codeSha256": "108a55fe001bcea1f73d255ffd5c892b2484e8e3cd18ca0184c64295ec78a925",
       "stdout": "forme | RuntimeError | mat1 and mat2 shapes cannot be multiplied (2x4 and 3x2)\ntype | RuntimeError | expected scalar type Long but found Float\ndevice | RuntimeError | Tensor on device meta is not on the expected device cpu!\ngradient | AttributeError | 'NoneType' object has no attribute 'item'\nvue | RuntimeError | view size is not compatible with input tensor's size and stride (at least one dimension spans across two contiguous subspaces). Use .reshape(...) instead.\nCinq corrections vérifiées.",
-      "elapsedSeconds": 0.003991
+      "elapsedSeconds": 0.004959
     },
     "optimiseurs-regularisation-pratique": {
       "codeSha256": "f6b669a45172ef172639877c6b198c3b55f04a6b2818657cef1537a1a60b22f4",
       "stdout": "SGD 0.790000\nAdam 0.900000\nAdamW 0.890000\nepoch 1: val=1.032523, lr=0.10000\nepoch 2: val=0.936570, lr=0.10000\nepoch 3: val=0.840762, lr=0.10000\nepoch 4: val=0.794807, lr=0.05000\nepoch 5: val=0.750981, lr=0.05000\nepoch 6: val=0.709355, lr=0.05000\nepoch 7: val=0.689177, lr=0.02500\nepoch 8: val=0.669253, lr=0.02500\nCalcul : cpu | AMP active : False\nOctets des paramètres : 8",
-      "elapsedSeconds": 0.011331,
+      "elapsedSeconds": 0.012442,
       "bestValidationLoss": 0.6692531108856201
     },
     "conv-mel-autoencodeur": {
       "codeSha256": "e4cce46a89595584107f24e1a8d768c8b41e46bb15e3a27daafc0624b2d31477",
       "stdout": "STFT : (2, 201, 98) | mel : (2, 64, 98)\nentrée (2, 1, 64, 96)\nconv1 (2, 4, 32, 48)\nrelu1 (2, 4, 32, 48)\nconv2 (2, 8, 16, 24)\nrelu2 (2, 8, 16, 24)\ntransposée1 (2, 4, 32, 48)\nrelu3 (2, 4, 32, 48)\ntransposée2 (2, 1, 64, 96)\nMSE avant=0.875999, après un pas=0.796794",
-      "elapsedSeconds": 0.020892,
+      "elapsedSeconds": 0.027961,
       "shapes": [
         [
           "entrée",

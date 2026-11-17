@@ -1,0 +1,7 @@
+-r requirements-media.txt
+nbformat==5.11.1
+nbclient==0.11.0
+ipykernel==7.1.0
+
+# Installer séparément torch==2.10.0 et torchaudio==2.10.0 depuis l’index CPU.
+# Les versions effectivement exécutées figurent dans scripts/verify/*-results.json.

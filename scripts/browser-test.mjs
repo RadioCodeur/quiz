@@ -365,6 +365,18 @@ try {
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
     assert.ok(new URL(await illustration.locator('img').getAttribute('src'),page.url()).origin===new URL(base).origin);
   });
+  await check('parcours rapide : neuf repères conditionnels et quatre semaines ordonnées',async()=>{
+    await page.goto(`${base}/cours.html`);await page.locator('#parcours-rapide').waitFor();
+    await page.locator('#parcours-rapide>summary').click();
+    assert.equal(await page.locator('.revision-weeks>section').count(),4);
+    await page.locator('.quick-survey>summary').click();
+    assert.equal(await page.locator('.quick-survey li').count(),9);
+    await page.screenshot({path:'test-results/revision-path-desktop.png',fullPage:true});
+    await page.locator('.quick-survey a').first().click();await page.locator('#lesson-title').waitFor();
+    assert.equal(await page.locator('.quick-chapter-note').count(),1);
+    assert.ok((await page.locator('.quick-chapter-note').innerText()).includes('Si vous savez'));
+    assert.ok(await page.locator('.quick-label').count()>0);
+  });
   await check('entretien : modèle à révéler et gabarit personnel conservé',async()=>{
     await page.goto(`${base}/cours.html?theme=entretien#oral-autograd`);
     await page.locator('.oral-model').waitFor();

@@ -1,0 +1,59 @@
+{
+  "protectedFields": [
+    "id",
+    "questionIds",
+    "sourceIds",
+    "checkpoint"
+  ],
+  "courses": [
+    {
+      "themeId": "python-scientifique",
+      "chapters": 13,
+      "unchangedCodeBlocks": 15,
+      "unchangedVisualAndMediaBlocks": 16,
+      "fragmentSha256": "83cedf93a3c86c2b239aa800a63dd6bd9027763630b9cd55c2649874df7a669e"
+    },
+    {
+      "themeId": "audio-signal",
+      "chapters": 9,
+      "unchangedCodeBlocks": 9,
+      "unchangedVisualAndMediaBlocks": 28,
+      "fragmentSha256": "83cedf93a3c86c2b239aa800a63dd6bd9027763630b9cd55c2649874df7a669e"
+    },
+    {
+      "themeId": "audio-ml",
+      "chapters": 10,
+      "unchangedCodeBlocks": 12,
+      "unchangedVisualAndMediaBlocks": 19,
+      "fragmentSha256": "3de359bf620e74288606826ff624d22d8ce67d4df9f2f353b5ca89d56ef94ce7"
+    },
+    {
+      "themeId": "evaluation-recherche",
+      "chapters": 10,
+      "unchangedCodeBlocks": 5,
+      "unchangedVisualAndMediaBlocks": 14,
+      "fragmentSha256": "3de359bf620e74288606826ff624d22d8ce67d4df9f2f353b5ca89d56ef94ce7"
+    },
+    {
+      "themeId": "generation-controle",
+      "chapters": 15,
+      "unchangedCodeBlocks": 12,
+      "unchangedVisualAndMediaBlocks": 20,
+      "fragmentSha256": "aa23f80b3891704180341bddf412df172cc4e1a22f6b279918e8590602425a49"
+    }
+  ],
+  "allowedCodeChanges": [
+    {
+      "chapterId": "vae-et-echantillonnage",
+      "oldSha256": "4557733979c785cfba9a3ede44b96e1c61a4258a3437e03e74bb5a548e6c0974",
+      "newSha256": "3ffa614f92560e60ace331d00d5af472824d97a2315d793eeb2bed8089fb4a81",
+      "reason": "Fixed pedagogical noise matches the hand calculation; re-executed on CPU."
+    },
+    {
+      "chapterId": "diffusion-et-bruit",
+      "oldSha256": "aea6f503e0de895c34beb755f4afb1fe339ec0d83e78d430a3ad6073c7aa4c68",
+      "newSha256": "3685cd7e04ce9447f4564db789d21b2fd8f11a5fd0fce9975d466e0aa4946c41",
+      "reason": "Fixed pedagogical noise matches the hand calculation; re-executed on CPU."
+    }
+  ]
+}

@@ -33,16 +33,16 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "La nouvelle version produit une belle frappe, mais une autre présente un clic. La percussionniste demande : « Est-ce que je remplace la base par cette adaptation ? » Voilà notre décision. Nous n’allons pas la réduire d’emblée à un score unique : une attaque plus fidèle, un accent mieux placé et un temps de réponse acceptable peuvent évoluer dans des sens différents."
+          "text": "Une variante produit une belle frappe ; une autre présente un clic. La percussionniste demande si elle doit remplacer la base par l’adaptation. C’est notre décision de départ. Nous séparons fidélité de l’attaque, placement de l’accent et délai de réponse. Ces propriétés peuvent évoluer dans des sens différents."
         },
         {
           "type": "paragraph",
-          "text": "Une hypothèse est une proposition que les observations peuvent mettre en défaut. Écrivons : à commandes identiques, l’adaptation place mieux l’accent demandé sans dégrader la qualité acoustique au-delà de la marge jugée acceptable pour l’usage. Il faut préciser les critères, la marge éventuelle et la façon de les observer. Sinon « mieux » change de sens dès qu’un résultat déplaît."
+          "text": "Une hypothèse (hypothesis) est une proposition que les observations peuvent mettre en défaut. Demandons si l’adaptation place mieux l’accent, à commandes identiques, sans dépasser une dégradation acoustique acceptable. Nous précisons les critères, la marge éventuelle et leur observation. Sinon, mieux pourrait changer de sens dès qu’un résultat déplaît."
         },
         {
           "type": "walkthrough",
           "title": "Avant les essais, écrire le contrat",
-          "goal": "Définir une expérience capable de contredire notre hypothèse.",
+          "goal": "Tableau de calcul raisonné, sans code à exécuter. Définir une expérience capable de contredire notre hypothèse.",
           "language": "python",
           "steps": [
             {
@@ -52,20 +52,21 @@
             },
             {
               "title": "Choisir la comparaison",
-              "text": "Compare la base et son adaptation avec les mêmes conditions d’entrée et le même budget de génération. L’adaptation est la modification dont on cherche l’effet.",
+              "text": "Comparons la base et son adaptation avec les mêmes conditions d’entrée et le même budget de génération. L’adaptation est la modification dont on cherche l’effet.",
               "state": "Base versus base adaptée."
             },
             {
               "title": "Définir les observations",
-              "text": "Sur vingt prises réservées, recueille un critère de contrôle et une appréciation acoustique séparée. Le nombre est illustratif ; il ne constitue pas une garantie de puissance statistique.",
+              "text": "Sur vingt prises réservées, recueillons un critère de contrôle et une appréciation acoustique séparée. Le nombre est illustratif ; il ne constitue pas une garantie de puissance statistique.",
               "state": "Deux dimensions, mêmes cas."
             },
             {
               "title": "prévoir un résultat défavorable",
-              "text": "Décide comment rendre visible un contrôle meilleur mais un son dégradé. Si tout résultat peut être déclaré positif, la question n’est pas assez testable."
+              "text": "Décidons comment rendre visible un contrôle meilleur mais un son dégradé. Si tout résultat peut être déclaré positif, la question n’est pas assez testable."
             }
           ],
-          "result": "La mesure sert une décision de composition et peut révéler un compromis plutôt que confirmer automatiquement le modèle."
+          "result": "Ce tableau de calcul raisonné formalise les comparaisons ; aucun programme artificiel n’est nécessaire. La mesure sert une décision de composition et peut révéler un compromis plutôt que confirmer automatiquement le modèle.",
+          "calculationTable": true
         },
         {
           "type": "visual",
@@ -93,15 +94,21 @@
         },
         {
           "type": "paragraph",
-          "text": "La baseline est l’alternative de référence : ici, la même base avant adaptation. Ce choix représente ce que la musicienne pourrait utiliser aujourd’hui. Une autre comparaison peut être pertinente, mais battre une référence volontairement faible ne répond pas à notre décision. Pour une reconnaissance audio, une prédiction majoritaire fournit aussi un contrôle simple ; pour notre générateur, elle ne constitue pas une référence sonore."
+          "text": "La référence de comparaison (baseline) représente une alternative crédible. Ici, c’est la même base avant adaptation, utilisable par la musicienne. Battre une référence volontairement faible ne répondrait pas à notre décision. Une prédiction majoritaire peut contrôler un détecteur audio. Elle ne constitue pas une référence sonore pour notre générateur."
         },
         {
           "type": "paragraph",
-          "text": "Le protocole fixe les consignes, la règle de choix des prises, le nombre de sorties par cas, les critères et le budget. On peut par exemple prévoir vingt prises réservées avec les mêmes commandes pour les deux versions ; ce nombre illustratif ne garantit aucune puissance statistique. Définissons surtout ce que fera apparaître un contrôle meilleur mais une qualité moins bonne. La comparaison doit pouvoir nous faire conserver la base."
+          "text": "Le protocole expérimental (experimental protocol) fixe consignes, sélection des prises, sorties par cas, critères et budget. Notre exemple prévoit vingt prises réservées, soumises aux mêmes commandes. Ce nombre illustratif ne garantit aucune puissance statistique (statistical power), c’est-à-dire capacité à détecter un effet selon les hypothèses. Rendons visible un contrôle meilleur accompagné d’un son dégradé. Le protocole doit aussi pouvoir nous faire conserver la base."
+        },
+        {
+          "type": "callout",
+          "text": "Une exploration (exploration) peut montrer qu’une mesure manque la difficulté réelle. Nous la documentons, puis reformulons l’expérience suivante. Nous distinguons ces découvertes des vérifications prévues à l’avance. Un protocole rédigé après observation ne doit pas faire passer cette exploration pour une confirmation indépendante.",
+          "tone": "pitfall",
+          "label": "Garder visible ce qui a été exploré"
         },
         {
           "type": "paragraph",
-          "text": "Pendant une phase exploratoire, il est normal de découvrir qu’une mesure ne capture pas la difficulté. On le documente, on reformule l’essai suivant et on distingue ces choix des vérifications prévues à l’avance. Cacher cette exploration derrière un protocole rédigé après coup ferait paraître la preuve plus forte qu’elle ne l’est."
+          "text": "À dire en entretien : Je pars d’une décision musicale, d’une hypothèse précise et d’une référence crédible. Mon protocole doit révéler un compromis ou un échec autant qu’une amélioration."
         }
       ],
       "takeaways": [
@@ -139,15 +146,15 @@
       },
       "notions": [
         {
-          "name": "Hypothèse",
+          "name": "Hypothèse (hypothesis)",
           "explanation": "Une proposition précise que des observations pourraient confirmer partiellement ou contredire."
         },
         {
-          "name": "Baseline",
+          "name": "Référence de comparaison (baseline)",
           "explanation": "La solution de référence à laquelle on compare la nouvelle méthode ; elle doit représenter une alternative pertinente."
         },
         {
-          "name": "Protocole",
+          "name": "Protocole (protocol)",
           "explanation": "Les règles fixant données, conditions, observations et décisions de la comparaison."
         }
       ],
@@ -172,11 +179,15 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Nous lançons l’adaptation sur un serveur GPU, puis rapportons les sons sur Windows. Deux jours plus tard, une sortie intéressante apparaît : avec quels poids, quelle température et quelle commande a-t-elle été obtenue ? Pour répondre, il faut donner un identifiant à l’essai avant le lancement et conserver ses entrées effectives, pas seulement son dernier score."
+          "text": "Nous lançons une adaptation sur un serveur, puis écoutons ses sons sous Windows. Comment retrouver les poids, la température et la commande d’une sortie ? La traçabilité (traceability) relie ce résultat à son exécution. Donnons un identifiant à l’essai avant de le lancer. Conservons ses entrées effectives et ses messages, avec ses scores."
         },
         {
           "type": "paragraph",
-          "text": "Le terminal affiche les échanges ; le shell interprète les commandes. Sous Linux, pwd indique le dossier courant, ls son contenu et cd change de dossier. Ces vérifications comptent lorsqu’un script lit configs/base.json : ce chemin relatif dépend du dossier courant. Le lancement guidé suppose un projet de recherche fictif contenant train.py, requirements.txt et configs ; ces fichiers ne sont pas fournis par le site de cours."
+          "text": "Le terminal (terminal) affiche les échanges. L’interpréteur de commandes (shell) exécute les instructions demandées. Sous Linux, pwd indique le dossier courant, ls son contenu et cd change de dossier. Le chemin relatif configs/base.json dépend donc de ce dossier. Notre exemple suppose un projet fictif avec train.py, requirements.txt et configs. Ces fichiers appartiennent à ce scénario, pas au site de cours."
+        },
+        {
+          "type": "paragraph",
+          "text": "Suivons un petit cas de lecture : notre script demande configs/base.json. Depuis un autre dossier courant, ce même texte peut viser un autre emplacement. pwd et ls permettent de vérifier le point de départ. Le lancement suivant conserve ensuite ses messages dans le dossier de l’essai."
         },
         {
           "type": "walkthrough",
@@ -247,15 +258,23 @@
         },
         {
           "type": "paragraph",
-          "text": "L’environnement Python comprend l’interpréteur et ses paquets. venv les isole des autres projets ; python -m pip installe pour l’interpréteur choisi. L’activation modifie la résolution de python dans le shell courant, sans installer de pilote ni activer le GPU. Une connexion SSH exécute sur la machine distante : ses fichiers et paquets ne sont pas ceux du PC local."
+          "text": "L’environnement Python (Python environment) comprend l’interpréteur et ses paquets. venv isole ces paquets des autres projets. L’activation choisit quel python le shell trouve ; elle n’installe aucun pilote et n’active pas le GPU. Une session distante SSH (Secure Shell) exécute les commandes sur une autre machine. Ses fichiers et paquets diffèrent de ceux du poste local."
+        },
+        {
+          "type": "callout",
+          "text": "torch.cuda.is_available() vérifie si CUDA est disponible dans cet environnement. Il faut encore placer modèle et tenseurs sur le même périphérique (device), puis surveiller la mémoire. Le calcul GPU est asynchrone (asynchronous) : la commande peut revenir avant la fin du calcul. Mesurer son délai exige donc une synchronisation ou des événements adaptés. Comparons aussi matériel, durée d’entrée et taille du lot.",
+          "tone": "tip",
+          "label": "Pour aller plus loin : mesurer le GPU"
+        },
+        {
+          "type": "callout",
+          "text": "Le journal (log) console.log conserve les sorties et erreurs du lancement. Il ne garantit ni succès ni poursuite après déconnexion. Gardons aussi code, configuration effective, identifiants des données, graines et poids de départ et d’arrivée. Une option en ligne de commande peut remplacer un réglage du fichier. Nous enregistrons la valeur réellement utilisée.",
+          "tone": "pitfall",
+          "label": "Un journal n’est pas une garantie d’exécution"
         },
         {
           "type": "paragraph",
-          "text": "La commande finale conserve sortie standard et erreurs dans console.log. Ce journal ne garantit ni succès ni poursuite après déconnexion. Pour chaque essai, gardons aussi version du code, fichier de configuration effectif, identifiants des données, graines, poids de départ et poids produits. Une option en ligne de commande peut remplacer une valeur du fichier : c’est la valeur utilisée qu’il faut enregistrer."
-        },
-        {
-          "type": "paragraph",
-          "text": "torch.cuda.is_available() vérifie la disponibilité de CUDA dans cet environnement ; il faut encore placer modèle et tenseurs sur le même device et surveiller la mémoire. Pour mesurer une latence GPU, tenons compte de l’exécution asynchrone avec une synchronisation ou des événements adaptés. Ainsi, si la version adaptée paraît plus rapide, nous saurons d’abord si la durée d’entrée, le batch et le matériel étaient comparables."
+          "text": "À dire en entretien : Chaque son doit retrouver son code, ses poids, ses données et sa configuration effective. Je distingue le poste local, l’environnement distant et les ressources réellement disponibles."
         }
       ],
       "takeaways": [
@@ -297,19 +316,19 @@
       },
       "notions": [
         {
-          "name": "Terminal et shell",
+          "name": "Terminal et interpréteur de commandes (terminal and shell)",
           "explanation": "Le terminal affiche les échanges ; le shell interprète les commandes qui demandent des actions au système."
         },
         {
-          "name": "Environnement Python",
+          "name": "Environnement Python (Python environment)",
           "explanation": "L’interpréteur et les paquets utilisés par un projet ; un environnement virtuel les isole de ceux d’autres projets."
         },
         {
-          "name": "Session distante",
+          "name": "Session distante (remote session)",
           "explanation": "Une connexion, par exemple SSH, qui fait exécuter les commandes sur une autre machine."
         },
         {
-          "name": "Configuration et journal",
+          "name": "Configuration et journal (configuration and log)",
           "explanation": "La configuration décrit les réglages de l’essai ; le journal conserve les messages produits pendant son exécution."
         }
       ],
@@ -333,11 +352,11 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "La prise R3 dure longtemps : nous en tirons cent fenêtres. Si certaines servent à adapter le modèle et d’autres à le tester, le test peut retrouver une attaque ou un fond acoustique déjà rencontré. Les noms de fichiers diffèrent, mais la source reste commune. Notre première question n’est donc pas « combien de lignes ? », mais « quel type de nouveauté voulons-nous évaluer ? »."
+          "text": "La prise R3 fournit cent fenêtres. Répartir ses fenêtres entre apprentissage et test peut répéter la même attaque ou le même fond acoustique. Les noms des fichiers changent, leur source reste commune. Avant de compter les lignes, demandons quel type de nouveauté nous voulons tester."
         },
         {
           "type": "paragraph",
-          "text": "Un split répartit les données en train pour apprendre, validation pour sélectionner les choix et test pour estimer la performance du système retenu. Pour de nouvelles prises, nous séparons les enregistrements avant de découper les fenêtres. Pour de nouveaux instruments ou de nouvelles interprètes, il faut grouper à ce niveau supérieur. L’unité indépendante est relative à ce contrat, pas une propriété magique du fichier."
+          "text": "Le découpage des données (data split) réserve trois rôles : apprendre sur train, choisir les réglages sur validation, mesurer finalement sur test. Pour de nouvelles prises, séparons les enregistrements avant leurs fenêtres. Pour de nouveaux instruments ou interprètes, regroupons à ce niveau. L’unité indépendante (independent unit) dépend de cette question. Un fichier n’est pas indépendant par son seul nom."
         },
         {
           "type": "visual",
@@ -362,6 +381,10 @@
             }
           ],
           "caption": "Les fonctions de découpage illustrent un projet et ne sont pas des API fournies par l’application."
+        },
+        {
+          "type": "paragraph",
+          "text": "Cent enregistrements donnent ici vingt fenêtres chacun, donc 2 000 lignes. Ces lignes restent liées à cent sources. Le partage se fait d’abord entre ces sources pertinentes. Les fenêtres héritent ensuite de leur ensemble, et la validation reçoit uniquement les statistiques apprises sur train."
         },
         {
           "type": "walkthrough",
@@ -407,15 +430,21 @@
         },
         {
           "type": "paragraph",
-          "text": "Chaque extrait garde une table de provenance : prise, instrument, interprète et éventuellement session ou date. Toutes les transformations héritent de l’ensemble de leur parent. Le code guidé représente cet ordre : choisir les groupes, fabriquer leurs fenêtres, puis apprendre les statistiques de préparation sur le train. Une moyenne ou une dispersion estimée sur toutes les données transmet déjà de l’information du test."
-        },
-        {
-          "type": "paragraph",
-          "text": "Une fuite de données est ce passage d’information réservée vers l’apprentissage ou la sélection. Elle peut se produire sans gradient : essayer plusieurs adaptations puis garder celle qui gagne sur le test emploie ce test comme validation. Si cela arrive, conservons l’historique et préparons une nouvelle évaluation indépendante adaptée. Changer le nom du dossier ne retire pas l’information déjà utilisée."
+          "text": "Chaque extrait conserve sa provenance (provenance) : prise, instrument, interprète, séance ou date. Ses transformations héritent du même ensemble. Le code suit cet ordre : séparer les groupes, fabriquer les fenêtres, puis ajuster le prétraitement sur train. Estimer moyenne ou dispersion sur toutes les données transmet déjà de l’information du test."
         },
         {
           "type": "paragraph",
           "text": "Un split sévère peut faire baisser le score et rendre l’expérience plus utile. L’instrument doit fonctionner sur les prises visées, pas uniquement reconnaître un fond de studio familier. Avant le prochain entraînement, vérifions l’absence de groupes partagés et l’origine des paramètres de prétraitement. Ces contrôles déterminent le sens des métriques à venir."
+        },
+        {
+          "type": "callout",
+          "text": "Une fuite de données (data leakage) transmet de l’information réservée vers l’apprentissage ou la sélection. Elle ne demande aucun gradient. Choisir l’adaptation qui réussit le mieux sur test emploie ce test comme validation. Conservons alors l’historique et prévoyons une nouvelle évaluation indépendante adaptée. Renommer le dossier n’efface pas l’information utilisée.",
+          "tone": "pitfall",
+          "label": "Le test ne choisit pas la méthode"
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Je sépare les groupes selon la nouveauté que je veux mesurer. Les fenêtres héritent de cette séparation et les données réservées ne règlent pas le système."
         }
       ],
       "takeaways": [
@@ -460,19 +489,19 @@
       },
       "notions": [
         {
-          "name": "Unité indépendante",
+          "name": "Unité indépendante (independent unit)",
           "explanation": "Une source dont le contenu n’est pas simplement une autre vue des mêmes observations ; son choix dépend du phénomène étudié."
         },
         {
-          "name": "Split train, validation et test",
+          "name": "Découpage apprentissage, validation et test (data split)",
           "explanation": "Une répartition qui réserve des données distinctes pour apprendre, sélectionner les choix et mesurer le système retenu."
         },
         {
-          "name": "Fuite de données",
+          "name": "Fuite de données (data leakage)",
           "explanation": "Le passage d’informations réservées dans l’apprentissage ou la sélection, même sans gradient direct."
         },
         {
-          "name": "Prétraitement ajusté",
+          "name": "Prétraitement ajusté (fitted preprocessing)",
           "explanation": "Une transformation dont les paramètres, comme une moyenne, sont estimés à partir de données autorisées."
         }
       ],
@@ -497,11 +526,11 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Pour vérifier l’accent demandé, nous utilisons un détecteur d’attaques dont le protocole de correspondance temporelle est fixé. Une alerte peut être correcte, une attaque peut être manquée ou une fausse alerte ajoutée. Ce détour par une décision binaire explique les métriques que l’on rencontre aussi en classification audio. Il faut vérifier le détecteur : ses erreurs ne deviennent pas automatiquement des défauts du générateur."
+          "text": "Pour vérifier l’accent, nous utilisons un détecteur d’attaques avec une règle de correspondance temporelle fixée. Il peut trouver une attaque, la manquer ou inventer une alerte. Une métrique (metric) résume un aspect précis de ces décisions. Ses erreurs doivent être connues. Elles ne deviennent pas automatiquement des défauts du générateur."
         },
         {
           "type": "paragraph",
-          "text": "La précision positive demande : parmi les alertes, combien sont correctes ? Le rappel demande : parmi les attaques réelles, combien sont trouvées ? Avec TP les vrais positifs, FP les fausses alertes et FN les événements manqués, leurs formules sont TP/(TP+FP) et TP/(TP+FN). Le tableau guidé donne 0,75 et 0,6 pour les mêmes décisions ; la différence vient des dénominateurs."
+          "text": "La précision positive (precision) compte les alertes correctes parmi toutes les alertes. Le rappel (recall) compte les attaques trouvées parmi les attaques réelles. TP désigne les vrais positifs, FP les fausses alertes et FN les événements manqués. Les formules sont TP/(TP+FP) et TP/(TP+FN). Nos décisions donnent 0,75 et 0,6 : leurs dénominateurs diffèrent."
         },
         {
           "type": "visual",
@@ -530,6 +559,10 @@
             ]
           ],
           "caption": "Un seuil de décision fait partie des réglages sélectionnés sur validation."
+        },
+        {
+          "type": "paragraph",
+          "text": "Lisons d’abord la matrice de confusion (confusion matrix), qui compte décisions et classes réelles. Ici, trente alertes sur quarante sont correctes : 30/40 = 0,75. Trente attaques sur cinquante sont trouvées : 30/50 = 0,6. La moyenne des rappels 0,8 et 0,6 vaut 0,7. Le code reprend ces mêmes cases."
         },
         {
           "type": "walkthrough",
@@ -580,15 +613,25 @@
         },
         {
           "type": "paragraph",
-          "text": "Le F1 combine P et R par 2PR/(P+R) si le dénominateur est non nul. Le F1 macro calcule ce score séparément pour chaque classe puis en prend la moyenne non pondérée. Avec 0,9, 0,6 et 0,0, cette moyenne vaut 0,5. Elle ne se calcule pas en moyennant d’abord toutes les précisions. La balanced accuracy est encore autre chose : la moyenne des rappels des classes."
+          "text": "Le score F1 (F1 score) combine précision P et rappel R par 2PR/(P+R), lorsque le dénominateur est non nul. Le F1 macro (macro F1) moyenne les F1 calculés séparément pour chaque classe. Avec 0,9, 0,6 et 0,0, cette moyenne non pondérée vaut 0,5. Nous ne commençons pas par moyenner les précisions."
         },
         {
           "type": "paragraph",
-          "text": "Pourquoi ces distinctions ? Si le corpus contient 950 exemples A et 50 exemples B, prédire toujours A donne 95 % d’accuracy sans jamais trouver B. Une baseline majoritaire rend ce piège visible. Dans un détecteur d’accent, nous pouvons aussi préférer davantage de rappel malgré plus de fausses alertes ; ce choix dépend du coût d’une attaque manquée pour la commande étudiée."
+          "text": "L’exactitude équilibrée (balanced accuracy) moyenne, elle, les rappels des classes."
         },
         {
           "type": "paragraph",
-          "text": "Le seuil transforme un score en décision. Nous le choisissons sur validation selon la priorité annoncée, puis le gardons fixé pour le test. Déplacer ce seuil après lecture des erreurs du test ferait entrer le test dans la sélection. Le rapport donnera la métrique, sa convention et les effectifs, afin que le lecteur puisse comprendre ce qui s’améliore réellement."
+          "text": "Le seuil de décision (decision threshold) transforme un score en réponse. Nous le choisissons sur validation selon la priorité annoncée, puis le figeons pour test. Le déplacer après lecture du test utiliserait ce dernier pour sélectionner le système. Le rapport précise métrique, convention et effectifs, pour expliquer ce qui change réellement."
+        },
+        {
+          "type": "callout",
+          "text": "Avec 950 exemples A et 50 exemples B, toujours prédire A donne 95 % d’exactitude (accuracy). Pourtant, aucune occurrence de B n’est trouvée. Une référence majoritaire rend ce problème visible. Pour notre accent, davantage de rappel peut aussi justifier plus de fausses alertes. Le choix dépend du coût musical d’une attaque manquée.",
+          "tone": "pitfall",
+          "label": "La majorité peut cacher une classe oubliée"
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Je choisis la métrique selon les erreurs qui comptent pour la tâche. Je précise les dénominateurs et je fixe le seuil avant l’évaluation finale."
         }
       ],
       "takeaways": [
@@ -637,19 +680,19 @@
       },
       "notions": [
         {
-          "name": "Précision et rappel",
+          "name": "Précision et rappel (precision and recall)",
           "explanation": "La précision compte les alertes correctes parmi les alertes ; le rappel compte les événements trouvés parmi les événements réellement présents."
         },
         {
-          "name": "Métrique",
+          "name": "Métrique (metric)",
           "explanation": "Une règle de calcul qui résume une propriété précise des décisions, avec un dénominateur annoncé."
         },
         {
-          "name": "F1 macro",
+          "name": "F1 macro (macro F1)",
           "explanation": "La moyenne non pondérée des F1 calculés séparément pour chaque classe."
         },
         {
-          "name": "Seuil de décision",
+          "name": "Seuil de décision (decision threshold)",
           "explanation": "La valeur à partir de laquelle un score produit une décision ; elle se choisit avant la mesure finale."
         }
       ],
@@ -671,11 +714,11 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Deux versions ont été évaluées, mais leurs scripts ne découpent pas les données en lots de la même taille. Cela ne devrait pas changer la moyenne finale. Pourtant, moyenner directement les moyennes de batches donne autant de poids au dernier petit lot qu’au premier grand. Retrouvons donc le total de contributions et le nombre d’unités avant de diviser."
+          "text": "Deux versions utilisent des tailles de lots (batch sizes) différentes. Cela ne devrait pas changer leur moyenne finale. Moyenner les moyennes des lots donne pourtant le même poids au petit dernier lot qu’au grand premier. Additionnons d’abord les contributions et les effectifs. Nous diviserons seulement à la fin."
         },
         {
           "type": "paragraph",
-          "text": "La loss est le critère numérique d’erreur. Sa réduction transforme plusieurs erreurs en une somme ou une moyenne. Le déroulé suppose une moyenne par exemple : un lot de huit exemples de loss 1 contribue 8 ; un lot de deux exemples de loss 3 contribue 6. La moyenne finale vaut 14/10=1,4, et non (1+3)/2=2. Pour une loss par token ou par trame valide, il faut reprendre ce dénominateur, pas automatiquement len(x)."
+          "text": "La perte (loss) mesure l’erreur selon le critère choisi. Sa réduction (reduction) transforme les erreurs en somme ou moyenne. Ici, huit exemples de perte moyenne 1 contribuent 8. Deux exemples de moyenne 3 contribuent 6. Le résultat vaut 14/10 = 1,4, plutôt que (1+3)/2 = 2. Une moyenne par trame ou jeton valide demanderait son propre dénominateur, pas automatiquement len(x)."
         },
         {
           "type": "visual",
@@ -744,14 +787,6 @@
         },
         {
           "type": "paragraph",
-          "text": "model.eval() configure les modules sensibles au mode, comme le dropout ; torch.no_grad() évite de construire le graphe de dérivation. Ces actions se complètent. Après l’évaluation, on rétablit le mode train voulu avant de poursuivre l’apprentissage. Confondre ces réglages peut changer les sorties ou gaspiller de la mémoire sans que la métrique révèle la cause."
-        },
-        {
-          "type": "paragraph",
-          "text": "La courbe fictive ci-dessous illustre ensuite une décision de sélection : après l’époque 3, la loss train continue à baisser et celle de validation remonte. À protocole fixe, c’est un indice de surapprentissage. Le choix d’époque utilise la validation ; le test est réservé à la version choisie. Une validation meilleure que le train n’est pas automatiquement une erreur : le train peut recevoir des augmentations plus difficiles."
-        },
-        {
-          "type": "paragraph",
           "text": "Pour notre adaptation, enregistrons courbes, critère exact et transformations de chaque ensemble. Nous pourrons alors distinguer une meilleure mémorisation des prises d’un meilleur comportement sur de nouvelles prises. Un point isolé plus favorable ne remplace pas la lecture du parcours ni l’examen des sorties sonores correspondantes."
         },
         {
@@ -812,6 +847,22 @@
             }
           ],
           "caption": "Données fictives explicites, avec même loss et même protocole entre époques. Elles illustrent un diagnostic, pas le niveau de l’utilisateur."
+        },
+        {
+          "type": "callout",
+          "text": "La courbe fictive montre une sélection possible. Après l’époque 3, la perte d’apprentissage baisse encore, tandis que celle de validation remonte. Cela suggère un surapprentissage (overfitting) à protocole fixé. Nous choisissons l’époque sur validation et réservons test à la version retenue. Une validation meilleure que train n’est pas automatiquement une erreur : train peut recevoir des augmentations plus difficiles.",
+          "tone": "tip",
+          "label": "Pour aller plus loin : interpréter les courbes"
+        },
+        {
+          "type": "callout",
+          "text": "Le mode évaluation (evaluation mode), activé par model.eval(), règle les modules concernés, comme Dropout. torch.no_grad() évite séparément de construire le graphe de dérivation (computation graph). Ces interrupteurs se complètent. Rétablissons le mode train voulu avant de reprendre l’apprentissage. Sinon, les sorties ou la consommation mémoire peuvent changer sans explication visible dans la métrique.",
+          "tone": "pitfall",
+          "label": "Deux interrupteurs à régler séparément"
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : La moyenne finale doit respecter son unité, même avec des lots inégaux. Je règle séparément le comportement du modèle et le calcul des gradients pendant l’évaluation."
         }
       ],
       "takeaways": [
@@ -856,19 +907,19 @@
       },
       "notions": [
         {
-          "name": "Loss par exemple",
+          "name": "Perte par exemple (per-example loss)",
           "explanation": "Un nombre décrivant l’erreur d’un exemple selon le critère choisi ; sa moyenne doit garder une unité explicite."
         },
         {
-          "name": "Mode évaluation",
+          "name": "Mode évaluation (evaluation mode)",
           "explanation": "La configuration du comportement des modules comme dropout lors de la mesure, activée ici par model.eval()."
         },
         {
-          "name": "Calcul sans gradient",
+          "name": "Calcul sans gradient (no-gradient computation)",
           "explanation": "Une exécution qui ne construit pas le graphe de dérivation, distincte du mode évaluation."
         },
         {
-          "name": "Surapprentissage",
+          "name": "Surapprentissage (overfitting)",
           "explanation": "Une amélioration sur les exemples appris qui ne se retrouve plus sur les données réservées."
         }
       ],
@@ -889,7 +940,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "L’adaptation améliore le résultat, mais elle arrive avec une nouvelle condition d’attaque et un nouveau décodeur. À qui attribuer le gain ? Une ablation retire ou remplace un composant en gardant le reste aussi comparable que possible. Le composant étudié est un facteur expérimental. Il faut préciser ce qui change, à quel moment et quel effet nous cherchons."
+          "text": "La nouvelle adaptation ajoute une commande d’attaque et un autre décodeur. Si elle gagne, quelle modification aide ? Une ablation (ablation study) retire ou remplace un composant sous des conditions comparables. Ce composant est un facteur expérimental (experimental factor). Nous précisons ce qui change, à quel moment et quel effet nous cherchons."
         },
         {
           "type": "paragraph",
@@ -931,7 +982,7 @@
         {
           "type": "walkthrough",
           "title": "Observer une interaction entre deux idées",
-          "goal": "Distinguer gain séparé et gain combiné à protocole commun.",
+          "goal": "Tableau de calcul raisonné, sans code à exécuter. Distinguer gain séparé et gain combiné à protocole commun.",
           "language": "python",
           "steps": [
             {
@@ -954,19 +1005,26 @@
               "text": "Ce tableau suggère une interaction dans ce protocole. Il ne prouve pas sa stabilité sans examiner répétitions et incertitude, ni son intérêt sur toutes les musiques."
             }
           ],
-          "result": "Le plan distingue contribution séparée, complémentarité et éventuelle redondance."
+          "result": "Ce tableau de calcul raisonné formalise les comparaisons ; aucun programme artificiel n’est nécessaire. Le plan distingue contribution séparée, complémentarité et éventuelle redondance.",
+          "calculationTable": true
         },
         {
           "type": "paragraph",
-          "text": "Cette dépendance est une interaction. A apporte 2 points sans B et 5 points avec B ; le contraste additif vaut 76−72−71+70=3. Ce calcul décrit notre tableau. Pour dire que l’interaction est stable, il faudra des répétitions et une analyse d’incertitude. Le résultat ne prédit pas automatiquement l’effet sur tout autre instrument."
-        },
-        {
-          "type": "paragraph",
-          "text": "Gardons données, commandes, procédure de sélection et budget décrits. Retirer une entrée à l’inférence peut mettre un modèle dans une situation jamais apprise ; selon l’hypothèse, une variante réentraînée sera nécessaire. Il faut distinguer « ce modèle dépend-il de cette entrée aujourd’hui ? » et « une méthode entraînée sans cette entrée peut-elle aussi bien réussir ? »."
+          "text": "L’interaction (interaction effect) signifie que l’effet d’un composant dépend d’un autre. A apporte ici 2 points sans B et 5 avec B. Le contraste additif vaut 76−72−71+70 = 3. Ce calcul décrit le tableau, sans établir la stabilité de l’effet. Il faudra des répétitions et une analyse d’incertitude avant de généraliser à d’autres instruments."
         },
         {
           "type": "paragraph",
           "text": "Une baseline simple sert enfin à déboguer. Pour le détecteur auxiliaire, une tête linéaire sur des descriptions fixes donne une référence informative avant d’ajouter un réseau complexe. Pour le générateur, la base non adaptée reste l’alternative d’usage. Dans tous les cas, un meilleur contrôle accompagné de plus d’artefacts reste un compromis : nous allons recueillir ces propriétés séparément à l’écoute."
+        },
+        {
+          "type": "callout",
+          "text": "Retirer une entrée pendant l’utilisation (inference) peut placer le modèle dans une situation jamais apprise. Selon l’hypothèse, une variante réentraînée sera nécessaire. Distinguons la dépendance actuelle à cette entrée de l’intérêt d’apprendre une méthode avec cette entrée. Gardons données, commandes, procédure de sélection et budget documentés.",
+          "tone": "pitfall",
+          "label": "Choisir une ablation qui répond à l’hypothèse"
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Une ablation isole une contribution dans des conditions comparables. Je teste aussi les interactions, puis je rapporte les compromis et le budget de sélection."
         }
       ],
       "takeaways": [
@@ -1012,15 +1070,15 @@
       },
       "notions": [
         {
-          "name": "Ablation",
+          "name": "Ablation (ablation study)",
           "explanation": "Une comparaison qui retire ou remplace un composant pour étudier sa contribution sous des conditions communes."
         },
         {
-          "name": "Facteur expérimental",
+          "name": "Facteur expérimental (experimental factor)",
           "explanation": "Un élément dont on fait varier la présence ou la valeur dans le plan de comparaison."
         },
         {
-          "name": "Interaction",
+          "name": "Interaction (interaction effect)",
           "explanation": "Une situation où l’effet d’un composant dépend de la présence d’un autre."
         }
       ],
@@ -1042,11 +1100,11 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Une sortie place parfaitement l’accent, mais sa résonance grésille. Une autre sonne naturelle et place la frappe trop tard. Demander seulement « laquelle est meilleure ? » mélange deux raisons de choisir. Un critère perceptif est la propriété précise que l’auditeur doit juger. Nous distinguerons qualité acoustique, conformité à la commande et, si utile, préférence globale."
+          "text": "Une sortie place l’accent, mais sa résonance grésille. Une autre sonne naturelle et place la frappe trop tard. Un critère perceptif (perceptual criterion) précise la propriété à juger pendant l’écoute. Séparons qualité acoustique, conformité à la commande et préférence globale. Une seule question sur la meilleure sortie masquerait ce compromis."
         },
         {
           "type": "paragraph",
-          "text": "Les extraits et consignes doivent être choisis selon la même règle pour les deux systèmes. Masquons les noms, varions ou contrebalançons l’ordre et définissons les conditions d’écoute. Une version plus forte peut paraître plus convaincante pour une raison étrangère à l’hypothèse. Si la dynamique est justement étudiée, une normalisation qui la supprime serait tout aussi gênante : le contrôle suit la question."
+          "text": "Choisissons extraits et consignes selon une règle commune aux deux systèmes. Le biais de présentation (presentation bias) influence le jugement par l’identité, l’ordre ou le niveau des sons. Masquons les noms, varions ou contrebalançons l’ordre et fixons les conditions d’écoute. Une version plus forte peut sembler meilleure. Si nous étudions précisément la dynamique, une normalisation qui l’efface gênerait aussi l’expérience."
         },
         {
           "type": "visual",
@@ -1075,12 +1133,12 @@
         {
           "type": "walkthrough",
           "title": "Construire un essai d’écoute comparable",
-          "goal": "Garder le même cas tout en séparant deux jugements.",
+          "goal": "Tableau de calcul raisonné, sans code à exécuter. Garder le même cas tout en séparant deux jugements.",
           "language": "python",
           "steps": [
             {
               "title": "figer les cas",
-              "text": "Choisis des consignes et extraits selon une règle commune, sans sélectionner seulement les sorties qui mettent l’adaptation en valeur.",
+              "text": "Choisissons des consignes et extraits selon une règle commune, sans sélectionner seulement les sorties qui mettent l’adaptation en valeur.",
               "state": "Même ensemble de situations pour les deux versions."
             },
             {
@@ -1089,15 +1147,16 @@
             },
             {
               "title": "Contrôler la présentation",
-              "text": "Masque les noms, varie ou contrebalance l’ordre et décris les niveaux d’écoute. Si la dynamique est précisément l’objet de l’étude, évite une normalisation qui supprimerait ce phénomène.",
+              "text": "Masquons les noms, varions ou contrebalançons l’ordre et décrivons les niveaux d’écoute. Si la dynamique est précisément l’objet de l’étude, évitons une normalisation qui supprimerait ce phénomène.",
               "state": "Des noms neutres ne suffisent pas si le niveau favorise un système."
             },
             {
               "title": "garder les associations",
-              "text": "Enregistre pour chaque note l’auditeur, l’extrait, le système et le critère. La même personne juge plusieurs versions du même cas : ces mesures restent liées."
+              "text": "Enregistrons pour chaque note l’auditeur, l’extrait, le système et le critère. La même personne juge plusieurs versions du même cas : ces mesures restent liées."
             }
           ],
-          "result": "Les jugements répondent à une tâche définie et gardent leur structure pour l’analyse."
+          "result": "Ce tableau de calcul raisonné formalise les comparaisons ; aucun programme artificiel n’est nécessaire. Les jugements répondent à une tâche définie et gardent leur structure pour l’analyse.",
+          "calculationTable": true
         },
         {
           "type": "paragraph",
@@ -1117,15 +1176,21 @@
         },
         {
           "type": "paragraph",
-          "text": "Préparons les auditeurs avec des consignes et quelques exemples d’apprentissage distincts du test. Conservons pour chaque réponse l’auditeur, l’extrait, le système et le critère. Plusieurs jugements de la même personne, ou du même extrait, ne sont pas des observations sans lien. Les critères d’exclusion éventuels se définissent avant de lire les résultats."
+          "text": "Préparons les auditeurs avec des consignes et des exemples distincts du test. Chaque réponse garde auditeur, extrait, système et critère. Plusieurs notes d’une même personne ou d’un même extrait restent liées. Les éventuels critères d’exclusion sont définis avant lecture des résultats."
         },
         {
           "type": "paragraph",
-          "text": "Pour une reconstruction de codec, nous disposons d’un original : une référence sonore. Une ancre est une version volontairement dégradée qui aide à situer les jugements. MUSHRA est un protocole multi-stimuli avec référence cachée et ancres, adapté à certaines comparaisons de qualité. Il fournit un repère réel pour notre contrôle de codec ; son nom ne dispense pas de respecter les conditions de la méthode."
+          "text": "Une reconstruction de codec dispose d’un original : la référence sonore (reference). Une ancre (anchor) est une version volontairement dégradée servant de repère. MUSHRA compare plusieurs stimuli avec référence cachée et ancres (multiple stimuli with hidden reference and anchor). Ce protocole convient à certaines comparaisons de qualité. Son nom ne dispense pas d’en respecter les conditions."
+        },
+        {
+          "type": "callout",
+          "text": "Une variation musicale nouvelle ne possède pas forcément un original unique. Nous ne présentons donc pas automatiquement son écoute comme un MUSHRA. Une comparaison ou une notation avec critères explicites peut convenir davantage. La méthode suit la propriété jugeable et la référence disponible. Une ancre ne prouve pas à elle seule la significativité d’une différence.",
+          "tone": "pitfall",
+          "label": "Le protocole suit la question et la référence disponible"
         },
         {
           "type": "paragraph",
-          "text": "Pour une variation musicale entièrement nouvelle, il n’existe pas forcément d’original unique à reproduire. Nous ne présenterons donc pas automatiquement cette écoute comme un MUSHRA. Une tâche de comparaison ou de notation explicitant les critères peut être plus appropriée. Le choix du protocole suit ce qui peut être jugé ; l’ancre n’établit pas à elle seule la significativité d’une différence."
+          "text": "À dire en entretien : Je sépare qualité sonore, conformité au contrôle et préférence. Je maîtrise la présentation et je choisis un protocole adapté à la référence disponible."
         }
       ],
       "takeaways": [
@@ -1169,15 +1234,15 @@
       },
       "notions": [
         {
-          "name": "Critère perceptif",
+          "name": "Critère perceptif (perceptual criterion)",
           "explanation": "La propriété précise que l’auditeur doit juger, comme la présence d’artefacts ou le respect de la consigne."
         },
         {
-          "name": "Biais de présentation",
+          "name": "Biais de présentation (presentation bias)",
           "explanation": "Une influence du nom, de l’ordre ou du niveau d’écoute qui peut orienter un jugement sans venir de la propriété étudiée."
         },
         {
-          "name": "Référence et ancre",
+          "name": "Référence et ancre (reference and anchor)",
           "explanation": "La référence sert de comparaison connue ; une ancre dégradée donne un repère inférieur dans certains protocoles."
         }
       ],
@@ -1198,11 +1263,15 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Nous avons produit de nombreuses variations de percussion. Pour les résumer, un extracteur audio fixe transforme chaque son en embedding, une description numérique. Ces vecteurs rendent certaines propriétés visibles et en perdent d’autres. Une mesure construite dessus observe donc le son à travers ce filtre, comme le classifieur du module précédent observait ses propres descripteurs."
+          "text": "Nous avons beaucoup de variations à comparer. Un extracteur fixe (fixed feature extractor) transforme chaque son en plongement audio (audio embedding), une description numérique. Il conserve certaines propriétés et en perd d’autres. Une mesure utilisant ces vecteurs observe donc le son à travers ce filtre. Retrouvons ce qu’elle peut réellement nous apprendre."
         },
         {
           "type": "paragraph",
-          "text": "La moyenne indique le centre du nuage de vecteurs. La covariance décrit sa dispersion et les variations conjointes de ses composantes. La Fréchet Audio Distance, ou FAD, compare ces deux statistiques entre les sorties et un corpus de référence, sous une approximation gaussienne. Deux nuages peuvent avoir le même centre et des dispersions différentes ; la moyenne seule ne suffit pas."
+          "text": "La moyenne (mean) indique le centre du nuage de vecteurs. La covariance (covariance) décrit dispersion et variations conjointes de leurs composantes."
+        },
+        {
+          "type": "paragraph",
+          "text": "La distance audio de Fréchet (Fréchet Audio Distance, FAD) compare ces statistiques entre sorties et référence. Elle utilise une approximation gaussienne (Gaussian approximation), qui représente ces nuages par des distributions normales. Deux nuages de même centre peuvent garder des dispersions différentes."
         },
         {
           "type": "visual",
@@ -1229,9 +1298,13 @@
           "caption": "Le cas scalaire du déroulé simplifie la FAD ; la version multivariée inclut une comparaison de matrices de covariance."
         },
         {
+          "type": "paragraph",
+          "text": "À une dimension, notre référence a une moyenne 2 et une variance 1. La base et l’adaptation ont aussi une variance 1. Le terme de dispersion s’annule donc. La base de moyenne 0 donne (0−2)² = 4. L’adaptation de moyenne 1 donne (1−2)² = 1. Ce rapprochement global ne vérifie pas notre accent à trois secondes."
+        },
+        {
           "type": "walkthrough",
           "title": "Comprendre une distance de distributions en une dimension",
-          "goal": "Voir pourquoi rapprocher des statistiques ne vérifie pas chaque consigne.",
+          "goal": "Tableau de calcul raisonné, sans code à exécuter. Voir pourquoi rapprocher des statistiques ne vérifie pas chaque consigne.",
           "language": "python",
           "steps": [
             {
@@ -1254,19 +1327,22 @@
               "text": "Ce calcul ne vérifie pas si notre accent tombe à trois secondes ni si chaque attaque est nette. Les critères locaux et l’écoute restent nécessaires même lorsque la distance globale diminue."
             }
           ],
-          "result": "Une meilleure proximité de distributions est un résultat défini, pas une garantie universelle de qualité."
+          "result": "Ce tableau de calcul raisonné formalise les comparaisons ; aucun programme artificiel n’est nécessaire. Une meilleure proximité de distributions est un résultat défini, pas une garantie universelle de qualité.",
+          "calculationTable": true
         },
         {
           "type": "paragraph",
-          "text": "Le calcul guidé garde une seule dimension pour rendre la lecture possible. Avec les mêmes variances égales à 1, une référence de moyenne 2 et une base de moyenne 0 donnent une distance 4 ; une adaptation de moyenne 1 donne 1. Dans ce cas précis, le terme de dispersion s’annule. Cela ne dit pas si la frappe tombe à trois secondes : un ensemble peut se rapprocher globalement tout en ignorant cette commande locale."
+          "text": "Un indicateur indirect (proxy) renseigne certaines propriétés sans les capturer entièrement. La FAD joue ce rôle. Fixons extracteur, préparation, corpus de référence et règle d’échantillonnage avant toute comparaison. Durée et nombre d’extraits influencent l’estimation ; un petit ensemble peut être instable. Des extracteurs différents ne donnent pas automatiquement des scores sur la même échelle."
+        },
+        {
+          "type": "callout",
+          "text": "Sélectionner uniquement pour plaire à l’extracteur risque d’exploiter ses angles morts. Conservons écoute aveugle, critères d’accent et sous-groupes prévus, avec leurs effectifs. Une faible distance ne prouve ni absence de mémorisation ni préférence universelle. Notre conclusion reste située : les distributions de ces descriptions se rapprochent selon ce protocole.",
+          "tone": "pitfall",
+          "label": "Ne pas confondre le score et l’objectif musical"
         },
         {
           "type": "paragraph",
-          "text": "La FAD est donc un proxy, une mesure indirecte de certaines propriétés. Pour comparer deux scores, fixons extracteur, préparation, référence et règle d’échantillonnage. Durée et nombre d’extraits influencent l’estimation ; les petits ensembles peuvent être instables. Deux scores issus d’extracteurs différents ne partagent pas automatiquement la même échelle, même si tous deux portent le nom FAD."
-        },
-        {
-          "type": "paragraph",
-          "text": "Si nous sélectionnons toutes les variantes pour plaire à cet extracteur, nous risquons d’exploiter ses angles morts. Gardons l’écoute aveugle, les critères d’accent et les sous-groupes prévus avec leurs effectifs. Une bonne distance ne prouve ni absence de mémorisation ni préférence universelle. Le résultat défendable reste local : ces distributions d’embeddings se rapprochent selon ce protocole."
+          "text": "À dire en entretien : La FAD compare des distributions de descriptions, selon un extracteur et un protocole fixés. Elle complète des critères locaux et l’écoute, sans garantir le respect de chaque commande."
         }
       ],
       "takeaways": [
@@ -1310,19 +1386,19 @@
       },
       "notions": [
         {
-          "name": "Embedding audio",
+          "name": "Plongement audio (audio embedding)",
           "explanation": "Une description numérique calculée à partir du son, qui rend certaines propriétés plus visibles que d’autres."
         },
         {
-          "name": "Moyenne et covariance",
+          "name": "Moyenne et covariance (mean and covariance)",
           "explanation": "La moyenne situe le centre d’un ensemble de vecteurs ; la covariance décrit sa dispersion et les variations conjointes de ses composantes."
         },
         {
-          "name": "Proxy",
+          "name": "Indicateur indirect (proxy)",
           "explanation": "Une mesure indirecte choisie pour renseigner une propriété sans la capturer nécessairement dans son ensemble."
         },
         {
-          "name": "Fréchet Audio Distance",
+          "name": "Distance audio de Fréchet (Fréchet Audio Distance)",
           "explanation": "Une distance entre des statistiques d’embeddings audio de deux ensembles, selon une représentation et un protocole fixés."
         }
       ],
@@ -1345,7 +1421,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Notre version adaptée gagne un peu en moyenne. Si nous relançons l’entraînement ou choisissons d’autres prises, gagnera-t-elle encore ? Une répétition expérimentale fait varier une source définie, comme l’initialisation et l’ordre des batches. Cette variation n’est pas la même chose que l’incertitude due au choix des prises de test ou des auditeurs."
+          "text": "Notre adaptation gagne un peu en moyenne. Gardera-t-elle cet avantage avec d’autres prises ou un nouvel entraînement ? Une répétition expérimentale (experimental repeat) fait varier une source définie, comme l’initialisation ou l’ordre des lots. L’incertitude (uncertainty) liée aux données réservées ou aux auditeurs pose une autre question. Distinguons ces sources avant de résumer la variation."
         },
         {
           "type": "paragraph",
@@ -1380,6 +1456,10 @@
           "caption": "Une analyse d’écoute appariée doit aussi respecter les répétitions liées au même auditeur ou au même extrait."
         },
         {
+          "type": "paragraph",
+          "text": "Dans notre tableau, vingt prises fournissent chacune cent extraits. Cela produit 2 000 lignes, sans créer 2 000 sources indépendantes. Un tirage peut reprendre R3 deux fois et oublier R7. Nous évaluons les deux méthodes sur exactement ce même tirage de prises."
+        },
+        {
           "type": "walkthrough",
           "title": "Ne pas transformer des fenêtres en fausses répétitions",
           "goal": "Choisir l’unité rééchantillonnée et conserver l’appariement.",
@@ -1405,7 +1485,7 @@
             },
             {
               "title": "Conserver la comparaison",
-              "text": "Évalue base et adaptation sur exactement les mêmes groupes tirés. La différence reste appariée aux mêmes cas acoustiques.",
+              "text": "Évaluons base et adaptation sur exactement les mêmes groupes tirés. La différence reste appariée aux mêmes cas acoustiques.",
               "lines": [
                 3,
                 4,
@@ -1414,7 +1494,7 @@
             },
             {
               "title": "former une distribution",
-              "text": "Répète les tirages pour examiner les différences. Un intervalle percentile à 95 % emploie les quantiles 2,5 % et 97,5 % ; sa pertinence dépend du plan et des hypothèses.",
+              "text": "Répétons les tirages pour examiner les différences. Un intervalle percentile à 95 % emploie les quantiles 2,5 % et 97,5 % ; sa pertinence dépend du plan et des hypothèses.",
               "lines": [
                 1,
                 5
@@ -1425,15 +1505,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Le bootstrap rééchantillonne avec remise les unités observées puis recalcule une statistique. Cent fenêtres d’une même prise restent corrélées : pour l’incertitude liée aux prises, nous tirons les prises entières et reprenons toutes leurs fenêtres. Une prise tirée deux fois garde cette multiplicité. Le code guidé exprime la procédure ; ses fonctions de score illustratives doivent réellement préserver les groupes et leurs répétitions."
-        },
-        {
-          "type": "paragraph",
-          "text": "La comparaison est appariée : les deux méthodes sont mesurées sur les mêmes prises. À chaque tirage, réutilisons donc les mêmes groupes pour calculer leur différence. Pour les écoutes, des mesures peuvent partager à la fois un auditeur et un extrait ; leur analyse doit respecter ces dépendances. Traiter toutes les notes comme indépendantes peut donner un intervalle artificiellement étroit."
-        },
-        {
-          "type": "paragraph",
-          "text": "En répétant les tirages, nous obtenons une distribution de différences. Un intervalle percentile à 95 % utilise les quantiles 2,5 % et 97,5 %, avec une pertinence dépendant du plan et des hypothèses. Il ne garantit pas la performance dans tous les futurs domaines. Rapportons aussi l’amplitude de l’effet : une différence estimée précisément peut rester trop petite pour aider la percussionniste. Une petite valeur p éventuelle ne mesure pas cet intérêt pratique."
+          "text": "Le rééchantillonnage avec remise (bootstrap) tire de nouveau les unités observées, puis recalcule une statistique. Pour l’incertitude liée aux prises, tirons les prises entières avec toutes leurs fenêtres. Une prise peut apparaître plusieurs fois ; sa multiplicité est conservée. Les fonctions illustratives du code doivent réellement respecter ces groupes et répétitions."
         },
         {
           "type": "plot",
@@ -1477,6 +1549,22 @@
             }
           ],
           "caption": "Exemple fictif exact : les répétitions ne sont pas des instants successifs. Le tracé montre la variation, pas un intervalle de confiance."
+        },
+        {
+          "type": "callout",
+          "text": "Les tirages construisent une distribution de différences. Un intervalle percentile (percentile interval) à 95 % utilise les quantiles 2,5 % et 97,5 %. Sa pertinence dépend du plan et de ses hypothèses. Il ne garantit pas le résultat dans tous les futurs domaines. Rapportons aussi l’ampleur de l’effet (effect size), pour juger son intérêt pratique. Une petite valeur p ne mesure pas cet intérêt.",
+          "tone": "tip",
+          "label": "Pour aller plus loin : précision et intérêt pratique"
+        },
+        {
+          "type": "callout",
+          "text": "Une comparaison appariée (paired comparison) évalue les deux méthodes sur les mêmes cas. Chaque tirage utilise donc les mêmes prises pour calculer leur différence. Dans une écoute, les notes peuvent partager auditeur et extrait. Ignorer ces dépendances donnerait un intervalle artificiellement étroit. Le nombre de notes ne constitue pas automatiquement autant de sources indépendantes.",
+          "tone": "pitfall",
+          "label": "Conserver groupes et appariement"
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Je distingue les variations de l’entraînement de l’incertitude liée aux données. Les comparaisons conservent groupes et appariements, avec une ampleur d’effet discutée pour l’usage."
         }
       ],
       "takeaways": [
@@ -1522,19 +1610,19 @@
       },
       "notions": [
         {
-          "name": "Répétition expérimentale",
+          "name": "Répétition expérimentale (experimental repeat)",
           "explanation": "Un nouvel essai qui fait varier une source définie, comme l’initialisation ou les données, pour observer sa variabilité."
         },
         {
-          "name": "Bootstrap",
+          "name": "Rééchantillonnage avec remise (bootstrap)",
           "explanation": "Un rééchantillonnage avec remise des unités observées, suivi du recalcul d’une statistique."
         },
         {
-          "name": "Appariement",
+          "name": "Appariement (pairing)",
           "explanation": "Le maintien de l’association entre deux mesures prises sur le même cas ou la même personne."
         },
         {
-          "name": "Intervalle d’incertitude",
+          "name": "Intervalle d’incertitude (uncertainty interval)",
           "explanation": "Une plage produite par une méthode définie pour renseigner la précision de l’estimation sous ses hypothèses."
         }
       ],
@@ -1558,11 +1646,15 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "La percussionniste utilisera l’outil en répétition avec des prises moins propres qu’au studio. Notre test a-t-il couvert ce contexte ? Le domaine décrit ces conditions : microphones, lieux, instruments ou durées. Un décalage de distribution apparaît quand elles diffèrent de celles de l’apprentissage. Généraliser signifie réussir sur les nouveaux cas visés, pas sur tous les sons imaginables."
+          "text": "La percussionniste utilisera aussi des prises moins propres qu’au studio. Le domaine (domain) décrit ces conditions : microphone, lieu, instrument ou durée. Le décalage de distribution (distribution shift) apparaît lorsqu’elles diffèrent de l’apprentissage."
         },
         {
           "type": "paragraph",
-          "text": "Si le système réussit sur huit prises studio sur dix et quatre prises téléphone sur dix, ce sont deux observations à montrer, avec leurs petits effectifs et leur incertitude. Les mélanger en un pourcentage global cacherait le problème. Définissons les domaines et sous-groupes avant l’analyse, plutôt que de choisir ensuite ceux qui favorisent l’adaptation."
+          "text": "La généralisation (generalization) concerne les nouveaux cas annoncés. Elle ne signifie pas réussir sur tous les sons imaginables."
+        },
+        {
+          "type": "paragraph",
+          "text": "Notre exemple réussit huit prises studio sur dix, mais quatre prises téléphone sur dix. Montrons ces deux observations avec leurs petits effectifs et leur incertitude. Une moyenne globale cacherait ce contraste. Définissons domaines et sous-groupes avant l’analyse, sans retenir ensuite uniquement ceux qui favorisent l’adaptation."
         },
         {
           "type": "visual",
@@ -1590,12 +1682,16 @@
         },
         {
           "type": "paragraph",
-          "text": "La nouveauté peut aussi être temporelle. Si notre outil doit traiter des prises futures avec des appareils qui dérivent, apprenons sur une période passée et évaluons sur une période ultérieure. Mélanger toutes les dates peut rendre le test artificiellement familier. Ce découpage chronologique répond à une autre question qu’une simple séparation aléatoire des fenêtres."
+          "text": "La nouveauté peut aussi concerner des prises futures. Un découpage chronologique (time-based split) apprend sur une période passée et évalue sur une période ultérieure. Cela peut représenter des appareils ou conditions qui évoluent. Mélanger les dates rendrait parfois le test artificiellement familier. Cette question diffère d’une séparation aléatoire des fenêtres."
+        },
+        {
+          "type": "paragraph",
+          "text": "La validation croisée (cross-validation) évalue successivement plusieurs partitions, les plis (folds)."
         },
         {
           "type": "walkthrough",
           "title": "Évaluer la procédure de sélection, puis la raconter",
-          "goal": "Décrire la sélection et ses résultats réservés avant de décider quelle version utiliser en répétition.",
+          "goal": "Tableau de calcul raisonné, sans code à exécuter. Décrire la sélection et ses résultats réservés avant de décider quelle version utiliser en répétition.",
           "language": "python",
           "steps": [
             {
@@ -1614,22 +1710,35 @@
             },
             {
               "title": "Décrire les limites et le coût",
-              "text": "Rapporte domaines testés, effectifs, graines, critères et budget de recherche, entraînement et inférence. Une latence trop grande peut rendre un gain peu utile pour une interaction musicale."
+              "text": "Rapportons domaines testés, effectifs, graines, critères et budget de recherche, entraînement et inférence. Une latence trop grande peut rendre un gain peu utile pour une interaction musicale."
             }
           ],
-          "result": "Le compte rendu relie choix, données réservées et coût au lieu d’afficher uniquement le meilleur nombre."
+          "result": "Ce tableau de calcul raisonné formalise les comparaisons ; aucun programme artificiel n’est nécessaire. Le compte rendu relie choix, données réservées et coût au lieu d’afficher uniquement le meilleur nombre.",
+          "calculationTable": true
         },
         {
           "type": "paragraph",
-          "text": "Quand les données sont rares, la validation croisée évalue successivement plusieurs plis. Si elle sert aussi à choisir les réglages, la version imbriquée sépare ces rôles : plis internes pour sélectionner, pli externe pour mesurer la procédure choisie. Le déroulé explique ce cas. Les groupes de prises restent respectés aux deux niveaux ; retenir le meilleur score interne ne remplace pas l’évaluation externe."
+          "text": "Le budget inclut recherche des réglages, entraînement, mémoire et délai de génération. Produire dix secondes de son en plusieurs minutes peut convenir hors ligne et gêner une répétition. La latence (latency) est le délai avant la réponse utile. Pour la comparer, annonçons matériel, durée, taille du lot et nombre d’étapes. Cent essais n’ont pas le même coût de recherche que cinq."
         },
         {
           "type": "paragraph",
-          "text": "Le budget entre dans la décision : temps de recherche des réglages, entraînement, mémoire et délai de génération. Produire dix secondes de son en plusieurs minutes peut convenir à une préparation hors ligne et gêner une interaction en répétition. Pour comparer la latence, annonçons matériel, durée, batch et nombre d’étapes. Un gain obtenu après cent essais n’a pas le même coût de recherche qu’un gain obtenu après cinq."
+          "text": "Notre compte rendu relie maintenant les résultats à leurs conditions. Sur ces prises et commandes, précisons le critère amélioré, sa variation et les propriétés conservées ou dégradées. Indiquons le budget associé. Joignons code, versions, découpages, configurations et graines. La reproductibilité (reproducibility) permet de retrouver et examiner les expériences, sans garantir une identité numérique entre matériels. La faiblesse téléphone devient une prochaine expérience précise."
+        },
+        {
+          "type": "callout",
+          "text": "Pour choisir les réglages et mesurer leur sélection séparément, utilisons une validation imbriquée (nested cross-validation). Les plis internes choisissent ; le pli externe évalue la procédure. Le déroulé présente ce cas. Les groupes de prises restent respectés aux deux niveaux. Le meilleur score interne ne remplace pas l’évaluation externe.",
+          "tone": "tip",
+          "label": "Pour aller plus loin : évaluer la sélection"
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une moyenne ne justifie pas tous les usages",
+          "text": "Un résultat studio ne démontre pas la robustesse téléphone. Gardons les domaines et effectifs visibles dans la conclusion. La prochaine expérience doit vérifier cette limite avant de promettre un usage plus large."
         },
         {
           "type": "paragraph",
-          "text": "Le compte rendu peut maintenant être concret : sur ces prises réservées et ces commandes, l’adaptation améliore tel critère avec telle variation ; elle conserve ou dégrade telles propriétés, sous tel budget. Joignons code, versions, splits, configurations et graines. Cette traçabilité aide la reproduction sans promettre une identité numérique sur tous les matériels. La limite téléphone devient alors une prochaine expérience utile, au lieu d’une promesse de robustesse non testée."
+          "text": "À dire en entretien : Ma conclusion suit les domaines, les unités et les budgets réellement testés. Je sépare sélection et évaluation, puis je transforme chaque limite en prochaine expérience ciblée."
         }
       ],
       "takeaways": [
@@ -1676,19 +1785,19 @@
       },
       "notions": [
         {
-          "name": "Domaine et généralisation",
+          "name": "Domaine et généralisation (domain and generalization)",
           "explanation": "Le domaine décrit les conditions des données ; généraliser signifie réussir sur les nouveaux cas visés, pas sur tous les cas imaginables."
         },
         {
-          "name": "Décalage de distribution",
+          "name": "Décalage de distribution (distribution shift)",
           "explanation": "Une différence entre les conditions des données d’apprentissage et celles de l’usage ou du test."
         },
         {
-          "name": "Validation croisée imbriquée",
+          "name": "Validation croisée imbriquée (nested cross-validation)",
           "explanation": "Une sélection des réglages dans des plis internes, suivie d’une mesure séparée dans des plis externes."
         },
         {
-          "name": "Reproductibilité",
+          "name": "Reproductibilité (reproducibility)",
           "explanation": "La possibilité de retrouver ou examiner un résultat à partir de ses données, code, versions et réglages documentés."
         }
       ],

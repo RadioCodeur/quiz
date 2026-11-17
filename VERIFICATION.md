@@ -1,89 +1,57 @@
 # Vérification de la livraison
 
-Révision éditoriale du **13 novembre 2026**, adaptée à un lecteur connaissant déjà le Python algorithmique.
+Révision complète du 18 novembre 2026, pour la préparation de l’entretien IRCAM. Le quiz reste l’entrée principale ; aucun interpréteur Python n’est intégré au site.
 
-## Contenu et cohérence
+## Résultat et conservation
 
-- Six modules et 65 chapitres, dont deux rappels Python facultatifs en fin de sommaire. Les 65 identifiants et les associations aux 200 QCM sont comparés à la version publiée précédente et conservés. La banque du quiz reste inchangée.
-- Les développements, projets et transitions ont été réécrits. Les signaux miniatures du Python servent successivement à calculer RMS, facteur de crête, caractéristiques et standardisation ; leurs sorties sont exécutées et vérifiées. Les changements de taille ou de scénario sont annoncés.
-- Les 65 exemples guidés et les 65 représentations relationnelles sont présents. Les cas courts passent de 65 à 8 : les exemples de syntaxe élémentaire et les variantes répétitives ont été retirés. Les variantes conservées et les définitions se déplient à la demande.
-- Les pages publiques de cours et de découverte France-IOI citées dans `docs/pedagogie.md` ont été lues, y compris des explications intégrées aux énoncés. OpenClassrooms a également été consulté. Aucun accès aux corrections privées ou aux niveaux verrouillés n’est revendiqué ; les scénarios et les textes audio sont originaux.
-- Relecture de la couverture scientifique des QCM par thème. Les correspondances automatiques prouvent la présence d’un lien, pas la compréhension du lecteur ni une exhaustivité de toutes les questions d’entretien possibles.
+- Huit modules, 107 chapitres : 65 identifiants historiques conservés, 42 nouveaux. Les `questionIds`, les références d’origine et les checkpoints historiques sont protégés par des contrats. Aucun QCM ajouté, supprimé ou renuméroté : les 200 restent couverts.
+- Vingt chapitres PyTorch, vingt notebooks et quarante exercices avec solutions exécutées. Les six nouveaux chapitres techniques couvrent Transformer, codecs RVQ, objectifs génératifs, contrôle multimodal, budget et symbolique.
+- Quatre chapitres de contexte, huit lectures commentées ; 25 questions ouvertes, un pitch hypothétique et son gabarit personnel ; glossaire de 160 termes et parcours rapide sur quatre semaines.
+- Toutes les conclusions sont rédigées pour l’oral. L’audit des chapitres et des présentations de module ne trouve aucune phrase de prose au-dessus de 30 mots. Les checkpoints historiques sont conservés et exclus de cette réécriture.
+- Le chapitre des niveaux audio dépasse 1100 mots avec une justification visible. Il conserve les définitions, les échelles et la comparaison des deux extraits réels demandées par le lecteur. Les autres chapitres respectent la limite.
+- Les neuf walkthroughs historiques sans code sont annoncés comme tableaux de calcul raisonné. Les quatre exemples de contexte utilisent le même format. La boucle complète renvoie à son programme unique avec `codeBlockIndex`, sans recopier une seconde version.
 
-## Vérifications techniques
+## Contrôles d’acceptation
 
-- Banque validée : exactement 200 QCM, quotas principaux 20/50/30/30/40/30 et 60/100/40 par difficulté ; identifiants, propositions et références résolus.
-- **34 tests de logique** : quiz, progression, liens historiques, schéma, couverture, références, géométrie des graphiques, échappement des sorties, exemples sans variante et navigation principale sans obligation de lire les rappels.
-- **23 contrôles navigateur** : session du quiz, reprise, bilan, clavier et stockage indisponible ; navigation quiz/cours ; repères de lecture et préférences ; rendu des 65 chapitres à 360 px ; états et lignes des exemples guidés ; QCM de transfert ; tableaux des graphiques ; présentation des modules ; définitions repliables ; rappels par lien direct ; deux entrées Vite sous un chemin de dépôt. Certains contrôles regroupent plusieurs assertions.
-- Construction Vite après validation des données, puis test du site construit sous `/qr-entretien/`. Aucun interpréteur Python ni nouvelle API extérieure n’est ajouté à l’application.
-- Les extraits scientifiques modifiés sont vérifiés en Python avec NumPy, SciPy, librosa et PyTorch selon le thème. Les blocs partiels utilisent des données et objets de contexte explicites pendant la vérification. Aucun modèle audio complet n’a été entraîné pour cette révision.
-- Un problème de l’ancien exemple Dropout est corrigé : `eval()` peut laisser Dropout retourner son entrée ; `no_grad()` ne retire pas rétroactivement `requires_grad` à cette entrée. L’exemple observe désormais une opération nouvelle dans ce contexte pour illustrer correctement la désactivation de l’enregistrement du graphe.
+Les commandes `npm run validate:courses`, `npm test`, `npm run build` et `npm run test:browser` ont été lancées sur le dépôt Windows. Le bilan final comporte 51 tests Node et 28 contrôles navigateur.
 
-Les contrôles sont exécutés avec Node.js 24 et Microsoft Edge piloté par Playwright. Les captures du parcours dans `test-results/` sont des fichiers de vérification locaux, non publiés. Les vérifications du déploiement public sont effectuées séparément après la publication.
+Les contrôles navigateur utilisent Microsoft Edge et Playwright : 107 chapitres à 360 px, navigation et stockage du quiz, repères de lecture, exemples guidés, écoutes volontaires, sources, glossaire bilingue, pitch persistant et parcours rapide. La construction est aussi servie sous `/qr-entretien/` pour vérifier les chemins relatifs des trois pages. Les captures restent dans `test-results/`, sans publication.
 
-Le lanceur Windows a été corrigé et testé sans Node dans le PATH lors de la livraison précédente ; il est inchangé. Aucun test sur téléphone physique, Safari ou Firefox, ni audit formel par lecteur d’écran n’est revendiqué.
+Les tests couvrent les médias déjà livrés : 18 WAV, 61 figures scientifiques, cinq illustrations externes créditées, onze ateliers d’écoute et douze blocs d’images. Crête, RMS, dBFS, gains et durées sont recalculés depuis le PCM. Les fichiers source et licences sont inchangés.
+
+## Exécutions scientifiques réelles
+
+Commande complète : `python scripts/verify/all.py --notebooks`. Elle a réussi avec Python 3.11.9, PyTorch/TorchAudio 2.10.0+cpu et un thread. Les rapports conservent les empreintes du code, les sorties et les conditions ; les tests lient chaque bloc Python affiché à une preuve CPU.
+
+- 74 blocs Python affichés sont couverts. L’audit hors PyTorch exécute 57 cas, dont trois variantes, et treize vérifications numériques complémentaires ; aucune incohérence restante.
+- `pytorch-existing.py` et `pytorch-additions.py` : les vingt programmes PyTorch, le graphe à deux poids, les cinq erreurs et la boucle complète. Gradients mesurés : 24 et −72 ; sauvegarde puis rechargement identique.
+- `b-attention-control.py`, `b-codecs-symbolic.py`, `b-diffusion-efficiency.py` : formes, causalité, RVQ, événements, objectifs et coûts. Le passé causal reste identique ; la RVQ miniature donne une MSE de 0,006250.
+- `existing-corpus.py --strict` : sources lues dans les JSON courants, contextes des extraits partiels explicités, variantes et calculs hors code. Les deux bruits pédagogiques VAE/diffusion sont désormais fixés dans le programme comme dans le calcul manuel.
+- `notebooks.py` : vingt noyaux Jupyter séparés, toutes cellules et quarante solutions. Durées finales, démarrage compris : 5.515–8.360 secondes par notebook, toutes sous 120 secondes. Les sorties sont enregistrées dans les documents livrés.
+- `editorial-protection.json`, `baseline-course-contracts.json`, `existing-corpus-baseline.json` et `prose-audit.json` : conservation et audit éditorial. `all-results.json` donne les commandes et codes de sortie finaux.
+
+Le noyau utilise nbformat 5.11.1, nbclient 0.11.0 et ipykernel 7.1.0. Les calculs audio utilisent NumPy 2.3.5, SciPy 1.16.3, librosa 0.11.0 et SoundFile 0.13.1. L’environnement est documenté dans `scripts/requirements-verify.txt`.
+
+## Sources et portée
+
+Les nouvelles références sont des pages primaires réellement ouvertes. Le registre `scripts/verify/research-sources.json` détaille 37 sources, les faits retenus et les accès remplacés. Les huit lectures ont chacune trois idées et une question de recherche. Les pages publiques de cours France-IOI et les références pédagogiques antérieures restent documentées dans `docs/pedagogie.md`.
+
+Les vingt sources de notebooks existent sur GitHub. Le lien Colab public a répondu HTTP 200 ; son interface propose la connexion. Aucune session Colab authentifiée n’a été disponible : l’exécution attestée est locale sur CPU. Voir `scripts/verify/notebook-links.json`.
+
+La comparaison du petit budget mesure une erreur numérique sur des projections synthétiques et calcule le stockage logique des poids. Elle ne démontre ni qualité perceptive audio, ni gain de vitesse, ni mémoire résidente. Les interfaces CLAP sont des exemples de formes, sans modèle préentraîné chargé. Les objectifs de PostGenAI ne sont pas présentés comme des résultats obtenus.
+
+Aucun entraînement de grand modèle externe, benchmark GPU, test sur téléphone physique ou audit formel par lecteur d’écran n’est revendiqué. Les durées orales sont indicatives : 184–220 mots par réponse et 303 mots pour le pitch. Le format oral et les tableaux de contexte adaptent explicitement R1 à un raisonnement, sans programme artificiel.
 
 ## Reproduire
 
 ```powershell
-npm run validate
 npm run validate:courses
 npm test
 npm run build
 npm run test:browser
+python -m pip install torch==2.10.0 torchaudio==2.10.0 --index-url https://download.pytorch.org/whl/cpu
+python -m pip install -r scripts/requirements-verify.txt
+python scripts/verify/all.py --notebooks
 ```
 
-Si npm n’est pas dans le PATH, utiliser `node scripts/run.mjs` suivi du nom du script.
-
-
-## Images et écoutes — 13 novembre 2026
-
-Deux enregistrements réels sous CC BY 4.0, 18 WAV PCM16, 61 PNG calculés, cinq illustrations externes aux licences vérifiées ; attributions, modifications et fichiers sources conservés. Les schémas STFT à couleurs artificielles et mel qualitatif ont été retirés du cours Signal. Onze ateliers d’écoute et douze blocs d’images sont intégrés aux six modules.
-
-Les tests médias recalculent crête, RMS, carré moyen, dBFS et facteur de crête depuis les octets PCM exportés ; ils vérifient aussi gain de 0,5, RMS commun, durée après rééchantillonnage et chemins GitHub Pages. Le contrôle navigateur couvre le décodage des images et WAV, l’absence de lecture automatique, le volume commun, l’arrêt de l’autre lecteur, le maintien de l’écoute lors d’un changement d’image et l’arrêt à la navigation. Les légendes distinguent références spectrales, dBFS et dB SPL. L’application ne lance aucun entraînement ou traitement scientifique en direct.
-
-Les illustrations externes et les figures scientifiques représentatives sont inspectées ; des captures de l’interface finale sur ordinateur et à 360 px complètent ces contrôles. Les fichiers à régénérer et leurs dépendances sont décrits dans `docs/audio-lab.md`.
-
-
-## Refonte entretien — lot A, 17 novembre 2026
-
-Le module PyTorch contient vingt chapitres, dont six nouveaux ; le total passe à 71. Les 65 identifiants initiaux, leurs questions et leurs checkpoints sont protégés par `tests/revision-contracts.test.mjs`. Aucun QCM ajouté.
-
-Les vingt programmes sont réellement exécutés sur PyTorch/TorchAudio 2.10.0+cpu, Python 3.11.9, avec un thread. Les versions publiées ont été vérifiées sur les pages de release officielles. Scripts : `scripts/verify/pytorch-existing.py` et `pytorch-additions.py`. Les JSON voisins conservent empreintes, sorties et assertions complémentaires. Le calcul demandé produit h=6, y=−6, L=36 et gradients 24/−72. Le programme complet effectue cinq époques puis un rechargement identique ; les pertes affichées sont celles enregistrées. Les cinq erreurs présentées sont réellement provoquées et corrigées. Le décalage de device est démontré avec meta/CPU, sans prétendre mesurer un GPU.
-
-38 tests Node passent. L’audit de prose PyTorch ne trouve aucune phrase de plus de 30 mots, aucun dépassement de 1100 mots et aucune fin orale manquante. Les checkpoints historiques sont conservés et exclus de cette contrainte éditoriale. Commande : `node scripts/audit-prose.mjs --theme=pytorch --strict`.
-
-L’audit CPU des autres modules est préparé dans `scripts/verify/existing-corpus.py`. Il a trouvé deux incohérences à corriger au lot F : tirage aléatoire VAE/diffusion décrit comme un bruit fixe. Le lot A ne les masque pas et n’est pas présenté comme la livraison finale du prompt complet.
-
-Construction et 23 contrôles navigateur du lot A réussis, dont les 71 chapitres rendus à 360 px.
-
-
-## Lot C — notebooks exécutables
-
-Vingt notebooks Jupyter 4.5 exécutés de bout en bout, avec deux solutions supplémentaires vérifiées par document. Script : `scripts/verify/notebooks.py`. Résultats et empreintes du JSON écrit : `scripts/verify/notebooks-results.json`. Python 3.11.9, PyTorch/TorchAudio 2.10.0, CPU, un thread ; nbformat 5.11.1 et nbclient 0.11.0. Temps individuels mesurés : 5.391–8.222s, sous 120 s. Les notebooks livrés contiennent les sorties réellement obtenues. Les exercices ne cassent pas l’exécution complète : leurs trous sont dans des cellules Markdown.
-
-Les notebooks sont vérifiés localement avec Jupyter. L’interface Colab connectée n’est pas exécutée par l’agent ; ses URL et les fichiers GitHub publics sont contrôlés après push. Cette limite ne remplace pas le contrôle CPU de toutes les cellules.
-
-Lot C : 40 tests Node, construction Vite et 24 contrôles navigateur réussis.
-
-Les vingt sources GitHub ont été retrouvées au commit `0ec5874`. Un GET du lien Colab PyTorch retourne HTTP 200 et une interface proposant la connexion. Le détail et la limite d’accès sont enregistrés dans `scripts/verify/notebook-links.json`.
-
-## Lot B — génération et contrôle
-
-Six chapitres ajoutés, 77 au total, sans modifier les 200 QCM. Scripts CPU exécutés : `scripts/verify/b-attention-control.py`, `b-codecs-symbolic.py`, `b-diffusion-efficiency.py`. Les rapports `*-results.json` relient les codes affichés à leurs empreintes et sorties. Python 3.11.9, torch 2.10.0+cpu, un thread.
-
-Le test causal vérifie un écart nul dans le passé après modification du futur ; sans masque, l’écart est 0,204499. Les interfaces multimodales vérifient leurs formes, sans prétendre charger CLAP. La RVQ miniature reconstruit ses valeurs avec une erreur quadratique moyenne de 0,006250. La quantification compare des projections synthétiques ; ni qualité perceptive, ni mémoire résidente, ni accélération ne sont mesurées.
-
-Validation des cours, 43 tests Node, construction et 25 contrôles navigateur réussis. Les 77 chapitres passent le contrôle de rendu à 360 px ; les liens techniques ouvrent les bonnes cibles. Les six nouveaux chapitres respectent les limites de prose et terminent par une formulation orale.
-
-## Lot D — contexte et recherche
-
-Quatre chapitres ajoutés, 81 au total. Les références du nouveau module correspondent à des pages réellement ouvertes du registre documentaire de 37 sources. Les huit lectures ont chacune trois idées et une question de recherche. Chaque chapitre relie des mécanismes techniques existants. Aucun résultat de projet ou usage personnel n’est inventé.
-
-Validation, 45 tests Node et construction réussis. Les 25 contrôles navigateur passent, dont le rendu des 81 chapitres à 360 px et la construction sous le sous-répertoire de publication. Une valeur fixe de six cartes dans ce dernier contrôle a été remplacée par le nombre de modules enregistrés.
-
-## Lot E — entretien et glossaire
-
-Le total atteint 107 chapitres dans huit modules. Les 25 réponses modèles comptent 184–213 mots et le pitch hypothétique 303 mots. Les champs de gabarit persistent après rafraîchissement. Le glossaire contient 160 termes distincts, avec définitions courtes et cibles de chapitres valides.
-
-Validation des cours, 48 tests Node et construction réussis. Les 27 contrôles navigateur passent : 107 chapitres à 360 px, modèle oral replié, notes de pitch conservées, recherche bilingue sans accents, domaines, absence de débordement, et glossaire servi sous le sous-répertoire Pages. L’audit strict du module Entretien ne signale aucune phrase longue ni fin orale manquante.
+Si npm n’est pas dans le PATH, utiliser `node scripts/run.mjs` suivi du nom du script. Les dépendances scientifiques concernent uniquement la vérification hors du navigateur.

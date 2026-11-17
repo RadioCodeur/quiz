@@ -185,6 +185,9 @@ def main():
     fragment = None
     if args.check_fragment:
         fragment = json.loads((root / "work/b-attention-control.json").read_text(encoding="utf-8"))
+    else:
+        courses=[json.loads((root / "public/courses" / (theme+".json")).read_text(encoding="utf-8")) for theme in ["audio-ml","generation-controle"]]
+        fragment={"chapters":[{"chapter":chapter} for course in courses for chapter in course["chapters"]]}
     for chapter_id, code in CASES.items():
         started = time.perf_counter()
         ns, stdout = {}, io.StringIO()

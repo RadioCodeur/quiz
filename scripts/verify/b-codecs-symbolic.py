@@ -130,18 +130,19 @@ def execute_examples():
                 "monoSampleCount": namespace["sample_count"],
             }
         report["examples"][chapter_id] = example
-    fragment_path = Path(__file__).resolve().parents[2] / "work" / "b-codecs-symbolic.json"
-    fragment = json.loads(fragment_path.read_text(encoding="utf-8"))
+    course_path = Path(__file__).resolve().parents[2] / "public" / "courses" / "generation-controle.json"
+    course = json.loads(course_path.read_text(encoding="utf-8"))
     checked = []
-    for item in fragment["chapters"]:
-        chapter = item["chapter"]
+    for chapter in course["chapters"]:
+        if chapter["id"] not in CODES:
+            continue
         walkthrough = next(block for block in chapter["blocks"] if block["type"] == "walkthrough")
         assert walkthrough["code"] == CODES[chapter["id"]]
         assert walkthrough["steps"][-1]["state"] == report["examples"][chapter["id"]]["stdout"]
         assert chapter["blocks"][-1]["text"].startswith("À dire en entretien :")
         assert sum(block["type"] == "callout" and block["tone"] == "pitfall" for block in chapter["blocks"]) == 1
         checked.append(chapter["id"])
-    report["fragmentValidation"] = {"exactCodeAndOutputCopies": checked, "oralConclusionAndSinglePitfall": "passed"}
+    report["courseValidation"] = {"exactCodeAndOutputCopies": checked, "oralConclusionAndSinglePitfall": "passed"}
     return report
 
 

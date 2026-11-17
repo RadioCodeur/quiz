@@ -3257,7 +3257,7 @@
         {
           "type": "walkthrough",
           "title": "Lire le programme comme une chaîne de responsabilités",
-          "goal": "Ce tableau de lecture commente le programme complet ci-dessus ; ce n’est pas un fragment Python à compléter.",
+          "goal": "Relire le programme complet affiché juste au-dessus. Il reste unique pour faciliter la copie et éviter deux versions différentes.",
           "steps": [
             {
               "title": "Construire sans mélanger",
@@ -3275,7 +3275,8 @@
               "state": "Perte de deux scores égaux : 0.693147\nepoch 1: train=0.783676, val=0.444391\nepoch 2: train=0.325945, val=0.156877\nepoch 3: train=0.114880, val=0.050986\nepoch 4: train=0.040490, val=0.017714\nepoch 5: train=0.014973, val=0.007170\nRechargement identique : True"
             }
           ],
-          "result": "Exécution CPU vérifiée ; les sorties sont conservées dans scripts/verify/pytorch-additions-results.json."
+          "result": "Exécution CPU vérifiée ; les sorties sont conservées dans scripts/verify/pytorch-additions-results.json.",
+          "codeBlockIndex": 6
         },
         {
           "type": "plot",

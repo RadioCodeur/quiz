@@ -1,0 +1,4383 @@
+{
+  "python": "3.11.9",
+  "device": "cpu",
+  "torch_threads": 1,
+  "common_scaffold": "import numpy as np; import torch; import math; torch.manual_seed(0); np.random.seed(0)",
+  "versions": {
+    "torch": "2.10.0",
+    "numpy": "2.3.5",
+    "scipy": "1.16.3",
+    "librosa": "0.11.0",
+    "soundfile": "0.13.1"
+  },
+  "examples": [
+    {
+      "id": "python-scientifique/tableaux-et-indexation/1/first-example",
+      "source_sha256": "39cec5150b7bdff5e3a80a1105b6f988d16884164db56f3c89d1d99612205215",
+      "scaffold": "",
+      "assertions": "",
+      "status": "executed",
+      "seconds": 0.001204,
+      "stdout": "[-0.5, 0.5, -0.5, 0.5]\n[-1.0, 1.0]\n",
+      "expected_stdout_verified": true,
+      "values": {
+        "signal": [
+          -0.5,
+          0.5
+        ]
+      }
+    },
+    {
+      "id": "python-scientifique/tableaux-et-indexation/3/walkthrough",
+      "source_sha256": "f27fc8297644ad69d46140c377184ffd946821531f54cb5c911e3acee3b203f1",
+      "scaffold": "",
+      "assertions": "assert premier.shape == (4,) and une_ligne.shape == (1, 4)\nassert np.array_equal(fin, [[-.5, .5], [0., 1.]]) and Y.shape == (4, 2)",
+      "status": "executed",
+      "seconds": 0.001186,
+      "stdout": "",
+      "values": {
+        "S": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              -0.5,
+              0.5,
+              -0.5,
+              0.5
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "X": {
+          "shape": [
+            4,
+            6,
+            2
+          ],
+          "dtype": "float64",
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0
+        },
+        "Y": {
+          "shape": [
+            4,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "fin": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "premier": {
+          "shape": [
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            -0.5,
+            0.5,
+            -0.5,
+            0.5
+          ]
+        },
+        "une_ligne": {
+          "shape": [
+            1,
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              -0.5,
+              0.5,
+              -0.5,
+              0.5
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "python-scientifique/references-et-copies/2/walkthrough",
+      "source_sha256": "c67526ea4f469caae272cc40828ee7c5c403fd7587231d4218d8d1a1bda428b7",
+      "scaffold": "",
+      "assertions": "assert np.array_equal(signal, [-.5, .5, 0., .5])\nassert np.array_equal(copie, [-.5, 0.]) and np.shares_memory(signal, vue)\nassert not np.shares_memory(signal, copie)",
+      "status": "executed",
+      "seconds": 0.00064,
+      "stdout": "",
+      "values": {
+        "copie": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            -0.5,
+            0.0
+          ]
+        },
+        "signal": {
+          "shape": [
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            -0.5,
+            0.5,
+            0.0,
+            0.5
+          ]
+        },
+        "vue": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            0.0,
+            0.5
+          ]
+        }
+      }
+    },
+    {
+      "id": "python-scientifique/reduire-les-bons-axes/3/walkthrough",
+      "source_sha256": "d05463ad73e8a20557765082a8311cfa36387f5bb34089e7819a5a188d43a0d7",
+      "scaffold": "",
+      "assertions": "assert np.array_equal(rms, [.5, .5]) and np.array_equal(pics, [.5, 1.])\nassert np.array_equal(cretes, [1., 2.]) and np.array_equal(F, [[.5, 1.], [.5, 2.]])",
+      "status": "executed",
+      "seconds": 0.00079,
+      "stdout": "",
+      "values": {
+        "F": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.0
+            ],
+            [
+              0.5,
+              2.0
+            ]
+          ]
+        },
+        "S": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              -0.5,
+              0.5,
+              -0.5,
+              0.5
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "cretes": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            1.0,
+            2.0
+          ]
+        },
+        "pics": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            0.5,
+            1.0
+          ]
+        },
+        "rms": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            0.5,
+            0.5
+          ]
+        }
+      }
+    },
+    {
+      "id": "python-scientifique/broadcasting-et-algebre/3/walkthrough",
+      "source_sha256": "f32665b64fadcaeb863581f24557ad713a8e82b29e5a085309c701c18ea00921",
+      "scaffold": "",
+      "assertions": "assert np.array_equal(contributions, [[1., 1.], [1., 2.]])\nassert np.array_equal(scores, [[2.], [3.]])",
+      "status": "executed",
+      "seconds": 0.001384,
+      "stdout": "",
+      "values": {
+        "F": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.0
+            ],
+            [
+              0.5,
+              2.0
+            ]
+          ]
+        },
+        "W": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              2.0
+            ],
+            [
+              1.0
+            ]
+          ]
+        },
+        "contributions": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              1.0,
+              1.0
+            ],
+            [
+              1.0,
+              2.0
+            ]
+          ]
+        },
+        "scores": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              2.0
+            ],
+            [
+              3.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "python-scientifique/broadcasting-et-algebre/5/code",
+      "source_sha256": "9f5cd173bb82dc956e1ebf585be9987b4c62f4829e27827e92de64f17369ff0c",
+      "scaffold": "",
+      "assertions": "assert ecarts.shape == (2, 1, 2) and np.array_equal(dist2, [[0.], [1.]])",
+      "status": "executed",
+      "seconds": 0.000174,
+      "stdout": "",
+      "values": {
+        "X": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.0
+            ],
+            [
+              0.5,
+              2.0
+            ]
+          ]
+        },
+        "Y": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.0
+            ]
+          ]
+        },
+        "dist2": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0
+            ],
+            [
+              1.0
+            ]
+          ]
+        },
+        "ecarts": {
+          "shape": [
+            2,
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              [
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              [
+                0.0,
+                1.0
+              ]
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "python-scientifique/standardiser-et-preserver-precision/2/walkthrough",
+      "source_sha256": "eb479239b54073b95ec6bfee78739e844058a30ffec5797716fc3e27f36a93b3",
+      "scaffold": "",
+      "assertions": "assert np.array_equal(mu, [[.5, 1.5]]) and np.array_equal(sigma, [[0., .5]])\nassert np.array_equal(den, [[1e-8, .5]]) and np.array_equal(Z, [[0., -1.], [0., 1.]])",
+      "status": "executed",
+      "seconds": 0.00051,
+      "stdout": "",
+      "values": {
+        "F_train": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.0
+            ],
+            [
+              0.5,
+              2.0
+            ]
+          ]
+        },
+        "Z": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0,
+              -1.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "den": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              1e-08,
+              0.5
+            ]
+          ]
+        },
+        "mu": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.5
+            ]
+          ]
+        },
+        "sigma": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0,
+              0.5
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "python-scientifique/fonctions-et-arguments/2/walkthrough",
+      "source_sha256": "e9c54ac32d23014fe2748e8536283e5de183da62d61499a62297f6b7fb845c52",
+      "scaffold": "",
+      "assertions": "assert np.array_equal(z, [[0., 1.]])",
+      "status": "executed",
+      "seconds": 0.000129,
+      "stdout": "",
+      "values": {
+        "mu": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.5
+            ]
+          ]
+        },
+        "sigma": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0,
+              0.5
+            ]
+          ]
+        },
+        "z": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "python-scientifique/valeurs-par-defaut/1/first-example",
+      "source_sha256": "38e57a099a15c815c551c6495e37a1f970e1aba0051c736a9885d6da7dec5894",
+      "scaffold": "",
+      "assertions": "",
+      "status": "executed",
+      "seconds": 8.4e-05,
+      "stdout": "['voix_a.wav']\n['voix_a.wav', 'perc_b.wav']\n",
+      "expected_stdout_verified": true,
+      "values": {}
+    },
+    {
+      "id": "python-scientifique/valeurs-par-defaut/2/walkthrough",
+      "source_sha256": "04f1671151b36b83e8dd6e156c95c40d7848771133929dc3cb9cd91d38902986",
+      "scaffold": "",
+      "assertions": "assert a == [\"voix_a.wav\"] and b == [\"perc_b.wav\"] and a is not b",
+      "status": "executed",
+      "seconds": 9.6e-05,
+      "stdout": "",
+      "values": {
+        "a": [
+          "voix_a.wav"
+        ],
+        "b": [
+          "perc_b.wav"
+        ]
+      }
+    },
+    {
+      "id": "python-scientifique/parcourir-et-filtrer/1/walkthrough",
+      "source_sha256": "f8d857f9cf20b8bdd99f017dae876ccc840fd5bb7d4b58a94403c4626eac33d0",
+      "scaffold": "",
+      "assertions": "assert gardes == [(\"voix_a.wav\", 0), (\"voix_c.wav\", 0)]\nassert (numero, ligne) == (2, (\"voix_c.wav\", 0))",
+      "status": "executed",
+      "seconds": 0.000158,
+      "stdout": "1 ('voix_a.wav', 0)\n2 ('voix_c.wav', 0)\n",
+      "values": {
+        "cibles": [
+          0,
+          1,
+          0
+        ],
+        "durees": [
+          2.0,
+          0.2,
+          1.5
+        ],
+        "gardes": [
+          [
+            "voix_a.wav",
+            0
+          ],
+          [
+            "voix_c.wav",
+            0
+          ]
+        ],
+        "ligne": [
+          "voix_c.wav",
+          0
+        ],
+        "lignes": [
+          [
+            "voix_a.wav",
+            2.0,
+            0
+          ],
+          [
+            "perc_b.wav",
+            0.2,
+            1
+          ],
+          [
+            "voix_c.wav",
+            1.5,
+            0
+          ]
+        ],
+        "noms": [
+          "voix_a.wav",
+          "perc_b.wav",
+          "voix_c.wav"
+        ],
+        "numero": 2
+      }
+    },
+    {
+      "id": "python-scientifique/lire-fonctions-objets/1/walkthrough",
+      "source_sha256": "78249cc6e73f7a87d05dc47ffd1db03461cc1b4d3597e359a567b59cf3d7ca00",
+      "scaffold": "",
+      "assertions": "assert a.gain == .5 and b.gain == 1",
+      "status": "executed",
+      "seconds": 0.000158,
+      "stdout": "",
+      "values": {
+        "a": {
+          "gain": 0.5
+        },
+        "b": {
+          "gain": 1.0
+        }
+      }
+    },
+    {
+      "id": "python-scientifique/assembler-pipeline-scientifique/1/walkthrough",
+      "source_sha256": "6b35758bc91292e9a2ecf044d73531cdfe18a47f29324240348dc4936ece6dfd",
+      "scaffold": "",
+      "assertions": "assert np.array_equal(F, [[.5, 1.], [.5, 2.]])\nassert np.array_equal(X, [[0., -1.], [0., 1.]]) and np.array_equal(y, [0, 1])",
+      "status": "executed",
+      "seconds": 0.000913,
+      "stdout": "",
+      "values": {
+        "F": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.0
+            ],
+            [
+              0.5,
+              2.0
+            ]
+          ]
+        },
+        "S": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              -0.5,
+              0.5,
+              -0.5,
+              0.5
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "X": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0,
+              -1.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "cretes": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            1.0,
+            2.0
+          ]
+        },
+        "mu": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.5
+            ]
+          ]
+        },
+        "rms": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            0.5,
+            0.5
+          ]
+        },
+        "sigma": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0,
+              0.5
+            ]
+          ]
+        },
+        "y": {
+          "shape": [
+            2
+          ],
+          "dtype": "int64",
+          "values": [
+            0,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "id": "python-scientifique/valeurs-noms-et-calculs/1/walkthrough",
+      "source_sha256": "4b394fa6d993b084a55598bb9bae3d6457e4d8dd436cb8e01e1417eaef61e7d4",
+      "scaffold": "",
+      "assertions": "assert duree == 2 and nouvelle_duree == 1 and nombre == 16000",
+      "status": "executed",
+      "seconds": 5.9e-05,
+      "stdout": "",
+      "values": {
+        "duree": 2.0,
+        "frequence": 16000,
+        "nombre": 16000,
+        "nouvelle_duree": 1.0
+      }
+    },
+    {
+      "id": "python-scientifique/listes-et-indices/1/walkthrough",
+      "source_sha256": "1972221a9591be9124f0caf2324788eba1ca2af9f2d0067381d4e84a5308f615",
+      "scaffold": "",
+      "assertions": "assert premier == 10 and milieu == [20., 30., 40.] and un_sur_deux == [10., 30., 50.]",
+      "status": "executed",
+      "seconds": 8.9e-05,
+      "stdout": "",
+      "values": {
+        "milieu": [
+          20.0,
+          30.0,
+          40.0
+        ],
+        "premier": 10.0,
+        "signal": [
+          10.0,
+          20.0,
+          30.0,
+          40.0,
+          50.0
+        ],
+        "un_sur_deux": [
+          10.0,
+          30.0,
+          50.0
+        ]
+      }
+    },
+    {
+      "id": "audio-signal/echantillons-duree-canaux/4/walkthrough",
+      "source_sha256": "6129806c39c417df7b6984fbe0e4711ed46f23b90fd07942ab0f2b5a9df9b166",
+      "scaffold": "",
+      "assertions": "assert tuple(y.shape) == (192000,) and sr == 48000\nassert duree == 4 and len(premiere_demi_seconde) == 24000",
+      "status": "executed",
+      "seconds": 0.024567,
+      "stdout": "",
+      "values": {
+        "duree": 4.0,
+        "nb_echantillons": 192000,
+        "premiere_demi_seconde": {
+          "shape": [
+            24000
+          ],
+          "dtype": "float64",
+          "min": -0.7542724609375,
+          "max": 0.38348388671875,
+          "mean": 2.9743194580078124e-05
+        },
+        "sr": 48000,
+        "y": {
+          "shape": [
+            192000
+          ],
+          "dtype": "float64",
+          "min": -0.8021240234375,
+          "max": 0.46038818359375,
+          "mean": -0.000182618776957194
+        }
+      }
+    },
+    {
+      "id": "audio-signal/nyquist-repliement-reechantillonnage/4/walkthrough",
+      "source_sha256": "6323f55afdfa0383d79817597d4312b116d8a2822f77e2cba5dc60049edc2efc",
+      "scaffold": "",
+      "assertions": "assert len(x) == 192000 and len(y) == 64000\nassert len(x) / sr == len(y) / sr_y == 4",
+      "status": "executed",
+      "seconds": 1.958728,
+      "stdout": "",
+      "values": {
+        "sr": 48000,
+        "sr_y": 16000,
+        "x": {
+          "shape": [
+            192000
+          ],
+          "dtype": "float64",
+          "min": -0.8021240234375,
+          "max": 0.46038818359375,
+          "mean": -0.000182618776957194
+        },
+        "y": {
+          "shape": [
+            64000
+          ],
+          "dtype": "float64",
+          "min": -0.7974232448556817,
+          "max": 0.46046060107553594,
+          "mean": -0.00018255975697567694
+        }
+      }
+    },
+    {
+      "id": "audio-signal/amplitude-puissance-decibels/15/walkthrough",
+      "source_sha256": "a209833e1f06b746aa8de4ab5d70e783eba1e40593ba0a0e9ab620c3bdafde25",
+      "scaffold": "",
+      "assertions": "assert abs(peak - .8021240234375) < 1e-12\nassert abs(rms - .12074498188527522) < 1e-12\nassert abs(rms_dbfs + 18.362618186240418) < 1e-9\nassert abs(crest_db - 16.447448657415617) < 1e-9",
+      "status": "executed",
+      "seconds": 0.003214,
+      "stdout": "",
+      "values": {
+        "crest_db": 16.447448657415613,
+        "mean_square": 0.014579350650475439,
+        "peak": 0.8021240234375,
+        "peak_dbfs": -1.9151695288248036,
+        "rms": 0.12074498188527522,
+        "rms_dbfs": -18.362618186240418,
+        "sr": 48000,
+        "x": {
+          "shape": [
+            192000
+          ],
+          "dtype": "float64",
+          "min": -0.8021240234375,
+          "max": 0.46038818359375,
+          "mean": -0.000182618776957194
+        }
+      }
+    },
+    {
+      "id": "audio-signal/fourier-coefficients-frequences/5/walkthrough",
+      "source_sha256": "b06aaaeeed0ece2df64d7e9659e8a11707726fbf0729b4f67633d9be59995195",
+      "scaffold": "",
+      "assertions": "assert np.allclose(f, [0, 1000, 2000, 3000, 4000])\nassert np.allclose(modules, [0, 0, 4, 0, 0])",
+      "status": "executed",
+      "seconds": 0.001437,
+      "stdout": "",
+      "values": {
+        "D": {
+          "shape": [
+            5
+          ],
+          "dtype": "complex128",
+          "values": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              4.0,
+              -0.0
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "f": {
+          "shape": [
+            5
+          ],
+          "dtype": "float64",
+          "values": [
+            0.0,
+            1000.0,
+            2000.0,
+            3000.0,
+            4000.0
+          ]
+        },
+        "modules": {
+          "shape": [
+            5
+          ],
+          "dtype": "float64",
+          "values": [
+            0.0,
+            0.0,
+            4.0,
+            0.0,
+            0.0
+          ]
+        },
+        "sr": 8000,
+        "x": {
+          "shape": [
+            8
+          ],
+          "dtype": "float64",
+          "values": [
+            1.0,
+            0.0,
+            -1.0,
+            0.0,
+            1.0,
+            0.0,
+            -1.0,
+            0.0
+          ]
+        }
+      }
+    },
+    {
+      "id": "audio-signal/stft-fenetres-hop-trames/5/walkthrough",
+      "source_sha256": "e81014d38743c2d54d89ed1be3829a85039ca3ef3fdf667cdb29cfe0105c6bc8",
+      "scaffold": "",
+      "assertions": "assert sr == 16000 and len(y) == 16000 and D.shape == (201, 98)",
+      "status": "executed",
+      "seconds": 2.807443,
+      "stdout": "",
+      "values": {
+        "D": {
+          "shape": [
+            201,
+            98
+          ],
+          "dtype": "complex128"
+        },
+        "complet": {
+          "shape": [
+            64000
+          ],
+          "dtype": "float64",
+          "min": -0.79742431640625,
+          "max": 0.46044921875,
+          "mean": -0.00019785451889038085
+        },
+        "sr": 16000,
+        "y": {
+          "shape": [
+            16000
+          ],
+          "dtype": "float64",
+          "min": -0.75457763671875,
+          "max": 0.43115234375,
+          "mean": 0.0012802810668945312
+        }
+      }
+    },
+    {
+      "id": "audio-signal/resolution-fuite-zero-padding/3/walkthrough",
+      "source_sha256": "f26d01555172ca76500888667404533581c3e81bb37285110a02d563150331c5",
+      "scaffold": "import soundfile as sf\ny, sr = sf.read(\"public/media/audio/voice-resampled.wav\")\nassert sr == 16000 and len(y) >= 2048",
+      "assertions": "assert len(short) == 512 and len(long) == 2048\nassert spectrum_512.shape == (257,) and spectrum_padded.shape == spectrum_long.shape == (1025,)\nassert len(short) / sr == .032 and len(long) / sr == .128\nassert sr / 512 == 31.25",
+      "status": "executed",
+      "seconds": 0.000818,
+      "stdout": "",
+      "values": {
+        "long": {
+          "shape": [
+            2048
+          ],
+          "dtype": "float64",
+          "min": -0.000885009765625,
+          "max": 0.002166748046875,
+          "mean": 0.0001376420259475708
+        },
+        "short": {
+          "shape": [
+            512
+          ],
+          "dtype": "float64",
+          "min": -0.000457763671875,
+          "max": 0.00091552734375,
+          "mean": 8.195638656616211e-05
+        },
+        "spectrum_512": {
+          "shape": [
+            257
+          ],
+          "dtype": "complex128"
+        },
+        "spectrum_long": {
+          "shape": [
+            1025
+          ],
+          "dtype": "complex128"
+        },
+        "spectrum_padded": {
+          "shape": [
+            1025
+          ],
+          "dtype": "complex128"
+        }
+      }
+    },
+    {
+      "id": "audio-signal/mel-representation-compressee/4/walkthrough",
+      "source_sha256": "376da5476cc92f7f453194b45f94995319d150b5cf1b10566c83fea36cec1faa",
+      "scaffold": "",
+      "assertions": "assert D.shape == power.shape == (201, 98)\nassert weights.shape == (64, 201) and mel.shape == mel_db.shape == (64, 98)\nassert mel_db.min() >= -100.000001",
+      "status": "executed",
+      "seconds": 0.005259,
+      "stdout": "",
+      "values": {
+        "D": {
+          "shape": [
+            201,
+            98
+          ],
+          "dtype": "complex128"
+        },
+        "complet": {
+          "shape": [
+            64000
+          ],
+          "dtype": "float64",
+          "min": -0.79742431640625,
+          "max": 0.46044921875,
+          "mean": -0.00019785451889038085
+        },
+        "fenetre": {
+          "shape": [
+            400
+          ],
+          "dtype": "float64",
+          "min": 0.0,
+          "max": 1.0,
+          "mean": 0.5
+        },
+        "mel": {
+          "shape": [
+            64,
+            98
+          ],
+          "dtype": "float64",
+          "min": 7.953647176071184e-15,
+          "max": 0.00028342272864530005,
+          "mean": 3.485360517272506e-06
+        },
+        "mel_db": {
+          "shape": [
+            64,
+            98
+          ],
+          "dtype": "float64",
+          "min": -100.0,
+          "max": -35.47565325120906,
+          "mean": -87.0739552516384
+        },
+        "power": {
+          "shape": [
+            201,
+            98
+          ],
+          "dtype": "float64",
+          "min": 1.6469767078563632e-15,
+          "max": 0.01608267422338146,
+          "mean": 5.25254923034919e-05
+        },
+        "sr": 16000,
+        "weights": {
+          "shape": [
+            64,
+            201
+          ],
+          "dtype": "float32",
+          "min": 0.0,
+          "max": 0.020822176709771156,
+          "mean": 0.00012427692126948386
+        },
+        "y": {
+          "shape": [
+            16000
+          ],
+          "dtype": "float64",
+          "min": -0.75457763671875,
+          "max": 0.43115234375,
+          "mean": 0.0012802810668945312
+        }
+      }
+    },
+    {
+      "id": "audio-signal/phase-canaux-annulations/3/walkthrough",
+      "source_sha256": "fc23b37318bfc6e15e9b70b8e8e9812ced767747ed7ea15ecc725e800584bba3",
+      "scaffold": "",
+      "assertions": "assert stereo.shape == (2, 4) and np.array_equal(mono, np.zeros(4))",
+      "status": "executed",
+      "seconds": 0.000306,
+      "stdout": "",
+      "values": {
+        "left": {
+          "shape": [
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            1.0,
+            0.0,
+            -1.0,
+            0.0
+          ]
+        },
+        "mono": {
+          "shape": [
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "right": {
+          "shape": [
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            -1.0,
+            -0.0,
+            1.0,
+            -0.0
+          ]
+        },
+        "stereo": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              1.0,
+              0.0,
+              -1.0,
+              0.0
+            ],
+            [
+              -1.0,
+              -0.0,
+              1.0,
+              -0.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "audio-signal/reconstruction-streaming-limites/3/walkthrough",
+      "source_sha256": "c94e6ab0a13b161bb91b7fd8069eb67d9a6df0424fdd9ecc09e22e699d50d14f",
+      "scaffold": "import soundfile as sf\ny, sr = sf.read(\"public/media/audio/voice-resampled.wav\")\nassert sr == 16000",
+      "assertions": "assert len(y_hat) == len(y_estimated) == len(y)\nround_trip_max_error = float(np.max(np.abs(y - y_hat)))\nassert round_trip_max_error < 1e-10\nassert np.isfinite(y_estimated).all() and future_context_seconds == .032",
+      "status": "executed",
+      "seconds": 0.43228,
+      "stdout": "",
+      "values": {
+        "D": {
+          "shape": [
+            257,
+            501
+          ],
+          "dtype": "complex128"
+        },
+        "future_context_seconds": 0.032,
+        "n": 64000,
+        "round_trip_max_error": 3.3306690738754696e-16,
+        "y_estimated": {
+          "shape": [
+            64000
+          ],
+          "dtype": "float64",
+          "min": -0.6674015133704814,
+          "max": 0.6973222402305196,
+          "mean": -0.0007758786404539402
+        },
+        "y_hat": {
+          "shape": [
+            64000
+          ],
+          "dtype": "float64",
+          "min": -0.7974243164062499,
+          "max": 0.46044921874999994,
+          "mean": -0.0001978545188903808
+        }
+      }
+    },
+    {
+      "id": "audio-ml/tache-cibles-pertes/6/walkthrough",
+      "source_sha256": "90288e9993ec4d796a16f1bf85498b7d08b9f38e631acb198b4e75e712a86617",
+      "scaffold": "",
+      "assertions": "assert tuple(logits.shape) == (1, 2)\nassert torch.allclose(probabilities, torch.tensor([[.5, .75]]), atol=1e-6)\nassert torch.isfinite(loss)",
+      "status": "executed",
+      "seconds": 0.093927,
+      "stdout": "",
+      "values": {
+        "logits": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true,
+          "values": [
+            [
+              0.0,
+              1.0986123085021973
+            ]
+          ]
+        },
+        "loss": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": true,
+          "values": 0.4904146194458008
+        },
+        "probabilities": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true,
+          "values": [
+            [
+              0.5,
+              0.7500000596046448
+            ]
+          ]
+        },
+        "target": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              0.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "audio-ml/pretraitement-entrees-coherentes/5/walkthrough",
+      "source_sha256": "aa00f005eac886cacfc2e5f5893464161dbceb99c3f57c926b2b7ca47b0c2438",
+      "scaffold": "",
+      "assertions": "assert mean.item() == 2 and std.item() == 1 and scaled.item() == 2",
+      "status": "executed",
+      "seconds": 0.001545,
+      "stdout": "",
+      "values": {
+        "mean": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": 2.0
+        },
+        "new_value": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": 4.0
+        },
+        "scaled": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": 2.0
+        },
+        "std": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": 1.0
+        },
+        "train": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            1.0,
+            3.0
+          ]
+        }
+      }
+    },
+    {
+      "id": "audio-ml/durees-padding-masques/4/walkthrough",
+      "source_sha256": "67a7aa424dfeacdf820b1de54864ccfa926f9a5b0e46067f9ddafad4cc95dc4d",
+      "scaffold": "",
+      "assertions": "assert naive.item() == 1.5 and pooled.item() == 3",
+      "status": "executed",
+      "seconds": 0.000392,
+      "stdout": "",
+      "values": {
+        "mask": {
+          "shape": [
+            1,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              1.0,
+              1.0,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "naive": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              1.5
+            ]
+          ]
+        },
+        "pooled": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              3.0
+            ]
+          ]
+        },
+        "valid": {
+          "shape": [
+            1,
+            4
+          ],
+          "dtype": "torch.bool",
+          "requires_grad": false,
+          "values": [
+            [
+              true,
+              true,
+              false,
+              false
+            ]
+          ]
+        },
+        "x": {
+          "shape": [
+            1,
+            4,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                2.0
+              ],
+              [
+                4.0
+              ],
+              [
+                0.0
+              ],
+              [
+                0.0
+              ]
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "audio-ml/embeddings-transfert-domaines/4/walkthrough",
+      "source_sha256": "77ff952b60a8ca9afa490df1147b6b31e3f833cac6352ab876e554f3e537689b",
+      "scaffold": "encoder = torch.nn.Sequential(torch.nn.Linear(4, 512), torch.nn.Tanh())\nx = torch.arange(8, dtype=torch.float32).reshape(2, 4) / 8\ntarget = torch.tensor([[1., 0.], [0., 1.]])",
+      "assertions": "assert tuple(embeddings.shape) == (2, 512)\nassert all(p.grad is None and not p.requires_grad for p in encoder.parameters())\nassert all(p.grad is not None for p in head.parameters())",
+      "status": "executed",
+      "seconds": 1.979276,
+      "stdout": "",
+      "values": {
+        "embeddings": {
+          "shape": [
+            2,
+            512
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "min": -0.8825556039810181,
+          "max": 0.855941891670227,
+          "mean": -0.0139927683524661
+        },
+        "loss": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": true,
+          "values": 0.7133527994155884
+        },
+        "p": {
+          "shape": [
+            512
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "min": -0.4990242123603821,
+          "max": 0.4952441453933716,
+          "mean": -0.013401647098362446
+        }
+      }
+    },
+    {
+      "id": "audio-ml/architectures-axes-contexte/4/walkthrough",
+      "source_sha256": "4c883ac50987454d12a93d7b7755786e17c0c8156b99f354c990754f630298d5",
+      "scaffold": "",
+      "assertions": "assert tuple(h.shape) == (8, 16, 15996)\nassert tuple(z.shape) == (8, 8, 62, 98)",
+      "status": "executed",
+      "seconds": 0.017025,
+      "stdout": "",
+      "values": {
+        "S": {
+          "shape": [
+            8,
+            64,
+            100
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "min": -4.137790203094482,
+          "max": 4.256875991821289,
+          "mean": -0.0035735487977373026
+        },
+        "h": {
+          "shape": [
+            8,
+            16,
+            15996
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true,
+          "min": -3.9039437770843506,
+          "max": 3.2127530574798584,
+          "mean": 0.03624543160238042
+        },
+        "x": {
+          "shape": [
+            8,
+            16000
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "min": -4.34328031539917,
+          "max": 4.562695503234863,
+          "mean": -0.0031605913441713797
+        },
+        "z": {
+          "shape": [
+            8,
+            8,
+            62,
+            98
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true,
+          "min": -2.557180166244507,
+          "max": 3.2728703022003174,
+          "mean": 0.07676105436452287
+        }
+      }
+    },
+    {
+      "id": "audio-ml/annotations-faibles-agregation/3/walkthrough",
+      "source_sha256": "bbeb2762a6cb1a198572dc7452821a974144995ba83602348f9e79418a1b00a5",
+      "scaffold": "",
+      "assertions": "assert abs(mean_score.item() - .3066666666667) < 1e-6\nassert abs(max_score.item() - .9) < 1e-6",
+      "status": "executed",
+      "seconds": 0.000369,
+      "stdout": "",
+      "values": {
+        "max_score": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": 0.8999999761581421
+        },
+        "mean_score": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": 0.30666664242744446
+        },
+        "p": {
+          "shape": [
+            6
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            0.009999999776482582,
+            0.009999999776482582,
+            0.8999999761581421,
+            0.8999999761581421,
+            0.009999999776482582,
+            0.009999999776482582
+          ]
+        }
+      }
+    },
+    {
+      "id": "audio-ml/augmentations-cibles-validation/5/walkthrough",
+      "source_sha256": "cce095ab6606938b4b3ebcf63483fdae53c0b6699ae03dded21be4b215503acc",
+      "scaffold": "sr = 16000\n# Two distinct generated test signals, with the durations stated in the lesson.\ny = np.sin(2 * np.pi * 220 * np.arange(sr * 10) / sr).astype(np.float64)\nnote = np.sin(2 * np.pi * 261.625565 * np.arange(sr) / sr).astype(np.float64)",
+      "assertions": "assert len(y) == 160000 and len(fast) == 128000\nassert new_bpm == 125 and len(up) == len(note) and new_midi == 62",
+      "status": "executed",
+      "seconds": 1.711528,
+      "stdout": "",
+      "values": {
+        "fast": {
+          "shape": [
+            128000
+          ],
+          "dtype": "float64",
+          "min": -1.005361791042245,
+          "max": 1.005423021100784,
+          "mean": 2.6066030068908203e-05
+        },
+        "new_bpm": 125.0,
+        "new_midi": 62,
+        "up": {
+          "shape": [
+            16000
+          ],
+          "dtype": "float64",
+          "min": -1.0986964702606201,
+          "max": 1.098036766052246,
+          "mean": 0.0003310273716924712
+        }
+      }
+    },
+    {
+      "id": "audio-ml/masquage-mixup-representations/5/walkthrough",
+      "source_sha256": "0a41e7804c5dc9e9a8e8efc740be1b876aeabd23ea1867031afad0bb4ee4195d",
+      "scaffold": "x_a = torch.tensor([[1., 2.], [3., 4.]])\nx_b = torch.tensor([[5., 6.], [7., 8.]])\ny_a = torch.tensor([1., 0.])\ny_b = torch.tensor([0., 1.])",
+      "assertions": "assert torch.equal(y_mix, torch.tensor([.25, .75]))\nassert torch.equal(x_mix, torch.tensor([[4., 5.], [6., 7.]]))",
+      "status": "executed",
+      "seconds": 0.000374,
+      "stdout": "",
+      "values": {
+        "lam": 0.25,
+        "x_mix": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              4.0,
+              5.0
+            ],
+            [
+              6.0,
+              7.0
+            ]
+          ]
+        },
+        "y_mix": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            0.25,
+            0.75
+          ]
+        }
+      }
+    },
+    {
+      "id": "audio-ml/similarites-contraste-attention/3/first-example",
+      "source_sha256": "ec3bf0c559259f1b3000f18f36a79ec543605f5afbf8bc305d36448b54844f32",
+      "scaffold": "",
+      "assertions": "",
+      "status": "executed",
+      "seconds": 0.000973,
+      "stdout": "0.6\n0.6\n",
+      "expected_stdout_verified": true,
+      "values": {
+        "a": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            1.0,
+            0.0
+          ]
+        },
+        "b": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            0.6,
+            0.8
+          ]
+        }
+      }
+    },
+    {
+      "id": "audio-ml/similarites-contraste-attention/3/first-example/variant",
+      "source_sha256": "96ff14de45a74df6ae0b6db342b3a9dfd20ef68efb2ece8c011bad5f597154e6",
+      "scaffold": "",
+      "assertions": "",
+      "status": "executed",
+      "seconds": 0.000105,
+      "stdout": "1.2\n0.6\n",
+      "expected_stdout_verified": true,
+      "values": {
+        "a": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            1.0,
+            0.0
+          ]
+        },
+        "b": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            1.2,
+            1.6
+          ]
+        }
+      },
+      "change": "Remplacer seulement b par 2*b, sans changer sa direction.",
+      "explicit_replacement": {
+        "before": "b = np.array([0.6, 0.8])",
+        "after": "b = 2 * np.array([0.6, 0.8])"
+      }
+    },
+    {
+      "id": "audio-ml/similarites-contraste-attention/8/walkthrough",
+      "source_sha256": "8e93c362e8acb7fa6c6641751683860ac9c50361e33b25d34857529b00f67da3",
+      "scaffold": "",
+      "assertions": "assert torch.allclose(weights, torch.tensor([.75, .25]), atol=1e-6)\nassert abs(summary.item() - 4) < 1e-6 and summary_valid.item() == 2",
+      "status": "executed",
+      "seconds": 0.0021,
+      "stdout": "",
+      "values": {
+        "masked": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            1.0986123085021973,
+            "-Infinity"
+          ]
+        },
+        "scores": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            1.0986123085021973,
+            0.0
+          ]
+        },
+        "summary": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": 4.0
+        },
+        "summary_valid": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": 2.0
+        },
+        "valid": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.bool",
+          "requires_grad": false,
+          "values": [
+            true,
+            false
+          ]
+        },
+        "values": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            2.0,
+            10.0
+          ]
+        },
+        "weights": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            0.7500000596046448,
+            0.25
+          ]
+        }
+      }
+    },
+    {
+      "id": "audio-ml/similarites-contraste-attention/10/code",
+      "source_sha256": "12b3697267481a2d0d2a186a3155429440ca7f0a390774b7360e1cb6580d441b",
+      "scaffold": "D = 8\nx = torch.arange(48, dtype=torch.float32).reshape(2, 3, D) / 10\nvalid = torch.tensor([[True, True, False], [True, True, True]])",
+      "assertions": "assert tuple(y.shape) == (2, 3, 8)\nassert torch.allclose(_[0, :, 2], torch.zeros(3))",
+      "status": "executed",
+      "seconds": 0.003902,
+      "stdout": "",
+      "values": {
+        "y": {
+          "shape": [
+            2,
+            3,
+            8
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true,
+          "min": -0.5902830958366394,
+          "max": 0.49736881256103516,
+          "mean": 0.051023522430720426
+        }
+      }
+    },
+    {
+      "id": "audio-ml/transformer-complet/8/walkthrough",
+      "source_sha256": "884af461565ecb8e59d455d765e0af3e8e4316d3ac10b9cea156aeed9a59f3bc",
+      "scaffold": "",
+      "assertions": "",
+      "status": "executed",
+      "seconds": 0.006812,
+      "stdout": "position_zero [0.0, 1.0, 0.0, 1.0]\nentree_zero [1.0, 1.0, 1.0, 1.0]\nmoyenne_variance 2.0 1.0\nnormalisation [-0.999995, 0.999995]\ndimension_tete 2\nformes_couches [[1, 3, 4], [1, 3, 4]]\nforme_poids [1, 2, 3, 3]\nmasque [[0, 1, 1], [0, 0, 1], [0, 0, 0]]\necart_passe_causal 0.0\necart_passe_libre 0.204499\n",
+      "values": {
+        "causal": {
+          "shape": [
+            1,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                0.5037751197814941,
+                0.7017374038696289,
+                0.6359087228775024,
+                1.164050817489624
+              ],
+              [
+                1.7025349140167236,
+                0.009454499930143356,
+                0.964293360710144,
+                1.7055538892745972
+              ],
+              [
+                12.062980651855469,
+                -8.720215797424316,
+                6.675471782684326,
+                -1.921000599861145
+              ]
+            ]
+          ]
+        },
+        "ecart_causal": 0.0,
+        "ecart_libre": 0.20449918508529663,
+        "formes": [
+          [
+            1,
+            3,
+            4
+          ],
+          [
+            1,
+            3,
+            4
+          ]
+        ],
+        "libre": {
+          "shape": [
+            1,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                1.2585736513137817,
+                0.22255617380142212,
+                1.1420230865478516,
+                1.7162914276123047
+              ],
+              [
+                2.0334105491638184,
+                0.007800966501235962,
+                1.0661866664886475,
+                1.949297308921814
+              ],
+              [
+                2.0495855808258057,
+                -0.955166220664978,
+                1.0796557664871216,
+                1.9270802736282349
+              ]
+            ]
+          ]
+        },
+        "libre_modifie": {
+          "shape": [
+            1,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                1.2396509647369385,
+                0.42705535888671875,
+                0.9381298422813416,
+                1.5625580549240112
+              ],
+              [
+                2.1096956729888916,
+                0.11029795557260513,
+                0.8712217807769775,
+                1.8134275674819946
+              ],
+              [
+                12.163302421569824,
+                -8.55550479888916,
+                6.7559990882873535,
+                -1.7738133668899536
+              ]
+            ]
+          ]
+        },
+        "masque": {
+          "shape": [
+            3,
+            3
+          ],
+          "dtype": "torch.bool",
+          "requires_grad": false,
+          "values": [
+            [
+              false,
+              true,
+              true
+            ],
+            [
+              false,
+              false,
+              true
+            ],
+            [
+              false,
+              false,
+              false
+            ]
+          ]
+        },
+        "mini": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            1.0,
+            3.0
+          ]
+        },
+        "modifie": {
+          "shape": [
+            1,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              [
+                1.8414709568023682,
+                0.5403023362159729,
+                1.0099998712539673,
+                0.9999499917030334
+              ],
+              [
+                11.909297943115234,
+                -8.416147232055664,
+                7.019998550415039,
+                -3.000200033187866
+              ]
+            ]
+          ]
+        },
+        "normalise": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true,
+          "values": [
+            -0.9999949932098389,
+            0.9999949932098389
+          ]
+        },
+        "p": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            0.0,
+            1.0,
+            2.0
+          ]
+        },
+        "poids": {
+          "shape": [
+            1,
+            2,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                [
+                  1.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.467512845993042,
+                  0.532487154006958,
+                  0.0
+                ],
+                [
+                  0.28989365696907043,
+                  0.3415413200855255,
+                  0.36856502294540405
+                ]
+              ],
+              [
+                [
+                  1.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.292481392621994,
+                  0.7075185775756836,
+                  0.0
+                ],
+                [
+                  0.19775891304016113,
+                  0.3975931406021118,
+                  0.40464794635772705
+                ]
+              ]
+            ]
+          ]
+        },
+        "position": {
+          "shape": [
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.8414709568023682,
+              0.5403023362159729,
+              0.009999833069741726,
+              0.9999499917030334
+            ],
+            [
+              0.9092974066734314,
+              -0.416146844625473,
+              0.019998665899038315,
+              0.9998000264167786
+            ]
+          ]
+        },
+        "sortie": {
+          "shape": [
+            1,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                0.5037751197814941,
+                0.7017374038696289,
+                0.6359087228775024,
+                1.164050817489624
+              ],
+              [
+                1.7025349140167236,
+                0.009454499930143356,
+                0.964293360710144,
+                1.7055538892745972
+              ],
+              [
+                1.9237747192382812,
+                -1.0912690162658691,
+                1.045729160308838,
+                1.794055700302124
+              ]
+            ]
+          ]
+        },
+        "tokens": {
+          "shape": [
+            1,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                1.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                1.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                1.0,
+                0.0,
+                1.0,
+                0.0
+              ]
+            ]
+          ]
+        },
+        "x": {
+          "shape": [
+            1,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              [
+                1.8414709568023682,
+                0.5403023362159729,
+                1.0099998712539673,
+                0.9999499917030334
+              ],
+              [
+                1.9092974662780762,
+                -0.416146844625473,
+                1.0199986696243286,
+                0.9998000264167786
+              ]
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "generation-controle/quantification-et-tokens/1/first-example",
+      "source_sha256": "cdbe409df8b970956deff5ecd05e3592f67ae1290f1bf6d071873dda4ed20ea4",
+      "scaffold": "",
+      "assertions": "",
+      "status": "executed",
+      "seconds": 0.000115,
+      "stdout": "1 2.0\n",
+      "expected_stdout_verified": true,
+      "values": {
+        "dictionary": [
+          0.0,
+          2.0,
+          4.0
+        ],
+        "index": 1,
+        "value": 2.6
+      }
+    },
+    {
+      "id": "generation-controle/quantification-et-tokens/1/first-example/variant",
+      "source_sha256": "c9a21b4ba4f6a963339f43feb82bd1d6b5cfa1bb82e1a6fdefacf8390e0ea52d",
+      "scaffold": "",
+      "assertions": "",
+      "status": "executed",
+      "seconds": 7.3e-05,
+      "stdout": "2 4.0\n",
+      "expected_stdout_verified": true,
+      "values": {
+        "dictionary": [
+          0.0,
+          2.0,
+          4.0
+        ],
+        "index": 2,
+        "value": 3.6
+      },
+      "change": "Remplacer seulement value = 2.6 par value = 3.6.",
+      "explicit_replacement": {
+        "before": "value = 2.6",
+        "after": "value = 3.6"
+      }
+    },
+    {
+      "id": "generation-controle/codecs-neuronaux-rvq/4/walkthrough",
+      "source_sha256": "1652c6e6094d2501fe0cec8cbc56d0b319be683970622005e139730b85f54f9e",
+      "scaffold": "",
+      "assertions": "",
+      "status": "executed",
+      "seconds": 0.000993,
+      "stdout": "étage 1 : indices [2, 0]\n  résidu : [-0.1, 0.2]\nétage 2 : indices [1, 2]\n  résidu : [-0.1, -0.05]\nreconstruction : [1.0, -0.75]\nerreur quadratique moyenne : 0.006250\n",
+      "values": {
+        "book": {
+          "shape": [
+            3,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              -0.25
+            ],
+            [
+              0.0
+            ],
+            [
+              0.25
+            ]
+          ]
+        },
+        "distances": {
+          "shape": [
+            2,
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              0.022499993443489075,
+              0.010000004433095455,
+              0.12250001728534698
+            ],
+            [
+              0.20249998569488525,
+              0.03999999538064003,
+              0.002500001108273864
+            ]
+          ]
+        },
+        "indices": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false,
+          "values": [
+            1,
+            2
+          ]
+        },
+        "mse": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": 0.006250002887099981
+        },
+        "quantized": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              0.0
+            ],
+            [
+              0.25
+            ]
+          ]
+        },
+        "reconstruction": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              1.0
+            ],
+            [
+              -0.75
+            ]
+          ]
+        },
+        "residual": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              -0.10000002384185791
+            ],
+            [
+              -0.050000011920928955
+            ]
+          ]
+        },
+        "stage": 2,
+        "z": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              0.8999999761581421
+            ],
+            [
+              -0.800000011920929
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "generation-controle/symbolique-midi-et-audio/5/walkthrough",
+      "source_sha256": "89ab118c1dde9dafb97a6f3fa6d30901925d2ece03e3acdda0e2cc0c5ff6ba8f",
+      "scaffold": "",
+      "assertions": "",
+      "status": "executed",
+      "seconds": 0.000364,
+      "stdout": "jetons : [6, 0, 4, 2, 7, 1, 5, 3]\nnote 60 : début 0.00 s ; durée 0.25 s ; vélocité 80\nnote 64 : début 0.25 s ; durée 0.50 s ; vélocité 100\ndurée totale : 0.75 s\nreprésentations : 8 jetons ; 12000 échantillons mono à 16000 Hz\n",
+      "values": {
+        "duration": 0.5,
+        "duration_seconds": 0.75,
+        "events": [
+          [
+            "VELOCITY",
+            80
+          ],
+          [
+            "NOTE_ON",
+            60
+          ],
+          [
+            "SHIFT",
+            240
+          ],
+          [
+            "NOTE_OFF",
+            60
+          ],
+          [
+            "VELOCITY",
+            100
+          ],
+          [
+            "NOTE_ON",
+            64
+          ],
+          [
+            "SHIFT",
+            480
+          ],
+          [
+            "NOTE_OFF",
+            64
+          ]
+        ],
+        "kind": "NOTE_OFF",
+        "note_velocity": 100,
+        "notes": [
+          [
+            60,
+            0.0,
+            0.25,
+            80
+          ],
+          [
+            64,
+            0.25,
+            0.5,
+            100
+          ]
+        ],
+        "pitch": 64,
+        "sample_count": 12000,
+        "sample_rate": 16000,
+        "seconds_per_tick": 0.0010416666666666667,
+        "start": 0.25,
+        "tempo": 120,
+        "ticks": 720,
+        "ticks_per_beat": 480,
+        "token": 3,
+        "tokens": {
+          "shape": [
+            8
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false,
+          "values": [
+            6,
+            0,
+            4,
+            2,
+            7,
+            1,
+            5,
+            3
+          ]
+        },
+        "value": 64,
+        "velocity": 100,
+        "vocabulary": [
+          [
+            "NOTE_ON",
+            60
+          ],
+          [
+            "NOTE_ON",
+            64
+          ],
+          [
+            "NOTE_OFF",
+            60
+          ],
+          [
+            "NOTE_OFF",
+            64
+          ],
+          [
+            "SHIFT",
+            240
+          ],
+          [
+            "SHIFT",
+            480
+          ],
+          [
+            "VELOCITY",
+            80
+          ],
+          [
+            "VELOCITY",
+            100
+          ]
+        ]
+      }
+    },
+    {
+      "id": "generation-controle/autoregression-et-causalite/4/walkthrough",
+      "source_sha256": "5be76b71312818353371436cedeabaebd2feb26a50d58388b53283a424ae532a",
+      "scaffold": "class MiniCausalModel(torch.nn.Module):\n    \"\"\"Small randomly initialized causal model, not a trained audio generator.\"\"\"\n    def __init__(self):\n        super().__init__()\n        self.embedding = torch.nn.Embedding(10, 4)\n        self.layer = torch.nn.TransformerEncoderLayer(\n            d_model=4, nhead=2, dim_feedforward=8, dropout=0., batch_first=True)\n        self.head = torch.nn.Linear(4, 10)\n    def forward(self, tokens):\n        length = tokens.shape[1]\n        causal = torch.ones(length, length, dtype=torch.bool).triu(diagonal=1)\n        return self.head(self.layer(self.embedding(tokens), src_mask=causal))\nmodel = MiniCausalModel()",
+      "assertions": "assert tuple(tokens.shape) == (1, 4)\nassert tuple(inputs.shape) == tuple(targets.shape) == (1, 3)\nassert tuple(logits.shape) == (1, 3, 10)\nassert targets.tolist() == [[4, 7, 9]]",
+      "status": "executed",
+      "seconds": 0.001996,
+      "stdout": "",
+      "values": {
+        "inputs": {
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false,
+          "values": [
+            [
+              0,
+              4,
+              7
+            ]
+          ]
+        },
+        "logits": {
+          "shape": [
+            1,
+            3,
+            10
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true,
+          "min": -0.9332331418991089,
+          "max": 1.158196210861206,
+          "mean": -0.11776914522051811
+        },
+        "targets": {
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false,
+          "values": [
+            [
+              4,
+              7,
+              9
+            ]
+          ]
+        },
+        "tokens": {
+          "shape": [
+            1,
+            4
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false,
+          "values": [
+            [
+              0,
+              4,
+              7,
+              9
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "generation-controle/echantillonnage-contexte-et-cout/3/walkthrough",
+      "source_sha256": "4143bd33f9cc3ee7b00b36ce1cfa3bf13068382099b5b14bf03c8dd358e12620",
+      "scaffold": "",
+      "assertions": "assert torch.allclose(p1, torch.tensor([.119202922, .880797078]), atol=1e-6)\nassert torch.allclose(p2, torch.tensor([.01798621, .98201379]), atol=1e-6)",
+      "status": "executed",
+      "seconds": 0.00041,
+      "stdout": "",
+      "values": {
+        "logits": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            0.0,
+            2.0
+          ]
+        },
+        "p1": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            0.11920291185379028,
+            0.8807970285415649
+          ]
+        },
+        "p2": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            0.01798621006309986,
+            0.9820137619972229
+          ]
+        }
+      }
+    },
+    {
+      "id": "generation-controle/controle-multimodal-formes/9/walkthrough",
+      "source_sha256": "9019e66d13bcd56594fa133e0ece3f534d2f06265c5384ea0735c127a77bac7b",
+      "scaffold": "",
+      "assertions": "",
+      "status": "executed",
+      "seconds": 0.00439,
+      "stdout": "entrees {'audio': [1, 4, 4], 'texte': [1, 2, 4], 'reference': [1, 3, 4], 'MIDI': [1, 2, 4]}\nconditions [1, 7, 4]\ncroisee [1, 4, 4] poids [1, 2, 4, 7]\nconcat_positions [1, 11, 4] audio_retenu [1, 4, 4]\nindices_evenements [0, 3]\nconcat_caracteristiques [1, 4, 6] projection [1, 4, 4]\nFiLM [1, 4] [1, 1, 4] [1, 1, 4] [1, 4, 4]\nFiLM_manuel [1.0, 2.5]\n",
+      "values": {
+        "audio": {
+          "shape": [
+            1,
+            4,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                1.0,
+                3.0,
+                0.0,
+                0.0
+              ],
+              [
+                2.0,
+                4.0,
+                1.0,
+                0.0
+              ],
+              [
+                3.0,
+                5.0,
+                0.0,
+                1.0
+              ],
+              [
+                4.0,
+                6.0,
+                1.0,
+                1.0
+              ]
+            ]
+          ]
+        },
+        "audio_apres_concat": {
+          "shape": [
+            1,
+            4,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                0.46321311593055725,
+                0.13071519136428833,
+                0.05766880512237549,
+                0.12036030739545822
+              ],
+              [
+                0.5077601671218872,
+                0.09365774691104889,
+                0.0759350135922432,
+                0.09822817891836166
+              ],
+              [
+                0.39017385244369507,
+                0.03293999284505844,
+                0.06717605888843536,
+                0.03064936399459839
+              ],
+              [
+                0.4477423429489136,
+                0.01989644765853882,
+                0.08378861099481583,
+                0.02767857164144516
+              ]
+            ]
+          ]
+        },
+        "beta": {
+          "shape": [
+            1,
+            1,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                0.3813866674900055,
+                0.21571505069732666,
+                0.004761010408401489,
+                -0.4934644103050232
+              ]
+            ]
+          ]
+        },
+        "caracteristiques": {
+          "shape": [
+            1,
+            4,
+            6
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                1.0,
+                3.0,
+                0.0,
+                0.0,
+                1.0,
+                0.800000011920929
+              ],
+              [
+                2.0,
+                4.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                3.0,
+                5.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                4.0,
+                6.0,
+                1.0,
+                1.0,
+                1.0,
+                0.6000000238418579
+              ]
+            ]
+          ]
+        },
+        "conditions": {
+          "shape": [
+            1,
+            7,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true,
+          "min": -0.5885648727416992,
+          "max": 1.0,
+          "mean": 0.20419454814067908
+        },
+        "croisee": {
+          "shape": [
+            1,
+            4,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                -0.06376689672470093,
+                -0.014215514063835144,
+                0.03410777449607849,
+                -0.06841634213924408
+              ],
+              [
+                -0.06054436042904854,
+                -0.0010740237776190042,
+                0.04884340986609459,
+                -0.052059486508369446
+              ],
+              [
+                -0.06379047781229019,
+                -0.0010944097302854061,
+                0.04740198329091072,
+                -0.05210842564702034
+              ],
+              [
+                -0.06133827567100525,
+                0.012210800312459469,
+                0.062369558960199356,
+                -0.0356421023607254
+              ]
+            ]
+          ]
+        },
+        "evenements": {
+          "shape": [
+            1,
+            2,
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                0.0,
+                0.4724409580230713,
+                0.800000011920929
+              ],
+              [
+                1.5,
+                0.5039370059967041,
+                0.6000000238418579
+              ]
+            ]
+          ]
+        },
+        "gamma": {
+          "shape": [
+            1,
+            1,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                -0.5338070392608643,
+                -0.6989916563034058,
+                -0.0029768645763397217,
+                -0.4273793399333954
+              ]
+            ]
+          ]
+        },
+        "globale": {
+          "shape": [
+            1,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ]
+          ]
+        },
+        "grille": {
+          "shape": [
+            1,
+            4,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                1.0,
+                0.800000011920929
+              ],
+              [
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                0.6000000238418579
+              ]
+            ]
+          ]
+        },
+        "indices": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false,
+          "values": [
+            0,
+            3
+          ]
+        },
+        "local": {
+          "shape": [
+            1,
+            4,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                -0.4000019133090973,
+                -1.4280707836151123,
+                -0.03512442111968994,
+                0.3154425024986267
+              ],
+              [
+                -0.7232425212860107,
+                -1.177208662033081,
+                0.8388420343399048,
+                -0.18110284209251404
+              ],
+              [
+                -1.0212774276733398,
+                -1.9152874946594238,
+                1.0365102291107178,
+                -0.5817806124687195
+              ],
+              [
+                -0.8011927604675293,
+                -2.8040919303894043,
+                0.7453625202178955,
+                -0.6682531833648682
+              ]
+            ]
+          ]
+        },
+        "manuel": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            1.0,
+            2.5
+          ]
+        },
+        "midi": {
+          "shape": [
+            1,
+            2,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true,
+          "values": [
+            [
+              [
+                -0.2633748948574066,
+                -0.5541244745254517,
+                -0.11704520881175995,
+                0.07820068299770355
+              ],
+              [
+                -0.25060975551605225,
+                -0.274795264005661,
+                -0.5885648727416992,
+                0.6877610683441162
+              ]
+            ]
+          ]
+        },
+        "module": {
+          "shape": [
+            1,
+            4,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                -0.15242037177085876,
+                -1.881259799003601,
+                0.004761010408401489,
+                -0.4934644103050232
+              ],
+              [
+                -0.6862274408340454,
+                -2.580251693725586,
+                0.0017841458320617676,
+                -0.4934644103050232
+              ],
+              [
+                -1.2200344800949097,
+                -3.2792434692382812,
+                0.004761010408401489,
+                -0.9208437204360962
+              ],
+              [
+                -1.753841519355774,
+                -3.9782347679138184,
+                0.0017841458320617676,
+                -0.9208437204360962
+              ]
+            ]
+          ]
+        },
+        "poids": {
+          "shape": [
+            1,
+            2,
+            4,
+            7
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "min": 0.05035730451345444,
+          "max": 0.3451816737651825,
+          "mean": 0.14285714578415667
+        },
+        "reference": {
+          "shape": [
+            1,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                0.20000000298023224,
+                0.4000000059604645,
+                0.10000000149011612,
+                0.30000001192092896
+              ],
+              [
+                0.30000001192092896,
+                0.10000000149011612,
+                0.4000000059604645,
+                0.20000000298023224
+              ],
+              [
+                0.10000000149011612,
+                0.20000000298023224,
+                0.30000001192092896,
+                0.4000000059604645
+              ]
+            ]
+          ]
+        },
+        "suite": {
+          "shape": [
+            1,
+            11,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "min": -0.5885648727416992,
+          "max": 6.0,
+          "mean": 0.8572147124531594
+        },
+        "suite_traitee": {
+          "shape": [
+            1,
+            11,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "min": 0.014803357422351837,
+          "max": 0.5077601671218872,
+          "mean": 0.18109389275989748
+        },
+        "texte": {
+          "shape": [
+            1,
+            2,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              [
+                1.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                1.0
+              ]
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "generation-controle/vae-et-echantillonnage/1/first-example",
+      "source_sha256": "e10876527a1b23e97580e865dccbbcfc1801549e1a35bea27f73670688c25067",
+      "scaffold": "",
+      "assertions": "",
+      "status": "executed",
+      "seconds": 8.4e-05,
+      "stdout": "1.0\n",
+      "expected_stdout_verified": true,
+      "values": {
+        "mean": 2.0,
+        "noise": -0.5,
+        "variance": 4.0
+      }
+    },
+    {
+      "id": "generation-controle/vae-et-echantillonnage/1/first-example/variant",
+      "source_sha256": "4b4dfb95de92d2d874dc2dee67e3be60c991664fa50c3c00674abc80a3f478c8",
+      "scaffold": "",
+      "assertions": "",
+      "status": "executed",
+      "seconds": 5.7e-05,
+      "stdout": "0.5\n",
+      "expected_stdout_verified": true,
+      "values": {
+        "mean": 2.0,
+        "noise": -0.5,
+        "variance": 9.0
+      },
+      "change": "Remplacer seulement variance = 4.0 par variance = 9.0.",
+      "explicit_replacement": {
+        "before": "variance = 4.0",
+        "after": "variance = 9.0"
+      }
+    },
+    {
+      "id": "generation-controle/vae-et-echantillonnage/5/walkthrough",
+      "source_sha256": "3ffa614f92560e60ace331d00d5af472824d97a2315d793eeb2bed8089fb4a81",
+      "scaffold": "mu = torch.tensor([[2.]])\nlogvar = torch.log(torch.tensor([[4.]]))\ndecoder = torch.nn.Identity()",
+      "assertions": "assert std.item() == 2 and tuple(z.shape) == (1, 1)\nassert torch.equal(x_hat, z)",
+      "status": "executed",
+      "seconds": 0.000429,
+      "stdout": "",
+      "values": {
+        "eps": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              -0.5
+            ]
+          ]
+        },
+        "std": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              2.0
+            ]
+          ]
+        },
+        "x_hat": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              1.0
+            ]
+          ]
+        },
+        "z": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "generation-controle/kl-et-latent-inutilise/4/walkthrough",
+      "source_sha256": "d8b56f5617a5832620afdfdc9863577330c21579f7c6ddefbbef2b7172321154",
+      "scaffold": "mu = torch.ones((2, 4))\nlogvar = torch.zeros((2, 4))\nreconstruction_loss = torch.tensor(.25)\nbeta = .1",
+      "assertions": "assert tuple(kl_dim.shape) == (2, 4)\nassert torch.equal(kl_per_example, torch.tensor([2., 2.])) and kl.item() == 2\nassert abs(loss.item() - .45) < 1e-6\ndiscrete_kl = sum(q * math.log(q / p) for q, p in zip([.5, .5], [.9, .1]))\nassert abs(discrete_kl - .5108256237659907) < 1e-12",
+      "status": "executed",
+      "seconds": 0.000543,
+      "stdout": "",
+      "values": {
+        "discrete_kl": 0.5108256237659907,
+        "kl": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": 2.0
+        },
+        "kl_dim": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ],
+            [
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ]
+          ]
+        },
+        "kl_per_example": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            2.0,
+            2.0
+          ]
+        },
+        "loss": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": 0.44999998807907104
+        }
+      }
+    },
+    {
+      "id": "generation-controle/diffusion-et-bruit/3/walkthrough",
+      "source_sha256": "3685cd7e04ce9447f4564db789d21b2fd8f11a5fd0fce9975d466e0aa4946c41",
+      "scaffold": "x0 = torch.tensor([1.])\nalpha_bar = torch.tensor(.64)\nt = torch.tensor([1])\ndef model(xt, t):\n    # A specified toy prediction, not a learned denoiser.\n    return torch.full_like(xt, -.8)",
+      "assertions": "assert tuple(xt.shape) == (1,) and torch.isfinite(loss)",
+      "status": "executed",
+      "seconds": 0.000542,
+      "stdout": "",
+      "values": {
+        "eps": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            -1.0
+          ]
+        },
+        "loss": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": 0.03999999538064003
+        },
+        "pred_eps": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            -0.800000011920929
+          ]
+        },
+        "xt": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            0.19999998807907104
+          ]
+        }
+      }
+    },
+    {
+      "id": "generation-controle/objectifs-diffusion-et-flow/9/walkthrough",
+      "source_sha256": "25cebe72dce67bdc9da013a29fbd3ba20a9b7552f40823bf5523a2d6b1e5b903",
+      "scaffold": "",
+      "assertions": "",
+      "status": "executed",
+      "seconds": 0.000624,
+      "stdout": "DDPM : xt=1.00, cible=-1.00, MSE=0.25\nCFG : bruit guidé=-1.10\nFlow : point=-0.25, vitesse=3.00, MSE=0.25\nEuler depuis z : -0.25\n",
+      "values": {
+        "alpha_bar": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": 0.64
+        },
+        "avec_condition": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": -0.5
+        },
+        "bruit": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": -1.0
+        },
+        "bruit_predit": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": -0.5
+        },
+        "guide": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": -1.0999999999999999
+        },
+        "pas": 0.25,
+        "perte_ddpm": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": 0.25
+        },
+        "perte_flow": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": 0.25
+        },
+        "point": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": -0.25
+        },
+        "point_suivant": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": -0.25
+        },
+        "s": 3.0,
+        "sans_condition": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": -0.2
+        },
+        "t": 0.25,
+        "vitesse_cible": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": 3.0
+        },
+        "vitesse_predite": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": 2.5
+        },
+        "x0": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": 2.0
+        },
+        "xt": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": 1.0
+        },
+        "z": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": -1.0
+        }
+      }
+    },
+    {
+      "id": "generation-controle/guidance-et-zones-connues/4/walkthrough",
+      "source_sha256": "2d8dbbb75b1be3c8e7f2d4c955669c98f867b8c3270f16b60ddbb2da5c0b9419",
+      "scaffold": "eps_u = torch.tensor([2.])\neps_c = torch.tensor([5.])\ns = 2.\nknown_mask = torch.tensor([True, True, False, False])\nobserved = torch.tensor([.1, .2, .3, .4])\ngenerated = torch.tensor([9., 8., 7., 6.])",
+      "assertions": "assert eps_guided.item() == 8\nassert torch.equal(output, torch.tensor([.1, .2, 7., 6.]))",
+      "status": "executed",
+      "seconds": 0.000363,
+      "stdout": "",
+      "values": {
+        "eps_guided": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            8.0
+          ]
+        },
+        "output": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            0.10000000149011612,
+            0.20000000298023224,
+            7.0,
+            6.0
+          ]
+        }
+      }
+    },
+    {
+      "id": "generation-controle/adaptation-lora-et-petit-corpus/3/walkthrough",
+      "source_sha256": "ff387678d6d35f879fbe65f43df0f67a432d98c20d64b9268eb6139b8769f20d",
+      "scaffold": "d_in, d_out, r = 4, 3, 2\nbase = torch.nn.Linear(d_in, d_out, bias=False)\nW0 = base.weight\nx = torch.tensor([1., 2., 3., 4.])",
+      "assertions": "assert tuple((B @ A).shape) == tuple(W0.shape) == (3, 4)\nassert torch.allclose(h, W0 @ x)\nh.sum().backward()\nassert W0.grad is None and torch.all(A.grad == 0) and torch.any(B.grad != 0)\nanalytic_dense_count = 4096 * 4096\nanalytic_lora_count = 4096 * 8 + 8 * 4096\nassert analytic_dense_count == 16777216 and analytic_lora_count == 65536",
+      "status": "executed",
+      "seconds": 0.000986,
+      "stdout": "",
+      "values": {
+        "A": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true,
+          "values": [
+            [
+              0.40334683656692505,
+              0.8380263447761536,
+              -0.7192575931549072,
+              -0.40334352850914
+            ],
+            [
+              -0.5966353416442871,
+              0.18203648924827576,
+              -0.8566746115684509,
+              1.1006041765213013
+            ]
+          ]
+        },
+        "B": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true,
+          "values": [
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "analytic_dense_count": 16777216,
+        "analytic_lora_count": 65536,
+        "h": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true,
+          "values": [
+            -2.173745632171631,
+            1.6316393613815308,
+            -0.6262098550796509
+          ]
+        },
+        "p": {
+          "shape": [
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": [
+            [
+              -0.003743410110473633,
+              0.26822179555892944,
+              -0.4115225672721863,
+              -0.3679695129394531
+            ],
+            [
+              -0.19257718324661255,
+              0.13407868146896362,
+              -0.009906589984893799,
+              0.39644473791122437
+            ],
+            [
+              -0.04437202215194702,
+              0.1323062777519226,
+              -0.15110653638839722,
+              -0.09828269481658936
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "generation-controle/efficacite-petit-budget/9/walkthrough",
+      "source_sha256": "b92c499c9a4fbb09003c8ba058dac5b8e93668aac72104598b4f5116f35dedd9",
+      "scaffold": "",
+      "assertions": "",
+      "status": "executed",
+      "seconds": 0.004682,
+      "stdout": "À la main : 0.400 -> 0.333\nParamètres : projection=4096, adapter=1024, fraction=0.25\nFloat32 : MSE=0.00000000 ; poids=16384 octets\n8 bits : poids logiques=4096 octets, MSE=0.00003770\n3 bits : poids logiques=1536 octets, MSE=0.06974661\n256 échantillons à 48 kHz : 5.333 ms\n",
+      "values": {
+        "ajout": 1024,
+        "approximation": {
+          "shape": [
+            256,
+            64
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "min": -3.2558767795562744,
+          "max": 3.545095682144165,
+          "mean": 0.004712598548866187
+        },
+        "bits": 3,
+        "d": 64,
+        "echeance_ms": 5.333333333333333,
+        "echelle": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "values": 0.11436136811971664
+        },
+        "entiers": {
+          "shape": [
+            64,
+            64
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "min": -3.0,
+          "max": 3.0,
+          "mean": 0.010986328125
+        },
+        "entrees": {
+          "shape": [
+            256,
+            64
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "min": -3.6608145236968994,
+          "max": 3.779371976852417,
+          "mean": -0.0027219406119689538
+        },
+        "maximum": 3,
+        "mini": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": 0.4
+        },
+        "mini_q": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": 0.3333333333333333
+        },
+        "mse": 0.06974661350250244,
+        "mse_reference": 0.0,
+        "octets": 1536,
+        "poids": {
+          "shape": [
+            64,
+            64
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "min": -0.33499574661254883,
+          "max": 0.34308409690856934,
+          "mean": 0.0012147785100387054
+        },
+        "rang": 8,
+        "reconstruits": {
+          "shape": [
+            64,
+            64
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "min": -0.34308409690856934,
+          "max": 0.34308409690856934,
+          "mean": 0.0012564115186251001
+        },
+        "reference": {
+          "shape": [
+            256,
+            64
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false,
+          "min": -3.1228349208831787,
+          "max": 3.3333020210266113,
+          "mean": 0.004789484431417579
+        },
+        "total": 4096
+      }
+    },
+    {
+      "id": "evaluation-recherche/splits-et-fuites/4/walkthrough",
+      "source_sha256": "1f1166bca00a47f503379ab26d45a636a2be36d3efb8ff7668cc38f54796c588",
+      "scaffold": "recording_ids = [\"R1\", \"R2\", \"R3\", \"R4\", \"R5\", \"R6\"]\ndef split_recording_ids(ids):\n    assert len(set(ids)) == len(ids)\n    return ids[:3], ids[3:5], ids[5:]\nclass Windows:\n    def __init__(self, ids):\n        self.recording_ids = [id for id in ids for _ in range(2)]\n        self.features = np.array([[float(id[1:]), float(j)] for id in ids for j in range(2)])\ndef make_windows(ids):\n    return Windows(ids)\nclass Scaler:\n    def fit(self, features):\n        self.mean_ = features.mean(axis=0)\n        self.scale_ = np.maximum(features.std(axis=0), 1e-8)\n        return self\n    def transform(self, features):\n        return (features - self.mean_) / self.scale_\nscaler = Scaler()",
+      "assertions": "assert set(train_ids).isdisjoint(valid_ids) and set(train_ids).isdisjoint(test_ids)\nassert set(valid_ids).isdisjoint(test_ids)\nassert set(train.recording_ids) == set(train_ids)\nassert np.allclose(scaler.mean_, train.features.mean(axis=0))\nassert valid_scaled.shape == valid.features.shape == (4, 2)",
+      "status": "executed",
+      "seconds": 0.000568,
+      "stdout": "",
+      "values": {
+        "test_ids": [
+          "R6"
+        ],
+        "train_ids": [
+          "R1",
+          "R2",
+          "R3"
+        ],
+        "valid_ids": [
+          "R4",
+          "R5"
+        ],
+        "valid_scaled": {
+          "shape": [
+            4,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              2.449489742783178,
+              -1.0
+            ],
+            [
+              2.449489742783178,
+              1.0
+            ],
+            [
+              3.6742346141747673,
+              -1.0
+            ],
+            [
+              3.6742346141747673,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "evaluation-recherche/metriques-et-seuils/4/walkthrough",
+      "source_sha256": "11d734b4813882021c0d1778d0a2141783668cd509d5ae431bbe2d90b7fd91d0",
+      "scaffold": "",
+      "assertions": "assert precision == .75 and recall == .6 and balanced_accuracy == .7",
+      "status": "executed",
+      "seconds": 0.000108,
+      "stdout": "",
+      "values": {
+        "balanced_accuracy": 0.7,
+        "cm": [
+          [
+            40,
+            10
+          ],
+          [
+            20,
+            30
+          ]
+        ],
+        "precision": 0.75,
+        "recall": 0.6
+      }
+    },
+    {
+      "id": "evaluation-recherche/boucle-evaluation-et-surapprentissage/3/walkthrough",
+      "source_sha256": "503cc99c3967c775d04cd99ed83e84ef8f7be2f0765a9d8593776884b6178074",
+      "scaffold": "model = torch.nn.Identity()\ncriterion = torch.nn.MSELoss(reduction=\"mean\")\nvalid_loader = [\n    (torch.zeros(8, 1, dtype=torch.float64), torch.ones(8, 1, dtype=torch.float64)),\n    (torch.zeros(2, 1, dtype=torch.float64), torch.full((2, 1), math.sqrt(3), dtype=torch.float64)),\n]",
+      "assertions": "assert count == 10 and abs(loss_sum - 14) < 1e-12 and abs(mean_loss - 1.4) < 1e-12",
+      "status": "executed",
+      "seconds": 0.002156,
+      "stdout": "",
+      "values": {
+        "count": 10,
+        "loss": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": 2.9999999999999996
+        },
+        "loss_sum": 14.0,
+        "mean_loss": 1.4,
+        "x": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": [
+            [
+              0.0
+            ],
+            [
+              0.0
+            ]
+          ]
+        },
+        "y": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float64",
+          "requires_grad": false,
+          "values": [
+            [
+              1.7320508075688772
+            ],
+            [
+              1.7320508075688772
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "evaluation-recherche/variabilite-et-incertitude/4/walkthrough",
+      "source_sha256": "b04ce7079880aeeb8766604c34576b6abf322cbf164631b46dc604c91d42f411",
+      "scaffold": "recording_ids = np.array([f\"R{i:02}\" for i in range(20)])\nrng = np.random.default_rng(0)\nbase = {id: .7 + i * .005 for i, id in enumerate(recording_ids)}\nadapted = {id: value + (.02 if i % 2 else -.005)\n           for i, (id, value) in enumerate(base.items())}\ndef score_on_groups(scores, sampled):\n    # Iterating the sampled list retains duplicate groups and paired sampling.\n    return float(np.mean([scores[id] for id in sampled]))",
+      "assertions": "assert len(recording_ids) == len(sampled) == 20\nassert len(set(sampled)) < 20  # Duplicates really are retained.\nassert difference == score_on_groups(adapted, sampled) - score_on_groups(base, sampled)\nexample_mean_base = float(np.mean([79, 81, 83]))\nexample_mean_adapted = float(np.mean([77, 82, 87]))\nassert example_mean_base == 81 and example_mean_adapted == 82",
+      "status": "executed",
+      "seconds": 0.000973,
+      "stdout": "",
+      "values": {
+        "difference": 0.0025000000000000577,
+        "example_mean_adapted": 82.0,
+        "example_mean_base": 81.0,
+        "sampled": {
+          "shape": [
+            20
+          ],
+          "dtype": "<U3",
+          "values": [
+            "R17",
+            "R12",
+            "R10",
+            "R05",
+            "R06",
+            "R00",
+            "R01",
+            "R00",
+            "R03",
+            "R16",
+            "R12",
+            "R18",
+            "R10",
+            "R12",
+            "R19",
+            "R14",
+            "R12",
+            "R10",
+            "R11",
+            "R18"
+          ]
+        },
+        "score_adapted": 0.754,
+        "score_base": 0.7515
+      }
+    }
+  ],
+  "additional_checks": [
+    {
+      "id": "python/references-listes",
+      "code": "a = [1, 2]\nb = a\nb.append(3)\nassert a == [1, 2, 3] and b is a\noriginal = [[1.], [2.]]\ntravail = original.copy()\ntravail[0].append(3.)\nassert original == [[1., 3.], [2.]]\ntravail[1] = [9.]\nassert original[1] == [2.]",
+      "status": "executed",
+      "values": {
+        "a": [
+          1,
+          2,
+          3
+        ],
+        "b": [
+          1,
+          2,
+          3
+        ],
+        "original": [
+          [
+            1.0,
+            3.0
+          ],
+          [
+            2.0
+          ]
+        ],
+        "travail": [
+          [
+            1.0,
+            3.0
+          ],
+          [
+            9.0
+          ]
+        ]
+      }
+    },
+    {
+      "id": "python/tri-indices",
+      "code": "scores = np.array([.4, .9, .1])\nordre = np.argsort(scores)[::-1]\nassert ordre.tolist() == [1, 0, 2]",
+      "status": "executed",
+      "values": {
+        "scores": {
+          "shape": [
+            3
+          ],
+          "dtype": "float64",
+          "values": [
+            0.4,
+            0.9,
+            0.1
+          ]
+        },
+        "ordre": {
+          "shape": [
+            3
+          ],
+          "dtype": "int64",
+          "values": [
+            1,
+            0,
+            2
+          ]
+        }
+      }
+    },
+    {
+      "id": "python/reduction-keepdims",
+      "code": "S = np.array([[-.5, .5, -.5, .5], [0., 0., 0., 1.]])\nmu = S.mean(axis=1)\nmu_garde = S.mean(axis=1, keepdims=True)\nassert np.array_equal(mu, [0., .25]) and mu_garde.shape == (2, 1)",
+      "status": "executed",
+      "values": {
+        "S": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              -0.5,
+              0.5,
+              -0.5,
+              0.5
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "mu": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            0.0,
+            0.25
+          ]
+        },
+        "mu_garde": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0
+            ],
+            [
+              0.25
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "python/precision-accumulation",
+      "code": "x = np.array([1e8, 1., -1e8], dtype=np.float32)\nmean32 = np.mean(x)\nmean64 = np.mean(x, dtype=np.float64)\npost_conversion = np.float64(mean32)\nassert mean32 == post_conversion == 0 and mean64 == 1 / 3",
+      "status": "executed",
+      "values": {
+        "x": {
+          "shape": [
+            3
+          ],
+          "dtype": "float32",
+          "values": [
+            100000000.0,
+            1.0,
+            -100000000.0
+          ]
+        },
+        "mean64": 0.3333333333333333,
+        "post_conversion": 0.0
+      }
+    },
+    {
+      "id": "python/parcours",
+      "code": "valeurs = [-2, 0, 3]\npositifs = [x * x for x in valeurs if x > 0]\nassert positifs == [9]\ng = (i * 2 for i in range(3))\npremier = list(g)\nsecond = list(g)\nassert premier == [0, 2, 4] and second == []\ntruncated = list(zip([1, 2, 3], [\"a\", \"b\"]))\nassert truncated == [(1, \"a\"), (2, \"b\")]\nstrict_error = None\ntry:\n    list(zip([1, 2, 3], [\"a\", \"b\"], strict=True))\nexcept ValueError as error:\n    strict_error = str(error)\nassert strict_error is not None",
+      "status": "executed",
+      "values": {
+        "valeurs": [
+          -2,
+          0,
+          3
+        ],
+        "positifs": [
+          9
+        ],
+        "premier": [
+          0,
+          2,
+          4
+        ],
+        "second": [],
+        "truncated": [
+          [
+            1,
+            "a"
+          ],
+          [
+            2,
+            "b"
+          ]
+        ],
+        "strict_error": "zip() argument 2 is shorter than argument 1"
+      }
+    },
+    {
+      "id": "python/metadonnees",
+      "code": "meta = {\"nom\": \"voix_a.wav\"}\nduree = meta.get(\"duree\", 0)\nassert duree == 0 and \"duree\" not in meta",
+      "status": "executed",
+      "values": {
+        "duree": 0
+      }
+    },
+    {
+      "id": "python/paires-generales",
+      "code": "X = np.zeros((7, 3))\nY = np.zeros((5, 3))\necarts = X[:, None, :] - Y[None, :, :]\ndist2 = (ecarts ** 2).sum(axis=-1)\nassert ecarts.shape == (7, 5, 3) and dist2.shape == (7, 5)",
+      "status": "executed",
+      "values": {
+        "X": {
+          "shape": [
+            7,
+            3
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "Y": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "ecarts": {
+          "shape": [
+            7,
+            5,
+            3
+          ],
+          "dtype": "float64",
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0
+        },
+        "dist2": {
+          "shape": [
+            7,
+            5
+          ],
+          "dtype": "float64",
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0
+        }
+      }
+    },
+    {
+      "id": "signal/repliement",
+      "code": "t = np.arange(24) / 8000\nhigh = np.cos(2 * np.pi * 6000 * t)\nlow = np.cos(2 * np.pi * 2000 * t)\nassert np.allclose(high, low, atol=1e-12)",
+      "status": "executed",
+      "values": {
+        "t": {
+          "shape": [
+            24
+          ],
+          "dtype": "float64",
+          "values": [
+            0.0,
+            0.000125,
+            0.00025,
+            0.000375,
+            0.0005,
+            0.000625,
+            0.00075,
+            0.000875,
+            0.001,
+            0.001125,
+            0.00125,
+            0.001375,
+            0.0015,
+            0.001625,
+            0.00175,
+            0.001875,
+            0.002,
+            0.002125,
+            0.00225,
+            0.002375,
+            0.0025,
+            0.002625,
+            0.00275,
+            0.002875
+          ]
+        },
+        "high": {
+          "shape": [
+            24
+          ],
+          "dtype": "float64",
+          "values": [
+            1.0,
+            -1.8369701987210297e-16,
+            -1.0,
+            5.51091059616309e-16,
+            1.0,
+            8.578717400397356e-16,
+            -1.0,
+            -4.904777002955296e-16,
+            1.0,
+            -3.4296300182491773e-15,
+            -1.0,
+            7.349737736793884e-15,
+            1.0,
+            -4.164418097737589e-15,
+            -1.0,
+            9.790984586812941e-16,
+            1.0,
+            -4.899206177226001e-15,
+            -1.0,
+            8.819313895770708e-15,
+            1.0,
+            1.471433100886589e-15,
+            -1.0,
+            2.448674617658118e-15
+          ]
+        },
+        "low": {
+          "shape": [
+            24
+          ],
+          "dtype": "float64",
+          "values": [
+            1.0,
+            6.123233995736766e-17,
+            -1.0,
+            -1.8369701987210297e-16,
+            1.0,
+            3.061616997868383e-16,
+            -1.0,
+            -4.286263797015736e-16,
+            1.0,
+            2.3274478990165594e-15,
+            -1.0,
+            -2.4499125789312946e-15,
+            1.0,
+            2.57237725884603e-15,
+            -1.0,
+            -2.6948419387607653e-15,
+            1.0,
+            -7.354070601250002e-16,
+            -1.0,
+            -2.939771298590236e-15,
+            1.0,
+            -4.904777002955296e-16,
+            -1.0,
+            -3.1847006584197066e-15
+          ]
+        }
+      }
+    },
+    {
+      "id": "signal/gain-et-reference",
+      "code": "gain = .5\namplitude_delta_db = 20 * math.log10(gain)\npower_delta_db = 10 * math.log10(gain ** 2)\nfull_scale_sine_rms_db = 20 * math.log10(1 / math.sqrt(2))\nassert math.isclose(amplitude_delta_db, -6.020599913279624)\nassert math.isclose(amplitude_delta_db, power_delta_db)\nassert math.isclose(full_scale_sine_rms_db, -3.0102999566398125)",
+      "status": "executed",
+      "values": {
+        "gain": 0.5,
+        "amplitude_delta_db": -6.020599913279624,
+        "power_delta_db": -6.020599913279624,
+        "full_scale_sine_rms_db": -3.0102999566398125
+      }
+    },
+    {
+      "id": "generation/compter-les-codes",
+      "code": "duration, frames_per_second, codebooks = 10, 50, 4\nframes = duration * frames_per_second\nindices = frames * codebooks\nassert frames == 500 and indices == 2000",
+      "status": "executed",
+      "values": {
+        "frames": 500,
+        "indices": 2000,
+        "duration": 10,
+        "frames_per_second": 50,
+        "codebooks": 4
+      }
+    },
+    {
+      "id": "generation/aligner-condition",
+      "code": "frames_per_second = 50\naccent_seconds = 3\ncrop_seconds = 1\naccent_frame = accent_seconds * frames_per_second\ncropped_frame = accent_frame - crop_seconds * frames_per_second\nassert accent_frame == 150 and cropped_frame == 100",
+      "status": "executed",
+      "values": {
+        "frames_per_second": 50,
+        "accent_seconds": 3,
+        "crop_seconds": 1,
+        "accent_frame": 150,
+        "cropped_frame": 100
+      }
+    },
+    {
+      "id": "evaluation/interaction-illustrative",
+      "code": "base, plus_a, plus_b, plus_ab = 70, 72, 71, 76\ngain_a = plus_a - base\ngain_b = plus_b - base\ngain_ab = plus_ab - base\ninteraction = plus_ab - plus_a - plus_b + base\nassert (gain_a, gain_b, gain_ab, interaction) == (2, 1, 6, 3)",
+      "status": "executed",
+      "values": {
+        "gain_a": 2,
+        "gain_b": 1,
+        "gain_ab": 6,
+        "interaction": 3,
+        "base": 70,
+        "plus_a": 72,
+        "plus_b": 71,
+        "plus_ab": 76
+      }
+    },
+    {
+      "id": "evaluation/frechet-une-dimension",
+      "code": "reference_mean, base_mean, adapted_mean = 2., 0., 1.\nreference_variance = base_variance = adapted_variance = 1.\ndef gaussian_distance_1d(mu, variance):\n    return (mu - reference_mean) ** 2 + variance + reference_variance - 2 * math.sqrt(variance * reference_variance)\nbase_distance = gaussian_distance_1d(base_mean, base_variance)\nadapted_distance = gaussian_distance_1d(adapted_mean, adapted_variance)\nassert base_distance == 4 and adapted_distance == 1",
+      "status": "executed",
+      "values": {
+        "reference_variance": 1.0,
+        "base_variance": 1.0,
+        "adapted_variance": 1.0,
+        "base_distance": 4.0,
+        "adapted_distance": 1.0,
+        "reference_mean": 2.0,
+        "base_mean": 0.0,
+        "adapted_mean": 1.0
+      }
+    }
+  ],
+  "non_python_blocks": [
+    {
+      "theme": "evaluation-recherche",
+      "chapterId": "environnement-linux-et-traces",
+      "blockIndex": 3,
+      "language": "bash",
+      "reason": "Tableau textuel ou commandes shell ; ne pas les interpréter comme du Python."
+    }
+  ],
+  "findings": [],
+  "walkthroughs_without_code": [
+    {
+      "theme": "python-scientifique",
+      "chapterId": "du-son-aux-donnees",
+      "blockIndex": 4,
+      "title": "Fixer le résultat attendu avant de coder"
+    },
+    {
+      "theme": "generation-controle",
+      "chapterId": "representation-et-reconstruction",
+      "blockIndex": 4,
+      "title": "Localiser la perte avant de générer"
+    },
+    {
+      "theme": "generation-controle",
+      "chapterId": "quantification-et-tokens",
+      "blockIndex": 6,
+      "title": "Compter une séquence avant de la modéliser"
+    },
+    {
+      "theme": "generation-controle",
+      "chapterId": "conditions-et-intention-musicale",
+      "blockIndex": 3,
+      "title": "Traduire une intention en données alignées"
+    },
+    {
+      "theme": "evaluation-recherche",
+      "chapterId": "question-de-recherche-et-baseline",
+      "blockIndex": 2,
+      "title": "Avant les essais, écrire le contrat"
+    },
+    {
+      "theme": "evaluation-recherche",
+      "chapterId": "baselines-et-ablations",
+      "blockIndex": 3,
+      "title": "Observer une interaction entre deux idées"
+    },
+    {
+      "theme": "evaluation-recherche",
+      "chapterId": "ecoute-et-jugement-perceptif",
+      "blockIndex": 3,
+      "title": "Construire un essai d’écoute comparable"
+    },
+    {
+      "theme": "evaluation-recherche",
+      "chapterId": "fad-et-limites-des-proxies",
+      "blockIndex": 5,
+      "title": "Comprendre une distance de distributions en une dimension"
+    },
+    {
+      "theme": "evaluation-recherche",
+      "chapterId": "generalisation-et-compte-rendu",
+      "blockIndex": 6,
+      "title": "Évaluer la procédure de sélection, puis la raconter"
+    }
+  ],
+  "chapters_over_1100_words": [
+    {
+      "theme": "audio-signal",
+      "chapterId": "amplitude-puissance-decibels",
+      "words": 1702
+    }
+  ],
+  "long_sentences": [],
+  "protected_chapters_verified": 51,
+  "total_seconds": 9.227,
+  "summary": {
+    "executions": 57,
+    "additional_checks": 13,
+    "findings": 0,
+    "non_python_blocks": 1,
+    "code_free_walkthroughs": 9,
+    "long_sentences": 0,
+    "long_chapters": 1
+  }
+}

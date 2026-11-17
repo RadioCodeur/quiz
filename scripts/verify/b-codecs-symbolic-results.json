@@ -13,7 +13,7 @@
     "codecs-neuronaux-rvq": {
       "codeSha256": "1652c6e6094d2501fe0cec8cbc56d0b319be683970622005e139730b85f54f9e",
       "stdout": "étage 1 : indices [2, 0]\n  résidu : [-0.1, 0.2]\nétage 2 : indices [1, 2]\n  résidu : [-0.1, -0.05]\nreconstruction : [1.0, -0.75]\nerreur quadratique moyenne : 0.006250\n",
-      "elapsedSeconds": 0.0021416999989014585,
+      "elapsedSeconds": 0.001631699997233227,
       "measurements": {
         "codesByStage": [
           [
@@ -47,7 +47,7 @@
     "symbolique-midi-et-audio": {
       "codeSha256": "89ab118c1dde9dafb97a6f3fa6d30901925d2ece03e3acdda0e2cc0c5ff6ba8f",
       "stdout": "jetons : [6, 0, 4, 2, 7, 1, 5, 3]\nnote 60 : début 0.00 s ; durée 0.25 s ; vélocité 80\nnote 64 : début 0.25 s ; durée 0.50 s ; vélocité 100\ndurée totale : 0.75 s\nreprésentations : 8 jetons ; 12000 échantillons mono à 16000 Hz\n",
-      "elapsedSeconds": 0.00038829999903100543,
+      "elapsedSeconds": 0.0003628999984357506,
       "measurements": {
         "tokens": [
           6,
@@ -79,7 +79,7 @@
       }
     }
   },
-  "fragmentValidation": {
+  "courseValidation": {
     "exactCodeAndOutputCopies": [
       "codecs-neuronaux-rvq",
       "symbolique-midi-et-audio"

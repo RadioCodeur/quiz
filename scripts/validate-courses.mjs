@@ -109,6 +109,8 @@ export function validateCourses(courses, { bank, themes, sources }) {
           assert.ok(block.steps.length>=3&&block.steps.length<=6,fail('trois à six étapes'));
           const lineCount=block.code?.split('\n').length??0;
           if(block.code){code++;assert.ok(block.steps.some(step=>step.lines?.length),fail('lien entre les étapes et les lignes de code'));}
+          else if(Number.isInteger(block.codeBlockIndex))assert.ok(ch.blocks[block.codeBlockIndex]?.type==='code'&&ch.blocks[block.codeBlockIndex]?.code,fail('programme unique associé au déroulé'));
+          else assert.ok(block.calculationTable===true&&/tableau.*(?:calcul|raisonnement)/iu.test(`${block.goal} ${block.result}`),fail('tableau sans code explicitement justifié'));
           for(const step of block.steps){assert.ok(step.title?.trim()&&step.text?.trim(),fail('étape expliquée'));assert.ok(step.lines===undefined||(Array.isArray(step.lines)&&step.lines.every(n=>Number.isInteger(n)&&n>=1&&n<=lineCount)),fail('lignes de code présentes'));}
         }
         chapterWords+=wordCount([block.text,block.title,block.caption,...(block.items??[])].filter(Boolean).join(' '));

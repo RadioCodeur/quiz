@@ -4,9 +4,9 @@ La page **Cours** est accessible dans le header. Le quiz reste la page principal
 
 ## Contenu
 
-Six cours, **71 chapitres** dont deux rappels Python facultatifs. L’ordre conseillé est Python → signal audio → PyTorch → apprentissage audio → génération et contrôle → évaluation et recherche. Les identifiants historiques sont conservés : les liens du quiz et les repères personnels restent valides, même si le parcours Python a été réordonné.
+Huit modules, **107 chapitres** dont deux rappels Python facultatifs. L’ordre conseillé est Python → signal audio → PyTorch → apprentissage audio → génération et contrôle → évaluation et recherche → contexte IRCAM → entretien. Les identifiants historiques sont conservés : les liens du quiz et les repères personnels restent valides, même si le parcours Python a été réordonné.
 
-Le public connaît le Python algorithmique. Le parcours principal démarre donc sur le besoin numérique ; les rappels sur les valeurs et les indices restent en fin de sommaire et la navigation « suivant » ne les impose pas. Les six modules suivent un problème explicite : préparer une sonothèque, homogénéiser ses signaux, apprendre un classifieur, adapter la tâche aux mélanges, construire un instrument de percussion, puis vérifier une amélioration.
+Le public connaît le Python algorithmique. Le parcours principal démarre donc sur le besoin numérique ; les rappels sur les valeurs et les indices restent en fin de sommaire et la navigation « suivant » ne les impose pas. Les six modules techniques suivent un problème explicite : préparer une sonothèque, homogénéiser ses signaux, apprendre un classifieur, adapter la tâche aux mélanges, construire un instrument de percussion, puis vérifier une amélioration.
 
 Chaque chapitre situe brièvement son entrée, son action et son résultat. Les définitions se déplient à la demande ; les notions scientifiques sont aussi expliquées dans le récit au moment de leur usage. Les premiers exemples et leurs variantes sont facultatifs : leur présence dépend du bénéfice pédagogique, pas d’un quota. Les répétitions et petits exemples sans lien ont été retirés. Le **mode lecture** masque le sommaire et **Aa +** agrandit le texte. Les schémas larges et le code défilent dans leur propre conteneur. Le portrait du professeur reste local.
 
@@ -29,7 +29,7 @@ Les extraits supposent les imports usuels (`np` pour NumPy, `torch` pour PyTorch
 - `src/course-model.js` : liens, progression et correspondances question/chapitre.
 - `src/course-figures.js` : schémas SVG légendés, dont copies imbriquées et réductions NumPy.
 - `src/learning-blocks.js` et `src/learning.css` : exemples guidés, graphiques, schémas et QCM de transfert.
-- `public/courses/*.json` : textes, exemples et références des six cours.
+- `public/courses/*.json` : textes, exemples et références des huit modules.
 - `public/images/professeur-squoinks.png` : portrait du personnage.
 - `tests/courses.test.mjs` : tests du modèle et de la couverture.
 - `scripts/validate-courses.mjs` : contrôle du contenu et des prérequis.
@@ -45,7 +45,7 @@ npm run build
 npm run test:browser
 ```
 
-Si npm n’est pas dans le PATH, utiliser `node scripts/run.mjs validate:courses`, puis les mêmes noms de scripts (`test`, `build`, `test:browser`). La construction valide la banque et les cours avant de produire `dist/index.html` et `dist/cours.html`. Le test navigateur parcourt les 71 chapitres à 360 px et vérifie les deux pages sous `/qr-entretien/`.
+Si npm n’est pas dans le PATH, utiliser `node scripts/run.mjs validate:courses`, puis les mêmes noms de scripts (`test`, `build`, `test:browser`). La construction valide la banque et les cours avant de produire `dist/index.html`, `dist/cours.html` et `dist/glossaire.html`. Le test navigateur parcourt les 107 chapitres à 360 px et vérifie les trois pages sous `/qr-entretien/`.
 
 La publication utilise le workflow manuel GitHub Pages du dépôt, après validation et vérification dans le navigateur. Les principes pédagogiques et leur portée sont documentés dans `docs/pedagogie.md` et accessibles depuis le catalogue des cours.
 
@@ -63,14 +63,14 @@ Les nouveaux blocs `audio-lab` utilisent une vue parmi `overview`, `level`, `res
 
 Le module PyTorch comprend vingt chapitres : les quatorze identifiants historiques sont conservés, et six chapitres introduisent la carte des briques, la rétropropagation manuelle, la boucle complète, le diagnostic, le pilotage de l’apprentissage et l’autoencodeur mel. Le calcul à deux poids et tous les programmes sont réellement exécutés sur CPU. Le script de boucle complète apparaît une fois et possède un bouton de copie. Les libellés des arêtes du graphe sont affichés entre ses nœuds.
 
-Les sources, scripts et résultats du lot sont dans `scripts/verify/pytorch-existing.py`, `pytorch-existing-cases.py`, `pytorch-existing-results.json`, `pytorch-additions.py` et `pytorch-additions-results.json`. Les preuves portent l’empreinte du code affiché. La page reste une lecture de code ; les notebooks du lot C seront séparés.
+Les sources, scripts et résultats du lot sont dans `scripts/verify/pytorch-existing.py`, `pytorch-existing-cases.py`, `pytorch-existing-results.json`, `pytorch-additions.py` et `pytorch-additions-results.json`. Les preuves portent l’empreinte du code affiché. La page reste une lecture de code ; les notebooks du lot C sont séparés.
 
 
 ## Lot C — vingt notebooks CPU
 
 Chaque chapitre PyTorch possède son fichier dans `public/notebooks/`, un téléchargement et un lien Colab. Les cellules du cours sont complètes ; les deux exercices à trous sont en Markdown pour préserver « Tout exécuter ». Les deux solutions restent repliées en fin de document. Aucun paquet ni dataset n’est téléchargé pendant l’exécution.
 
-Les vingt notebooks et leurs quarante solutions ont été exécutés avec de vrais noyaux Jupyter sur CPU. Les durées mesurées, démarrage compris, vont de 5.391 à 8.222 secondes sur la machine de contrôle. Le seuil demandé est 120 secondes par notebook ; il ne prédit pas le temps sur tout matériel. `scripts/verify/notebooks.py` conserve les sorties et les empreintes dans `notebooks-results.json`. Le moteur dépend de nbformat 5.11.1 et nbclient 0.11.0, installés dans un environnement local isolé.
+Les vingt notebooks et leurs quarante solutions ont été exécutés avec de vrais noyaux Jupyter sur CPU. Les durées mesurées, démarrage compris, vont de 5.515 à 8.360 secondes sur la machine de contrôle. Le seuil demandé est 120 secondes par notebook ; il ne prédit pas le temps sur tout matériel. `scripts/verify/notebooks.py` conserve les sorties et les empreintes dans `notebooks-results.json`. Le moteur dépend de nbformat 5.11.1 et nbclient 0.11.0, installés dans un environnement local isolé.
 
 Les vingt fichiers sont présents dans l’arbre GitHub du commit `0ec5874`. Le lien Colab public a répondu HTTP 200, avec une interface de connexion. Aucune session Colab authentifiée n’a été disponible ; l’exécution attestée est celle des noyaux CPU locaux. Voir `scripts/verify/notebook-links.json`.
 
@@ -90,8 +90,18 @@ Le septième module contient quatre chapitres : lire l’offre, situer les outil
 
 ## Lot E — réponses orales et glossaire
 
-Le module `entretien`, de format `kind: "interview"`, contient 25 questions ouvertes et un pitch hypothétique. Les réponses comptent 184 à 213 mots ; le pitch en compte 303. Les durées annoncées sont indicatives, pas chronométrées. Chaque question possède trois points obligatoires, un piège et une relance. Le modèle est replié pour permettre un essai préalable.
+Le module `entretien`, de format `kind: "interview"`, contient 25 questions ouvertes et un pitch hypothétique. Les réponses comptent 184 à 220 mots ; le pitch en compte 303. Les durées annoncées sont indicatives, pas chronométrées. Chaque question possède trois points obligatoires, un piège et une relance. Le modèle est replié pour permettre un essai préalable.
 
 Les paragraphes autorisés portent le rôle `oral-answer`. Le gabarit utilise un bloc `list` de rôle `pitch-template` ; ses six champs conservent les notes dans `a-lecoute.pitch.v1`. Le format oral n’impose pas de code ou de schéma artificiel : l’exemple demandé est une réponse argumentée, reliée aux mécanismes techniques. Les contraintes de longueur des réponses sont validées.
 
 `glossaire.html` propose 160 paires FR–EN dans six domaines, avec recherche sans accents, filtre et liens vers les cours. Les définitions sont dans `public/glossary.json`. Les trois pages partagent un accès dans leur header ; Vite construit les trois entrées. Les notes de pitch ne modifient jamais la session du quiz.
+
+## Lot F — parcours et audit global
+
+Le catalogue propose un parcours priorisé sur quatre semaines : PyTorch, Audio ML, Génération, puis Évaluation et Entretien. Neuf chapitres Python/Signal portent un indicateur « À survoler si acquis », avec une condition précise. Les niveaux, axes et phases restent à revoir dès qu’une explication hésite.
+
+Les 65 chapitres historiques ont été harmonisés : définitions FR–EN, transitions, pièges après les bases et finales orales. Les codes et les médias restent conservés, sauf les deux bruits fixes VAE/diffusion corrigés puis réexécutés. Les tableaux sans code portent `calculationTable: true` et une justification visible. Le walkthrough de boucle complète référence son bloc `code` unique avec `codeBlockIndex`.
+
+`scripts/audit-prose.mjs` et `tests/final-audit.test.mjs` contrôlent les phrases, les conclusions, les exceptions de longueur, les liens du parcours et les empreintes de tous les blocs Python. La justification `lengthJustification` du chapitre des niveaux est affichée avant la lecture. Les checkpoints historiques sont conservés conformément à V5.
+
+Le rapport exhaustif des chapitres créés et modifiés est dans `docs/revision-report.md`. Les mesures, commandes et limites d’accès Colab sont regroupées dans `VERIFICATION.md`.

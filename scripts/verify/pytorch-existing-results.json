@@ -9,7 +9,7 @@
       "blockIndex": 0,
       "type": "walkthrough",
       "sha256": "573dd13b89952bd5909d8d4ce704374ea231d6630a1bcc7e77d962a4ac84b2fa",
-      "seconds": 0.000627,
+      "seconds": 0.000779,
       "stdout": "scores [[1.5, -1.5], [4.5, -4.5]]\npredictions [0, 0]\naccords [True, False]"
     },
     {
@@ -17,7 +17,7 @@
       "blockIndex": 0,
       "type": "walkthrough",
       "sha256": "ef4a05b1ca3b5a776b032351c29736cf15f54d5a641a65d26d004b3229591c7a",
-      "seconds": 0.000478,
+      "seconds": 0.000548,
       "stdout": "forme (2, 3) ligne (3,)\ntypes torch.float32 torch.int64\nplacement cpu cpu\nvaleurs_finies True"
     },
     {
@@ -25,7 +25,7 @@
       "blockIndex": 0,
       "type": "walkthrough",
       "sha256": "d07adcbe427f188ee193e7fae66b50bd925521d12810df33756ee98bd192ea56",
-      "seconds": 0.000415,
+      "seconds": 0.000622,
       "stdout": "reshape [[1.0, 2.0], [3.0, 2.0], [0.0, 1.0]]\ntranspose [[1.0, 2.0], [2.0, 0.0], [3.0, 1.0]]\ncanal (1, 1, 3) retour (1, 3)\ncat (2, 1, 3)\nstack (2, 1, 1, 3)\nplat_transpose [1.0, 2.0, 2.0, 0.0, 3.0, 1.0]"
     },
     {
@@ -33,7 +33,7 @@
       "blockIndex": 0,
       "type": "walkthrough",
       "sha256": "e8fd58c1d55830aa5e58c9b41ffed80c6449a7f24fa68049f931e7e9bb8135f8",
-      "seconds": 0.000422,
+      "seconds": 0.000669,
       "stdout": "reference [[1.5, 1.0, 2.0]]\ncentres [[-0.5, 1.0, 1.0], [0.5, -1.0, -1.0]]\npar_extrait [0, 0] par_classe [1, 0]\nretenus [[1.0, 2.0, 3.0]]"
     },
     {
@@ -41,7 +41,7 @@
       "blockIndex": 0,
       "type": "walkthrough",
       "sha256": "6c69df047134d40e48b415a0c28264387c9134c64fb4e21314067616df07bc53",
-      "seconds": 0.000955,
+      "seconds": 0.001602,
       "stdout": "forme (2, 2, 3)\ncibles [0, 1] longueurs [2, 1]\nmasque [[True, True], [True, False]]"
     },
     {
@@ -49,7 +49,7 @@
       "blockIndex": 0,
       "type": "walkthrough",
       "sha256": "1e3954fa8c5371eb673d3725b735b1a9c4b8f9eb96c585ab619dcad9f288c043",
-      "seconds": 0.000368,
+      "seconds": 0.000364,
       "stdout": "X [[1.0, 2.0, 3.0], [2.0, 0.0, 1.0]]\nsomme 39.0 compte 9\nmse 4.333333"
     },
     {
@@ -57,7 +57,7 @@
       "blockIndex": 0,
       "type": "walkthrough",
       "sha256": "8ed027b4ed21aa6334978fae1e6e7afaa048528c625a9398747d9ed7710a177d",
-      "seconds": 0.000692,
+      "seconds": 0.00078,
       "stdout": "scores [[1.5, -1.5], [4.5, -4.5]]\nparametres 6\nbuffer [0.0, 0.0, 0.0]"
     },
     {
@@ -65,7 +65,7 @@
       "blockIndex": 0,
       "type": "walkthrough",
       "sha256": "eadae9d18ddaf54f038a1d381283a2e84f09320ecfb62dcde2fbadb19eadf05c",
-      "seconds": 0.000502,
+      "seconds": 0.000563,
       "stdout": "probabilites [[0.5, 0.5]]\nce 0.693147 forme (1,)\nbce 0.693147\nce_favorable 0.313262"
     },
     {
@@ -73,7 +73,7 @@
       "blockIndex": 0,
       "type": "walkthrough",
       "sha256": "3d79debee752d66b6992b1322562bf5c7a181886a0926975be06340db0d9ab27",
-      "seconds": 0.000344,
+      "seconds": 0.000387,
       "stdout": "perte 4.0\ngradient -4.0\npoids 0.0"
     },
     {
@@ -81,7 +81,7 @@
       "blockIndex": 0,
       "type": "walkthrough",
       "sha256": "57cbd41e36a13f673facf58907fa4fa8c1c57c2106f9d8aeb4fbf9c007f56483",
-      "seconds": 1.581668,
+      "seconds": 1.699425,
       "stdout": "perte_avant 6.0\ngradient 3.0\npoids_apres 1.7"
     },
     {
@@ -89,7 +89,7 @@
       "blockIndex": 0,
       "type": "walkthrough",
       "sha256": "be131052324f88b8a7323f883541f05ecb19677f273edfe8ee5a83c3c3dcc37e",
-      "seconds": 0.00041,
+      "seconds": 0.000499,
       "stdout": "prediction [[2.0]]\nsuivi False\nmode_train False"
     },
     {
@@ -97,7 +97,7 @@
       "blockIndex": 0,
       "type": "walkthrough",
       "sha256": "f32671e34e3b8f0cb6f878357bd9d60be4bba3260c3112c1fa4ff14fa0106610",
-      "seconds": 0.000517,
+      "seconds": 0.000387,
       "stdout": "journal 1.0 float\ntableau [1.0, 2.0]\nsuivi False\nencodeur_gele True"
     },
     {
@@ -113,7 +113,7 @@
       "blockIndex": 0,
       "type": "walkthrough",
       "sha256": "fbe902f8c731ce493f2bfbe70450cae9f4533c82634ed4a70cd17b694675c48b",
-      "seconds": 0.016909,
+      "seconds": 0.015288,
       "stdout": "poids 0.9\nidentique True\netats_adam 1 epoch 1"
     }
   ],

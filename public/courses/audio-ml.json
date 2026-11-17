@@ -4,7 +4,7 @@
   "subtitle": "Du premier essai voix/percussion aux mélanges réels, sans perdre le sens des cibles.",
   "intro": [
     "Les premiers modules ont préparé des voix et des percussions, puis montré comment apprendre sur des exemples isolés. Nous voulons maintenant un outil qui signale les sons présents dans un enregistrement réel. Une voix peut accompagner une percussion : le cahier des charges s’élargit. Ce changement de besoin va guider le choix des cibles, du modèle et du protocole.",
-    "Nous supposons connus les tableaux Python et les étapes d’entraînement vues en PyTorch. Nous allons surtout comprendre ce qui est propre à l’audio : des durées variables, des annotations qui ne donnent pas tous les instants, des représentations préentraînées et des transformations qui peuvent changer la bonne réponse. Les mini-calculs sont des contrôles du raisonnement, pas des performances mesurées sur un corpus."
+    "Nous supposons connus les tableaux Python et les étapes d’entraînement vues en PyTorch. Nous allons comprendre les particularités audio : durées variables, annotations sans dates précises et représentations préentraînées. Certaines transformations peuvent aussi modifier la bonne réponse. Les mini-calculs contrôlent le raisonnement ; ils ne mesurent pas les performances sur un corpus."
   ],
   "prerequisites": [
     "audio-signal",
@@ -34,11 +34,23 @@
         },
         {
           "type": "paragraph",
-          "text": "Pour une classification exclusive à C classes, on produit C logits, des scores réels sans borne, puis une softmax pour lire des probabilités de somme un. CrossEntropyLoss reçoit directement ces logits de forme (B,C) et, dans le cas usuel de cibles entières, des indices torch.long de forme (B,). B est le nombre d’exemples du batch. On n’ajoute pas une softmax avant cette perte."
+          "text": "Une cible (target) indique la réponse attendue. Pour une classification exclusive (single-label classification), une seule classe est correcte."
         },
         {
           "type": "paragraph",
-          "text": "Notre outil de présence pose au contraire deux questions : voix présente ? percussion présente ? Les cibles [1,0], [0,1], [1,1] et [0,0] sont toutes possibles. Chaque logit est lu avec une sigmoïde, 1/(1+exp(-z)). Les deux scores ne sont pas forcés de sommer à un. BCEWithLogitsLoss applique la formulation binaire de façon numériquement stable, directement sur les logits et des cibles flottantes de même forme."
+          "text": "Le réseau produit C scores bruts, les logits (logits). La softmax les transforme en probabilités de somme un."
+        },
+        {
+          "type": "paragraph",
+          "text": "CrossEntropyLoss reçoit directement les logits (B,C), avec des indices cibles torch.long de forme (B,). B compte les exemples du lot (batch). Nous ne plaçons aucune softmax avant cette perte (loss)."
+        },
+        {
+          "type": "paragraph",
+          "text": "Notre classification multi-étiquettes (multi-label classification) pose deux questions : voix présente ? Percussion présente ? Les cibles [1,0], [0,1], [1,1] et [0,0] sont possibles. La sigmoïde (sigmoid), 1/(1+exp(-z)), transforme séparément chaque logit en score entre zéro et un. Les deux résultats ne doivent pas sommer à un. BCEWithLogitsLoss reçoit les logits et des cibles flottantes de même forme. Elle combine ce calcul binaire dans une formulation numériquement stable."
+        },
+        {
+          "type": "paragraph",
+          "text": "À la main, notre percussion seule reçoit la cible [0,1], dans l’ordre voix puis percussion. Les logits [0, log(3)] donnent environ [0,5 ; 0,75]. Les deux questions restent indépendantes dans leur formulation. Nous retrouvons exactement ce cas dans le code."
         },
         {
           "type": "walkthrough",
@@ -79,14 +91,6 @@
         {
           "type": "paragraph",
           "text": "Le déroulé utilise les deux classes dans cet ordre : voix, percussion. Avec les logits [0, log(3)], les probabilités valent environ [0,5 ; 0,75]. La cible [0,1] décrit notre percussion seule. Ce calcul montre le contrat de la perte ; il ne démontre pas que le réseau sache reconnaître un son. Dans un vrai entraînement, ces nombres sont calculés depuis l’entrée et leurs paramètres sont ajustés pour réduire la perte."
-        },
-        {
-          "type": "paragraph",
-          "text": "Le seuil intervient quand on transforme les scores en décisions. Un seuil de 0,5 est un point de départ possible pour chaque classe, pas une loi physique. On le choisit à partir d’un jeu de validation selon le coût des faux positifs et des oublis. Un score 0,75 n’est pas automatiquement une probabilité fiable à 75 % : cette calibration se vérifie."
-        },
-        {
-          "type": "paragraph",
-          "text": "Il reste à fixer l’unité de la réponse : une trame, un crop ou tout un fichier. « Voix présente quelque part » ne veut pas dire « voix à chaque instant ». Nous retrouverons cette différence avec les annotations faibles. Pendant l’apprentissage, la perte doit conserver un chemin différentiable vers les paramètres : un argmax placé avant elle transforme les scores en indices et coupe ce chemin utile."
         },
         {
           "type": "visual",
@@ -162,6 +166,22 @@
             }
           ],
           "caption": "Mini-exemple inventé : cibles [1,1,0,0], scores [0.9,0.6,0.55,0.1]. Au seuil 0,7, un fichier positif sur deux est retrouvé et aucun négatif ne déclenche d’alarme. Ces valeurs ne proviennent d’aucun modèle évalué."
+        },
+        {
+          "type": "callout",
+          "text": "Un seuil de décision (decision threshold) transforme un score en réponse positive ou négative. Le seuil 0,5 constitue un point de départ, pas une loi physique. Nous le choisissons sur la validation selon le coût des fausses alertes et des oublis. La calibration (calibration) vérifie si les probabilités annoncées correspondent aux fréquences observées. Un score 0,75 ne suffit pas à garantir cette fiabilité.",
+          "tone": "tip",
+          "label": "Pour aller plus loin : seuil et calibration"
+        },
+        {
+          "type": "callout",
+          "text": "Fixons aussi l’unité de réponse : une trame, un extrait court (crop) ou tout le fichier. Une présence quelque part ne signifie pas une présence à chaque instant. Les annotations faibles préciseront ce problème. Pendant l’apprentissage, la perte doit rester différentiable : ses variations doivent permettre de calculer les gradients. Un argmax transforme les scores en indices et coupe ce chemin utile. Gardons-le pour une décision appropriée après l’apprentissage.",
+          "tone": "pitfall",
+          "label": "Ne pas décider avant la perte"
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Je définis d’abord si les classes sont exclusives ou simultanées. Ce choix détermine les cibles, les scores et la perte, avant toute décision par seuil."
         }
       ],
       "takeaways": [
@@ -207,19 +227,19 @@
       },
       "notions": [
         {
-          "name": "Cible",
+          "name": "Cible (target)",
           "explanation": "La réponse souhaitée pour un exemple, donnée par l’annotation."
         },
         {
-          "name": "Probabilité prédite",
+          "name": "Probabilité prédite (predicted probability)",
           "explanation": "Un score entre zéro et un présenté par le modèle comme une probabilité ; sa fiabilité doit être évaluée."
         },
         {
-          "name": "Logit",
+          "name": "Logit (logit)",
           "explanation": "Un score réel sans borne que l’on peut transformer en probabilité."
         },
         {
-          "name": "Perte",
+          "name": "Perte (loss)",
           "explanation": "Un nombre calculé selon une règle qui mesure le désaccord entre une sortie et sa cible."
         }
       ],
@@ -241,20 +261,24 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Le futur utilisateur fournit une nouvelle voix enregistrée par son téléphone. Il ne suffit pas que son tableau entre dans le réseau. Si les valeurs à 48 kHz sont annoncées comme du 16 kHz, la même durée et les mêmes fréquences ne sont plus représentées. Le prétraitement doit donc faire partie du modèle livré, plutôt que rester dans un notebook que personne ne retrouve."
+          "text": "Une nouvelle voix arrive depuis un téléphone. Le prétraitement (preprocessing) doit la convertir selon le contrat du modèle. Annoncer 16 kHz pour des valeurs réellement acquises à 48 kHz change le sens des durées et fréquences. Les bonnes dimensions ne suffisent donc pas. Nous livrons les transformations avec le modèle, pour pouvoir les retrouver et les appliquer."
         },
         {
           "type": "paragraph",
-          "text": "Pour une entrée log-mel, notons cadence, fenêtre, hop, bandes, limites fréquentielles, logarithme et normalisation. Une matrice de 64 bandes n’a pas forcément le même sens qu’une autre matrice de 64 bandes. Un encodeur préentraîné — la partie du modèle qui calcule une description du son — possède son propre contrat d’entrée ; reproduisons-le avant d’expérimenter des adaptations."
+          "text": "Pour une entrée log-mel, notons cadence, fenêtre, pas temporel (hop length), bandes et limites fréquentielles. Nous fixons aussi le logarithme et la normalisation. Deux matrices de 64 bandes peuvent décrire des fréquences différentes. Un encodeur préentraîné (pretrained encoder) transforme le son en une description apprise sur un corpus source. Il possède son propre contrat d’entrée. Reproduisons-le avant de tester une adaptation."
         },
         {
           "type": "paragraph",
-          "text": "Si nous construisons notre préparation, nous pouvons standardiser chaque caractéristique : soustraire une moyenne puis diviser par un écart-type. Cela évite que de simples différences d’échelle dominent certains calculs. Les statistiques sont estimées sur les trames réelles d’entraînement, hors remplissage, puis figées. Une bande constante demande une règle numérique explicite, par exemple un écart-type plancher, pour éviter une division par zéro."
+          "text": "La standardisation (standardization) soustrait une moyenne, puis divise par un écart-type fixé. Elle évite que des différences d’échelle dominent certains calculs. Nous estimons ces statistiques sur les trames réelles d’apprentissage, hors remplissage. Nous les conservons ensuite. Une bande constante exige une règle explicite, comme un écart-type plancher, pour éviter la division par zéro."
         },
         {
           "type": "figure",
           "kind": "pipeline",
           "caption": "Fichier audio → cadence et canaux cohérents → représentation attendue → normalisation documentée → encodeur → tête de prédiction."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour isoler le calcul, prenons les valeurs d’apprentissage 1 et 3. Leur moyenne vaut 2, leur écart-type de population vaut 1. La nouvelle valeur 4 devient (4−2)/1 = 2. Cette valeur nouvelle utilise l’échelle déjà fixée ; elle ne participe pas à son calcul."
         },
         {
           "type": "walkthrough",
@@ -302,11 +326,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Ajuster la moyenne avec les fichiers de test laisse ceux-ci influencer le système que nous prétendons évaluer. Ce serait une fuite d’information, même sans lire leurs étiquettes. À l’inverse, un modèle préentraîné peut fournir ses propres statistiques fixes : on les utilise pour la baseline, au lieu de les remplacer silencieusement par les nôtres."
-        },
-        {
-          "type": "paragraph",
-          "text": "Avant d’accuser le réseau d’être mauvais, choisissons un fichier connu et vérifions sa durée après chargement, sa cadence réelle, ses axes et quelques valeurs résumées après transformation. Un spectre linéaire donné à un encodeur qui attend du log-mel peut avoir les bonnes dimensions tout en étant une entrée très différente. Conserver ces contrôles avec les paramètres rend la chaîne reproductible."
+          "text": "Avant d’accuser le réseau, reprenons un fichier connu. Vérifions sa durée chargée, sa cadence réelle, ses axes et quelques résumés après transformation. Un spectre linéaire peut avoir les dimensions du log-mel attendu tout en décrivant autre chose. Ces contrôles accompagnent les paramètres. La chaîne devient reproductible (reproducible) : nous pouvons retrouver ses transformations et examiner leurs résultats."
         },
         {
           "type": "visual",
@@ -327,6 +347,16 @@
             }
           ],
           "caption": "Le même trajet doit être appliqué à chaque nouvel enregistrement avec des réglages compatibles."
+        },
+        {
+          "type": "callout",
+          "text": "Une fuite d’information (data leakage) apparaît si le test influence les réglages du système évalué. Estimer la moyenne sur ses fichiers suffit, même sans lire leurs étiquettes. Pour notre propre chaîne, les statistiques viennent de l’apprentissage. Un modèle préentraîné peut fournir d’autres statistiques fixes. Nous les conservons pour la référence de comparaison (baseline), sans les remplacer silencieusement.",
+          "tone": "pitfall",
+          "label": "Le test ne règle pas notre échelle"
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Le modèle et sa préparation forment un même système. Je reproduis le contrat d’entrée et je fige les statistiques apprises avant de recevoir les données réservées."
         }
       ],
       "takeaways": [
@@ -373,15 +403,15 @@
       },
       "notions": [
         {
-          "name": "Prétraitement",
+          "name": "Prétraitement (preprocessing)",
           "explanation": "Les opérations qui convertissent le fichier en entrée conforme aux attentes du modèle."
         },
         {
-          "name": "Caractéristique",
+          "name": "Caractéristique (feature)",
           "explanation": "Une valeur calculée pour décrire un aspect du son, comme une puissance par bande et par instant."
         },
         {
-          "name": "Standardisation",
+          "name": "Standardisation (standardization)",
           "explanation": "La soustraction d’une moyenne puis la division par un écart-type fixé pour la caractéristique."
         }
       ],
@@ -403,15 +433,19 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Un extrait court et un long produisent des matrices de même nombre de bandes, mais de nombres de trames différents. Pour les traiter dans un même tenseur, on ajoute des cases aux plus courts : le padding. Ces cases résolvent un problème de stockage ; elles ne prouvent pas qu’une seconde de silence a réellement été enregistrée après voix_01."
+          "text": "Voix_01 et un fichier plus long produisent des nombres de trames différents. Pour les traiter ensemble, nous ajoutons des cases aux plus courts. Ce remplissage (padding) rend le tableau rectangulaire. Il ne signifie pas qu’un silence supplémentaire a réellement été enregistré. Notre calcul doit distinguer ces cases des observations."
         },
         {
           "type": "paragraph",
-          "text": "Conservons donc la longueur réelle ou un masque de validité. Dans notre convention, True désigne une position observée et False du remplissage. Le masque ne se déduit pas de x==0 : un silence réel, une oscillation qui passe par zéro ou une caractéristique standardisée nulle sont des valeurs légitimes. Ce qui compte est l’origine de la position."
+          "text": "Un masque de validité (validity mask) indique les positions observées. Ici, True signifie observation et False signifie remplissage. Nous pouvons aussi conserver les longueurs réelles. Un masque ne se déduit pas de x==0. Un silence réel, un passage de l’onde par zéro ou une caractéristique standardisée nulle restent des observations légitimes."
         },
         {
           "type": "paragraph",
-          "text": "pad_sequence permet cet assemblage dans PyTorch. Avec deux suites de longueurs 4 et 7 et batch_first=True, il produit (B=2,T=7). Avec des caractéristiques par trame, une convention possible est (B,T,D), D comptant ces caractéristiques. Les API n’emploient pas toutes cet ordre : batch_first=False placerait T avant B. Nommer les axes évite de prendre une dimension de stockage pour une propriété acoustique."
+          "text": "pad_sequence assemble les séquences dans PyTorch. Deux suites de longueurs 4 et 7 donnent (B=2,T=7) avec batch_first=True. B compte les exemples du lot (batch), T les positions temporelles. Avec des caractéristiques par trame, une convention possible est (B,T,D). D compte ces caractéristiques. batch_first=False place au contraire T avant B. Nommons les axes avant d’utiliser une interface."
+        },
+        {
+          "type": "paragraph",
+          "text": "À la main, [2,4] a pour moyenne 6/2 = 3. Le stockage [2,4,0,0] donnerait naïvement 6/4 = 1,5. Nous voulons conserver 3, car seules deux positions sont réelles. Le code utilise précisément ce tableau et son masque."
         },
         {
           "type": "walkthrough",
@@ -452,15 +486,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Le déroulé isole l’erreur sur une seule séquence : [2,4] devient [2,4,0,0]. La moyenne naïve tombe de 3 à 1,5, simplement parce qu’on a ajouté deux cases. La moyenne masquée conserve 6/2=3. Une séquence vide exige une politique distincte : filtrer l’exemple, le signaler ou définir un traitement ; diviser par zéro ne constitue pas une stratégie."
-        },
-        {
-          "type": "paragraph",
-          "text": "Le masque doit aussi suivre les transformations. Une convolution ou un sous-échantillonnage change parfois le nombre de positions et leur contexte : le masque temporel initial ne peut plus être appliqué aveuglément aux sorties. On recalcule les longueurs selon les opérations et on vérifie les zones de bord. Nous reverrons cette responsabilité dans l’attention."
-        },
-        {
-          "type": "paragraph",
-          "text": "Enfin, traiter un fichier d’une seconde avec un autre d’une minute peut gaspiller presque tout le calcul du premier. Former des batches de durées proches, appelé bucketing, réduit ce remplissage sans tronquer les sons. On conserve néanmoins un brassage des exemples adapté à l’apprentissage : l’optimisation du stockage ne doit pas créer un ordre de données caché."
+          "text": "Regrouper des durées proches (bucketing) réduit le remplissage inutile. Une seconde de son n’a ainsi pas toujours à partager la longueur de stockage d’une minute. Cette organisation ne tronque pas les sons. Nous conservons toutefois un brassage adapté à l’apprentissage, pour ne pas introduire un ordre caché des exemples."
         },
         {
           "type": "visual",
@@ -544,6 +570,22 @@
             }
           ],
           "caption": "Exemple exact [2,4] complété par des zéros. La moyenne masquée reste 3 ; la moyenne naïve diminue uniquement parce que le tableau devient plus long."
+        },
+        {
+          "type": "callout",
+          "text": "Le masque doit suivre les transformations du réseau. Une convolution ou un sous-échantillonnage (downsampling) peut modifier le nombre de positions et leur contexte. Le masque initial ne s’applique donc pas automatiquement aux sorties. Nous recalculons les longueurs selon les opérations, puis contrôlons les bords. L’attention demandera la même vigilance.",
+          "tone": "tip",
+          "label": "Pour aller plus loin : transformer aussi les longueurs"
+        },
+        {
+          "type": "callout",
+          "text": "Le déroulé isole l’erreur sur une seule séquence : [2,4] devient [2,4,0,0]. La moyenne naïve tombe de 3 à 1,5, simplement parce qu’on a ajouté deux cases. La moyenne masquée conserve 6/2=3. Une séquence vide exige une politique distincte : filtrer l’exemple, le signaler ou définir un traitement ; diviser par zéro ne constitue pas une stratégie.",
+          "tone": "pitfall",
+          "label": "Une case ajoutée ne devient pas une observation"
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Le remplissage rend les formes compatibles sans créer des observations. Je conserve les longueurs et je masque les cases ajoutées dans chaque calcul concerné."
         }
       ],
       "takeaways": [
@@ -587,15 +629,15 @@
       },
       "notions": [
         {
-          "name": "Batch",
+          "name": "Lot (batch)",
           "explanation": "Un groupe d’exemples traités ensemble dans un même calcul."
         },
         {
-          "name": "Padding",
+          "name": "Remplissage (padding)",
           "explanation": "Des cases de remplissage ajoutées pour rendre compatibles les longueurs stockées."
         },
         {
-          "name": "Masque de validité",
+          "name": "Masque de validité (validity mask)",
           "explanation": "Un tableau indiquant quelles positions correspondent réellement aux données, plutôt qu’au padding."
         }
       ],
@@ -618,15 +660,19 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Notre collection n’est pas immense. Avant de demander à un grand réseau de découvrir seul les motifs de voix et de percussion, essayons un encodeur qui a déjà appris sur beaucoup de sons. Il transforme chaque entrée en un vecteur de caractéristiques, appelé embedding. Ses coordonnées ne sont pas des échantillons à écouter ; elles servent au calcul des scores de notre tâche."
+          "text": "Notre collection contient peu d’annotations. Essayons d’abord un encodeur déjà entraîné sur un corpus source. Le transfert d’apprentissage (transfer learning) réutilise ces connaissances pour une nouvelle tâche. L’encodeur calcule un plongement (embedding), un vecteur décrivant le son. Ses coordonnées servent à calculer des scores ; ce ne sont pas des échantillons à écouter."
         },
         {
           "type": "paragraph",
-          "text": "Une petite tête transforme cet embedding en deux logits de présence. Dans l’exemple, l’encodeur fournit 512 valeurs par extrait et la tête est une couche linéaire 512→2. Le nombre 512 est un contrat d’exemple, pas une propriété de tous les modèles audio. Il doit correspondre à la sortie réelle de l’encodeur choisi."
+          "text": "Une tête de décision (prediction head) transforme cette description en deux logits de présence. Notre exemple reçoit 512 caractéristiques par extrait et utilise une couche linéaire 512→2. Ce nombre décrit le contrat choisi ici. Chaque autre encodeur doit annoncer sa propre largeur de sortie."
         },
         {
           "type": "paragraph",
-          "text": "Geler l’encodeur signifie empêcher la mise à jour de ses paramètres. Il faut toujours le faire passer sur chaque nouvelle entrée : autrement la tête n’a aucune description à lire. Dans le code, requires_grad_(False), le bloc no_grad et l’optimiseur limité à head.parameters() rendent ce choix explicite. encoder.eval() fixe aussi le comportement des couches comme Dropout ou BatchNorm ; il ne remplace pas, à lui seul, le gel des gradients."
+          "text": "Geler les paramètres (freezing) empêche leur mise à jour pendant notre nouvel apprentissage. L’encodeur doit pourtant encore décrire chaque nouvelle entrée. Nous désactivons les gradients de ses paramètres et limitons l’optimiseur à la tête. Le passage avant (forward pass) reste nécessaire. Sans description, la tête n’a rien à lire."
+        },
+        {
+          "type": "paragraph",
+          "text": "Notre cas miniature suit un seul extrait : l’encodeur fournit 512 nombres, puis la tête produit deux scores. Nous gardons la description fixe pendant l’ajustement de la tête. Cette séparation permet de vérifier quelle partie apprend, avant de modifier tout le réseau."
         },
         {
           "type": "walkthrough",
@@ -674,15 +720,11 @@
         },
         {
           "type": "paragraph",
-          "text": "La première expérience apprend seulement la tête avec nos deux cibles de présence. Nous comparerons ensuite une adaptation partielle de l’encodeur, avec le même découpage de données et les mêmes mesures. Si nous modifions aussi la préparation, la taille du corpus et les augmentations, nous ne saurons plus attribuer le gain à cette adaptation. La baseline sert précisément de point de comparaison interprétable."
+          "text": "PANNs propose des réseaux préentraînés sur AudioSet, puis transférés à plusieurs tâches de reconnaissance. Le modèle wav2vec apprend des représentations de parole sans transcription pendant son préentraînement. Leurs domaines et objectifs diffèrent. Un encodeur surtout exposé à la parole peut décrire moins utilement certaines percussions ou techniques instrumentales."
         },
         {
           "type": "paragraph",
-          "text": "PANNs fournit un exemple réel de réseaux préentraînés sur AudioSet puis transférés à plusieurs tâches de reconnaissance. wav2vec, de son côté, illustre l’apprentissage de représentations sur de la parole sans transcription dans son préentraînement. Leurs domaines et objectifs ne sont pas interchangeables : un encodeur surtout exposé à la parole peut moins bien décrire certaines percussions ou techniques instrumentales."
-        },
-        {
-          "type": "paragraph",
-          "text": "Ce décalage de domaine n’interdit pas le transfert, mais impose une comparaison. Examinons les erreurs par condition d’enregistrement et par type de son. Si les voix éloignées passent mal alors que les voix proches fonctionnent, contrôlons d’abord le niveau et le contrat d’entrée. Si une famille de percussions reste mal représentée, un autre encodeur ou une adaptation ciblée devient une hypothèse motivée, et non un réflexe « plus gros modèle »."
+          "text": "Le décalage de domaine (domain shift) désigne une différence entre les conditions source et celles de notre tâche. Il n’interdit pas le transfert. Nous examinons les erreurs par enregistrement et type de son. Des voix éloignées mal reconnues invitent d’abord à vérifier niveau et préparation. Une famille de percussions mal représentée motive ensuite un autre encodeur ou une adaptation ciblée."
         },
         {
           "type": "visual",
@@ -703,6 +745,22 @@
             }
           ],
           "caption": "Le schéma décrit un protocole possible, pas la preuve que le transfert sera utile sur tous les domaines."
+        },
+        {
+          "type": "callout",
+          "tone": "tip",
+          "label": "Pour aller plus loin : gel et mode évaluation",
+          "text": "Le code combine requires_grad_(False), no_grad et un optimiseur limité aux paramètres de la tête. Ces choix rendent le gel explicite. Le mode évaluation (evaluation mode) règle séparément le comportement de couches comme Dropout et BatchNorm. Appeler eval ne remplace pas le gel des gradients."
+        },
+        {
+          "type": "callout",
+          "text": "La première expérience apprend seulement la tête avec nos deux cibles de présence. Nous comparerons ensuite une adaptation partielle de l’encodeur, avec le même découpage de données et les mêmes mesures. Si nous modifions aussi la préparation, la taille du corpus et les augmentations, nous ne saurons plus attribuer le gain à cette adaptation. La baseline sert précisément de point de comparaison interprétable.",
+          "tone": "pitfall",
+          "label": "Modifier une seule hypothèse à la fois"
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Une description préentraînée et une petite tête fournissent une référence simple. Je teste ensuite le décalage de domaine avant de justifier une adaptation plus large."
         }
       ],
       "takeaways": [
@@ -748,19 +806,19 @@
       },
       "notions": [
         {
-          "name": "Gel des paramètres",
+          "name": "Gel des paramètres (freezing)",
           "explanation": "Le fait de conserver les paramètres d’une partie du modèle sans les mettre à jour pendant le nouvel apprentissage."
         },
         {
-          "name": "Embedding",
+          "name": "Plongement (embedding)",
           "explanation": "Un vecteur de caractéristiques produit pour décrire un extrait ; ses coordonnées ne sont pas des échantillons à écouter."
         },
         {
-          "name": "Tête de décision",
+          "name": "Tête de décision (prediction head)",
           "explanation": "Une transformation qui utilise ces caractéristiques pour produire les scores de la tâche."
         },
         {
-          "name": "Transfert d’apprentissage",
+          "name": "Transfert d’apprentissage (transfer learning)",
           "explanation": "La réutilisation de paramètres ou de caractéristiques appris sur un corpus source pour une autre tâche."
         }
       ],
@@ -782,15 +840,19 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Si la baseline confond une voix soufflée avec une percussion frottée, le problème peut concerner une texture locale, sa durée ou son contexte. Le nom d’une architecture ne résout pas cette question. Demandons d’abord quelles relations ses couches peuvent calculer et sur quels axes elles les calculent."
+          "text": "Notre référence confond une voix soufflée et une percussion frottée. Faut-il mieux lire leur texture, leur durée ou leur contexte ? L’architecture (architecture) organise les couches et leurs connexions. Choisissons-la selon les relations qu’elle peut calculer sur nos données. Son nom seul ne résout pas l’erreur."
         },
         {
           "type": "paragraph",
-          "text": "Une convolution applique le même petit filtre appris à plusieurs positions. Sur l’onde, une Conv1d parcourt le temps ; sur un spectrogramme, une Conv2d peut parcourir temps et fréquence. Le partage des poids permet de rechercher un motif en plusieurs endroits. En empilant des couches, une sortie dépend d’un contexte plus large : on parle de champ réceptif."
+          "text": "Une convolution (convolution) applique le même petit filtre appris à plusieurs positions. Conv1d parcourt ici le temps de l’onde. Conv2d parcourt les axes temporel et fréquentiel du spectrogramme. Le partage des poids cherche un motif à plusieurs endroits. Le champ réceptif (receptive field) désigne la région d’entrée pouvant influencer une sortie. Empiler les couches peut l’élargir."
         },
         {
           "type": "paragraph",
-          "text": "Le code montre les deux conventions. Une onde (B,T) reçoit un axe de canal pour devenir (B,1,T). Un spectrogramme (B,F,T) devient (B,1,F,T). Le singleton 1 signifie ici un seul canal d’entrée ; les 64 bandes restent un axe fréquentiel. Les 8 ou 16 canaux créés par une convolution sont des cartes internes apprises, et non de nouveaux microphones."
+          "text": "Le code montre deux conventions. L’onde (B,T) devient (B,1,T) en ajoutant un axe de canal. Le spectrogramme (B,F,T) devient (B,1,F,T). La dimension de taille un (singleton dimension) désigne ici un canal d’entrée. Les 64 bandes restent un axe fréquentiel. Les 8 ou 16 canaux produits sont des cartes de caractéristiques (feature maps), pas de nouveaux microphones."
+        },
+        {
+          "type": "paragraph",
+          "text": "Calculons la taille avant de lancer le code. Sur l’onde, un filtre de largeur 5, sans remplissage et de pas 1, donne 16000−5+1 = 15996 positions. Sur le spectrogramme, le filtre 3×3 transforme 64×100 positions en 62×98. Les canaux de sortie sont choisis séparément."
         },
         {
           "type": "walkthrough",
@@ -840,15 +902,11 @@
         },
         {
           "type": "paragraph",
-          "text": "Cette lecture évite un piège courant : un reshape peut faire accepter les dimensions tout en mélangeant leur sens. Une permutation d’axes change leur ordre ; elle ne doit pas mélanger les valeurs de différents exemples. Et déplacer un motif en fréquence n’est pas la même invariance que le déplacer dans le temps : une transposition peut modifier une hauteur que la tâche doit précisément reconnaître."
+          "text": "AST, Audio Spectrogram Transformer, découpe le spectrogramme en petites régions (patches). Il projette chaque contenu en vecteur, puis utilise l’attention pour relier ces régions. Des informations de position indiquent leur emplacement dans la grille. Nous détaillerons ensuite l’attention, puis son organisation en blocs Transformer."
         },
         {
           "type": "paragraph",
-          "text": "Un Transformer organise autrement le contexte. AST, Audio Spectrogram Transformer, découpe le spectrogramme en patches, en projette le contenu en vecteurs puis utilise l’attention pour les mettre en relation. L’attention combinera des contenus selon des scores ; nous en ferons le calcul au dernier chapitre. Comme le contenu d’un patch ne donne pas automatiquement sa place, des représentations de position indiquent son emplacement dans la grille."
-        },
-        {
-          "type": "paragraph",
-          "text": "Un CNN, un Transformer ou une combinaison peuvent donc apporter des contextes différents, avec des coûts et des besoins de données différents. Nous ne promettons pas qu’un contexte plus grand soit toujours meilleur. Pour notre collection, on formule une erreur à corriger, on choisit une modification qui peut la traiter, puis on compare à la baseline avec le même protocole."
+          "text": "Un réseau convolutif (convolutional neural network, CNN) et un Transformer organisent donc des contextes différents. Leur combinaison constitue encore une autre hypothèse. Les coûts et besoins de données diffèrent aussi. Nous partons d’une erreur précise, choisissons une modification qui peut la traiter, puis comparons avec le même protocole. Un contexte élargi ne promet pas automatiquement un meilleur résultat."
         },
         {
           "type": "visual",
@@ -872,6 +930,16 @@
             ]
           ],
           "caption": "Formes calculées avec stride 1, dilation 1 et aucun padding. Ce ne sont pas des sorties mesurées d’un modèle publié."
+        },
+        {
+          "type": "callout",
+          "text": "Une remise en forme (reshape) peut faire accepter les dimensions tout en mélangeant leur sens. Une permutation d’axes (axis permutation) change leur ordre en conservant les associations utiles. Elle ne doit pas mélanger différents exemples. Déplacer un motif en fréquence diffère aussi d’un déplacement temporel. Une transposition peut changer la hauteur que notre tâche doit reconnaître.",
+          "tone": "pitfall",
+          "label": "Respecter le sens des axes"
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Je choisis une architecture selon les relations utiles et leur contexte. Je nomme les axes avant les couches, puis je compare la modification à une référence commune."
         }
       ],
       "takeaways": [
@@ -917,15 +985,15 @@
       },
       "notions": [
         {
-          "name": "Couche",
+          "name": "Couche (layer)",
           "explanation": "Une opération paramétrée qui transforme des valeurs d’entrée en nouvelles valeurs."
         },
         {
-          "name": "Convolution",
+          "name": "Convolution (convolution)",
           "explanation": "L’application d’un même petit filtre de poids à plusieurs positions d’une entrée."
         },
         {
-          "name": "Architecture",
+          "name": "Architecture (architecture)",
           "explanation": "L’organisation des couches et de leurs connexions dans un modèle."
         }
       ],
@@ -948,15 +1016,15 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Nous avons reçu un enregistrement de trente secondes et l’annotation [voix=1, percussion=1]. Elle ne dit pas quand chaque son apparaît. C’est une annotation faible. Une annotation temporelle forte préciserait des débuts et fins, selon la convention du corpus. La capacité du réseau à produire trente secondes de scores ne crée pas les trente secondes de vérité manquante."
+          "text": "Notre enregistrement de trente secondes porte [voix=1, percussion=1]. Cette annotation faible (weak label) indique une présence sans dater l’événement. Une annotation temporelle forte (strong label) précise ses débuts et fins selon une convention. Le réseau peut produire des scores locaux, mais cela ne crée pas les dates manquantes dans nos annotations."
         },
         {
           "type": "paragraph",
-          "text": "Si nous choisissons au hasard un crop de deux secondes, il peut contenir seulement du chant. Lui attribuer automatiquement les deux présences du fichier rendrait sa supervision incohérente. Une solution consiste à traiter plusieurs portions et agréger leurs scores en une réponse globale, puis calculer la perte au niveau du fichier où la cible est connue. Le choix dépend du protocole d’apprentissage disponible."
+          "text": "Un extrait court (crop) de deux secondes peut contenir uniquement du chant. Lui recopier les deux présences du fichier rendrait l’apprentissage incohérent. Nous pouvons traiter plusieurs portions, réunir leurs scores et calculer la perte au niveau du fichier. C’est à ce niveau que la cible est connue. Le protocole doit préciser comment cette information globale sert à apprendre."
         },
         {
           "type": "paragraph",
-          "text": "Agréger, c’est construire un résumé des réponses locales. La moyenne reflète un niveau moyen ; elle peut diluer un événement bref. Le maximum retient le plus grand score ; il capte une présence localisée, mais peut aussi retenir un faux pic. Le mini-fichier du code a deux portions à 0,9 et quatre à 0,01 : sa moyenne vaut environ 0,307 alors que son maximum vaut 0,9. Aucun de ces nombres n’est une mesure de qualité du système."
+          "text": "L’agrégation (aggregation) résume les réponses locales. La moyenne peut diluer une percussion brève. Le maximum (max pooling) retient le score le plus élevé, y compris un faux pic éventuel. Notre exemple contient deux scores à 0,9 et quatre à 0,01. Sa somme vaut 1,84, sa moyenne environ 0,307 et son maximum 0,9. Ces nombres illustrent le calcul ; ils ne mesurent aucune qualité."
         },
         {
           "type": "walkthrough",
@@ -997,15 +1065,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Une agrégation différentiable permet d’apprendre à partir de la cible globale. Cela ne garantit pas de bonnes frontières temporelles : il faudra des annotations et une mesure adaptées pour évaluer la localisation. DCASE Task 4 illustre ce besoin réel en demandant classes d’événements et limites temporelles, avec plusieurs événements pouvant se superposer. Nos six scores construits ne sont pas un résultat DCASE."
-        },
-        {
-          "type": "paragraph",
-          "text": "À l’inférence aussi, un modèle prévu pour une durée fixe peut parcourir un fichier long selon une grille de crops, puis réunir ses prédictions. Positions, recouvrement et agrégation doivent être fixés avant le test. Réessayer plusieurs règles jusqu’à obtenir le meilleur résultat sur le test ferait de celui-ci un jeu de réglage."
-        },
-        {
-          "type": "paragraph",
-          "text": "Enfin, les portions du même enregistrement ne sont pas indépendantes. Elles partagent le microphone, la salle, les interprètes et parfois du contenu. On sépare donc les enregistrements ou groupes pertinents avant d’en extraire les crops. Compter des dizaines de portions voisines comme autant de nouveaux fichiers de test peut masquer une mémorisation du contexte."
+          "text": "Une agrégation différentiable (differentiable pooling) laisse les gradients relier la cible globale aux scores locaux. Elle ne garantit pas des frontières temporelles précises. Leur évaluation exige des annotations et des mesures adaptées. DCASE Task 4 demande des classes d’événements et leurs limites temporelles, avec des superpositions possibles. Notre tableau construit ne constitue pas un résultat DCASE."
         },
         {
           "type": "visual",
@@ -1131,6 +1191,22 @@
             }
           ],
           "caption": "Mini-données inventées : deux portions fortes sont diluées dans la moyenne. Les lignes constantes montrent des résumés de fichier, pas des prédictions locales supplémentaires."
+        },
+        {
+          "type": "callout",
+          "text": "Les portions d’un enregistrement partagent microphone, salle, interprètes et parfois contenu. Elles ne sont pas indépendantes. Séparons les enregistrements ou groupes pertinents avant leur découpage. Compter des portions voisines comme de nouveaux fichiers indépendants peut masquer une mémorisation du contexte.",
+          "tone": "tip",
+          "label": "Pour aller plus loin : garder les groupes"
+        },
+        {
+          "type": "callout",
+          "text": "Pendant l’utilisation du modèle (inference), un système de durée fixe peut parcourir un long fichier par portions. Fixons leurs positions, leur recouvrement et l’agrégation avant le test. Essayer plusieurs règles jusqu’au meilleur résultat sur ce test l’utilise comme jeu de réglage. Nous perdons alors notre évaluation réservée.",
+          "tone": "pitfall",
+          "label": "L’agrégation se choisit avant le test"
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Une étiquette de fichier ne donne pas la vérité de chaque portion. J’agrège les réponses au niveau annoté et j’évalue séparément toute localisation temporelle."
         }
       ],
       "takeaways": [
@@ -1175,15 +1251,15 @@
       },
       "notions": [
         {
-          "name": "Annotation faible",
+          "name": "Annotation faible (weak label)",
           "explanation": "Une indication globale de présence qui ne donne pas nécessairement les instants de l’événement."
         },
         {
-          "name": "Annotation forte temporelle",
+          "name": "Annotation forte temporelle (strong label)",
           "explanation": "Une annotation qui indique les limites de présence dans le temps, selon la convention du corpus."
         },
         {
-          "name": "Agrégation",
+          "name": "Agrégation (aggregation)",
           "explanation": "La réunion de plusieurs scores locaux en un score global, par exemple par moyenne ou maximum."
         }
       ],
@@ -1206,20 +1282,24 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Notre classifieur peut apprendre que les voix de la collection ont toutes été enregistrées près du microphone. Une augmentation fait varier les exemples d’entraînement pour réduire sa dépendance à ce genre de détail. Un petit changement de gain ou un bruit de fond modéré sont des pistes concrètes ; leur intérêt se mesure, et leur plage doit rester compatible avec ce que l’annotation affirme."
+          "text": "Notre classifieur peut associer la voix à la proximité du microphone. Une augmentation de données (data augmentation) fait varier les exemples pour limiter cette dépendance. Un petit changement de gain ou un bruit modéré constituent des pistes. Nous évaluons leur intérêt et choisissons une intensité compatible avec l’annotation."
         },
         {
           "type": "paragraph",
-          "text": "Si le gain ne provoque ni saturation ni disparition audible du son, une présence voix/percussion peut rester vraie : la cible est invariante à cette transformation. Mais un bruit qui masque entièrement l’événement retire la preuve que le modèle est censé reconnaître. On écoute donc des exemples augmentés, au lieu de supposer qu’une transformation est correcte parce qu’elle porte un nom courant."
+          "text": "L’invariance de la cible (label invariance) signifie que la réponse attendue résiste à une transformation. Un gain sans saturation ni disparition audible peut conserver une présence voix/percussion. Un bruit masquant entièrement l’événement retire au contraire l’information nécessaire. Écoutons des exemples transformés avant de valider cette hypothèse."
         },
         {
           "type": "paragraph",
-          "text": "Pour comprendre la limite, changeons explicitement de tâche. Si la cible est une hauteur absolue, une transposition la modifie. En notation MIDI, un demi-ton correspond à une unité ; transposer MIDI 60 de deux demi-tons vers l’aigu donne 62. Avec librosa.effects.pitch_shift et bins_per_octave=12, n_steps=2 exprime cette demande, en visant une durée inchangée. Les artefacts éventuels restent à contrôler."
+          "text": "Changeons de tâche pour comprendre la limite. Une transposition (pitch shifting) change une hauteur absolue. En notation MIDI, un demi-ton correspond à une unité : MIDI 60 transposé de deux demi-tons donne 62. Avec librosa.effects.pitch_shift, bins_per_octave=12 et n_steps=2 expriment cette demande. L’opération vise une durée inchangée ; ses défauts sonores restent à écouter."
         },
         {
           "type": "figure",
           "kind": "augmentation",
           "caption": "Une transformation agit sur le son ; la cible reste identique seulement si la propriété prédite est préservée."
+        },
+        {
+          "type": "paragraph",
+          "text": "Gardons deux tâches distinctes pour le calcul manuel. Accélérer le tempo donne 100×1,25 = 125 BPM et une durée 10/1,25 = 8 secondes. Transposer la note donne MIDI 60+2 = 62. Le code applique ces deux règles aux deux exemples concernés."
         },
         {
           "type": "walkthrough",
@@ -1272,15 +1352,11 @@
         },
         {
           "type": "paragraph",
-          "text": "Deuxième tâche distincte : estimer le tempo en battements par minute, BPM. Un time-stretch de rate=1,25 accélère le déroulement en visant une hauteur conservée : dix secondes deviennent environ huit secondes et 100 BPM deviennent 125 BPM. Garder la cible 100 serait faux. Ce n’est pas le simple changement de cadence de lecture du cours Signal, qui modifie aussi la hauteur."
+          "text": "L’étirement temporel (time stretching) modifie la durée en visant une hauteur préservée. Pour rate=1,25, dix secondes deviennent environ huit secondes et 100 BPM deviennent 125 BPM. BPM signifie battements par minute (beats per minute). Garder 100 comme cible serait incohérent. Le simple changement de cadence de lecture du cours Signal modifie aussi la hauteur."
         },
         {
           "type": "paragraph",
-          "text": "Ces deux exemples ne suggèrent pas d’appliquer systématiquement transposition et accélération à notre classifieur. Ils donnent une méthode pour décider : nommer la propriété à prédire, vérifier l’effet de la transformation sur elle, puis définir la cible correspondante. Les transformations qui conservent une catégorie peuvent être inadaptées à une estimation de hauteur, de durée ou de niveau."
-        },
-        {
-          "type": "paragraph",
-          "text": "On applique les augmentations aléatoires à l’entraînement. Une validation ordinaire garde une préparation déterminée, afin de comparer les expériences sans changer chaque fois les perturbations. Un test de robustesse bruité est utile, mais constitue un protocole distinct avec ses paramètres fixés. Comparons d’abord une seule augmentation à notre baseline, puis seulement les combinaisons qui se justifient."
+          "text": "Nous appliquons les augmentations aléatoires pendant l’apprentissage. La validation ordinaire conserve une préparation déterminée pour comparer les expériences. Un test de robustesse (robustness test) bruité constitue un autre protocole, avec ses paramètres fixés. Comparons d’abord une augmentation à notre référence. Nous combinerons ensuite celles dont l’effet se justifie."
         },
         {
           "type": "visual",
@@ -1313,6 +1389,16 @@
             }
           ],
           "caption": "Les effets décrivent des objectifs de transformation. Les algorithmes peuvent produire des artefacts qui demandent une écoute."
+        },
+        {
+          "type": "callout",
+          "text": "Ces exemples ne prescrivent pas systématiquement transposition et accélération à notre classifieur. Nommons la propriété prédite, examinons la transformation, puis définissons la cible correspondante. Conserver une catégorie ne garantit pas de conserver hauteur, durée ou niveau. Une cible ancienne devient trompeuse lorsque la propriété demandée a changé.",
+          "tone": "pitfall",
+          "label": "Transformer aussi la réponse attendue"
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Une augmentation doit conserver la propriété prédite ou transformer sa cible de façon cohérente. J’écoute ses effets et je garde une validation fixe pour mesurer son intérêt."
         }
       ],
       "takeaways": [
@@ -1357,15 +1443,15 @@
       },
       "notions": [
         {
-          "name": "Augmentation",
+          "name": "Augmentation (data augmentation)",
           "explanation": "Une transformation utilisée pour varier les exemples d’entraînement."
         },
         {
-          "name": "Invariance de la cible",
+          "name": "Invariance de la cible (label invariance)",
           "explanation": "Le fait que la réponse attendue reste identique après une transformation donnée."
         },
         {
-          "name": "Transformation cohérente de la cible",
+          "name": "Transformation cohérente de la cible (label transformation)",
           "explanation": "Une règle qui modifie la réponse attendue quand la propriété prédite a changé."
         }
       ],
@@ -1387,15 +1473,23 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Le log-mel de voix_01 est déjà calculé. Plutôt que refaire une transformation de l’onde, on peut cacher un court intervalle temporel ou quelques bandes. SpecAugment emploie notamment ce type de masquage ; le travail original comporte aussi une déformation temporelle. Le but est d’éviter que le réseau dépende toujours d’une petite zone, pas de supprimer arbitrairement toute la preuve de la classe."
+          "text": "Notre log-mel est calculé. Le masquage de caractéristiques (feature masking) cache volontairement certaines observations pendant l’apprentissage. SpecAugment masque notamment des intervalles temporels et des bandes ; son travail original comporte aussi une déformation temporelle. Nous cherchons à réduire la dépendance à une petite région, tout en conservant assez d’information pour apprendre."
         },
         {
           "type": "paragraph",
-          "text": "Un masque de caractéristiques n’est pas le masque de padding du chapitre précédent. Le padding indique ce qui n’a jamais été observé ; ici, on retire volontairement une observation réelle pour l’entraînement. La valeur de remplacement doit correspondre à la préparation : zéro peut être une puissance nulle ou la moyenne d’une caractéristique standardisée, deux sens différents."
+          "text": "Ce masque diffère du remplissage (padding), qui désigne des positions jamais observées. Ici, nous retirons une observation réelle. La valeur de remplacement dépend de la préparation. Zéro peut désigner une puissance nulle ou la moyenne d’une caractéristique standardisée. Ces significations ne sont pas interchangeables."
         },
         {
           "type": "paragraph",
           "text": "Dans notre reconnaissance, masquer une petite bande peut laisser assez d’indices pour reconnaître une voix ; cacher toute la seule attaque de percussion peut rendre sa cible discutable. Dans une tâche de hauteur très fine, même une bande étroite peut contenir l’information décisive. On fixe donc l’intensité du masquage à partir du besoin et on compare au système de référence."
+        },
+        {
+          "type": "paragraph",
+          "text": "Mixup interpole (interpolates) deux entrées et leurs cibles avec les mêmes coefficients. Pour 0,25*x_a+0,75*x_b, la cible suit 0,25*y_a+0,75*y_b. Une voix seule [1,0] et une percussion seule [0,1] donnent [0,25 ; 0,75]. Cette cible souple (soft target) régularise l’apprentissage. Elle diffère de la cible dure [1,1] d’un mélange naturel annoté pour ses présences."
+        },
+        {
+          "type": "paragraph",
+          "text": "Calculons la cible avant le code. Avec 25 % de voix seule et 75 % de percussion seule, nous obtenons 0,25×[1,0]+0,75×[0,1] = [0,25 ; 0,75]. Le coefficient du premier exemple doit garder le même rôle dans l’entrée et dans la cible."
         },
         {
           "type": "walkthrough",
@@ -1441,15 +1535,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Mixup fait autre chose : il calcule une interpolation de deux entrées et de leurs cibles avec les mêmes coefficients. Pour x_mix=0,25*x_a+0,75*x_b, on construit y_mix=0,25*y_a+0,75*y_b. Une voix seule [1,0] et une percussion seule [0,1] donnent [0,25 ; 0,75]. C’est une cible souple utilisée pour régulariser l’apprentissage, pas la cible dure [1,1] que porterait un mélange naturel annoté pour ses présences."
-        },
-        {
-          "type": "paragraph",
-          "text": "La perte doit accepter cette convention de cible. Et mélanger les log-mel n’équivaut pas à mélanger les ondes : projection et logarithme changent le sens de l’interpolation. Même une somme d’ondes dépend de leurs phases et alignements. Mixup est une hypothèse d’apprentissage à évaluer ; il ne promet pas que chaque matrice interpolée corresponde à un enregistrement naturel."
-        },
-        {
-          "type": "paragraph",
-          "text": "Le déroulé garde les coefficients visibles pour éviter une inversion discrète entre entrée et cible. Le graphique, lui, illustre uniquement une bande retirée sur une grille de puissance linéaire : ce n’est pas un résultat publié ni un vrai log-mel. Séparons ces expériences dans le journal de comparaison : baseline, masquage seul, mixup seul. Une combinaison ne sera utile à interpréter qu’après ces contrôles."
+          "text": "Le déroulé garde les coefficients visibles pour empêcher une inversion entre entrée et cible. Le graphique montre uniquement une bande retirée d’une puissance linéaire construite. Il ne représente ni un vrai log-mel ni un résultat publié. Documentons séparément référence, masquage seul et mixup seul. Une combinaison sera plus facile à interpréter après ces comparaisons."
         },
         {
           "type": "visual",
@@ -1541,6 +1627,16 @@
             }
           ],
           "caption": "Exemple inventé d’une trame en puissance sur une grille linéaire. Seuls les bins de 200 et 300 Hz sont mis à zéro. Ce dessin illustre une zone cachée ; ce n’est ni un vrai spectrogramme mel ni une performance publiée de SpecAugment."
+        },
+        {
+          "type": "callout",
+          "text": "La perte doit accepter la convention choisie. Mélanger des log-mel ne revient pas à mélanger les ondes : projection et logarithme changent le calcul. Une somme d’ondes dépend aussi des phases et alignements. Mixup est une hypothèse d’apprentissage à tester. Une matrice interpolée ne correspond pas nécessairement à un enregistrement naturel.",
+          "tone": "pitfall",
+          "label": "Une interpolation n’est pas un mélange acoustique garanti"
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Le masquage retire des observations ; mixup interpole des entrées et leurs cibles. Je précise le domaine de transformation et je vérifie la cohérence de la supervision."
         }
       ],
       "takeaways": [
@@ -1586,15 +1682,15 @@
       },
       "notions": [
         {
-          "name": "Masquage de caractéristiques",
+          "name": "Masquage de caractéristiques (feature masking)",
           "explanation": "Le remplacement de positions choisies par une valeur de remplissage définie."
         },
         {
-          "name": "Cible souple",
+          "name": "Cible souple (soft target)",
           "explanation": "Un vecteur de poids de classes, plutôt qu’un seul indice ou une seule classe certaine."
         },
         {
-          "name": "Mixup",
+          "name": "Mixup (mixup)",
           "explanation": "Une interpolation de deux entrées et de leurs cibles avec les mêmes coefficients."
         }
       ],
@@ -1616,7 +1712,11 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Notre tête de présence est une façon d’utiliser un embedding. Une autre application serait de retrouver les extraits proches d’un son ou d’une description. Le produit scalaire additionne les produits de coordonnées correspondantes. La similarité cosinus le divise par les normes L2, c’est-à-dire les longueurs des deux vecteurs : elle compare leur orientation plutôt que leur échelle seule. Pour deux vecteurs de norme un, le produit scalaire donne déjà ce cosinus."
+          "text": "Nous pouvons aussi rechercher des sons proches de notre extrait ou d’une description. Le produit scalaire (dot product) additionne les produits des coordonnées correspondantes. La norme L2 (L2 norm) mesure la longueur d’un vecteur."
+        },
+        {
+          "type": "paragraph",
+          "text": "La similarité cosinus (cosine similarity) divise le produit scalaire par les deux normes. Elle compare l’orientation ; pour deux vecteurs unitaires, le produit scalaire suffit."
         },
         {
           "type": "paragraph",
@@ -1638,7 +1738,19 @@
         },
         {
           "type": "paragraph",
-          "text": "L’apprentissage contrastif apprend justement à rapprocher des paires choisies et à en distinguer d’autres. CLAP l’illustre avec audio et texte dans un espace comparable. Notre enregistrement peut alors être confronté à des descriptions comme « une personne chante » et « une percussion joue ». Les descriptions, le domaine d’entraînement et le protocole influencent le résultat ; une proximité n’est pas une compréhension musicale universelle."
+          "text": "L’apprentissage contrastif (contrastive learning) rapproche certaines paires et en distingue d’autres. CLAP apprend ainsi des descriptions audio et textuelles comparables. Nous pouvons confronter l’enregistrement à « une personne chante » et « une percussion joue ». Le résultat dépend des descriptions, du domaine source et du protocole. Une proximité ne garantit pas une compréhension musicale universelle."
+        },
+        {
+          "type": "paragraph",
+          "text": "L’attention (attention) répond à une autre question : quel contenu réunir ? Une requête (query) est comparée à des clés (keys)."
+        },
+        {
+          "type": "paragraph",
+          "text": "La softmax transforme leurs compatibilités en poids. Les valeurs (values) portent le contenu pondéré. Dans notre calcul, les poids [0,75 ; 0,25] réunissent [2 ; 10] en 4. Ces poids ne sont pas des probabilités voix/percussion, ni une preuve causale de la décision."
+        },
+        {
+          "type": "paragraph",
+          "text": "À la main, la softmax des scores [log(3),0] donne [0,75 ; 0,25]. Le contenu résumé vaut 0,75×2+0,25×10 = 4. Si seule la première position est réelle, elle reçoit tout le poids et le résumé vaut 2. Le code retrouve ces deux états."
         },
         {
           "type": "walkthrough",
@@ -1680,18 +1792,6 @@
           "result": "Le masque modifie l’ensemble sur lequel la pondération est calculée. Une position ajoutée pour stocker un batch ne doit pas fournir un faux contexte."
         },
         {
-          "type": "paragraph",
-          "text": "La définition des négatifs compte aussi : deux voix enregistrées séparément peuvent être sémantiquement compatibles avec la même description. Les repousser comme de simples paires différentes crée de faux négatifs. La composition du batch et la règle d’appariement déterminent donc une partie du sens appris, au-delà de la formule de similarité."
-        },
-        {
-          "type": "paragraph",
-          "text": "L’attention répond à une autre question : quel contenu réunir pour construire un contexte ? Elle compare des requêtes à des clés, transforme les scores en poids par softmax, puis combine les valeurs avec ces poids. Le déroulé sépare les scores [log(3),0] des contenus [2,10] : les poids [0,75 ; 0,25] donnent un résumé 4. Ces poids ne sont ni les probabilités voix/percussion ni une preuve causale de la décision du modèle."
-        },
-        {
-          "type": "paragraph",
-          "text": "Enfin, le remplissage ne doit pas devenir une source de contexte. Si la seconde position du déroulé est du padding, on l’exclut avant softmax et le résumé vaut 2. Dans MultiheadAttention, key_padding_mask=True signifie clé à ignorer ; notre masque valid=True pour position réelle doit donc être inversé. Ce masque ne supprime pas nécessairement les sorties aux requêtes paddées : il faut aussi les ignorer lors du pooling ou de la perte. Chaque séquence doit garder au moins une clé valide."
-        },
-        {
           "type": "visual",
           "kind": "flow",
           "title": "Ne pas confondre les trois objets de l’attention",
@@ -1716,6 +1816,22 @@
           "language": "python",
           "code": "import torch\n\n# x : (B, T, D), D divisible par 4, valeurs finies\n# valid : (B, T), booleen, au moins un True par sequence\nattn = torch.nn.MultiheadAttention(D, 4, batch_first=True)\ny, _ = attn(x, x, x, key_padding_mask=~valid)\n# Les cles de padding sont ignorees.\n# Les positions de requete paddees peuvent encore produire une sortie :\n# utiliser aussi valid lors du pooling ou de la perte ulterieure.",
           "caption": "Le masque des clés ne dispense pas de gérer les positions invalides à chaque étape qui les utilise."
+        },
+        {
+          "type": "callout",
+          "text": "Un faux négatif contrastif (false negative) est une paire repoussée alors qu’elle partage une relation utile. Deux voix enregistrées séparément peuvent correspondre à la même description. Les traiter comme simplement incompatibles introduit cette difficulté. La composition du lot et la règle d’appariement participent donc au sens appris.",
+          "tone": "tip",
+          "label": "Pour aller plus loin : choisir les négatifs"
+        },
+        {
+          "type": "callout",
+          "text": "Une clé de remplissage doit être ignorée avant la softmax. Dans notre exemple, l’exclure donne le résumé 2. Le masque booléen key_padding_mask utilise True pour ignorer une clé. Notre convention valid=True désigne au contraire une observation : nous l’inversons. Les requêtes remplies peuvent néanmoins produire des sorties. Ignorons-les aussi dans le résumé global (pooling) ou dans la perte. Chaque séquence garde au moins une clé valide.",
+          "tone": "pitfall",
+          "label": "Une clé masquée ne supprime pas toutes les sorties"
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Une similarité compare des descriptions, tandis que l’attention réunit des contenus. Je distingue scores, poids et résultat, puis je vérifie précisément la convention des masques."
         }
       ],
       "takeaways": [
@@ -1733,7 +1849,7 @@
         "problem": "Un score de proximité, un poids d’attention et une présence prédite sont-ils la même chose ?",
         "why": "Nous pouvons lire les scores intermédiaires et les masques sans leur attribuer directement une probabilité de présence ou une explication causale.",
         "connection": "Distinguer comparaison de vecteurs, apprentissage contrastif et combinaison de contenus par attention.",
-        "next": "Le système est défini : cibles, préparation, baseline et améliorations. L’évaluation devra maintenant vérifier ce qu’il apporte sur des enregistrements indépendants."
+        "next": "Nous savons pondérer les contenus. Nous allons maintenant ajouter position, normalisation et connexions pour assembler un Transformer complet."
       },
       "checkpoint": {
         "prompt": "Dans MultiheadAttention, key_padding_mask booléen utilise True pour ignorer une clé. Si valid = [True, True, False], quel masque faut-il fournir ?",
@@ -1760,19 +1876,19 @@
       },
       "notions": [
         {
-          "name": "Produit scalaire",
+          "name": "Produit scalaire (dot product)",
           "explanation": "La somme des produits entre coordonnées correspondantes de deux vecteurs."
         },
         {
-          "name": "Similarité cosinus",
+          "name": "Similarité cosinus (cosine similarity)",
           "explanation": "Le produit scalaire divisé par les longueurs des deux vecteurs ; il compare leur orientation."
         },
         {
-          "name": "Attention",
+          "name": "Attention (attention)",
           "explanation": "Un mécanisme qui calcule des poids pour réunir le contenu de plusieurs positions."
         },
         {
-          "name": "Softmax",
+          "name": "Softmax (softmax)",
           "explanation": "Une transformation de scores en poids positifs dont la somme vaut un."
         }
       ],

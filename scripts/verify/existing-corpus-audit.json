@@ -1,0 +1,76 @@
+{
+  "summary": {
+    "executions": 57,
+    "additional_checks": 13,
+    "findings": 0,
+    "non_python_blocks": 1,
+    "code_free_walkthroughs": 9,
+    "long_sentences": 0,
+    "long_chapters": 1
+  },
+  "findings": [],
+  "walkthroughs_without_code": [
+    {
+      "theme": "python-scientifique",
+      "chapterId": "du-son-aux-donnees",
+      "blockIndex": 4,
+      "title": "Fixer le résultat attendu avant de coder"
+    },
+    {
+      "theme": "generation-controle",
+      "chapterId": "representation-et-reconstruction",
+      "blockIndex": 4,
+      "title": "Localiser la perte avant de générer"
+    },
+    {
+      "theme": "generation-controle",
+      "chapterId": "quantification-et-tokens",
+      "blockIndex": 6,
+      "title": "Compter une séquence avant de la modéliser"
+    },
+    {
+      "theme": "generation-controle",
+      "chapterId": "conditions-et-intention-musicale",
+      "blockIndex": 3,
+      "title": "Traduire une intention en données alignées"
+    },
+    {
+      "theme": "evaluation-recherche",
+      "chapterId": "question-de-recherche-et-baseline",
+      "blockIndex": 2,
+      "title": "Avant les essais, écrire le contrat"
+    },
+    {
+      "theme": "evaluation-recherche",
+      "chapterId": "baselines-et-ablations",
+      "blockIndex": 3,
+      "title": "Observer une interaction entre deux idées"
+    },
+    {
+      "theme": "evaluation-recherche",
+      "chapterId": "ecoute-et-jugement-perceptif",
+      "blockIndex": 3,
+      "title": "Construire un essai d’écoute comparable"
+    },
+    {
+      "theme": "evaluation-recherche",
+      "chapterId": "fad-et-limites-des-proxies",
+      "blockIndex": 5,
+      "title": "Comprendre une distance de distributions en une dimension"
+    },
+    {
+      "theme": "evaluation-recherche",
+      "chapterId": "generalisation-et-compte-rendu",
+      "blockIndex": 6,
+      "title": "Évaluer la procédure de sélection, puis la raconter"
+    }
+  ],
+  "chapters_over_1100_words": [
+    {
+      "theme": "audio-signal",
+      "chapterId": "amplitude-puissance-decibels",
+      "words": 1702
+    }
+  ],
+  "long_sentences": []
+}

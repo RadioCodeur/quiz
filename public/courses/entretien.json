@@ -105,7 +105,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Vérifier les données, les cibles et leur séparation avant l'entraînement."
+          "text": "À dire en entretien : je vérifie les données et leurs cibles avant de réunir modèle, perte, gradients et mise à jour. Je mesure ensuite la validation séparément."
         }
       ],
       "takeaways": [
@@ -238,7 +238,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Expliquer une dérivée locale et la règle de la chaîne."
+          "text": "À dire en entretien : la rétropropagation calcule les gradients par la règle de la chaîne. L’optimiseur modifie ensuite les poids."
         }
       ],
       "takeaways": [
@@ -370,7 +370,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Assembler les données avec leurs longueurs et leur masque de validité."
+          "text": "À dire en entretien : je garde les longueurs et un masque avec les lots complétés. Le remplissage ne doit pas compter comme une observation réelle."
         }
       ],
       "takeaways": [
@@ -503,7 +503,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : eval règle le comportement des modules dépendant du mode."
+          "text": "À dire en entretien : eval règle le comportement des modules, tandis que no_grad évite de mémoriser les nouvelles opérations pour les dérivées. Ces deux commandes sont complémentaires."
         }
       ],
       "takeaways": [
@@ -635,7 +635,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Réduire le problème et inspecter dimensions, types, emplacement et valeurs."
+          "text": "À dire en entretien : je réduis le problème, puis je vérifie formes, types, emplacement et valeurs. Je cherche une cause précise avant de modifier le modèle."
         }
       ],
       "takeaways": [
@@ -763,7 +763,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Séparer amplitude instantanée, crête et niveau moyen RMS."
+          "text": "À dire en entretien : je distingue les pics du niveau moyen RMS et je précise la référence des décibels. Ces mesures ne suffisent pas à prédire la sonie."
         }
       ],
       "takeaways": [
@@ -902,7 +902,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Relier l'analyse locale à l'évolution temporelle du contenu fréquentiel."
+          "text": "À dire en entretien : la STFT montre comment le contenu fréquentiel évolue localement. Les filtres mel regroupent ces fréquences, en perdant une partie du détail."
         }
       ],
       "takeaways": [
@@ -1035,7 +1035,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Distinguer magnitude et phase dans les coefficients complexes."
+          "text": "À dire en entretien : la magnitude indique une taille, tandis que la phase décrit un alignement. Une magnitude seule ne détermine pas directement le signal reconstruit."
         }
       ],
       "takeaways": [
@@ -1168,7 +1168,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Distinguer changement de cadence et simple changement de métadonnée."
+          "text": "À dire en entretien : je change réellement la cadence des échantillons, avec le filtrage adapté. Modifier seulement la fréquence déclarée change la vitesse de lecture."
         }
       ],
       "takeaways": [
@@ -1300,7 +1300,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Distinguer le mécanisme d’attention du bloc complet avec position, réseau, résidus et normalisation."
+          "text": "À dire en entretien : le Transformer réunit attention, position, réseau local, résidus et normalisation. Le masque causal empêche une position de consulter le futur."
         }
       ],
       "takeaways": [
@@ -1433,7 +1433,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Décrire encodeur, codes et décodeur, puis le rôle distinct du générateur."
+          "text": "À dire en entretien : le codec apprend une représentation compacte et sa reconstruction. Le générateur apprend ensuite à proposer des codes ; il reste limité par cette représentation."
         }
       ],
       "takeaways": [
@@ -1566,7 +1566,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Décomposer la séquence en prédictions du prochain événement à partir du passé."
+          "text": "À dire en entretien : je prédis chaque nouvel événement à partir du passé disponible. Pendant l’apprentissage, le masque empêche d’utiliser les réponses futures."
         }
       ],
       "takeaways": [
@@ -1699,7 +1699,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Expliquer la distribution encodée et la reparamétrisation."
+          "text": "À dire en entretien : le VAE encode une distribution plutôt qu’un seul point. La reparamétrisation permet d’échantillonner tout en calculant les gradients utiles."
         }
       ],
       "takeaways": [
@@ -1831,7 +1831,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Nommer la cible apprise : bruit pour le DDPM étudié, vitesse pour le flux simplifié."
+          "text": "À dire en entretien : je précise la cible apprise : le bruit dans notre DDPM, la vitesse dans notre flux simplifié. La génération nécessite ensuite des étapes numériques."
         }
       ],
       "takeaways": [
@@ -1964,7 +1964,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Apprendre les cas conditionnel et non conditionnel en retirant parfois la condition."
+          "text": "À dire en entretien : le réseau apprend avec et sans condition. Je combine ses prédictions pour renforcer la commande, puis je vérifie diversité et fidélité sonore."
         }
       ],
       "takeaways": [
@@ -2047,7 +2047,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Chaque modalité (modality) reçoit une représentation adaptée. Un encodeur texte produit des vecteurs linguistiques. CLAP apprend des représentations rapprochant audio et descriptions textuelles. Cette proximité sémantique ne garantit pas un contrôle temporel exact. Pour transmettre ces vecteurs, la concaténation (concatenation) les juxtapose aux caractéristiques existantes. La modulation affine conditionnelle (feature-wise linear modulation, FiLM) produit des multiplicateurs et décalages. L’attention croisée (cross-attention) laisse les positions générées consulter une séquence de conditions.",
+          "text": "Chaque modalité (modality) reçoit une représentation adaptée. Un encodeur texte produit des vecteurs linguistiques. Le préentraînement contrastif langage-audio (Contrastive Language-Audio Pretraining, CLAP) apprend des représentations rapprochant audio et descriptions textuelles. Cette proximité sémantique ne garantit pas un contrôle temporel exact. Pour transmettre ces vecteurs, la concaténation (concatenation) les juxtapose aux caractéristiques existantes. La modulation affine conditionnelle (feature-wise linear modulation, FiLM) produit des multiplicateurs et décalages. L’attention croisée (cross-attention) laisse les positions générées consulter une séquence de conditions.",
           "role": "oral-answer"
         },
         {
@@ -2096,7 +2096,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Associer chaque modalité à l’information musicale qu’elle peut réellement exprimer."
+          "text": "À dire en entretien : je choisis chaque modalité selon l’information musicale qu’elle peut exprimer. Un résumé sémantique ne remplace pas une commande temporelle précise."
         }
       ],
       "takeaways": [
@@ -2136,7 +2136,7 @@
       ],
       "oral": {
         "kind": "question",
-        "answerWords": 213,
+        "answerWords": 220,
         "targetSeconds": [
           60,
           90
@@ -2230,7 +2230,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Définir la personnalisation et réserver des exemples d’évaluation avant l’adaptation."
+          "text": "À dire en entretien : je définis la personnalisation et réserve les exemples d’évaluation avant d’adapter. Moins de paramètres entraînables ne suffit pas à éviter la mémorisation."
         }
       ],
       "takeaways": [
@@ -2362,7 +2362,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Séparer adaptation, stockage, durée du calcul et latence totale."
+          "text": "À dire en entretien : je sépare le coût d’adaptation, le stockage et le délai d’utilisation. Je mesure le trajet complet sur la machine cible."
         }
       ],
       "takeaways": [
@@ -2505,7 +2505,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Formuler une hypothèse précise et définir ses critères avant les essais."
+          "text": "À dire en entretien : je formule une hypothèse et fixe les critères avant les essais. Une référence simple et des ablations m’aident à comprendre l’apport réel."
         }
       ],
       "takeaways": [
@@ -2642,7 +2642,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Définir d’abord le type de nouveauté attendu : prise, séance, musicien ou instrument."
+          "text": "À dire en entretien : je définis la nouveauté attendue avant de séparer les données. Des fenêtres issues d’une même prise ne doivent pas contaminer mon évaluation."
         }
       ],
       "takeaways": [
@@ -2784,7 +2784,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Distinguer qualité sonore, conformité au contrôle et intérêt musical."
+          "text": "À dire en entretien : je distingue qualité sonore, respect du contrôle et intérêt musical. Je confronte les mesures à une écoute adaptée à la question."
         }
       ],
       "takeaways": [
@@ -2926,7 +2926,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Relier la motivation aux collaborations et axes explicitement décrits dans l’offre."
+          "text": "À dire en entretien : je relie ma motivation aux questions de contrôle et aux pratiques de composition décrites dans l’offre. J’appuie mes compétences sur des exemples personnels réels."
         }
       ],
       "takeaways": [
@@ -3070,7 +3070,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Partir de situations, d’exemples et de contre-exemples fournis par la personne."
+          "text": "À dire en entretien : je pars d’exemples et de contre-exemples fournis par la personne. Nous précisons ensemble ce qui doit changer et ce qui doit rester."
         }
       ],
       "takeaways": [
@@ -3212,7 +3212,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Décrire le type d’échec et vérifier d’abord l’implémentation et le protocole."
+          "text": "À dire en entretien : je vérifie l’implémentation et le protocole avant d’interpréter un échec. Je distingue ce que les résultats contredisent de ce qui reste incertain."
         }
       ],
       "takeaways": [
@@ -3355,7 +3355,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Choisir la représentation selon le contrôle recherché et les informations à préserver."
+          "text": "À dire en entretien : je choisis la représentation selon le contrôle souhaité et les informations à préserver. Je peux relier structure symbolique et rendu audio quand leurs rôles sont distincts."
         }
       ],
       "takeaways": [

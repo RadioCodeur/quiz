@@ -37,7 +37,7 @@
         "unmaskedPastDifference": 0.20449918508529663,
         "assertions": 15
       },
-      "seconds": 0.011436000000685453,
+      "seconds": 0.009897299998556264,
       "displayedCodeChecked": true
     },
     {
@@ -58,7 +58,7 @@
         "usesPretrainedEncoder": false,
         "claimsGenerationQuality": false
       },
-      "seconds": 0.0047701000003144145,
+      "seconds": 0.0044210999985807575,
       "displayedCodeChecked": true
     }
   ]
