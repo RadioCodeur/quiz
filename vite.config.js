@@ -7,6 +7,7 @@ export default defineConfig({
       input: {
         quiz: fileURLToPath(new URL('./index.html', import.meta.url)),
         cours: fileURLToPath(new URL('./cours.html', import.meta.url)),
+        glossaire: fileURLToPath(new URL('./glossaire.html', import.meta.url)),
       },
     },
   },

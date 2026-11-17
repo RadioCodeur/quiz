@@ -87,3 +87,11 @@ Les blocs `list` peuvent porter `links: [{text, themeId, chapterId}]`. Le rendu 
 Le septième module contient quatre chapitres : lire l’offre, situer les outils musicaux, comprendre le cycle post-génératif et préparer huit lectures. Chacun contient des liens techniques explicites. Le registre des modules est distinct des six thèmes du quiz ; le nouveau module ne modifie aucune couverture de question.
 
 `kind: "context"` autorise un module court avec quatre jalons. Ses exemples sont des tableaux de raisonnement explicitement nommés, sans programme artificiel : le résultat attendu est un choix argumenté ou un protocole. Cette adaptation de R1 est visible dans chaque walkthrough. Le registre documentaire `scripts/verify/research-sources.json` conserve les pages primaires ouvertes, les faits utilisables et les limites d’interprétation.
+
+## Lot E — réponses orales et glossaire
+
+Le module `entretien`, de format `kind: "interview"`, contient 25 questions ouvertes et un pitch hypothétique. Les réponses comptent 184 à 213 mots ; le pitch en compte 303. Les durées annoncées sont indicatives, pas chronométrées. Chaque question possède trois points obligatoires, un piège et une relance. Le modèle est replié pour permettre un essai préalable.
+
+Les paragraphes autorisés portent le rôle `oral-answer`. Le gabarit utilise un bloc `list` de rôle `pitch-template` ; ses six champs conservent les notes dans `a-lecoute.pitch.v1`. Le format oral n’impose pas de code ou de schéma artificiel : l’exemple demandé est une réponse argumentée, reliée aux mécanismes techniques. Les contraintes de longueur des réponses sont validées.
+
+`glossaire.html` propose 160 paires FR–EN dans six domaines, avec recherche sans accents, filtre et liens vers les cours. Les définitions sont dans `public/glossary.json`. Les trois pages partagent un accès dans leur header ; Vite construit les trois entrées. Les notes de pitch ne modifient jamais la session du quiz.

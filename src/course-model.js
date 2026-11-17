@@ -1,4 +1,4 @@
-export const COURSE_ORDER = ['python-scientifique', 'audio-signal', 'pytorch', 'audio-ml', 'generation-controle', 'evaluation-recherche', 'contexte-recherche'];
+export const COURSE_ORDER = ['python-scientifique', 'audio-signal', 'pytorch', 'audio-ml', 'generation-controle', 'evaluation-recherche', 'contexte-recherche', 'entretien'];
 export const COURSE_STORAGE_KEY = 'a-lecoute.courses.v1';
 
 export function courseHref(themeId, chapterId, questionId) {

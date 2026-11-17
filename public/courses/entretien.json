@@ -1,0 +1,3679 @@
+{
+  "themeId": "entretien",
+  "label": "Entretien",
+  "kind": "interview",
+  "edition": 2,
+  "title": "Expliquer, argumenter, puis discuter",
+  "subtitle": "Vingt-cinq questions ouvertes et un pitch à construire avec votre propre parcours.",
+  "intro": [
+    "Nous savons reconnaître des notions dans le quiz. Nous allons maintenant les expliquer sans propositions de réponses.",
+    "Les réponses modèles proposent une structure, pas un texte à réciter. Nous les adaptons à ce que nous comprenons et avons réellement fait."
+  ],
+  "objectives": [
+    "Répondre avec un mécanisme, un exemple et une limite.",
+    "Relier les choix techniques aux besoins musicaux et scientifiques.",
+    "Construire un pitch honnête, puis répondre aux relances."
+  ],
+  "prerequisites": [
+    "contexte-recherche"
+  ],
+  "chapters": [
+    {
+      "id": "oral-boucle-pytorch",
+      "title": "Comment construiriez-vous une boucle PyTorch pour classer des extraits sonores ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Comment construiriez-vous une boucle PyTorch pour classer des extraits sonores ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Époque (epoch)",
+          "explanation": "Un passage complet sur les exemples d’entraînement."
+        },
+        {
+          "name": "Fonction d’assemblage (collate function)",
+          "explanation": "La fonction qui transforme plusieurs exemples isolés en un lot de tenseurs."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour distinguer une voix d'une percussion, je commencerais par définir l'entrée, la cible et la séparation des données. Un jeu de données (dataset) fournit les exemples. Le chargeur de données (DataLoader) les assemble en lots (batches). Je vérifierais un lot avant tout entraînement : dimensions, valeurs et correspondance entre extraits et étiquettes.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Le modèle produit des scores bruts (logits), un par classe. La perte (loss) mesure leur désaccord avec les bonnes réponses. Un gradient (gradient) indique comment cette perte varie localement avec les paramètres. À chaque itération, je remets les gradients à zéro, puis calcule les prédictions et la perte. La rétropropagation (backpropagation) calcule les dérivées nécessaires. Enfin, l'optimiseur (optimizer) utilise ces gradients pour modifier les paramètres. Une époque (epoch) correspond à un passage sur les données d'entraînement.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Après chaque époque, je mesure aussi le résultat sur les données de validation. J'utilise le mode évaluation et désactive l'enregistrement des gradients. Je journalise les pertes et conserve une sauvegarde du modèle choisi selon la validation. Une baisse de perte d'entraînement ne suffit pas : le réseau peut mémoriser ses exemples. Je garderais donc un ensemble de test indépendant pour l'évaluation finale, avec une séparation adaptée aux enregistrements et aux interprètes.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Vérifier les données, les cibles et leur séparation avant l'entraînement.",
+            "Distinguer remise à zéro, calcul avant, rétropropagation et mise à jour.",
+            "Suivre la validation et conserver un test indépendant."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Prendre la baisse de perte d'entraînement comme preuve suffisante de généralisation."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Que sauvegarderiez-vous pour reprendre l'entraînement avec Adam après une interruption ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Une boucle d'entraînement complète",
+              "themeId": "pytorch",
+              "chapterId": "boucle-entrainement-complete"
+            },
+            {
+              "text": "Sauvegarder et reprendre",
+              "themeId": "pytorch",
+              "chapterId": "sauvegarder-et-reprendre"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Vérifier les données, les cibles et leur séparation avant l'entraînement."
+        }
+      ],
+      "takeaways": [
+        "Vérifier les données, les cibles et leur séparation avant l'entraînement.",
+        "Distinguer remise à zéro, calcul avant, rétropropagation et mise à jour.",
+        "Suivre la validation et conserver un test indépendant."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-pt-quickstart",
+        "torch-optimization",
+        "rev-pt-data"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 199,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-autograd",
+      "title": "Comment expliqueriez-vous la rétropropagation sans vous limiter à appeler backward ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Comment expliqueriez-vous la rétropropagation sans vous limiter à appeler backward ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Règle de la chaîne (chain rule)",
+          "explanation": "La dérivée d’une composition multiplie les dérivées des étapes rencontrées."
+        },
+        {
+          "name": "Rétropropagation (backpropagation)",
+          "explanation": "Une organisation de cette règle, depuis la perte vers les valeurs qui l’ont produite."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour apprendre à reconstruire un son, le réseau doit savoir comment modifier chacun de ses poids. La perte (loss) mesure l'erreur à réduire. Le gradient (gradient) indique sa variation locale quand un paramètre change. La différentiation automatique (automatic differentiation) calcule ces dérivées à partir des opérations effectuées. Elle ne cherche pas les paramètres par essais successifs.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Je prendrais une chaîne très courte : une entrée vaut 2, puis deux poids successifs valent 3 et −1. La valeur intermédiaire vaut 6, puis la sortie vaut −6. Avec une cible nulle et une erreur au carré, la perte vaut 36. La règle de la chaîne (chain rule) multiplie les dérivées locales en remontant les opérations. Dans cet exemple, les gradients des deux poids valent respectivement 24 et −72. Ils n'ont pas le même signe, car leurs effets traversent des opérations différentes.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans PyTorch, le graphe de calcul (computational graph) mémorise les opérations nécessaires pendant le passage avant. backward effectue ensuite cette remontée et accumule les gradients. L'optimiseur effectue séparément la mise à jour. Ces indications restent locales : un grand déplacement peut augmenter la perte malgré une direction initialement favorable. Je choisirais donc aussi un taux d'apprentissage adapté et vérifierais l'évolution réelle de l'objectif.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Expliquer une dérivée locale et la règle de la chaîne.",
+            "Séparer calcul des gradients et modification des paramètres.",
+            "Rappeler l'accumulation des gradients et le caractère local de leur information."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Dire que backward modifie directement les poids du modèle."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Pourquoi faut-il généralement remettre les gradients à zéro entre deux mises à jour ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Rétropropagation à la main",
+              "themeId": "pytorch",
+              "chapterId": "retropropagation-a-la-main"
+            },
+            {
+              "text": "Transformer un gradient en un pas",
+              "themeId": "pytorch",
+              "chapterId": "une-iteration-entrainement"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Expliquer une dérivée locale et la règle de la chaîne."
+        }
+      ],
+      "takeaways": [
+        "Expliquer une dérivée locale et la règle de la chaîne.",
+        "Séparer calcul des gradients et modification des paramètres.",
+        "Rappeler l'accumulation des gradients et le caractère local de leur information."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "torch-autograd",
+        "torch-optimization"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 202,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-batches-masques",
+      "title": "Comment traiteriez-vous ensemble des sons de durées différentes ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Comment traiteriez-vous ensemble des sons de durées différentes ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Jeu de données (Dataset)",
+          "explanation": "La manière de retrouver un exemple annoté."
+        },
+        {
+          "name": "Chargeur (DataLoader)",
+          "explanation": "L’organisation du parcours et des lots."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour entraîner un modèle avec une frappe courte et une phrase chantée plus longue, il faut assembler des séquences différentes. Un lot (batch) regroupe plusieurs exemples dans un même calcul. Le remplissage (padding) complète les séquences courtes jusqu'à une longueur commune. Il ajoute une commodité de calcul, pas de nouvelles observations musicales.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Je conserverais donc les longueurs et un masque de validité (validity mask), qui distingue les positions observées des positions ajoutées. La fonction d'assemblage (collate function) construit ensemble les données, les cibles et ce masque. Pour calculer une moyenne temporelle, je somme uniquement les valeurs valides. Je divise ensuite par leur nombre, plutôt que par toute la longueur complétée. Sinon, la frappe courte peut paraître artificiellement moins énergétique.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Le masque doit aussi être utilisé aux endroits où le modèle mélange les positions temporelles. Cela concerne les moyennes internes ou l'attention (attention), qui pondère les positions. Masquer seulement l'erreur finale ne suffit pas. Je vérifierais ce comportement avec un même extrait, complété de différentes quantités de remplissage. Les couches peuvent changer la résolution temporelle : il faut alors adapter les longueurs et le masque. Enfin, une vraie valeur nulle reste une observation ; elle ne doit pas devenir invalide par principe.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Assembler les données avec leurs longueurs et leur masque de validité.",
+            "Normaliser les réductions par le nombre de positions réellement observées.",
+            "Propager la validité aux opérations temporelles pertinentes du modèle."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Supposer que le remplissage par zéro est automatiquement ignoré par toutes les couches."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Comment vérifieriez-vous qu'ajouter du remplissage ne change pas la prédiction d'un extrait ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Assembler des séquences de durées différentes",
+              "themeId": "pytorch",
+              "chapterId": "dataset-et-batches"
+            },
+            {
+              "text": "Ne moyenner que les valeurs observées",
+              "themeId": "pytorch",
+              "chapterId": "moyennes-masquees"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Assembler les données avec leurs longueurs et leur masque de validité."
+        }
+      ],
+      "takeaways": [
+        "Assembler les données avec leurs longueurs et leur masque de validité.",
+        "Normaliser les réductions par le nombre de positions réellement observées.",
+        "Propager la validité aux opérations temporelles pertinentes du modèle."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-pt-data",
+        "torch-padding",
+        "torch-broadcast"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 201,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-evaluation-pytorch",
+      "title": "Pourquoi utiliser à la fois model.eval et no_grad pendant la validation ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Pourquoi utiliser à la fois model.eval et no_grad pendant la validation ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Validation (validation)",
+          "explanation": "La mesure sur des données réservées aux choix de méthode."
+        },
+        {
+          "name": "Masquage aléatoire (Dropout)",
+          "explanation": "La suppression aléatoire de certaines activations pendant l’apprentissage."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour comparer deux versions d'un classifieur sonore, je veux une évaluation cohérente avec son utilisation finale. PyTorch possède deux réglages distincts. Le mode évaluation (evaluation mode), activé par model.eval, modifie le comportement des modules concernés. Il ne désactive pas le calcul des gradients (gradients), les dérivées d'un objectif par rapport aux paramètres.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Par exemple, la suppression aléatoire (dropout) masque certaines activations pendant l'entraînement. En évaluation, elle cesse ce masquage. La normalisation par lots (batch normalization) possède aussi un comportement dépendant du mode, notamment pour ses statistiques suivies. De son côté, le contexte sans gradient (no_grad) évite d'enregistrer les nouvelles opérations pour la différentiation. Cela réduit le travail et la mémoire nécessaires quand nous voulons seulement mesurer les prédictions.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Je placerais donc le modèle en évaluation et la boucle de validation dans no_grad. Je conserverais le même prétraitement et calculerais les métriques sur toutes les observations valides. Avant de reprendre l'apprentissage, je rétablirais le mode entraînement. La limite importante est que ces interrupteurs ne définissent pas un protocole scientifique. Ils n'empêchent ni une fuite entre données d'entraînement et de test, ni un choix répété sur le test final. Il faut également décider quelles données servent à choisir le modèle.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "eval règle le comportement des modules dépendant du mode.",
+            "no_grad règle l'enregistrement des nouvelles opérations pour les dérivées.",
+            "La séparation des données reste une décision indépendante de ces réglages."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Utiliser uniquement model.eval en pensant avoir désactivé l'enregistrement du graphe."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Peut-on calculer un gradient lorsque le modèle est en mode évaluation, et dans quel but ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Évaluer avec deux interrupteurs indépendants",
+              "themeId": "pytorch",
+              "chapterId": "entrainer-ou-evaluer"
+            },
+            {
+              "text": "Conserver une mesure sans garder son graphe",
+              "themeId": "pytorch",
+              "chapterId": "detacher-geler-journaliser"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : eval règle le comportement des modules dépendant du mode."
+        }
+      ],
+      "takeaways": [
+        "eval règle le comportement des modules dépendant du mode.",
+        "no_grad règle l'enregistrement des nouvelles opérations pour les dérivées.",
+        "La séparation des données reste une décision indépendante de ces réglages."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-pt-autograd",
+        "torch-module"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 198,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-diagnostic-pytorch",
+      "title": "Face à une erreur PyTorch, quelle serait votre méthode de diagnostic ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Face à une erreur PyTorch, quelle serait votre méthode de diagnostic ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Contrat de forme (shape contract)",
+          "explanation": "Les tailles et le sens des axes attendus par une opération."
+        },
+        {
+          "name": "Contiguïté (contiguity)",
+          "explanation": "Une organisation du stockage qui permet certains changements de vue sans réordonner les données."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Si un modèle refuse un lot de spectrogrammes, je réduirais d'abord le problème à un seul calcul reproductible. Un tenseur (tensor) possède des dimensions, un type numérique (dtype) et un emplacement de calcul (device). Je vérifierais ces propriétés à l'endroit exact où l'erreur apparaît. Je comparerais ensuite le contrat attendu par l'opération et les valeurs réellement reçues.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Par exemple, un classifieur peut produire des scores de forme lot × classes. Une entropie croisée (cross entropy) avec cibles sous forme d'indices attend alors une étiquette entière par exemple. Une cible flottante ou un axe mal placé peut changer le sens du calcul, ou provoquer une erreur. Je corrigerais le contrat des données avant de modifier l'architecture. J'inspecterais également les valeurs pour repérer une entrée manquante ou une échelle incohérente.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "La disposition mémoire peut aussi bloquer un calcul. Une vue (view) réinterprète cette disposition sans copier les valeurs. Certaines dispositions issues d'une permutation ne permettent pas la vue demandée. Une copie ou reshape peut résoudre cette contrainte, mais ne corrige pas un échange sémantique des axes. Enfin, un programme qui s'exécute n'est pas nécessairement juste. Je vérifierais donc aussi qu'un petit exemple connu produit le résultat attendu, et que l'apprentissage modifie effectivement les paramètres concernés.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Réduire le problème et inspecter dimensions, types, emplacement et valeurs.",
+            "Vérifier le contrat sémantique entre sorties du modèle et cibles.",
+            "Distinguer une contrainte de disposition mémoire d'une confusion sur les axes."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Modifier les dimensions au hasard jusqu'à faire disparaître le message d'erreur."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Pourquoi reshape peut-il fonctionner après une permutation alors que view échoue ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Lire une erreur PyTorch",
+              "themeId": "pytorch",
+              "chapterId": "lire-erreurs-pytorch"
+            },
+            {
+              "text": "Décrire un tenseur avant de calculer",
+              "themeId": "pytorch",
+              "chapterId": "tenseur-forme-type-device"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Réduire le problème et inspecter dimensions, types, emplacement et valeurs."
+        }
+      ],
+      "takeaways": [
+        "Réduire le problème et inspecter dimensions, types, emplacement et valeurs.",
+        "Vérifier le contrat sémantique entre sorties du modèle et cibles.",
+        "Distinguer une contrainte de disposition mémoire d'une confusion sur les axes."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "torch-tensors",
+        "torch-ce",
+        "rev-pt-view"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 203,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-niveaux-audio",
+      "title": "Comment compareriez-vous les niveaux d'une voix et d'une percussion ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Comment compareriez-vous les niveaux d'une voix et d'une percussion ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Amplitude et crête",
+          "explanation": "L’amplitude est la valeur à un instant ; la crête est le plus grand module sur la portion."
+        },
+        {
+          "name": "Carré moyen et RMS",
+          "explanation": "Le carré moyen agrège x² ; sa racine, la RMS, revient à une grandeur d’amplitude."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour comparer une voix et une percussion, je préciserais d'abord la propriété recherchée. L'amplitude (amplitude) est la valeur instantanée du signal. La crête (peak) correspond à sa plus grande valeur absolue. Deux sons peuvent partager cette crête tout en ayant des niveaux moyens très différents. Une frappe brève et une voix soutenue illustrent bien cette différence.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "La moyenne des amplitudes au carré représente une puissance moyenne relative (mean square power) pour ces données numériques. Ce n'est pas automatiquement une mesure en watts. Sa racine donne la valeur efficace (root mean square, RMS). Je comparerais cette mesure sur des durées clairement définies, en précisant le traitement des silences. Une longue plage silencieuse peut diminuer fortement le résultat d'une percussion isolée.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Le décibel (decibel) exprime un rapport logarithmique à une référence. Pour des amplitudes positives, on utilise vingt fois le logarithme décimal du rapport ; pour des puissances positives, dix fois. Je préciserais donc la grandeur et la référence avant de citer un niveau. Un niveau relatif à la pleine échelle numérique (decibels relative to full scale, dBFS) ne donne pas directement la pression acoustique. Un étalonnage (calibration) est nécessaire pour établir ce lien. Enfin, la sonie (loudness), sensation de volume, dépend aussi du contenu fréquentiel et du temps : le RMS ne suffit pas.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Séparer amplitude instantanée, crête et niveau moyen RMS.",
+            "Déclarer la durée analysée, la grandeur convertie et la référence des décibels.",
+            "Distinguer niveau numérique, pression acoustique et sensation de volume."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Comparer deux nombres en décibels sans vérifier leurs références et les grandeurs mesurées."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Que changerait la normalisation de chaque extrait à la même crête avant votre comparaison ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Comparer le niveau de la voix et de la percussion",
+              "themeId": "audio-signal",
+              "chapterId": "amplitude-puissance-decibels"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Séparer amplitude instantanée, crête et niveau moyen RMS."
+        }
+      ],
+      "takeaways": [
+        "Séparer amplitude instantanée, crête et niveau moyen RMS.",
+        "Déclarer la durée analysée, la grandeur convertie et la référence des décibels.",
+        "Distinguer niveau numérique, pression acoustique et sensation de volume."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "audio-rms",
+        "audio-amplitude-db",
+        "course-sig-smpte-levels",
+        "course-sig-itu-loudness"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 213,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-stft-mel",
+      "title": "Pourquoi choisir une STFT ou un spectrogramme mel pour représenter un son ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Pourquoi choisir une STFT ou un spectrogramme mel pour représenter un son ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Fenêtre d’analyse",
+          "explanation": "Une portion de signal et les poids appliqués à ses mesures avant de la décrire."
+        },
+        {
+          "name": "Trame",
+          "explanation": "Le résultat d’une analyse locale à une position temporelle donnée."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour repérer l'attaque d'une percussion puis sa résonance, une analyse globale des fréquences ne suffit pas. La transformée de Fourier à court terme (short-time Fourier transform, STFT) analyse des fenêtres successives du signal. Elle indique comment le contenu fréquentiel évolue. Son spectrogramme (spectrogram) représente généralement la magnitude ou la puissance de ces coefficients dans le temps.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "La longueur de fenêtre règle un compromis : une fenêtre courte localise mieux un événement bref. Une fenêtre longue permet de mieux distinguer des fréquences proches, à forme de fenêtre comparable. Le pas temporel (hop length) règle l'espacement entre analyses ; il ne remplace pas ce compromis. Je choisirais donc ces paramètres en fonction de la question musicale, puis vérifierais les axes et les unités de l'image.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Un spectrogramme mel (mel spectrogram) regroupe ensuite l'énergie dans des bandes selon une échelle fréquentielle perceptive. Cela réduit la dimension et peut fournir une entrée utile à un classifieur. Pour distinguer voix et percussion, je comparerais les motifs temporels et la répartition d'énergie. Mais cette représentation perd du détail et ne conserve généralement pas la phase. Le choix doit être validé sur la tâche : une représentation compacte n'est pas forcément adaptée à une reconstruction fidèle ou à une analyse précise des partiels.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Relier l'analyse locale à l'évolution temporelle du contenu fréquentiel.",
+            "Distinguer longueur de fenêtre et pas entre analyses.",
+            "Présenter le mel comme une représentation utile mais réductrice."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Croire qu'un pas plus petit améliore à lui seul la résolution fréquentielle."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Que changeriez-vous pour analyser une attaque très brève plutôt que deux notes proches en fréquence ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Voir les syllabes et les attaques",
+              "themeId": "audio-signal",
+              "chapterId": "stft-fenetres-hop-trames"
+            },
+            {
+              "text": "Choisir une fenêtre pour la question posée",
+              "themeId": "audio-signal",
+              "chapterId": "resolution-fuite-zero-padding"
+            },
+            {
+              "text": "Alléger l'entrée avec des bandes mel",
+              "themeId": "audio-signal",
+              "chapterId": "mel-representation-compressee"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Relier l'analyse locale à l'évolution temporelle du contenu fréquentiel."
+        }
+      ],
+      "takeaways": [
+        "Relier l'analyse locale à l'évolution temporelle du contenu fréquentiel.",
+        "Distinguer longueur de fenêtre et pas entre analyses.",
+        "Présenter le mel comme une représentation utile mais réductrice."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "audio-stft",
+        "audio-mel",
+        "course-sig-shorttimefft"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 206,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-phase-reconstruction",
+      "title": "Pourquoi un spectrogramme visuellement correct ne garantit-il pas un son bien reconstruit ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Pourquoi un spectrogramme visuellement correct ne garantit-il pas un son bien reconstruit ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Phase",
+          "explanation": "La position d’une oscillation dans son cycle, représentée par un angle pour un coefficient complexe."
+        },
+        {
+          "name": "Polarité",
+          "explanation": "Le signe d’un signal ; inverser sa polarité multiplie toutes ses valeurs par -1."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un autoencodeur (autoencoder) apprend à reconstruire son entrée. Même si son image spectrale semble plausible, je voudrais écouter son résultat. Un coefficient de Fourier possède une magnitude (magnitude), qui décrit sa taille, et une phase (phase), qui situe l'oscillation. Un affichage de magnitudes cache cette seconde information. Deux images semblables ne suffisent donc pas à établir que les formes d'onde sont semblables.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour retrouver une onde avec une transformée inverse (inverse transform), il faut aussi respecter les paramètres d'analyse. Je conserverais notamment fenêtre, pas temporel, centrage et longueur attendue. Lorsque nous possédons les coefficients complexes originaux, une inversion cohérente peut reconstruire le signal aux erreurs numériques près. Si seules les magnitudes sont disponibles, Griffin-Lim estime une phase par des allers-retours entre onde et analyse. Il fournit une approximation, pas la phase originale garantie.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "L'exemple musical serait une attaque de percussion : une structure temporelle modifiée peut rendre le début moins net, même si l'énergie fréquentielle reste plausible. Je comparerais donc écoute, onde et nouvelle analyse du fichier effectivement obtenu. Une magnitude cible peut être incompatible avec la transformée de Fourier à court terme (short-time Fourier transform, STFT) choisie. Un bon score spectral ne prouve donc ni une attaque crédible, ni une bonne qualité perceptive.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Distinguer magnitude et phase dans les coefficients complexes.",
+            "Conserver des paramètres compatibles pour l'analyse et la reconstruction.",
+            "Analyser et écouter le fichier reconstruit, plutôt que seulement sa cible spectrale."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Présenter une magnitude cible comme la preuve d'une reconstruction audio identique."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Quelle différence feriez-vous entre inverser la polarité d'un canal et randomiser sa phase par fréquence ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Vérifier la phase et les annulations",
+              "themeId": "audio-signal",
+              "chapterId": "phase-canaux-annulations"
+            },
+            {
+              "text": "Réécouter pour vérifier la reconstruction",
+              "themeId": "audio-signal",
+              "chapterId": "reconstruction-streaming-limites"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Distinguer magnitude et phase dans les coefficients complexes."
+        }
+      ],
+      "takeaways": [
+        "Distinguer magnitude et phase dans les coefficients complexes.",
+        "Conserver des paramètres compatibles pour l'analyse et la reconstruction.",
+        "Analyser et écouter le fichier reconstruit, plutôt que seulement sa cible spectrale."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "audio-stft",
+        "audio-istft",
+        "audio-griffinlim"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 204,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-reechantillonnage",
+      "title": "Comment réuniriez-vous des fichiers audio possédant différentes fréquences d'échantillonnage ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Comment réuniriez-vous des fichiers audio possédant différentes fréquences d'échantillonnage ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Fréquence sonore",
+          "explanation": "Le nombre de cycles d’une oscillation par seconde, distinct du nombre de mesures prises."
+        },
+        {
+          "name": "Fréquence de Nyquist",
+          "explanation": "La frontière égale à la moitié de la cadence de mesure ; la bande utile doit rester en dessous pour éviter le repliement."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour entraîner un modèle sur plusieurs collections sonores, je vérifierais la fréquence d'échantillonnage (sample rate) de chaque fichier. Elle indique combien de valeurs décrivent une seconde du signal. Le rééchantillonnage (resampling) change cette cadence tout en cherchant à conserver la durée et les fréquences du contenu conservé. Modifier simplement l'étiquette du fichier ne réalise pas cette transformation.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour réduire la cadence, il faut limiter les fréquences trop élevées avant la décimation (downsampling), c'est-à-dire la réduction du nombre d'échantillons. Un filtre antirepliement (anti-aliasing filter) sert à cette limitation. Sans lui, des composantes élevées peuvent réapparaître comme de fausses fréquences plus basses. La fréquence de Nyquist (Nyquist frequency) vaut la moitié de la cadence ; elle fixe la limite théorique de représentation pour un signal correctement limité en bande.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Je choisirais une cadence commune selon le contenu utile, le modèle et le coût de calcul. Pour une percussion riche en aigus, réduire cette limite peut enlever un détail pertinent du timbre. J'utiliserais donc un rééchantillonneur éprouvé, puis comparerais durée, écoute et spectre avant et après. La limite est irréversible : remonter ensuite la cadence ne recrée pas les informations supprimées. Je conserverais les originaux et documenterais la transformation pour pouvoir réexaminer ce choix.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Distinguer changement de cadence et simple changement de métadonnée.",
+            "Expliquer la limite de Nyquist et le rôle du filtre antirepliement.",
+            "Choisir la cadence selon le contenu utile et vérifier le résultat obtenu."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Réduire la cadence en gardant périodiquement des échantillons sans filtrer les fréquences excessives."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Pourquoi augmenter la fréquence d'échantillonnage ne restaure-t-il pas les aigus déjà supprimés ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Mettre les fichiers à la même cadence",
+              "themeId": "audio-signal",
+              "chapterId": "nyquist-repliement-reechantillonnage"
+            },
+            {
+              "text": "Retrouver la durée depuis les échantillons",
+              "themeId": "audio-signal",
+              "chapterId": "echantillons-duree-canaux"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Distinguer changement de cadence et simple changement de métadonnée."
+        }
+      ],
+      "takeaways": [
+        "Distinguer changement de cadence et simple changement de métadonnée.",
+        "Expliquer la limite de Nyquist et le rôle du filtre antirepliement.",
+        "Choisir la cadence selon le contenu utile et vérifier le résultat obtenu."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "audio-resample",
+        "audio-scipy-signal"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 201,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-attention-transformer",
+      "title": "Qu’ajoute un Transformer à une simple couche d’attention ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Qu’ajoute un Transformer à une simple couche d’attention ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Encodage positionnel (positional encoding)",
+          "explanation": "Une information ajoutée aux caractéristiques pour distinguer les places dans la séquence."
+        },
+        {
+          "name": "Autoattention multi-têtes (multi-head self-attention)",
+          "explanation": "Plusieurs projections apprises comparent les positions de la même séquence, puis leurs résultats sont réunis."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour prolonger une phrase musicale, je veux relier un événement à des événements éloignés. L’attention (attention) calcule des poids de consultation entre positions. Une requête (query) cherche parmi des clés (keys), puis combine les valeurs (values) associées. Cela produit une représentation contextualisée, sans constituer tout le modèle.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Le Transformer ajoute une information de position (positional encoding), car l’ordre musical compte. L’attention à plusieurs têtes (multi-head attention) apprend plusieurs consultations en parallèle. Chaque bloc contient aussi un réseau appliqué à chaque position. Les connexions résiduelles (residual connections) ajoutent l’entrée à une transformation. La normalisation de couche (LayerNorm) normalise les caractéristiques de chaque position. Nous pouvons empiler ces blocs pour construire des représentations successives.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour prédire la suite, je place un masque causal (causal mask). Il interdit de consulter les événements futurs pendant l’entraînement. Par exemple, modifier une note future ne devrait pas changer la prédiction d’une note antérieure. Je vérifierais cette propriété par un test. Pour classer un enregistrement disponible en entier, ce masque peut être inutile. Enfin, l’attention dense devient coûteuse avec de longues séquences. Je discuterais donc la représentation, le contexte utile et le budget, sans promettre une structure musicale simplement grâce à l’architecture.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Distinguer le mécanisme d’attention du bloc complet avec position, réseau, résidus et normalisation.",
+            "Expliquer les têtes et le rôle du masque causal selon la tâche.",
+            "Relier longueur du contexte, coût du calcul et structure musicale recherchée."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Présenter l’attention seule comme un Transformer complet, ou conserver l’accès au futur pour prédire la suite."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Quel test permettrait de détecter une fuite du futur malgré un masque causal apparemment correct ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Du mécanisme d’attention au Transformer",
+              "themeId": "audio-ml",
+              "chapterId": "transformer-complet"
+            },
+            {
+              "text": "Similarité, contraste et attention",
+              "themeId": "audio-ml",
+              "chapterId": "similarites-contraste-attention"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Distinguer le mécanisme d’attention du bloc complet avec position, réseau, résidus et normalisation."
+        }
+      ],
+      "takeaways": [
+        "Distinguer le mécanisme d’attention du bloc complet avec position, réseau, résidus et normalisation.",
+        "Expliquer les têtes et le rôle du masque causal selon la tâche.",
+        "Relier longueur du contexte, coût du calcul et structure musicale recherchée."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-b-attn-transformer",
+        "rev-b-attn-multihead",
+        "rev-b-attn-layernorm"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 195,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-codecs-rvq",
+      "title": "Pourquoi générer des codes audio plutôt que directement une onde ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Pourquoi générer des codes audio plutôt que directement une onde ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Codec neuronal (neural codec)",
+          "explanation": "Système dont l'encodeur et le décodeur apprennent une représentation compacte du signal sonore."
+        },
+        {
+          "name": "Dictionnaire de codes (codebook)",
+          "explanation": "Collection de vecteurs disponibles. L'indice d'une entrée permet de retrouver son vecteur."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une onde audio contient une suite très dense d’échantillons. Pour en proposer des variantes, je peux d’abord apprendre une description plus compacte. Un codec neuronal (neural audio codec) associe un encodeur, une représentation comprimée et un décodeur. Le générateur apprend ensuite à produire cette représentation, puis le décodeur restitue une onde.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "EnCodec et DAC utilisent une quantification vectorielle résiduelle (residual vector quantization, RVQ). Un premier dictionnaire approche le vecteur latent. Le suivant représente ce qui manque, puis nous additionnons les contributions. Les indices obtenus sont des jetons (tokens), sans correspondre nécessairement à des notes. Une perte spectrale multirésolution (multi-resolution spectral loss) compare plusieurs analyses temporelles et fréquentielles. Une perte adversariale (adversarial loss) utilise un discriminateur qui apprend à distinguer sons réels et reconstruits.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour une caisse claire, je comparerais d’abord l’enregistrement à sa reconstruction avec les vrais codes. Cela révèle les attaques ou résonances déjà perdues avant la génération. Je comparerais ensuite une variante produite avec des codes prédits. Cette seconde étape ajoute les erreurs du générateur. Le codec fixe donc une limite de reconstruction et influence le compromis entre débit et fidélité. Enfin, je distinguerais ces codecs discrets de RAVE original, qui repose sur un autoencodeur variationnel à latent continu.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Décrire encodeur, codes et décodeur, puis le rôle distinct du générateur.",
+            "Expliquer la RVQ comme une succession d’approximations du résidu.",
+            "Tester la reconstruction avec les vrais codes avant d’accuser le générateur."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Confondre tokens audio et notes MIDI, ou présenter RAVE original comme un codec RVQ."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Comment isoler un défaut d’attaque déjà introduit par le codec d’un défaut appris par le générateur ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Codecs neuronaux et RVQ",
+              "themeId": "generation-controle",
+              "chapterId": "codecs-neuronaux-rvq"
+            },
+            {
+              "text": "Représentation et reconstruction",
+              "themeId": "generation-controle",
+              "chapterId": "representation-et-reconstruction"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Décrire encodeur, codes et décodeur, puis le rôle distinct du générateur."
+        }
+      ],
+      "takeaways": [
+        "Décrire encodeur, codes et décodeur, puis le rôle distinct du générateur.",
+        "Expliquer la RVQ comme une succession d’approximations du résidu.",
+        "Tester la reconstruction avec les vrais codes avant d’accuser le générateur."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-b-codec-encodec",
+        "rev-b-codec-dac",
+        "rev-b-codec-rave"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 201,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-autoregression",
+      "title": "Comment entraîner puis utiliser un modèle autorégressif musical ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Comment entraîner puis utiliser un modèle autorégressif musical ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Préfixe",
+          "explanation": "La partie de la séquence déjà connue au moment de prédire son prochain élément."
+        },
+        {
+          "name": "Autorégression",
+          "explanation": "Une génération qui construit la séquence en prédisant chaque élément à partir des précédents."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Je partirais d’un besoin simple : poursuivre une séquence tout en tenant compte de ce qui précède. Un modèle autorégressif (autoregressive model) décompose sa probabilité en prédictions conditionnelles successives. Chaque événement est prédit à partir du passé disponible. Cet événement peut être une note symbolique ou un code audio, selon la représentation choisie.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pendant l’entraînement, le forçage par le professeur (teacher forcing) fournit les événements réels précédents. La cible est décalée pour représenter l’événement suivant. Un masque causal (causal mask) empêche de consulter cette réponse ou des événements ultérieurs. Dans un Transformer, plusieurs positions peuvent ainsi être traitées en parallèle sans donner accès au futur. Je vérifierais explicitement le décalage des entrées, des cibles et du masque.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pendant une génération simple, je pars d’une amorce, prédis une distribution, puis tire un événement. Je l’ajoute au contexte avant de continuer. La température (temperature) modifie la concentration de cette distribution, sans garantir une meilleure musique. Une erreur produite devient alors une partie du contexte futur. Pour une variation de percussion, je vérifierais continuité sonore, répétitions et tenue du rythme. MusicGen illustre une génération autorégressive de codes audio ; ces codes ne sont pas une partition. Le coût séquentiel et la longueur du contexte font partie du choix.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Décomposer la séquence en prédictions du prochain événement à partir du passé.",
+            "Distinguer les vrais préfixes d’entraînement des événements produits pendant la génération.",
+            "Contrôler décalage des cibles, causalité, stratégie de tirage et coût séquentiel."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Entraîner une prédiction du prochain événement avec un accès involontaire à cet événement."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Pourquoi une faible perte avec les vrais préfixes peut-elle coexister avec des générations qui se dégradent ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Autorégression et causalité",
+              "themeId": "generation-controle",
+              "chapterId": "autoregression-et-causalite"
+            },
+            {
+              "text": "Échantillonnage, contexte et coût",
+              "themeId": "generation-controle",
+              "chapterId": "echantillonnage-contexte-et-cout"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Décomposer la séquence en prédictions du prochain événement à partir du passé."
+        }
+      ],
+      "takeaways": [
+        "Décomposer la séquence en prédictions du prochain événement à partir du passé.",
+        "Distinguer les vrais préfixes d’entraînement des événements produits pendant la génération.",
+        "Contrôler décalage des cibles, causalité, stratégie de tirage et coût séquentiel."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "gr-wavenet",
+        "gr-musicgen",
+        "rev-b-attn-transformer"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 205,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-vae",
+      "title": "Que gagne-t-on avec un VAE, et que faut-il surveiller dans son latent ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Que gagne-t-on avec un VAE, et que faut-il surveiller dans son latent ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Distribution",
+          "explanation": "Une règle qui attribue des probabilités aux valeurs possibles ; elle permet notamment de tirer plusieurs codes."
+        },
+        {
+          "name": "Moyenne, variance et écart-type",
+          "explanation": "La moyenne est le centre ; la variance mesure la dispersion et sa racine carrée est l’écart-type."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour explorer des variations de timbre, je voudrais une représentation dans laquelle tirer de nouveaux points reste possible. Un autoencodeur variationnel (variational autoencoder, VAE) apprend une distribution latente pour chaque entrée. Son encodeur ne fournit donc pas seulement un code unique. Dans le cas gaussien usuel, il prédit une moyenne et une dispersion.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Le décodeur apprend à reconstruire depuis un échantillon de cette distribution. La reparamétrisation (reparameterization) écrit cet échantillon comme une moyenne plus une échelle multipliée par un bruit indépendant. Les gradients peuvent ainsi traverser les paramètres de l’encodeur. L’objectif combine reconstruction et divergence de Kullback-Leibler (KL divergence). Cette divergence rapproche la distribution encodée d’un a priori (prior), souvent une gaussienne simple. Nous cherchons un espace utilisable pour générer, sans abandonner la reconstruction.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour une percussion, j’écouterais d’abord les reconstructions, puis les variations obtenues en déplaçant le latent. Une direction latente ne devient pas automatiquement une commande comme la dureté de l’attaque. Je mesurerais donc ce contrôle plutôt que de lui donner un nom arbitraire. Je surveillerais aussi l’effondrement du latent (posterior collapse) : le décodeur peut utiliser trop peu l’information encodée. Modifier ou permuter les latents, puis observer la sortie, aide à poser ce diagnostic. Une KL faible seule ne suffit pas à conclure.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Expliquer la distribution encodée et la reparamétrisation.",
+            "Présenter le compromis entre reconstruction et rapprochement de l’a priori.",
+            "Vérifier l’utilisation du latent et le sens perceptif des variations."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Supposer que chaque dimension latente contrôle spontanément une propriété musicale identifiable."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Comment tester que le décodeur utilise réellement les informations fournies par l’encodeur ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "VAE et échantillonnage",
+              "themeId": "generation-controle",
+              "chapterId": "vae-et-echantillonnage"
+            },
+            {
+              "text": "KL et latent inutilisé",
+              "themeId": "generation-controle",
+              "chapterId": "kl-et-latent-inutilise"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Expliquer la distribution encodée et la reparamétrisation."
+        }
+      ],
+      "takeaways": [
+        "Expliquer la distribution encodée et la reparamétrisation.",
+        "Présenter le compromis entre reconstruction et rapprochement de l’a priori.",
+        "Vérifier l’utilisation du latent et le sens perceptif des variations."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "gr-vae",
+        "rev-b-codec-rave"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 206,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-diffusion-flow",
+      "title": "Quelle différence feriez-vous entre un objectif DDPM et le flow matching ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Quelle différence feriez-vous entre un objectif DDPM et le flow matching ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Prédiction du bruit (noise prediction)",
+          "explanation": "Le réseau estime le bruit ajouté, connu pendant l’entraînement."
+        },
+        {
+          "name": "Guidance sans classifieur (classifier-free guidance)",
+          "explanation": "Une combinaison de prédictions avec et sans condition règle la force du conditionnement."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Je commencerais par préciser la quantité que le réseau apprend à prédire. Je mélange une donnée avec un bruit connu, à un instant choisi. Le modèle probabiliste de diffusion débruitante (Denoising Diffusion Probabilistic Model, DDPM) prédit ici le bruit injecté. Une erreur quadratique moyenne (mean squared error, MSE) compare bruit prédit et bruit réel.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans l’appariement de flux (flow matching), la cible peut être une vitesse sur un chemin entre bruit et donnée. Version simplifiée : je relie les deux points par une ligne droite. La différence entre arrivée et départ donne alors la vitesse cible. Dans l’exemple CPU du cours, cette vitesse vaut trois. Le réseau apprend cette direction à partir du point intermédiaire, du temps et des conditions. Ce chemin linéaire ne représente pas toutes les variantes de la méthode.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans les deux cas, apprendre la cible ne suffit pas à produire directement un son fini. La génération applique un échantillonneur ou un solveur numérique avec plusieurs évaluations du réseau. Je ne comparerais pas directement leurs pertes, car elles portent sur des quantités différentes. Je comparerais plutôt écoute, contrôle, diversité et coût selon un protocole commun. Enfin, la diffusion latente (latent diffusion) effectue ce travail dans un espace comprimé. Son décodeur et ses pertes de reconstruction restent à considérer.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Nommer la cible apprise : bruit pour le DDPM étudié, vitesse pour le flux simplifié.",
+            "Distinguer objectif d’entraînement et procédure de génération.",
+            "Comparer les méthodes sur une évaluation commune, avec leur représentation et leur coût."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Conclure qu’une plus petite MSE sur une autre cible prouve une meilleure qualité musicale."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Comment comparer équitablement deux méthodes qui utilisent des nombres différents d’évaluations du réseau ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Objectifs de diffusion et de flux",
+              "themeId": "generation-controle",
+              "chapterId": "objectifs-diffusion-et-flow"
+            },
+            {
+              "text": "Diffusion et bruit",
+              "themeId": "generation-controle",
+              "chapterId": "diffusion-et-bruit"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Nommer la cible apprise : bruit pour le DDPM étudié, vitesse pour le flux simplifié."
+        }
+      ],
+      "takeaways": [
+        "Nommer la cible apprise : bruit pour le DDPM étudié, vitesse pour le flux simplifié.",
+        "Distinguer objectif d’entraînement et procédure de génération.",
+        "Comparer les méthodes sur une évaluation commune, avec leur représentation et leur coût."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-b-efficient-ddpm",
+        "rev-b-efficient-flow",
+        "rev-b-efficient-latent"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 211,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-guidance",
+      "title": "Comment fonctionne la guidance sans classifieur, et pourquoi limiter sa force ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Comment fonctionne la guidance sans classifieur, et pourquoi limiter sa force ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Prédiction du bruit (noise prediction)",
+          "explanation": "Le réseau estime le bruit ajouté, connu pendant l’entraînement."
+        },
+        {
+          "name": "Guidance sans classifieur (classifier-free guidance)",
+          "explanation": "Une combinaison de prédictions avec et sans condition règle la force du conditionnement."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Si la percussionniste demande une attaque sèche, je veux renforcer ce contrôle sans entraîner un classifieur séparé. La guidance sans classifieur (classifier-free guidance, CFG) combine des prédictions avec et sans condition. Pendant l’apprentissage, nous retirons aléatoirement la condition sur certains exemples. Le modèle apprend ainsi à répondre dans les deux situations.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Je précise toujours la convention du coefficient. Dans le cours, la prédiction guidée vaut la prédiction sans condition plus une force multipliant leur différence. Une force égale à un retrouve la prédiction conditionnelle. Une force supérieure prolonge cette direction. Notre exemple CPU combine moins zéro virgule deux et moins zéro virgule cinq. Avec une force de trois, il produit moins un virgule un. Cela vérifie la formule, sans mesurer un progrès musical.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pendant la génération, les deux réponses peuvent être calculées séparément ou regroupées dans un même lot. Leur coût reste à compter. Une guidance forte peut modifier le compromis entre fidélité à la condition, diversité et qualité. Je ne présenterais donc pas ce coefficient comme un bouton qui améliore systématiquement le son. Je choisirais plusieurs réglages sur les mêmes conditions, puis comparerais le respect de l’attaque demandée et la variété des résultats. Je vérifierais aussi que le modèle comprend ce contrôle sur les matériaux concernés.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Apprendre les cas conditionnel et non conditionnel en retirant parfois la condition.",
+            "Donner la combinaison exacte et la convention du coefficient.",
+            "Évaluer coût, diversité, qualité et respect de la condition quand la force change."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Présenter une guidance plus forte comme une amélioration garantie du contrôle et de la qualité."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Comment distinguer un effet de la guidance d’une simple variation liée au tirage aléatoire ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "L’objectif et la formule de CFG",
+              "themeId": "generation-controle",
+              "chapterId": "objectifs-diffusion-et-flow"
+            },
+            {
+              "text": "Guidance et zones connues",
+              "themeId": "generation-controle",
+              "chapterId": "guidance-et-zones-connues"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Apprendre les cas conditionnel et non conditionnel en retirant parfois la condition."
+        }
+      ],
+      "takeaways": [
+        "Apprendre les cas conditionnel et non conditionnel en retirant parfois la condition.",
+        "Donner la combinaison exacte et la convention du coefficient.",
+        "Évaluer coût, diversité, qualité et respect de la condition quand la force change."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-b-efficient-cfg",
+        "rev-b-efficient-ddpm"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 207,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-controle-multimodal",
+      "title": "Comment combiner texte, référence audio et partition pour contrôler une génération ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Comment combiner texte, référence audio et partition pour contrôler une génération ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Conditionnement multimodal (multimodal conditioning)",
+          "explanation": "Plusieurs types d’entrée orientent la même génération. Leur précision et leur calendrier peuvent différer."
+        },
+        {
+          "name": "Attention croisée (cross-attention)",
+          "explanation": "Les requêtes proviennent de l’audio traité. Les clés et valeurs proviennent d’une mémoire de conditions."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Je commencerais par demander ce que le musicien veut fixer. Le texte peut décrire une couleur générale. Une référence audio peut apporter un exemple de timbre ou de style. Une partition ou des événements MIDI (Musical Instrument Digital Interface) peuvent préciser des hauteurs et des instants. Ces informations ne sont donc pas interchangeables, même si elles conditionnent le même générateur.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Chaque modalité (modality) reçoit une représentation adaptée. Un encodeur texte produit des vecteurs linguistiques. CLAP apprend des représentations rapprochant audio et descriptions textuelles. Cette proximité sémantique ne garantit pas un contrôle temporel exact. Pour transmettre ces vecteurs, la concaténation (concatenation) les juxtapose aux caractéristiques existantes. La modulation affine conditionnelle (feature-wise linear modulation, FiLM) produit des multiplicateurs et décalages. L’attention croisée (cross-attention) laisse les positions générées consulter une séquence de conditions.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour conserver un rythme MIDI et explorer le timbre d’une percussion enregistrée, je distinguerais donc commande temporelle et référence sonore. Je vérifierais les dimensions, les masques et l’alignement des conditions. Une condition globale ne devrait pas être présentée comme un calendrier d’événements. Je testerais aussi des conditions contradictoires, puis retirerais chaque modalité pour mesurer son effet. Le critère final serait le contrôle réellement disponible pour le musicien. La présence de plusieurs entrées ne suffit pas à prouver que le modèle les utilise correctement.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Associer chaque modalité à l’information musicale qu’elle peut réellement exprimer.",
+            "Distinguer concaténation, FiLM et attention croisée.",
+            "Vérifier dimensions, alignement et utilisation réelle des conditions par des comparaisons contrôlées."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Assimiler un vecteur sémantique global à un contrôle précis des événements dans le temps."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Que testeriez-vous si la génération suit le texte mais ignore presque toujours la partition ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Contrôle multimodal et formes",
+              "themeId": "generation-controle",
+              "chapterId": "controle-multimodal-formes"
+            },
+            {
+              "text": "Choisir entre symbolique et audio",
+              "themeId": "generation-controle",
+              "chapterId": "symbolique-midi-et-audio"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Associer chaque modalité à l’information musicale qu’elle peut réellement exprimer."
+        }
+      ],
+      "takeaways": [
+        "Associer chaque modalité à l’information musicale qu’elle peut réellement exprimer.",
+        "Distinguer concaténation, FiLM et attention croisée.",
+        "Vérifier dimensions, alignement et utilisation réelle des conditions par des comparaisons contrôlées."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-b-attn-clap",
+        "rev-b-attn-film",
+        "rev-b-attn-midi",
+        "rev-b-attn-multihead"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 213,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-adaptation",
+      "title": "Comment adapter un générateur au petit corpus d’un compositeur ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Comment adapter un générateur au petit corpus d’un compositeur ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Fine-tuning et gel",
+          "explanation": "Le fine-tuning adapte des poids préentraînés ; geler certains paramètres empêche leurs nouvelles mises à jour par gradient."
+        },
+        {
+          "name": "LoRA",
+          "explanation": "Une adaptation qui ajoute à une matrice fixe le produit de deux petites matrices entraînées."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Je préciserais d’abord ce que signifie personnaliser le système : reconnaître un matériau, préserver un timbre ou proposer des transformations particulières. Je garderais des exemples séparés pour évaluer cette intention. Avec un petit corpus, la mémorisation et la faible diversité sont des risques. Une perte d’entraînement basse ne suffirait donc pas.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Le réentraînement partiel (partial fine-tuning) met à jour certaines couches existantes. Un module adaptateur (adapter) ajoute un petit détour entraînable à une base gelée. LoRA, l’adaptation de faible rang (low-rank adaptation), apprend une correction factorisée de certaines matrices. Ces approches limitent les paramètres ajustés, mais elles ne rendent pas inutile le modèle de base. Leur choix dépend aussi des couches ciblées et de l’information que nous voulons modifier.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Je commencerais par une référence simple, puis comparerais une adaptation limitée à une option plus expressive. Je fixerais corpus, séparation et budget avant de conclure. J’examinerais la fidélité aux matériaux personnels, la diversité et les capacités conservées sur d’autres sons. LoRA ne garantit ni l’absence d’oubli ni l’absence de copie. Je vérifierais donc la proximité avec les exemples d’entraînement et l’effet sur des demandes nouvelles. Enfin, je distinguerais coût d’adaptation et coût d’utilisation. Peu de poids appris ne signifie pas forcément peu de mémoire totale ou une génération rapide.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Définir la personnalisation et réserver des exemples d’évaluation avant l’adaptation.",
+            "Comparer réentraînement partiel, adapters et correction LoRA sur une base conservée.",
+            "Mesurer fidélité, diversité, mémorisation, capacités conservées et coût réel."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Supposer que LoRA empêche automatiquement le surapprentissage, la mémorisation ou l’oubli."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Quel protocole distinguerait une personnalisation utile d’une reproduction des extraits du corpus ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "LoRA et petit corpus",
+              "themeId": "generation-controle",
+              "chapterId": "adaptation-lora-et-petit-corpus"
+            },
+            {
+              "text": "Adapter avec un budget explicite",
+              "themeId": "generation-controle",
+              "chapterId": "efficacite-petit-budget"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Définir la personnalisation et réserver des exemples d’évaluation avant l’adaptation."
+        }
+      ],
+      "takeaways": [
+        "Définir la personnalisation et réserver des exemples d’évaluation avant l’adaptation.",
+        "Comparer réentraînement partiel, adapters et correction LoRA sur une base conservée.",
+        "Mesurer fidélité, diversité, mémorisation, capacités conservées et coût réel."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-b-efficient-lora",
+        "rev-b-efficient-adapters"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 208,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-budget-temps-reel",
+      "title": "Que vérifier avant d’annoncer qu’un modèle audio fonctionne avec peu de calcul, en temps réel ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Que vérifier avant d’annoncer qu’un modèle audio fonctionne avec peu de calcul, en temps réel ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Adaptation parcimonieuse (parameter-efficient adaptation)",
+          "explanation": "Entraîner une petite partie des paramètres ou des modules ajoutés, tout en conservant une base préentraînée."
+        },
+        {
+          "name": "Distillation (knowledge distillation)",
+          "explanation": "Entraîner un élève à reproduire des réponses d’un enseignant, souvent plus coûteux."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Je séparerais trois contraintes : entraîner ou adapter, stocker le modèle, puis produire le son à temps. Elles ne diminuent pas automatiquement ensemble. Un modèle avec peu de paramètres entraînables peut encore utiliser une base volumineuse. Je demanderais donc la machine cible, le contexte disponible et le délai acceptable pour le musicien.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "La quantification numérique (numerical quantization) réduit la précision des poids ou des activations. Elle peut réduire leur stockage, avec une erreur à évaluer. La distillation (knowledge distillation) entraîne un élève à reproduire un enseignant, souvent plus coûteux. Un petit modèle spécialisé peut aussi suffire. Mais ces pistes nécessitent une mesure sur le moteur réellement utilisé ; moins de bits ne garantit pas une accélération.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans le cours, la quantification d’une projection synthétique montre un compromis entre octets logiques et erreur numérique. Ce n’est pas une mesure de fidélité sonore. Pour le temps réel, l’échéance (deadline) dépend du prochain bloc à produire. Le calcul du cours donne environ cinq virgule trois millisecondes pour 256 échantillons à 48 kilohertz. Je mesurerais tout le trajet, avec une marge, sur des conditions réalistes. Je distinguerais cette échéance de la latence totale, qui comprend tampons et contexte futur éventuel. Enfin, j’écouterais les défauts induits par l’optimisation, surtout les attaques et les interruptions.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Séparer adaptation, stockage, durée du calcul et latence totale.",
+            "Vérifier quantification, distillation ou petit modèle sur la machine et le moteur cibles.",
+            "Mesurer le trajet complet face à l’échéance audio, puis évaluer les compromis sonores."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Déduire une vitesse réelle d’un simple compte de paramètres ou d’un nombre de bits."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Un modèle calcule chaque bloc assez vite, mais reste désagréable à jouer : quelles autres latences chercheriez-vous ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Budget et temps réel",
+              "themeId": "generation-controle",
+              "chapterId": "efficacite-petit-budget"
+            },
+            {
+              "text": "Coût de la génération séquentielle",
+              "themeId": "generation-controle",
+              "chapterId": "echantillonnage-contexte-et-cout"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Séparer adaptation, stockage, durée du calcul et latence totale."
+        }
+      ],
+      "takeaways": [
+        "Séparer adaptation, stockage, durée du calcul et latence totale.",
+        "Vérifier quantification, distillation ou petit modèle sur la machine et le moteur cibles.",
+        "Mesurer le trajet complet face à l’échéance audio, puis évaluer les compromis sonores."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-b-efficient-quantization",
+        "rev-b-efficient-distillation",
+        "rev-b-efficient-realtime"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 209,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-protocole-recherche",
+      "title": "Comment transformeriez-vous une idée de modèle en expérience de recherche ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Comment transformeriez-vous une idée de modèle en expérience de recherche ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Ablation",
+          "explanation": "Une comparaison qui retire ou remplace un composant pour étudier sa contribution sous des conditions communes."
+        },
+        {
+          "name": "Facteur expérimental",
+          "explanation": "Un élément dont on fait varier la présence ou la valeur dans le plan de comparaison."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Je commencerais par une hypothèse (hypothesis), donc une affirmation que l’expérience peut mettre en défaut. Par exemple : une commande d’attaque améliore la précision temporelle sans dégrader le timbre. Je définirais avec la musicienne ce que signifient ces deux critères. Cela fixe ce que je dois observer avant de choisir une architecture.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Je construirais une référence de comparaison (baseline), simple et réellement utilisable. Pour une adaptation, ce serait notamment le modèle initial. Je comparerais les mêmes commandes et les mêmes prises réservées, avec un budget de calcul documenté. Je garderais aussi les exemples défavorables à ma proposition.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Une ablation (ablation study) retire ou remplace un élément pour examiner sa contribution. Je testerais séparément la commande locale et l’adaptation. Selon la question, il faudrait réentraîner les variantes. Retirer simplement une entrée pendant l’utilisation peut créer une situation jamais rencontrée pendant l’apprentissage.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Enfin, je réunirais mesures temporelles, écoute et coût. Je répéterais les entraînements pour examiner leur variabilité. Une amélioration moyenne resterait accompagnée de ses limites et des compromis observés. Le résultat utile serait une réponse à l’hypothèse, même si la méthode proposée ne gagne pas.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Formuler une hypothèse précise et définir ses critères avant les essais.",
+            "Comparer une référence et des ablations avec données, commandes et budgets documentés.",
+            "Rapporter variabilité, contre-exemples et compromis entre contrôle, qualité et coût."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Changer simultanément le modèle, les données et le protocole, puis attribuer tout le gain à un seul composant."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Comment distingueriez-vous la dépendance à une entrée et l’intérêt d’entraîner une méthode avec cette entrée ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Construire des comparaisons et des ablations",
+              "themeId": "evaluation-recherche",
+              "chapterId": "baselines-et-ablations"
+            },
+            {
+              "text": "Définir une question de recherche",
+              "themeId": "evaluation-recherche",
+              "chapterId": "question-de-recherche-et-baseline"
+            },
+            {
+              "text": "Examiner la variabilité",
+              "themeId": "evaluation-recherche",
+              "chapterId": "variabilite-et-incertitude"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Formuler une hypothèse précise et définir ses critères avant les essais."
+        }
+      ],
+      "takeaways": [
+        "Formuler une hypothèse précise et définir ses critères avant les essais.",
+        "Comparer une référence et des ablations avec données, commandes et budgets documentés.",
+        "Rapporter variabilité, contre-exemples et compromis entre contrôle, qualité et coût."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "gr-reporting",
+        "gr-bootstrap"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 184,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-fuites-et-generalisation",
+      "title": "Comment vérifier qu’un modèle généralise à de nouveaux matériaux musicaux ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Comment vérifier qu’un modèle généralise à de nouveaux matériaux musicaux ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Unité indépendante",
+          "explanation": "Une source dont le contenu n’est pas simplement une autre vue des mêmes observations ; son choix dépend du phénomène étudié."
+        },
+        {
+          "name": "Split train, validation et test",
+          "explanation": "Une répartition qui réserve des données distinctes pour apprendre, sélectionner les choix et mesurer le système retenu."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "La généralisation (generalization), c’est réussir sur des données qui représentent l’usage futur et n’ont pas servi au développement. Je préciserais donc cet usage. Reconnaître une nouvelle prise du même instrument et travailler sur un autre instrument sont deux objectifs différents. Une séparation unique ne démontre pas automatiquement les deux.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Une fuite de données (data leakage) fait parvenir au développement une information qui devrait rester réservée à l’évaluation. En audio, découper une prise en fenêtres peut masquer ce problème. Deux fenêtres presque identiques risquent de se retrouver des deux côtés de la séparation. Je garderais chaque prise dans un seul groupe.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Selon l’objectif, je regrouperais aussi par musicien, séance ou œuvre. Je calculerais les statistiques de normalisation uniquement sur l’apprentissage. Les réglages seraient choisis sur la validation (validation set), réservée au développement. Le test final (test set) serait consulté après leur fixation. Je documenterais également les données connues d’un modèle préentraîné, quand cette information est disponible.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Enfin, j’écouterais les échecs par famille de sons. Un bon score global peut cacher une faiblesse sur les attaques métalliques. Je limiterais ma conclusion aux domaines réellement testés. Avec peu de groupes indépendants, j’annoncerais cette incertitude plutôt que de multiplier artificiellement le nombre de fenêtres.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Définir d’abord le type de nouveauté attendu : prise, séance, musicien ou instrument.",
+            "Séparer les groupes avant découpage et réserver le test à l’évaluation finale.",
+            "Apprendre les prétraitements sur l’apprentissage et préciser les domaines réellement évalués."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Répartir aléatoirement les fenêtres d’une même prise, puis présenter leur score comme une preuve de généralisation."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Quel groupe choisiriez-vous si l’objectif devenait l’adaptation à un nouveau percussionniste ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Repérer les fuites entre prises",
+              "themeId": "evaluation-recherche",
+              "chapterId": "splits-et-fuites"
+            },
+            {
+              "text": "Délimiter une conclusion de généralisation",
+              "themeId": "evaluation-recherche",
+              "chapterId": "generalisation-et-compte-rendu"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Définir d’abord le type de nouveauté attendu : prise, séance, musicien ou instrument."
+        }
+      ],
+      "takeaways": [
+        "Définir d’abord le type de nouveauté attendu : prise, séance, musicien ou instrument.",
+        "Séparer les groupes avant découpage et réserver le test à l’évaluation finale.",
+        "Apprendre les prétraitements sur l’apprentissage et préciser les domaines réellement évalués."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "gr-groups",
+        "gr-pitfalls"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 200,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-evaluation-perceptive",
+      "title": "Comment organiseriez-vous une évaluation perceptive d’un générateur audio contrôlable ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Comment organiseriez-vous une évaluation perceptive d’un générateur audio contrôlable ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Critère perceptif",
+          "explanation": "La propriété précise que l’auditeur doit juger, comme la présence d’artefacts ou le respect de la consigne."
+        },
+        {
+          "name": "Biais de présentation",
+          "explanation": "Une influence du nom, de l’ordre ou du niveau d’écoute qui peut orienter un jugement sans venir de la propriété étudiée."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Je séparerais la qualité acoustique, le respect de la commande et l’intérêt musical. Une percussion peut avoir un beau timbre tout en plaçant son accent trop tard. Une évaluation perceptive (perceptual evaluation) demande donc aux personnes d’écouter selon des critères explicites. Une préférence globale ne suffit pas à expliquer ce compromis.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Je sélectionnerais les situations avant de regarder quelle méthode réussit. Les noms des systèmes seraient cachés, et l’ordre de présentation varierait entre les personnes. Je fixerais les conditions de lecture et le traitement des niveaux. Si la dynamique fait partie de la commande, je préserverais cette différence dans le protocole.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour une reconstruction avec original, j’envisagerais MUSHRA. Ce test multi-stimuli utilise une référence cachée et des ancres dégradées (multiple stimuli with hidden reference and anchor). Pour une nouvelle variation sans original unique, je choisirais une tâche de comparaison adaptée. Je ne donnerais pas le nom MUSHRA à n’importe quelle page de notation.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Je garderais les liens entre chaque réponse, son auditeur et son extrait. Ces jugements répétés ne sont pas indépendants. Je présenterais les écarts, leur incertitude et les commentaires utiles. Une discussion avec les compositeurs compléterait les notes pour comprendre ce qui aide vraiment leur travail.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Distinguer qualité sonore, conformité au contrôle et intérêt musical.",
+            "Contrôler sélection, identité, ordre et niveaux avec un protocole adapté à la référence disponible.",
+            "Conserver les associations auditeur/extrait et analyser aussi les désaccords."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Appeler MUSHRA une comparaison de générations sans vérifier ses conditions de référence et ses autres exigences."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Que feriez-vous si les mesures automatiques s’amélioraient, mais que les compositeurs préféraient la référence ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Préparer une écoute comparable",
+              "themeId": "evaluation-recherche",
+              "chapterId": "ecoute-et-jugement-perceptif"
+            },
+            {
+              "text": "Comprendre les limites des scores automatiques",
+              "themeId": "evaluation-recherche",
+              "chapterId": "fad-et-limites-des-proxies"
+            },
+            {
+              "text": "Respecter les dépendances entre jugements",
+              "themeId": "evaluation-recherche",
+              "chapterId": "variabilite-et-incertitude"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Distinguer qualité sonore, conformité au contrôle et intérêt musical."
+        }
+      ],
+      "takeaways": [
+        "Distinguer qualité sonore, conformité au contrôle et intérêt musical.",
+        "Contrôler sélection, identité, ordre et niveaux avec un protocole adapté à la référence disponible.",
+        "Conserver les associations auditeur/extrait et analyser aussi les désaccords."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "gr-mushra",
+        "gr-bootstrap"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 198,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-motivation-ircam",
+      "title": "Pourquoi souhaiteriez-vous mener cette recherche à l’IRCAM ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Pourquoi souhaiteriez-vous mener cette recherche à l’IRCAM ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Problématique de recherche (research question)",
+          "explanation": "Une difficulté précise, dont nous pouvons tester une solution et discuter les limites."
+        },
+        {
+          "name": "Compétence et preuve (skill and evidence)",
+          "explanation": "Une compétence annoncée devient crédible avec un exemple expliqué et reproductible."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Ce qui m’intéresserait à l’IRCAM, c’est de relier une question technique à un geste de composition. L’offre prévoit une collaboration entre apprentissage automatique, traitement du signal, informatique musicale et professionnels de la musique. Ce cadre permettrait de discuter la définition d’un bon contrôle, puis de confronter les résultats à un usage concret.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "L’axe AI-MADE de PostGenAI vise notamment le contrôle intuitif et précis des propriétés sonores. Il s’intéresse aussi à l’expressivité et aux modèles économes en données et calcul. J’aimerais travailler sur cette articulation. La contrôlabilité (controllability) signifierait ici modifier une propriété demandée tout en vérifiant ce qui doit rester reconnaissable.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Les outils donnent des points d’appui concrets. RAVE propose des représentations audio apprises. nn~ permet d’exécuter des modèles exportés dans des environnements musicaux compatibles. Je distinguerais toutefois cette possibilité d’intégration d’une garantie de fonctionnement interactif. Le modèle et la machine devraient être testés.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour préciser cette motivation, je demanderais quels matériaux et quelles situations de composition seraient prioritaires. Je voudrais comprendre comment les compositeurs participent à la définition des expériences. Pour présenter ce que je peux apporter, je distinguerais mes acquis des compétences à approfondir. Je m’appuierais sur un exemple réel à expliquer et discuter.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Relier la motivation aux collaborations et axes explicitement décrits dans l’offre.",
+            "Expliquer l’intérêt du contrôle, de l’interaction et du budget dans AI-MADE.",
+            "Compléter ce modèle uniquement avec des compétences et réalisations personnelles vérifiables."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Réciter le prestige de l’institution ou inventer une expérience avec ses équipes pour justifier sa candidature."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Quel exemple réel de votre parcours permet de montrer votre manière d’apprendre ou de mener une comparaison ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Relire les attentes de l’offre",
+              "themeId": "contexte-recherche",
+              "chapterId": "lire-offre-et-se-preparer"
+            },
+            {
+              "text": "Situer PostGenAI et AI-MADE",
+              "themeId": "contexte-recherche",
+              "chapterId": "postgenai-et-interaction"
+            },
+            {
+              "text": "Distinguer outils et modèles",
+              "themeId": "contexte-recherche",
+              "chapterId": "outils-ircam-et-pratiques-musicales"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Relier la motivation aux collaborations et axes explicitement décrits dans l’offre."
+        }
+      ],
+      "takeaways": [
+        "Relier la motivation aux collaborations et axes explicitement décrits dans l’offre.",
+        "Expliquer l’intérêt du contrôle, de l’interaction et du budget dans AI-MADE.",
+        "Compléter ce modèle uniquement avec des compétences et réalisations personnelles vérifiables."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-ctx-ircam-offer",
+        "rev-ctx-ircam-postgenai",
+        "rev-ctx-repo-rave",
+        "rev-ctx-ircam-nntilde"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 196,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-dialogue-compositeur",
+      "title": "Comment construiriez-vous un dialogue de travail avec une compositrice ou un compositeur ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Comment construiriez-vous un dialogue de travail avec une compositrice ou un compositeur ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Conditionnement",
+          "explanation": "L’utilisation d’une information supplémentaire pour orienter la distribution des sorties générées."
+        },
+        {
+          "name": "Condition globale et condition locale",
+          "explanation": "La première décrit l’ensemble du son ; la seconde décrit une propriété à des positions temporelles précises."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Je commencerais par demander une situation précise où l’outil actuel limite le travail. Par exemple : conserver un motif, mais adoucir sa dernière attaque. Je demanderais un exemple satisfaisant et un contre-exemple. Cela aiderait à préciser les mots employés, sans décider à la place de la personne ce qui serait musicalement intéressant.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Nous formulerions ensuite un contrat de contrôle (control specification). Il décrit ce qui doit changer et ce qui doit rester reconnaissable. Un mot comme doux peut désigner le niveau, l’attaque ou le timbre. Je ferais entendre des variations ciblées pour distinguer ces sens. Une mesure technique viendrait appuyer cette distinction.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Je proposerais un prototype (prototype), donc une version limitée permettant de tester une interaction. Nous observerions les essais, les corrections et les situations bloquantes. Je demanderais aussi si le délai de réponse permet de garder le fil musical. Des propositions sonores plaisantes peuvent rester difficiles à orienter ou à reprendre.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Enfin, je documenterais les choix et les désaccords. L’objectif serait de construire un vocabulaire partagé et des tâches évaluables. Je distinguerais la préférence d’une personne d’une conclusion générale. Les retours orienteraient une nouvelle expérience, plutôt qu’une accumulation de fonctions sans question claire.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Partir de situations, d’exemples et de contre-exemples fournis par la personne.",
+            "Décrire ensemble les propriétés à modifier et celles à préserver.",
+            "Évaluer la reprise des résultats, les corrections et le délai dans une tâche de composition."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Traduire immédiatement un mot musical en une mesure unique sans vérifier le sens voulu avec la personne."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Comment réagiriez-vous si deux compositeurs donnaient des sens différents à une commande comme doux ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Transformer une intention en commande",
+              "themeId": "generation-controle",
+              "chapterId": "conditions-et-intention-musicale"
+            },
+            {
+              "text": "Reprendre un résultat après génération",
+              "themeId": "contexte-recherche",
+              "chapterId": "postgenai-et-interaction"
+            },
+            {
+              "text": "Choisir les formes du conditionnement",
+              "themeId": "generation-controle",
+              "chapterId": "controle-multimodal-formes"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Partir de situations, d’exemples et de contre-exemples fournis par la personne."
+        }
+      ],
+      "takeaways": [
+        "Partir de situations, d’exemples et de contre-exemples fournis par la personne.",
+        "Décrire ensemble les propriétés à modifier et celles à préserver.",
+        "Évaluer la reprise des résultats, les corrections et le délai dans une tâche de composition."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-ctx-ircam-offer",
+        "rev-ctx-ircam-postgenai"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 194,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-echec-et-incertitude",
+      "title": "Que feriez-vous si votre méthode ne dépassait pas une référence simple ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Que feriez-vous si votre méthode ne dépassait pas une référence simple ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Contrat de forme (shape contract)",
+          "explanation": "Les tailles et le sens des axes attendus par une opération."
+        },
+        {
+          "name": "Contiguïté (contiguity)",
+          "explanation": "Une organisation du stockage qui permet certains changements de vue sans réordonner les données."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Je commencerais par décrire précisément l’échec. La méthode peut manquer le contrôle demandé, dégrader le timbre ou dépasser le budget. Un score moyen seul ne dit pas lequel de ces problèmes domine. Je séparerais une erreur de programme d’une hypothèse scientifique qui ne se vérifie pas.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Je contrôlerais d’abord les formes, les alignements et les calculs sur un petit cas connu. Je vérifierais ensuite la séparation des données et la procédure d’évaluation. Si ces points tiennent, une ablation (ablation study) pourrait aider à localiser le composant inutile. Je choisirais cette comparaison selon une question précise.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "L’incertitude (uncertainty) décrit ici les limites de notre estimation, notamment dues aux données et aux répétitions expérimentales. Je rapporterais plusieurs entraînements et l’écart entre méthodes sur les mêmes prises. Je ne traiterais pas les fenêtres d’un enregistrement comme des répétitions indépendantes. Un résultat peu précis ne démontrerait pas l’équivalence des méthodes.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Enfin, je déciderais de la suite selon ce diagnostic. Je pourrais simplifier le modèle, modifier l’hypothèse ou arrêter une piste trop coûteuse. Je conserverais les résultats défavorables et les configurations. Cela permettrait d’expliquer ce que l’expérience apprend et de proposer une nouvelle étape limitée, sans promettre un gain encore absent.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Décrire le type d’échec et vérifier d’abord l’implémentation et le protocole.",
+            "Distinguer variation, manque de précision et preuve d’équivalence.",
+            "Conserver les essais défavorables et choisir une prochaine comparaison ciblée."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Multiplier les réglages jusqu’à obtenir un meilleur test, puis ne présenter que cette réussite."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Quel résultat vous conduirait à abandonner une architecture plutôt qu’à lui consacrer davantage de calcul ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Lire et localiser une erreur PyTorch",
+              "themeId": "pytorch",
+              "chapterId": "lire-erreurs-pytorch"
+            },
+            {
+              "text": "Examiner les variations du résultat",
+              "themeId": "evaluation-recherche",
+              "chapterId": "variabilite-et-incertitude"
+            },
+            {
+              "text": "Conserver les traces expérimentales",
+              "themeId": "evaluation-recherche",
+              "chapterId": "environnement-linux-et-traces"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Décrire le type d’échec et vérifier d’abord l’implémentation et le protocole."
+        }
+      ],
+      "takeaways": [
+        "Décrire le type d’échec et vérifier d’abord l’implémentation et le protocole.",
+        "Distinguer variation, manque de précision et preuve d’équivalence.",
+        "Conserver les essais défavorables et choisir une prochaine comparaison ciblée."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "gr-reporting",
+        "gr-bootstrap",
+        "gr-groups"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 196,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "oral-symbolique-ou-audio",
+      "title": "Quand choisiriez-vous une génération symbolique, audio ou hybride ?",
+      "summary": "Préparer une réponse argumentée, puis résister à une relance.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Quand choisiriez-vous une génération symbolique, audio ou hybride ?",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Représentation symbolique (symbolic representation)",
+          "explanation": "Description d'événements musicaux : quelles notes jouer, quand, et avec quels paramètres."
+        },
+        {
+          "name": "MIDI (Musical Instrument Digital Interface)",
+          "explanation": "Ensemble de protocoles pour communiquer des événements et commandes musicales, plutôt qu'une forme d'onde."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "Je partirais de ce que la personne veut contrôler. Une représentation symbolique (symbolic representation) décrit des événements, comme des notes et leurs dates. Le MIDI (Musical Instrument Digital Interface) transmet ces commandes à un instrument qui produit le son. Pour déplacer une note, cette représentation peut rendre l’édition directement accessible. Elle décrit aussi la polyphonie (polyphony), c’est-à-dire plusieurs voix simultanées.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Une représentation audio (audio representation) conserve ou encode le signal sonore. Elle convient lorsque le matériau recherché concerne le timbre, le souffle ou la résonance particulière d’une prise. En revanche, séparer proprement chaque note ou modifier une seule propriété peut devenir plus difficile. Je vérifierais ce que la représentation choisie conserve réellement.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Music Transformer illustre la génération de suites d’événements musicaux. Sa sortie symbolique demande encore un rendu sonore. Un générateur audio peut travailler sur des codes compressés, mais le décodeur limite les détails récupérables. Aucun de ces choix ne garantit à lui seul une structure musicale intéressante.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Une chaîne hybride (hybrid pipeline) pourrait organiser les événements symboliquement, puis produire un rendu audio conditionné. Je testerais alors l’alignement entre événements et son, ainsi que le respect du timbre. Je choisirais cette complexité seulement si elle répond à un besoin concret que la référence simple ne couvre pas.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Choisir la représentation selon le contrôle recherché et les informations à préserver.",
+            "Distinguer événements symboliques, instrument de rendu et signal audio.",
+            "Évaluer séparément l’alignement et le timbre dans une chaîne hybride."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Attribuer le timbre du rendu à un modèle qui génère seulement des événements MIDI."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Quelle représentation choisiriez-vous pour modifier le souffle d’une prise sans déplacer ses attaques ?"
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Comparer symbolique, MIDI et audio",
+              "themeId": "generation-controle",
+              "chapterId": "symbolique-midi-et-audio"
+            },
+            {
+              "text": "Comprendre le rôle du codec",
+              "themeId": "generation-controle",
+              "chapterId": "codecs-neuronaux-rvq"
+            },
+            {
+              "text": "Brancher des commandes complémentaires",
+              "themeId": "generation-controle",
+              "chapterId": "controle-multimodal-formes"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : Choisir la représentation selon le contrôle recherché et les informations à préserver."
+        }
+      ],
+      "takeaways": [
+        "Choisir la représentation selon le contrôle recherché et les informations à préserver.",
+        "Distinguer événements symboliques, instrument de rendu et signal audio.",
+        "Évaluer séparément l’alignement et le timbre dans une chaîne hybride."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "gr-symbolic",
+        "gr-encodec",
+        "rev-b-attn-midi"
+      ],
+      "oral": {
+        "kind": "question",
+        "answerWords": 207,
+        "targetSeconds": [
+          60,
+          90
+        ]
+      }
+    },
+    {
+      "id": "pitch-recherche-deux-minutes",
+      "title": "Un pitch de recherche hypothétique : reprendre localement les matériaux d’un musicien",
+      "summary": "Construire une proposition de recherche personnelle, sans transformer ce modèle en biographie.",
+      "context": {
+        "recall": "Nous pouvons reprendre les explications techniques par les liens du chapitre.",
+        "problem": "Un pitch de recherche hypothétique : reprendre localement les matériaux d’un musicien",
+        "why": "Nous devons pouvoir expliquer un choix et sa limite dans une discussion.",
+        "connection": "La réponse relie une situation concrète aux mécanismes du cours.",
+        "next": "Nous reformulons sans le modèle, puis nous essayons la relance."
+      },
+      "progression": {
+        "input": "Une question ouverte, sans choix de réponses.",
+        "action": "Organiser une réponse avec un exemple, une justification et une limite.",
+        "output": "Une explication orale que nous pouvons adapter à la discussion."
+      },
+      "notions": [
+        {
+          "name": "Problématique de recherche (research question)",
+          "explanation": "Une difficulté précise, dont nous pouvons tester une solution et discuter les limites."
+        },
+        {
+          "name": "Compétence et preuve (skill and evidence)",
+          "explanation": "Une compétence annoncée devient crédible avec un exemple expliqué et reproductible."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous essayons d’abord de répondre sans lire le modèle. Nous cherchons un raisonnement clair, avec un exemple et une limite."
+        },
+        {
+          "type": "paragraph",
+          "text": "À titre de proposition hypothétique, j’aimerais étudier la modification locale de sons issus des matériaux d’un musicien. Ce projet reste à discuter avec l’équipe. Imaginons une percussion dont le motif convient, mais dont la dernière attaque doit devenir plus douce. La question serait de modifier cette région tout en préservant les qualités du reste.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Je commencerais par définir avec la personne ce que signifie plus douce : niveau, durée d’attaque ou contenu spectral. Le conditionnement (conditioning) serait l’information fournie au modèle pour demander ce changement. Une commande temporelle désignerait la région concernée. Une référence audio pourrait préciser le caractère sonore recherché, sans remplacer cette localisation.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Je construirais d’abord une référence simple (baseline), par exemple une transformation de l’enveloppe (envelope), qui décrit l’évolution du niveau sonore. Ensuite, j’examinerais une représentation compressée et un modèle conditionné. L’adaptation (adaptation) ajusterait une partie des paramètres aux matériaux disponibles, avec un budget fixé. Je vérifierais d’abord la reconstruction, car un détail perdu à cette étape reste indisponible ensuite.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Un masque temporel (temporal mask) indiquerait les régions modifiables. Je mesurerais aussi la conservation des zones protégées et j’écouterais les transitions. Une protection dans la représentation compressée ne garantit pas directement la conservation du signal décodé. Le protocole comparerait donc le respect de la commande, les défauts sonores (artifacts), la diversité et le délai de réponse.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "Les prises seraient séparées avant leur découpage. Une ablation (ablation study) comparerait des variantes pour examiner l’apport du contrôle local et de l’adaptation. L’écoute garderait cachés les noms des méthodes. Les retours des musiciens permettraient aussi d’évaluer la facilité de reprise des résultats.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "paragraph",
+          "text": "L’IRCAM serait pertinent pour confronter cette question aux pratiques de composition. L’offre prévoit ces collaborations, et AI-MADE vise notamment le contrôle précis des propriétés sonores. Je proposerais une première expérience limitée avant toute promesse de performance ou d’utilisation en temps réel.",
+          "role": "oral-answer"
+        },
+        {
+          "type": "list",
+          "title": "Trois points obligatoires",
+          "items": [
+            "Partir d’un geste musical précis et distinguer changement demandé et propriétés à préserver.",
+            "Proposer une méthode progressive, une référence simple, des données séparées et une évaluation de l’usage.",
+            "Présenter le sujet comme hypothétique et justifier le cadre IRCAM avec les axes vérifiés de l’offre."
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une erreur fréquente",
+          "text": "Présenter ce scénario pédagogique comme un projet déjà réalisé, ou annoncer une meilleure qualité sans expérience."
+        },
+        {
+          "type": "example",
+          "title": "Relance probable du jury",
+          "text": "Quelle serait votre première expérience réalisable pour tester l’intérêt du contrôle local ?"
+        },
+        {
+          "type": "list",
+          "title": "Votre gabarit à remplir",
+          "role": "pitch-template",
+          "items": [
+            "Quel matériau réel et quel geste de composition voulez-vous étudier ? Donnez une situation précise, sans inventer une collaboration.",
+            "Quelle propriété doit changer ? Quelles propriétés doivent rester reconnaissables ? Formulez une hypothèse testable.",
+            "Quelle référence simple pourrez-vous réellement construire et comparer ? Pourquoi constitue-t-elle une alternative utile ?",
+            "Quelle représentation, quelle commande et quelle adaptation envisagez-vous ? Précisez les données, le calcul et une limite technique.",
+            "Comment séparerez-vous les prises ? Quelles mesures et quelles tâches d’écoute vérifieront le contrôle, la conservation et l’usage ?",
+            "Quel lien précis faites-vous avec l’offre et AI-MADE ? Ajoutez une compétence personnelle réelle et une question ouverte pour l’équipe."
+          ]
+        },
+        {
+          "type": "list",
+          "title": "Reprendre les mécanismes utiles",
+          "items": [
+            "Choisissons le point qui reste difficile, puis revenons à son exemple."
+          ],
+          "links": [
+            {
+              "text": "Relier la proposition à l’offre",
+              "themeId": "contexte-recherche",
+              "chapterId": "lire-offre-et-se-preparer"
+            },
+            {
+              "text": "Comprendre l’orientation post-générative",
+              "themeId": "contexte-recherche",
+              "chapterId": "postgenai-et-interaction"
+            },
+            {
+              "text": "Définir le contrôle multimodal",
+              "themeId": "generation-controle",
+              "chapterId": "controle-multimodal-formes"
+            },
+            {
+              "text": "Préserver des zones connues",
+              "themeId": "generation-controle",
+              "chapterId": "guidance-et-zones-connues"
+            },
+            {
+              "text": "Comparer les variantes",
+              "themeId": "evaluation-recherche",
+              "chapterId": "baselines-et-ablations"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : je présente une proposition à discuter, avec une méthode et une comparaison réalisables."
+        }
+      ],
+      "takeaways": [
+        "Partir d’un geste musical précis et distinguer changement demandé et propriétés à préserver.",
+        "Proposer une méthode progressive, une référence simple, des données séparées et une évaluation de l’usage.",
+        "Présenter le sujet comme hypothétique et justifier le cadre IRCAM avec les axes vérifiés de l’offre."
+      ],
+      "checkpoint": {
+        "prompt": "Quelle démarche prépare le mieux cette question ouverte ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Expliquer un mécanisme, donner un exemple et discuter une limite."
+          },
+          {
+            "id": "b",
+            "text": "Réciter la réponse sans comprendre les mots."
+          },
+          {
+            "id": "c",
+            "text": "Inventer une expérience personnelle pour convaincre."
+          },
+          {
+            "id": "d",
+            "text": "Éviter toute limite pour paraître certain."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le modèle guide la structure. Notre réponse doit rester comprise, honnête et adaptée à la relance."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-ctx-ircam-offer",
+        "rev-ctx-ircam-postgenai",
+        "gr-reporting",
+        "gr-groups",
+        "gr-mushra"
+      ],
+      "oral": {
+        "kind": "pitch",
+        "answerWords": 303,
+        "targetSeconds": [
+          120,
+          120
+        ]
+      }
+    }
+  ],
+  "references": [],
+  "journey": {
+    "title": "Du savoir lu au raisonnement expliqué",
+    "scenario": "Nous préparons une discussion sur des outils audio contrôlables et leur évaluation musicale.",
+    "startingPoint": "Des mécanismes techniques que nous pouvons retrouver dans les cours.",
+    "destination": "Une réponse structurée, personnelle et ouverte à la discussion.",
+    "scope": [
+      "Expliquer les opérations utiles.",
+      "Justifier les choix et leurs limites.",
+      "Discuter une expérience possible sans inventer de résultat."
+    ],
+    "stages": [
+      {
+        "title": "Expliquer les fondations PyTorch",
+        "chapterIds": [
+          "oral-boucle-pytorch",
+          "oral-autograd",
+          "oral-batches-masques",
+          "oral-evaluation-pytorch",
+          "oral-diagnostic-pytorch"
+        ]
+      },
+      {
+        "title": "Relier le signal aux représentations",
+        "chapterIds": [
+          "oral-niveaux-audio",
+          "oral-stft-mel",
+          "oral-phase-reconstruction",
+          "oral-reechantillonnage"
+        ]
+      },
+      {
+        "title": "Argumenter les choix de génération",
+        "chapterIds": [
+          "oral-attention-transformer",
+          "oral-codecs-rvq",
+          "oral-autoregression",
+          "oral-vae",
+          "oral-diffusion-flow",
+          "oral-guidance",
+          "oral-controle-multimodal",
+          "oral-adaptation",
+          "oral-budget-temps-reel"
+        ]
+      },
+      {
+        "title": "Discuter une recherche et ses usages",
+        "chapterIds": [
+          "oral-protocole-recherche",
+          "oral-fuites-et-generalisation",
+          "oral-evaluation-perceptive",
+          "oral-motivation-ircam",
+          "oral-dialogue-compositeur",
+          "oral-echec-et-incertitude",
+          "oral-symbolique-ou-audio"
+        ]
+      },
+      {
+        "title": "Construire notre proposition",
+        "chapterIds": [
+          "pitch-recherche-deux-minutes"
+        ]
+      }
+    ]
+  },
+  "moduleIntroduction": {
+    "startingPoint": "Les cours et les exemples sont disponibles comme points de retour.",
+    "goal": "Nous pouvons répondre, argumenter et proposer une première expérience.",
+    "concepts": [
+      {
+        "name": "Expliquer les fondations PyTorch",
+        "explanation": "Préparer une réponse argumentée, puis résister à une relance.",
+        "chapterId": "oral-boucle-pytorch"
+      },
+      {
+        "name": "Relier le signal aux représentations",
+        "explanation": "Préparer une réponse argumentée, puis résister à une relance.",
+        "chapterId": "oral-niveaux-audio"
+      },
+      {
+        "name": "Argumenter les choix de génération",
+        "explanation": "Préparer une réponse argumentée, puis résister à une relance.",
+        "chapterId": "oral-attention-transformer"
+      },
+      {
+        "name": "Discuter une recherche et ses usages",
+        "explanation": "Préparer une réponse argumentée, puis résister à une relance.",
+        "chapterId": "oral-protocole-recherche"
+      },
+      {
+        "name": "Construire notre proposition",
+        "explanation": "Construire une proposition de recherche personnelle, sans transformer ce modèle en biographie.",
+        "chapterId": "pitch-recherche-deux-minutes"
+      }
+    ]
+  }
+}

@@ -81,3 +81,9 @@ Validation des cours, 43 tests Node, construction et 25 contrôles navigateur r�
 Quatre chapitres ajoutés, 81 au total. Les références du nouveau module correspondent à des pages réellement ouvertes du registre documentaire de 37 sources. Les huit lectures ont chacune trois idées et une question de recherche. Chaque chapitre relie des mécanismes techniques existants. Aucun résultat de projet ou usage personnel n’est inventé.
 
 Validation, 45 tests Node et construction réussis. Les 25 contrôles navigateur passent, dont le rendu des 81 chapitres à 360 px et la construction sous le sous-répertoire de publication. Une valeur fixe de six cartes dans ce dernier contrôle a été remplacée par le nombre de modules enregistrés.
+
+## Lot E — entretien et glossaire
+
+Le total atteint 107 chapitres dans huit modules. Les 25 réponses modèles comptent 184–213 mots et le pitch hypothétique 303 mots. Les champs de gabarit persistent après rafraîchissement. Le glossaire contient 160 termes distincts, avec définitions courtes et cibles de chapitres valides.
+
+Validation des cours, 48 tests Node et construction réussis. Les 27 contrôles navigateur passent : 107 chapitres à 360 px, modèle oral replié, notes de pitch conservées, recherche bilingue sans accents, domaines, absence de débordement, et glossaire servi sous le sous-répertoire Pages. L’audit strict du module Entretien ne signale aucune phrase longue ni fin orale manquante.

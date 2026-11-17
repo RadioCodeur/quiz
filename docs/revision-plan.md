@@ -68,5 +68,5 @@ L’accès à l’interface Colab connectée n’est pas supposé. L’URL publi
 - [x] C — Notebooks : vingt documents et quarante solutions exécutés ; 40 tests et 24 contrôles navigateur réussis.
 - [x] B — Six chapitres ajoutés, preuves CPU ; 43 tests et 25 contrôles navigateur réussis.
 - [x] D — Quatre chapitres, huit lectures et liens techniques ; 45 tests et 25 contrôles navigateur réussis.
-- [ ] E — Entretien et glossaire
+- [x] E — 25 réponses, pitch et glossaire de 160 termes ; 48 tests et 27 contrôles navigateur réussis.
 - [ ] F — Parcours et audit

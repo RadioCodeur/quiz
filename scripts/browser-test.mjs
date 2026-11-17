@@ -365,6 +365,40 @@ try {
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
     assert.ok(new URL(await illustration.locator('img').getAttribute('src'),page.url()).origin===new URL(base).origin);
   });
+  await check('entretien : modèle à révéler et gabarit personnel conservé',async()=>{
+    await page.goto(`${base}/cours.html?theme=entretien#oral-autograd`);
+    await page.locator('.oral-model').waitFor();
+    assert.equal(await page.locator('.oral-model').getAttribute('open'),null);
+    await page.locator('.oral-model summary').click();
+    assert.ok((await page.locator('.oral-model').innerText()).includes('24'));
+    await page.goto(`${base}/cours.html?theme=entretien#pitch-recherche-deux-minutes`);
+    await page.locator('[data-pitch-field="0"]').fill('Mon matériau réel et une hypothèse à vérifier.');
+    await page.reload();await page.locator('[data-pitch-field="0"]').waitFor();
+    assert.equal(await page.locator('[data-pitch-field="0"]').inputValue(),'Mon matériau réel et une hypothèse à vérifier.');
+    assert.equal(await page.locator('[data-pitch-field]').count(),6);
+    await page.screenshot({path:'test-results/interview-pitch-desktop.png',fullPage:true});
+  });
+  await check('glossaire : recherche bilingue sans accents, domaines et accès aux cours',async()=>{
+    await page.setViewportSize({width:360,height:800});
+    await page.locator('.header-nav a[href="./glossaire.html"]').click();
+    await page.locator('.glossary-term').first().waitFor();
+    assert.ok(await page.locator('.glossary-term').count()>=120);
+    await page.locator('#term-search').fill('backpropagation');
+    assert.equal(await page.locator('.glossary-term').count(),1);
+    assert.ok((await page.locator('.glossary-term').innerText()).includes('Rétropropagation'));
+    await page.locator('#term-search').fill('retropropagation');
+    assert.equal(await page.locator('.glossary-term').count(),1);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    await page.screenshot({path:'test-results/glossary-mobile.png',fullPage:true});
+    await page.locator('#term-category').selectOption('Signal audio');
+    assert.equal(await page.locator('.glossary-term').count(),0);
+    await page.locator('button[type=reset]').click();
+    assert.ok(await page.locator('.glossary-term').count()>=120);
+    const href=await page.locator('.glossary-term a').first().getAttribute('href');
+    await page.locator('.glossary-term a').first().click();await page.locator('#lesson-title').waitFor();
+    assert.ok(page.url().endsWith(href.slice(1)));
+    await page.setViewportSize({width:1440,height:1000});
+  });
   await check('nouveaux chapitres : les liens techniques ouvrent la bonne notion',async()=>{
     await page.goto(`${base}/cours.html?theme=generation-controle#controle-multimodal-formes`);
     await page.locator('#lesson-title').waitFor();
@@ -419,6 +453,10 @@ try {
     await p.locator('.header-nav a').last().click();await p.locator('.course-card').first().waitFor();
     assert.equal(await p.locator('.course-card').count(),courses.length);
     await p.locator('.professor-hero img').evaluate(img=>img.decode());
+    await p.locator('.header-nav a[href="./glossaire.html"]').click();await p.locator('.glossary-term').first().waitFor();
+    assert.ok(p.url().includes('/qr-entretien/glossaire.html'));
+    await p.locator('#term-search').fill('gradient');
+    assert.ok(await p.locator('.glossary-term').count()>0);
     await p.locator('.header-nav a').first().click();await p.locator('#next').waitFor();
     assert.deepEqual(failed,[]);await p.close();
   });

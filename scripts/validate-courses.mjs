@@ -64,10 +64,17 @@ export function validateCourses(courses, { bank, themes, sources }) {
       assert.ok(ch.progression&&['input','action','output'].every(key=>typeof ch.progression[key]==='string'&&ch.progression[key].trim()),fail('entrée, action et résultat du chapitre'));
       assert.ok(ch.readingRole===undefined||ch.readingRole==='reference',fail('rôle de lecture valide'));
       assert.ok(ch.blocks.length>=3,fail('développement explicatif'));
-      assert.ok(ch.blocks.some(b=>b.type==='walkthrough'),fail('exemple résolu pas à pas'));
+      if(course.kind!=='interview')assert.ok(ch.blocks.some(b=>b.type==='walkthrough'),fail('exemple résolu pas à pas'));
       const firstExampleIndex=ch.blocks.findIndex(block=>block.type==='first-example');
       if(firstExampleIndex>=0)assert.ok(firstExampleIndex<ch.blocks.findIndex(block=>block.type==='walkthrough'),fail('cas court avant le déroulé complet'));
-      assert.ok(ch.blocks.some(b=>['visual','plot'].includes(b.type)),fail('schéma ou graphique propre à la notion'));
+      if(course.kind!=='interview')assert.ok(ch.blocks.some(b=>['visual','plot'].includes(b.type)),fail('schéma ou graphique propre à la notion'));
+      if(course.kind==='interview'){
+        const answer=ch.blocks.filter(block=>block.role==='oral-answer');
+        const answerWords=wordCount(answer.map(block=>block.text).join(' '));
+        assert.ok(answer.length&&answer.every(block=>block.type==='paragraph'),fail('réponse orale rédigée'));
+        assert.equal(ch.oral?.answerWords,answerWords,fail('longueur orale cohérente'));
+        assert.ok(ch.oral.kind==='pitch'?answerWords>=260&&answerWords<=320:ch.oral.kind==='question'&&answerWords>=150&&answerWords<=225,fail('réponse adaptée à la durée indicative'));
+      }
       let chapterWords=0;
       for(const block of ch.blocks) {
         assert.ok(['paragraph','heading','list','code','callout','example','figure','visual','plot','walkthrough','first-example','audio-lab','illustration','analysis-image'].includes(block.type),fail('type de bloc'));
@@ -123,7 +130,7 @@ export function validateCourses(courses, { bank, themes, sources }) {
   for(const q of bank)assert.ok(coverage.has(q.id),`Notion absente : ${q.id}`);
   // The suggested course order must put each prerequisite before its dependent course.
   for(const c of courses)for(const pre of c.prerequisites)assert.ok(COURSE_ORDER.indexOf(pre)<COURSE_ORDER.indexOf(c.themeId),`Ordre du prérequis ${pre} → ${c.themeId}`);
-  assert.ok(visuals+plots>=chapters,'Des représentations dans chaque chapitre');
+  assert.ok(visuals+plots>=chapters-courses.filter(course=>course.kind==='interview').reduce((n,course)=>n+course.chapters.length,0),'Des représentations dans chaque chapitre technique ou de contexte');
   assert.ok(plots>=9,'Graphiques numériques répartis dans les cours');
   return { courses:courses.length,chapters,coveredQuestions:coverage.size,wordsExcludingCode:words,figures,visuals,plots,examples,codeExamples:code,walkthroughs,checkpoints,firstExamples,introducedNotions,references:refs.size };
 }
