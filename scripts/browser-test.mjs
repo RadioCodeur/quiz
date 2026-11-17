@@ -365,6 +365,14 @@ try {
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
     assert.ok(new URL(await illustration.locator('img').getAttribute('src'),page.url()).origin===new URL(base).origin);
   });
+  await check('nouveaux chapitres : les liens techniques ouvrent la bonne notion',async()=>{
+    await page.goto(`${base}/cours.html?theme=generation-controle#controle-multimodal-formes`);
+    await page.locator('#lesson-title').waitFor();
+    const chapter=courses.find(c=>c.themeId==='generation-controle').chapters.find(ch=>ch.id==='controle-multimodal-formes');
+    const target=chapter.blocks.find(b=>b.links?.length).links[0];
+    await page.locator(`.lesson-list a[href="${courseHref(target.themeId,target.chapterId)}"]`).click();
+    assert.equal(await page.locator('#lesson-title').innerText(),courses.find(c=>c.themeId===target.themeId).chapters.find(ch=>ch.id===target.chapterId).title);
+  });
   await check('notebook : Colab et téléchargement depuis le chapitre PyTorch',async()=>{
     await page.goto(`${base}/cours.html?theme=pytorch#retropropagation-a-la-main`);
     await page.locator('.chapter-notebook').waitFor();

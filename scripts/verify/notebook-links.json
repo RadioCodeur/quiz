@@ -1,0 +1,11 @@
+{
+  "checked": "2026-11-17",
+  "sourceCommit": "0ec5874421241fcddf44c88a739ab9b6417ae083",
+  "sourceCheck": "GitHub repository tree fetched through the GitHub connector; all twenty public/notebooks/*.ipynb files exist on main.",
+  "publicNotebooks": 20,
+  "colabUrl": "https://colab.research.google.com/github/RadioCodeur/quiz/blob/main/public/notebooks/pytorch-en-une-page.ipynb",
+  "httpStatus": 200,
+  "signInPresent": true,
+  "colabCheck": "PowerShell Invoke-WebRequest GET returned the Colab page. The web extraction tool could not render it.",
+  "limitation": "No authenticated Colab session or interactive Colab execution was available. All twenty notebooks and forty solutions were executed in local CPU Jupyter kernels instead."
+}

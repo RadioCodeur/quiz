@@ -69,7 +69,10 @@ export function validateCourses(courses, { bank, themes, sources }) {
         assert.ok(['paragraph','heading','list','code','callout','example','figure','visual','plot','walkthrough','first-example','audio-lab','illustration','analysis-image'].includes(block.type),fail('type de bloc'));
         if(['paragraph','heading','callout','example'].includes(block.type))assert.ok(typeof block.text==='string'&&block.text.trim(),fail('texte non vide'));
         if(block.type==='code'){assert.ok(block.code?.trim()&&block.caption?.trim(),fail('code commenté'));code++;}
-        if(block.type==='list')assert.ok(Array.isArray(block.items)&&block.items.length&&block.items.every(x=>typeof x==='string'&&x.trim()),fail('liste lisible'));
+        if(block.type==='list'){
+          assert.ok(Array.isArray(block.items)&&block.items.length&&block.items.every(x=>typeof x==='string'&&x.trim()),fail('liste lisible'));
+          if(block.links)for(const link of block.links)assert.ok(link.text?.trim()&&courses.some(target=>target.themeId===link.themeId&&target.chapters.some(chapter=>chapter.id===link.chapterId)),fail(`lien de chapitre valide : ${link.themeId}/${link.chapterId}`));
+        }
         if(block.type==='callout')assert.ok(['tip','pitfall','analogy'].includes(block.tone)&&block.label?.trim(),fail('encadré nommé'));
         if(block.type==='figure'){assert.ok(FIGURE_KINDS.includes(block.kind)&&block.caption?.trim(),fail('figure légendée'));figures++;}
         if(block.type==='example'){assert.ok(block.title?.trim(),fail('exemple titré'));examples++;}

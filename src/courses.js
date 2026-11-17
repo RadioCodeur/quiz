@@ -6,7 +6,7 @@ import { loadBank } from './bank.js';
 import { createStorage } from './storage.js';
 import { COURSE_ORDER, COURSE_STORAGE_KEY, courseHref, buildCoverage, chapterMinutes, normalizeProgress, setChapterRead, resolveChapter, courseStage, mergeCourseReferences, chapterNavigation, notebookLinks } from './course-model.js';
 import { renderFigure } from './course-figures.js';
-import { renderVisual, renderPlot, renderWalkthrough, attachWalkthroughs, renderCheckpoint, attachCheckpoint, renderFirstExample } from './learning-blocks.js';
+import { renderVisual, renderPlot, renderWalkthrough, attachWalkthroughs, renderCheckpoint, attachCheckpoint, renderFirstExample, renderLessonList } from './learning-blocks.js';
 
 import { renderIllustration, renderAudioLab, renderAnalysisImage, attachAudioLabs } from './course-media.js';
 
@@ -36,7 +36,7 @@ function renderBlock(block) {
   if(block.type==='analysis-image')return renderAnalysisImage(block,audioMedia,import.meta.env.BASE_URL);
   if(block.type==='paragraph') return `<p>${esc(block.text)}</p>`;
   if(block.type==='heading') return `<h3>${esc(block.text)}</h3>`;
-  if(block.type==='list') return `<div class="lesson-list">${block.title?`<h3>${esc(block.title)}</h3>`:''}<ul>${block.items.map(item=>`<li>${esc(item)}</li>`).join('')}</ul></div>`;
+  if(block.type==='list') return renderLessonList(block);
   if(block.type==='code') return `<figure class="lesson-code"><div class="code-label">${esc(block.language ?? 'python')} · EXEMPLE COMMENTÉ <button type="button" class="copy-course-code">Copier le code</button></div><pre><code>${esc(block.code)}</code></pre>${block.caption?`<figcaption>${esc(block.caption)}</figcaption>`:''}</figure>`;
   if(block.type==='callout') return `<aside class="lesson-callout ${esc(block.tone)}"><span class="callout-symbol" aria-hidden="true">${block.tone==='analogy'?'↔':block.tone==='pitfall'?'!':'↳'}</span><div><h3>${esc(block.label)}</h3><p>${esc(block.text)}</p></div></aside>`;
   if(block.type==='example') return `<section class="real-example"><p class="eyebrow">UNE UTILISATION CONCRÈTE</p><h3>${esc(block.title)}</h3><p>${esc(block.text)}</p></section>`;

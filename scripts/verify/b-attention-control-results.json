@@ -1,0 +1,65 @@
+{
+  "python": "3.11.9",
+  "torch": "2.10.0+cpu",
+  "device": "cpu",
+  "threads": 1,
+  "cases": [
+    {
+      "chapterId": "transformer-complet",
+      "sha256": "884af461565ecb8e59d455d765e0af3e8e4316d3ac10b9cea156aeed9a59f3bc",
+      "stdout": "position_zero [0.0, 1.0, 0.0, 1.0]\nentree_zero [1.0, 1.0, 1.0, 1.0]\nmoyenne_variance 2.0 1.0\nnormalisation [-0.999995, 0.999995]\ndimension_tete 2\nformes_couches [[1, 3, 4], [1, 3, 4]]\nforme_poids [1, 2, 3, 3]\nmasque [[0, 1, 1], [0, 0, 1], [0, 0, 0]]\necart_passe_causal 0.0\necart_passe_libre 0.204499\n",
+      "metrics": {
+        "layers": [
+          [
+            1,
+            3,
+            4
+          ],
+          [
+            1,
+            3,
+            4
+          ]
+        ],
+        "attentionWeights": [
+          1,
+          2,
+          3,
+          3
+        ],
+        "feedForwardIntermediate": [
+          1,
+          3,
+          8
+        ],
+        "headDimension": 2,
+        "causalPastDifference": 0.0,
+        "unmaskedPastDifference": 0.20449918508529663,
+        "assertions": 15
+      },
+      "seconds": 0.011436000000685453,
+      "displayedCodeChecked": true
+    },
+    {
+      "chapterId": "controle-multimodal-formes",
+      "sha256": "9019e66d13bcd56594fa133e0ece3f534d2f06265c5384ea0735c127a77bac7b",
+      "stdout": "entrees {'audio': [1, 4, 4], 'texte': [1, 2, 4], 'reference': [1, 3, 4], 'MIDI': [1, 2, 4]}\nconditions [1, 7, 4]\ncroisee [1, 4, 4] poids [1, 2, 4, 7]\nconcat_positions [1, 11, 4] audio_retenu [1, 4, 4]\nindices_evenements [0, 3]\nconcat_caracteristiques [1, 4, 6] projection [1, 4, 4]\nFiLM [1, 4] [1, 1, 4] [1, 1, 4] [1, 4, 4]\nFiLM_manuel [1.0, 2.5]\n",
+      "metrics": {
+        "shapeAssertions": 16,
+        "assertions": 21,
+        "eventFrames": [
+          0,
+          3
+        ],
+        "manualFiLM": [
+          1.0,
+          2.5
+        ],
+        "usesPretrainedEncoder": false,
+        "claimsGenerationQuality": false
+      },
+      "seconds": 0.0047701000003144145,
+      "displayedCodeChecked": true
+    }
+  ]
+}

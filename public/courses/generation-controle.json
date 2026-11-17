@@ -336,6 +336,481 @@
       }
     },
     {
+      "id": "codecs-neuronaux-rvq",
+      "title": "Transporter un son par corrections successives : les codecs neuronaux",
+      "summary": "La quantification résiduelle décrit progressivement un son, puis un décodeur le reconstruit.",
+      "context": {
+        "recall": "Nous savons qu'un encodeur transforme une onde en description interne, appelée latent (latent representation).",
+        "problem": "Comment transformer cette description continue en codes que nous pouvons stocker ou générer ?",
+        "why": "La même représentation sert au transport du son et à l'apprentissage d'un générateur.",
+        "connection": "Nous reprenons l'aller-retour sonore et détaillons le passage entre latent et jetons.",
+        "next": "L'autorégression pourra prédire ces codes ; le décodeur les transformera ensuite en onde."
+      },
+      "progression": {
+        "input": "Une description continue de courts segments sonores.",
+        "action": "Choisir une approximation, puis coder ce qui reste à corriger.",
+        "output": "Des indices discrets et une description reconstruite, avec une erreur mesurable."
+      },
+      "notions": [
+        {
+          "name": "Codec neuronal (neural codec)",
+          "explanation": "Système dont l'encodeur et le décodeur apprennent une représentation compacte du signal sonore."
+        },
+        {
+          "name": "Dictionnaire de codes (codebook)",
+          "explanation": "Collection de vecteurs disponibles. L'indice d'une entrée permet de retrouver son vecteur."
+        },
+        {
+          "name": "Quantification vectorielle résiduelle (residual vector quantization, RVQ)",
+          "explanation": "Quantification successive du résidu : chaque étage décrit l'erreur laissée par les précédents."
+        },
+        {
+          "name": "Perte spectrale multirésolution (multi-resolution spectral loss)",
+          "explanation": "Erreur calculée sur plusieurs représentations spectrales, avec différentes longueurs de fenêtres d'analyse."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Notre percussionniste veut générer des variantes de sa frappe. Prédire directement chaque échantillon impose une longue description. Un codec neuronal (neural codec) apprend plutôt à transporter une description compacte. Son encodeur apprend cette description ; son décodeur apprend à reconstruire le son. Nous allons comprendre le maillon qui transforme cette description en codes."
+        },
+        {
+          "type": "visual",
+          "kind": "flow",
+          "title": "Une onde, des codes, puis une onde reconstruite",
+          "nodes": [
+            {
+              "title": "Onde enregistrée",
+              "text": "La frappe possède une attaque et une résonance.",
+              "arrowLabel": "L'encodeur apprend à résumer plusieurs échantillons."
+            },
+            {
+              "title": "Latent continu",
+              "text": "Une suite de vecteurs décrit des segments sonores.",
+              "arrowLabel": "La RVQ choisit des indices dans ses dictionnaires."
+            },
+            {
+              "title": "Codes discrets",
+              "text": "Chaque segment possède un indice par étage utilisé.",
+              "arrowLabel": "Les vecteurs choisis sont additionnés, puis décodés."
+            },
+            {
+              "title": "Onde reconstruite",
+              "text": "Le décodeur transforme la description quantifiée en son."
+            }
+          ],
+          "caption": "Le codec reconstruit des codes issus d'un enregistrement. Pour inventer un son, un autre modèle peut proposer de nouveaux codes."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un dictionnaire de codes (codebook) contient les vecteurs que nous pouvons transmettre. Choisir le plus proche s'appelle quantifier. La quantification vectorielle résiduelle (residual vector quantization, RVQ) répète ce choix sur l'erreur restante, appelée résidu (residual). Chaque étage apporte donc une correction."
+        },
+        {
+          "type": "paragraph",
+          "text": "Version simplifiée : isolons une seule coordonnée latente, valant 0,9. Le premier dictionnaire propose −1, 0 et 1 : nous choisissons 1. Il reste 0,9 − 1 = −0,1. Le second propose −0,25, 0 et 0,25 : nous choisissons 0. Pour −0,8, les choix sont −1 puis 0,25, donnant −0,75. Ce sont des coordonnées latentes, pas deux échantillons d'une percussion."
+        },
+        {
+          "type": "walkthrough",
+          "title": "Voir chaque étage corriger le résidu",
+          "goal": "Retrouver les choix manuels et mesurer l'erreur finale, sans entraîner de codec.",
+          "language": "python",
+          "code": "import torch\ntorch.set_num_threads(1)\n\n# Deux coordonnées latentes : ce ne sont pas des échantillons audio.\nz = torch.tensor([[0.9], [-0.8]])\ncodebooks = [torch.tensor([[-1.0], [0.0], [1.0]]),\n             torch.tensor([[-0.25], [0.0], [0.25]])]\nresidual = z.clone()\nreconstruction = torch.zeros_like(z)\ncodes = []\nfor stage, book in enumerate(codebooks, start=1):\n    # Chaque ligne compare un résidu à toutes les entrées du dictionnaire.\n    distances = (residual[:, None, :] - book[None, :, :]).square().sum(-1)\n    indices = distances.argmin(dim=1)\n    quantized = book[indices]\n    reconstruction += quantized\n    residual -= quantized\n    codes.append(indices)\n    print(f\"étage {stage} : indices {indices.tolist()}\")\n    print(\"  résidu :\", [round(v, 2) for v in residual.flatten().tolist()])\nmse = (z - reconstruction).square().mean()\nprint(\"reconstruction :\", [round(v, 2) for v in reconstruction.flatten().tolist()])\nprint(f\"erreur quadratique moyenne : {mse.item():.6f}\")\n",
+          "steps": [
+            {
+              "title": "Déclarer les valeurs disponibles",
+              "text": "Chaque ligne de z représente une coordonnée à quantifier. Les dictionnaires sont fixés à la main. Aucun encodeur ni décodeur appris n'est entraîné ici.",
+              "state": "Entrées : [0,9 ; −0,8]. Deux dictionnaires indépendants.",
+              "lines": [
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+              ]
+            },
+            {
+              "title": "Comparer les candidats",
+              "text": "La soustraction compare chaque résidu à chaque entrée. Nous additionnons les écarts au carré sur les coordonnées. argmin choisit l'indice de la plus petite distance.",
+              "state": "Premier étage : indices [2, 0], donc vecteurs [1 ; −1].",
+              "lines": [
+                11,
+                12,
+                13,
+                14,
+                15
+              ]
+            },
+            {
+              "title": "Corriger ce qui manque",
+              "text": "Nous ajoutons les vecteurs choisis à la reconstruction. Nous les retirons du résidu. Le dictionnaire suivant reçoit ce nouveau résidu, pas les valeurs initiales.",
+              "state": "Résidu après le premier étage : [−0,1 ; 0,2].\nDeuxième étage : indices [1, 2].",
+              "lines": [
+                16,
+                17,
+                18,
+                19,
+                20
+              ]
+            },
+            {
+              "title": "Lire le résultat exécuté",
+              "text": "La reconstruction additionne les deux corrections. L'erreur quadratique moyenne (mean squared error) vaut la moyenne des résidus finaux au carré. Elle mesure ici des coordonnées latentes.",
+              "state": "étage 1 : indices [2, 0]\n  résidu : [-0.1, 0.2]\nétage 2 : indices [1, 2]\n  résidu : [-0.1, -0.05]\nreconstruction : [1.0, -0.75]\nerreur quadratique moyenne : 0.006250\n",
+              "lines": [
+                21,
+                22,
+                23
+              ]
+            }
+          ],
+          "result": "Nous obtenons [1 ; −0,75], avec un résidu [−0,1 ; −0,05]. L'erreur moyenne affichée vaut 0,006250. Ce calcul ne mesure aucune qualité audio."
+        },
+        {
+          "type": "paragraph",
+          "text": "Comment apprendre un véritable codec ? Une perte (loss) mesure l'écart à réduire. La perte spectrale multirésolution (multi-resolution spectral loss) compare plusieurs analyses du son original et reconstruit. Les fenêtres courtes localisent les attaques ; les longues détaillent les fréquences. Pour notre frappe, nous voulons préserver les deux."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une perte adversariale (adversarial loss) ajoute un discriminateur (discriminator), un réseau entraîné à distinguer vrais sons et reconstructions. Le décodeur apprend à produire des détails crédibles pour ce juge. Cette contrainte complète la fidélité spectrale ; elle ne garantit pas une reconstruction identique."
+        },
+        {
+          "type": "paragraph",
+          "text": "EnCodec et DAC utilisent effectivement la RVQ. Leurs objectifs associent reconstruction et apprentissage adversarial, avec des détails différents. RAVE fournit un autre repère : son article original décrit un autoencodeur variationnel continu (variational autoencoder, VAE). Il apprend un latent sans imposer cette chaîne de jetons RVQ."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pourquoi générer dans cet espace ? L'encodeur réduit la cadence temporelle ; les dictionnaires fournissent un vocabulaire fini. Le générateur apprend des suites d'indices plutôt que chaque échantillon. Il doit cependant organiser plusieurs étages par instant. La fidélité du résultat dépend aussi de ce que le codec conserve."
+        },
+        {
+          "type": "list",
+          "title": "Replacer cette brique dans le parcours",
+          "items": [
+            "Écoutons d'abord l'aller-retour du codec avant d'attribuer une erreur au générateur.",
+            "Puis distinguons la qualité de reconstruction et la cohérence des codes inventés."
+          ],
+          "links": [
+            {
+              "text": "Comprendre représentation et reconstruction",
+              "themeId": "generation-controle",
+              "chapterId": "representation-et-reconstruction"
+            },
+            {
+              "text": "Relier les indices à l'autorégression",
+              "themeId": "generation-controle",
+              "chapterId": "autoregression-et-causalite"
+            },
+            {
+              "text": "Retrouver un encodeur et un décodeur PyTorch",
+              "themeId": "pytorch",
+              "chapterId": "conv-mel-autoencodeur"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Un piège : coder plusieurs fois la même chose",
+          "text": "Si chaque dictionnaire quantifie z directement, il ne corrige plus les erreurs précédentes. La RVQ exige de mettre à jour le résidu après chaque étage."
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : un codec apprend à reconstruire le son depuis une représentation compacte. Avec la RVQ, chaque dictionnaire corrige le résidu précédent ; un générateur peut ensuite apprendre à proposer ces codes."
+        }
+      ],
+      "takeaways": [
+        "Chaque étage RVQ quantifie l'erreur restante, puis sa contribution s'ajoute aux précédentes.",
+        "Les pertes spectrales et adversariales imposent des contraintes complémentaires pendant l'apprentissage du codec.",
+        "Le RAVE original utilise un latent continu ; EnCodec et DAC utilisent la RVQ."
+      ],
+      "checkpoint": {
+        "prompt": "Un premier étage approche une coordonnée latente. Que reçoit le deuxième étage RVQ ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "La coordonnée initiale, sans aucune modification."
+          },
+          {
+            "id": "b",
+            "text": "L'erreur entre la coordonnée et l'approximation cumulée."
+          },
+          {
+            "id": "c",
+            "text": "L'indice précédent traité comme une amplitude audio."
+          },
+          {
+            "id": "d",
+            "text": "La forme d'onde déjà reconstruite par le décodeur."
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Chaque étage décrit ce que les précédents n'ont pas encore représenté. Les vecteurs choisis s'additionnent pour reconstruire le latent."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-b-codec-encodec",
+        "rev-b-codec-dac",
+        "rev-b-codec-rave"
+      ]
+    },
+    {
+      "id": "symbolique-midi-et-audio",
+      "title": "Écrire les gestes ou produire le son : symbolique, audio, ou les deux ?",
+      "summary": "Le choix de représentation détermine ce que nous pouvons modifier et ce que le modèle doit apprendre.",
+      "context": {
+        "recall": "Nous savons générer une suite de codes. Ces codes peuvent aussi représenter des gestes musicaux.",
+        "problem": "La compositrice veut changer les notes sans perdre le contrôle du résultat sonore.",
+        "why": "Choisir les événements ou l'audio sépare les contraintes d'écriture et les contraintes de timbre.",
+        "connection": "Nous appliquons la prédiction du prochain jeton à une petite séquence musicale lisible.",
+        "next": "Cette distinction prépare un contrôle associant texte, référence audio et notes."
+      },
+      "progression": {
+        "input": "Deux notes décrites par leurs débuts, fins et intensités de jeu.",
+        "action": "Transformer ces événements en indices, puis reconstruire leur chronologie.",
+        "output": "Une séquence musicale modifiable, qui demande encore un instrument pour devenir sonore."
+      },
+      "notions": [
+        {
+          "name": "Représentation symbolique (symbolic representation)",
+          "explanation": "Description d'événements musicaux : quelles notes jouer, quand, et avec quels paramètres."
+        },
+        {
+          "name": "MIDI (Musical Instrument Digital Interface)",
+          "explanation": "Ensemble de protocoles pour communiquer des événements et commandes musicales, plutôt qu'une forme d'onde."
+        },
+        {
+          "name": "Découpage en jetons (tokenization)",
+          "explanation": "Conversion d'événements en éléments d'un vocabulaire fini, chacun associé à un indice."
+        },
+        {
+          "name": "Vélocité (velocity)",
+          "explanation": "Valeur décrivant notamment l'intensité d'une attaque de note ; son effet sonore dépend de l'instrument."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "La compositrice veut prolonger une courte phrase, puis déplacer une note. Une représentation symbolique (symbolic representation) décrit les événements joués. MIDI (Musical Instrument Digital Interface) permet de communiquer ces gestes et leurs paramètres. L'instrument doit encore produire le son."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un début de note (note-on) indique une touche ; une fin de note (note-off) indique son relâchement. La vélocité (velocity) règle un paramètre d'attaque, souvent lié à la dynamique. La durée vient de l'écart entre début et fin. Le son peut continuer après le relâchement, selon l'instrument."
+        },
+        {
+          "type": "paragraph",
+          "text": "Version simplifiée : notre horloge utilise 480 graduations par noire et un tempo fixe de 120 noires par minute. Un décalage de 240 graduations vaut 240/480 noire, donc 0,25 seconde. Nous jouons la note 60 pendant ce délai. La note 64 commence ensuite et dure 0,50 seconde. Les vélocités sont 80 puis 100."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "La phrase reconstruite, avant tout rendu sonore",
+          "columns": [
+            "Note MIDI",
+            "Début",
+            "Durée avant relâchement",
+            "Vélocité"
+          ],
+          "rows": [
+            [
+              "60",
+              "0,00 s",
+              "0,25 s",
+              "80"
+            ],
+            [
+              "64",
+              "0,25 s",
+              "0,50 s",
+              "100"
+            ]
+          ],
+          "caption": "Ces valeurs viennent du décodage exécuté ci-dessous. La table décrit des commandes ; elle ne contient ni timbre ni réverbération enregistrée."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le découpage en jetons (tokenization) transforme les événements en indices de vocabulaire. Ici, SHIFT avance l'horloge et VELOCITY règle les prochaines attaques. NOTE_ON et NOTE_OFF portent le numéro de note. Ces conventions sont inspirées de MIDI ; elles ne constituent pas un encodeur de fichier MIDI standard."
+        },
+        {
+          "type": "walkthrough",
+          "title": "Passer des jetons aux notes jouables",
+          "goal": "Retrouver les deux durées et voir quelles informations restent à fournir pour obtenir un son.",
+          "language": "python",
+          "code": "import torch\ntorch.set_num_threads(1)\n\n# Un vocabulaire miniature, inspiré des événements MIDI, pas un fichier MIDI.\nvocabulary = [(\"NOTE_ON\", 60), (\"NOTE_ON\", 64),\n              (\"NOTE_OFF\", 60), (\"NOTE_OFF\", 64),\n              (\"SHIFT\", 240), (\"SHIFT\", 480),\n              (\"VELOCITY\", 80), (\"VELOCITY\", 100)]\nevents = [(\"VELOCITY\", 80), (\"NOTE_ON\", 60), (\"SHIFT\", 240),\n          (\"NOTE_OFF\", 60), (\"VELOCITY\", 100), (\"NOTE_ON\", 64),\n          (\"SHIFT\", 480), (\"NOTE_OFF\", 64)]\ntokens = torch.tensor([vocabulary.index(event) for event in events], dtype=torch.long)\ntempo, ticks_per_beat, sample_rate = 120, 480, 16000\nseconds_per_tick = 60 / tempo / ticks_per_beat\nticks, velocity = 0, 80\nactive, notes = {}, []\nfor token in tokens.tolist():\n    kind, value = vocabulary[token]\n    if kind == \"SHIFT\":\n        ticks += value\n    elif kind == \"VELOCITY\":\n        velocity = value\n    elif kind == \"NOTE_ON\":\n        active[value] = (ticks, velocity)\n    elif kind == \"NOTE_OFF\":\n        start, note_velocity = active.pop(value)\n        notes.append((value, start * seconds_per_tick,\n                      (ticks - start) * seconds_per_tick, note_velocity))\nassert not active\nprint(\"jetons :\", tokens.tolist())\nfor pitch, start, duration, note_velocity in notes:\n    print(f\"note {pitch} : début {start:.2f} s ; durée {duration:.2f} s ; vélocité {note_velocity}\")\nduration_seconds = ticks * seconds_per_tick\nsample_count = round(duration_seconds * sample_rate)\nprint(f\"durée totale : {duration_seconds:.2f} s\")\nprint(f\"représentations : {tokens.numel()} jetons ; {sample_count} échantillons mono à {sample_rate} Hz\")\n",
+          "steps": [
+            {
+              "title": "Définir notre petit vocabulaire",
+              "text": "Chaque couple événement-valeur possède un indice. La suite de jetons conserve l'ordre de la performance. Nous pourrions apprendre à prédire le prochain indice.",
+              "state": "jetons : [6, 0, 4, 2, 7, 1, 5, 3]",
+              "lines": [
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ]
+            },
+            {
+              "title": "Faire avancer l'horloge",
+              "text": "Un SHIFT ajoute des graduations. La conversion utilise le tempo et le nombre de graduations par noire. Une nouvelle vélocité modifie les attaques suivantes.",
+              "state": "Premier décalage : 0,25 s. Deuxième décalage : 0,50 s.",
+              "lines": [
+                13,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                20,
+                21,
+                22
+              ]
+            },
+            {
+              "title": "Associer chaque fin à son début",
+              "text": "active garde l'instant et la vélocité de chaque note ouverte. NOTE_OFF retrouve ce début. La différence d'horloge donne sa durée avant relâchement.",
+              "state": "note 60 : début 0.00 s ; durée 0.25 s ; vélocité 80\nnote 64 : début 0.25 s ; durée 0.50 s ; vélocité 100",
+              "lines": [
+                23,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29
+              ]
+            },
+            {
+              "title": "Comparer les descriptions, avec leurs limites",
+              "text": "Nous comptons des jetons et des échantillons pour la même durée. Ce sont des unités différentes. Leur rapport ne mesure ni des octets, ni une vitesse, ni une fidélité.",
+              "state": "jetons : [6, 0, 4, 2, 7, 1, 5, 3]\nnote 60 : début 0.00 s ; durée 0.25 s ; vélocité 80\nnote 64 : début 0.25 s ; durée 0.50 s ; vélocité 100\ndurée totale : 0.75 s\nreprésentations : 8 jetons ; 12000 échantillons mono à 16000 Hz\n",
+              "lines": [
+                30,
+                31,
+                32,
+                33,
+                34,
+                35,
+                36
+              ]
+            }
+          ],
+          "result": "La chronologie des notes est reconstruite. Ces comptes décrivent des représentations différentes, sans mesurer leurs coûts. Aucun rendu sonore n'est calculé."
+        },
+        {
+          "type": "paragraph",
+          "text": "Music Transformer apprend des séquences d'événements musicaux expressifs. Son attention relative (relative attention) tient compte des distances entre positions dans la séquence. Ces distances concernent les jetons ; notre horloge musicale vient des événements temporels. Cela aide à représenter des relations musicales sans encoder directement l'onde."
+        },
+        {
+          "type": "paragraph",
+          "text": "L'article réduit la mémoire intermédiaire nécessaire aux positions relatives. La matrice d'attention dense conserve cependant un nombre de cases quadratique en longueur. Cette amélioration ne transforme donc pas toute l'attention en calcul linéaire."
+        },
+        {
+          "type": "visual",
+          "kind": "comparison",
+          "title": "Choisir selon la modification demandée",
+          "panels": [
+            {
+              "title": "Symbolique",
+              "items": [
+                "Modifier notes, rythme et orchestration avant le rendu.",
+                "Un instrument interprète les commandes et produit le timbre."
+              ]
+            },
+            {
+              "title": "Audio",
+              "items": [
+                "Travailler directement souffle, grain et texture enregistrée.",
+                "L'édition indépendante de chaque note n'est pas automatiquement disponible."
+              ]
+            },
+            {
+              "title": "Les deux",
+              "items": [
+                "Générer les notes, choisir un instrument, puis transformer son rendu.",
+                "Évaluer séparément l'écriture musicale et le résultat sonore."
+              ]
+            }
+          ],
+          "caption": "Une partition décrit surtout l'écriture ; une performance événementielle peut préciser le jeu. Aucune ne contient automatiquement le son d'un enregistrement."
+        },
+        {
+          "type": "list",
+          "title": "Relier les gestes à la génération",
+          "items": [
+            "Les mêmes notes peuvent être rendues par plusieurs instruments, avec des résultats sonores différents.",
+            "Si nous voulons conserver une texture enregistrée, un chemin audio reste nécessaire."
+          ],
+          "links": [
+            {
+              "text": "Prédire les événements par autorégression",
+              "themeId": "generation-controle",
+              "chapterId": "autoregression-et-causalite"
+            },
+            {
+              "text": "Comparer avec les codes d'un codec audio",
+              "themeId": "generation-controle",
+              "chapterId": "codecs-neuronaux-rvq"
+            },
+            {
+              "text": "Transformer une intention en condition musicale",
+              "themeId": "generation-controle",
+              "chapterId": "conditions-et-intention-musicale"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Un piège : confondre vélocité et volume mesuré",
+          "text": "Une vélocité plus élevée peut changer le volume et le timbre. L'instrument décide de sa réponse : ce nombre n'est ni une amplitude audio, ni un niveau en décibels."
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : je choisis le symbolique pour éditer les gestes musicaux, et l'audio pour travailler le son lui-même. Je peux combiner les deux, en séparant génération des notes et rendu sonore."
+        }
+      ],
+      "takeaways": [
+        "Les événements décrivent des commandes musicales ; un instrument reste nécessaire pour produire une onde.",
+        "Les décalages temporels, débuts et fins de notes reconstruisent la chronologie de la performance.",
+        "Le choix symbolique, audio ou hybride dépend des propriétés que nous voulons contrôler."
+      ],
+      "checkpoint": {
+        "prompt": "Nous conservons les mêmes notes, instants et vélocités, puis changeons l'instrument de rendu. Que pouvons-nous conclure ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "La forme d'onde doit rester identique."
+          },
+          {
+            "id": "b",
+            "text": "La chronologie des commandes reste identique, mais le timbre peut changer."
+          },
+          {
+            "id": "c",
+            "text": "Les numéros de note deviennent automatiquement des décibels."
+          },
+          {
+            "id": "d",
+            "text": "Le nouveau rendu modifie nécessairement les jetons du modèle."
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Les commandes décrivent le jeu. Leur interprétation sonore dépend du moteur de rendu, de ses sons et de ses réglages."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-b-codec-midi",
+        "rev-b-codec-musictransformer",
+        "rev-b-codec-musictransformer-demo"
+      ]
+    },
+    {
       "id": "autoregression-et-causalite",
       "title": "Continuer une percussion sans regarder la réponse",
       "summary": "Construire les cibles suivantes et vérifier l’information réellement disponible.",
@@ -864,6 +1339,250 @@
       }
     },
     {
+      "id": "controle-multimodal-formes",
+      "title": "Choisir comment les commandes entrent dans le modèle",
+      "summary": "Texte, son de référence et notes n’apportent pas la même précision de contrôle.",
+      "context": {
+        "recall": "Nous avons distingué une texture globale et des événements alignés dans le temps.",
+        "problem": "La musicienne demande le timbre d’une prise, une description verbale et le rythme d’une partition.",
+        "why": "Choisir l’interface permet de conserver les informations nécessaires et de repérer les commandes incompatibles.",
+        "connection": "L’attention et les axes PyTorch donnent les outils pour brancher ces informations au générateur.",
+        "next": "Le protocole d’évaluation devra vérifier séparément le timbre, les événements et les contradictions."
+      },
+      "progression": {
+        "input": "Des caractéristiques audio et trois sources de commande : mots, référence sonore et événements musicaux.",
+        "action": "Comparer attention croisée, concaténation et modulation, puis vérifier leurs formes.",
+        "output": "Un choix de conditionnement motivé par la précision musicale demandée."
+      },
+      "notions": [
+        {
+          "name": "Conditionnement multimodal (multimodal conditioning)",
+          "explanation": "Plusieurs types d’entrée orientent la même génération. Leur précision et leur calendrier peuvent différer."
+        },
+        {
+          "name": "Attention croisée (cross-attention)",
+          "explanation": "Les requêtes proviennent de l’audio traité. Les clés et valeurs proviennent d’une mémoire de conditions."
+        },
+        {
+          "name": "Concaténation (concatenation)",
+          "explanation": "Des tableaux sont juxtaposés sur un axe choisi. Nous pouvons ajouter des positions ou des caractéristiques."
+        },
+        {
+          "name": "Modulation FiLM (feature-wise linear modulation)",
+          "explanation": "Une condition produit une échelle et un décalage appliqués à chaque caractéristique interne."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Nous voulons une percussion boisée, avec le timbre d’une prise et les attaques d’une partition. Le conditionnement multimodal (multimodal conditioning) fournit ces différentes commandes au même modèle. Commençons par décider ce que chacune doit transmettre. Leur branchement technique viendra ensuite."
+        },
+        {
+          "type": "list",
+          "title": "Les repères utiles",
+          "items": [
+            "Le contrat musical distingue ce qui décrit l’ensemble et ce qui doit arriver à un instant précis.",
+            "L’attention pondère une mémoire. Les axes PyTorch indiquent ce que nous réunissons."
+          ],
+          "links": [
+            {
+              "text": "Définir une intention musicale",
+              "themeId": "generation-controle",
+              "chapterId": "conditions-et-intention-musicale"
+            },
+            {
+              "text": "Relire l’attention",
+              "themeId": "audio-ml",
+              "chapterId": "similarites-contraste-attention"
+            },
+            {
+              "text": "Vérifier les axes des tenseurs",
+              "themeId": "pytorch",
+              "chapterId": "organiser-les-axes"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "Un encodeur texte (text encoder) transforme des mots en caractéristiques. Selon le modèle, nous gardons les positions des mots ou un résumé global. CLAP rapproche des représentations audio et texte dans un espace commun. Ce modèle de représentation n’est pas lui-même un générateur. Son résumé global ne garantit pas le calendrier des attaques."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un encodeur audio (audio encoder) décrit la prise de référence. Garder ses positions conserve davantage de chronologie qu’une moyenne globale. Le MIDI (Musical Instrument Digital Interface) transmet des commandes de notes, pas leur son. Une partition doit être convertie en événements datés pour devenir notre commande numérique."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Quel renseignement demandons-nous à chaque entrée ?",
+          "columns": [
+            "Entrée",
+            "Information recherchée",
+            "À vérifier"
+          ],
+          "rows": [
+            [
+              "Texte : percussion boisée",
+              "Caractère global",
+              "Vocabulaire reconnu et domaine du modèle"
+            ],
+            [
+              "Prise de référence",
+              "Timbre, geste ou structure selon l’encodeur",
+              "Ce que sa représentation conserve réellement"
+            ],
+            [
+              "Partition ou MIDI",
+              "Hauteurs et calendrier d’événements",
+              "Tempo, origine et conversion vers les instants audio"
+            ]
+          ],
+          "caption": "Une référence ne transmet pas automatiquement le timbre seul. Nous choisissons la représentation selon l’information que nous voulons conserver."
+        },
+        {
+          "type": "paragraph",
+          "text": "L’attention croisée (cross-attention) laisse chaque position audio consulter les conditions. L’audio fournit les requêtes ; la mémoire fournit les clés et valeurs. La mémoire peut contenir davantage de positions que l’audio. Des projections apprises rendent leurs largeurs compatibles."
+        },
+        {
+          "type": "paragraph",
+          "text": "La concaténation (concatenation) juxtapose des tableaux sur un axe choisi. Ajouter des positions allonge la mémoire consultée. Ajouter des caractéristiques élargit chaque position audio et exige une condition déjà alignée. Ces opérations ont des formes différentes, même si elles partagent le même nom."
+        },
+        {
+          "type": "paragraph",
+          "text": "La modulation FiLM (feature-wise linear modulation) transforme chaque caractéristique par gamma × valeur + bêta. La condition détermine ces échelles et décalages. À la main, prenons [1 ; 3], gamma = [2 ; 0,5] et bêta = [−1 ; 1]. Le résultat vaut [1 ; 2,5]. Ici, la commande règle les caractéristiques sans ajouter de positions."
+        },
+        {
+          "type": "callout",
+          "tone": "tip",
+          "label": "Version simplifiée",
+          "text": "Version simplifiée : des tableaux fictifs remplacent les encodeurs texte et audio. Aucune sortie de CLAP n’est simulée comme authentique. Les petites couches ne sont pas entraînées. Nous vérifions des interfaces et un calcul FiLM, sans produire ni évaluer un son."
+        },
+        {
+          "type": "walkthrough",
+          "title": "Brancher les mêmes commandes de plusieurs façons",
+          "goal": "Suivre les axes avant de choisir une architecture. B désigne les extraits, T les positions audio et D les caractéristiques.",
+          "language": "python",
+          "code": "import torch\nfrom torch import nn\ntorch.manual_seed(7)\ntorch.set_num_threads(1)\n\n# Les encodeurs sont remplacés par des caractéristiques fictives.\n# Ces nombres ne représentent ni un texte compris, ni un son encodé.\naudio = torch.tensor([[[1., 3., 0., 0.], [2., 4., 1., 0.],\n                       [3., 5., 0., 1.], [4., 6., 1., 1.]]])\ntexte = torch.tensor([[[1., 0., 1., 0.], [0., 1., 0., 1.]]])\nreference = torch.tensor([[[.2, .4, .1, .3], [.3, .1, .4, .2], [.1, .2, .3, .4]]])\n# Événements : instant, hauteur normalisée, vélocité normalisée.\nevenements = torch.tensor([[[0., 60 / 127, .8], [1.5, 64 / 127, .6]]])\nmidi = nn.Linear(3, 4)(evenements)\nconditions = torch.cat((texte, reference, midi), dim=1)\n\nattention = nn.MultiheadAttention(4, 2, dropout=0., batch_first=True).eval()\nwith torch.no_grad():\n    croisee, poids = attention(audio, conditions, conditions,\n                               average_attn_weights=False)\n    # Concaténer des positions : conserver la largeur, allonger la suite.\n    suite = torch.cat((audio, conditions), dim=1)\n    suite_traitee, _ = attention(suite, suite, suite)\n    audio_apres_concat = suite_traitee[:, :audio.shape[1]]\n\n    # Grille choisie : deux trames par seconde, origine commune.\n    indices = (evenements[0, :, 0] * 2).floor().long()\n    grille = torch.zeros(1, 4, 2)  # Début de note et vélocité.\n    grille[0, indices, 0] = 1.\n    grille[0, indices, 1] = evenements[0, :, 2]\n    caracteristiques = torch.cat((audio, grille), dim=-1)\n    local = nn.Linear(6, 4)(caracteristiques)\n\n    # FiLM produit une échelle et un décalage pour chaque caractéristique.\n    globale = texte.mean(dim=1)\n    gamma, beta = nn.Linear(4, 8)(globale).chunk(2, dim=-1)\n    gamma, beta = gamma.unsqueeze(1), beta.unsqueeze(1)\n    module = gamma * audio + beta\n    manuel = torch.tensor([2., .5]) * torch.tensor([1., 3.]) + torch.tensor([-1., 1.])\n\nprint(\"entrees\", {\"audio\": list(audio.shape), \"texte\": list(texte.shape),\n                  \"reference\": list(reference.shape), \"MIDI\": list(midi.shape)})\nprint(\"conditions\", list(conditions.shape))\nprint(\"croisee\", list(croisee.shape), \"poids\", list(poids.shape))\nprint(\"concat_positions\", list(suite.shape), \"audio_retenu\", list(audio_apres_concat.shape))\nprint(\"indices_evenements\", indices.tolist())\nprint(\"concat_caracteristiques\", list(caracteristiques.shape), \"projection\", list(local.shape))\nprint(\"FiLM\", list(globale.shape), list(gamma.shape), list(beta.shape), list(module.shape))\nprint(\"FiLM_manuel\", manuel.tolist())\n",
+          "steps": [
+            {
+              "title": "Préparer des représentations compatibles",
+              "text": "Notre audio possède quatre positions. Le texte en possède deux, la référence trois et le MIDI deux. La projection MIDI donne une largeur commune.",
+              "state": "audio (1, 4, 4) ; texte (1, 2, 4) ; référence (1, 3, 4) ; MIDI (1, 2, 4)",
+              "lines": [
+                8,
+                10,
+                11,
+                13,
+                14,
+                15
+              ]
+            },
+            {
+              "title": "Consulter une mémoire externe",
+              "text": "Nous réunissons les conditions en sept positions. Les quatre requêtes audio consultent cette mémoire. La sortie garde les positions audio.",
+              "state": "conditions (1, 7, 4) ; sortie (1, 4, 4) ; poids (1, 2, 4, 7)",
+              "lines": [
+                17,
+                19,
+                20
+              ]
+            },
+            {
+              "title": "Ajouter des positions",
+              "text": "L’autre stratégie réunit audio et conditions dans une seule suite. Après l’attention commune, nous conservons seulement les positions audio.",
+              "state": "suite (1, 11, 4) → audio retenu (1, 4, 4)",
+              "lines": [
+                22,
+                23,
+                24
+              ]
+            },
+            {
+              "title": "Ajouter une commande alignée",
+              "text": "Sur notre grille, les événements tombent aux indices zéro et trois. Début et vélocité ajoutent deux caractéristiques à chaque position audio.",
+              "state": "indices [0, 3] ; grille (1, 4, 2) ; concaténation (1, 4, 6) → projection (1, 4, 4)",
+              "lines": [
+                27,
+                28,
+                29,
+                30,
+                31,
+                32
+              ]
+            },
+            {
+              "title": "Moduler sans allonger la suite",
+              "text": "Le résumé textuel produit gamma et bêta. Leur axe temporel de taille un applique la même modulation partout. Le petit calcul retrouve [1 ; 2,5].",
+              "state": "résumé (1, 4) ; gamma et bêta (1, 1, 4) ; sortie (1, 4, 4)",
+              "lines": [
+                35,
+                36,
+                37,
+                38,
+                39
+              ]
+            }
+          ],
+          "result": "Chaque branche conserve une sortie audio (1, 4, 4), mais transmet les commandes différemment. Le choix dépend de la précision temporelle et du type d’information attendus."
+        },
+        {
+          "type": "paragraph",
+          "text": "Notre grille utilise deux trames par seconde. L’événement à 1,5 seconde tombe donc à l’indice trois. Une grille trop grossière fusionne des attaques proches. Une moyenne globale efface leur calendrier. Pour une commande précise, nous choisissons la résolution et alignons les origines avant toute concaténation locale."
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Des formes compatibles ne résolvent pas une contradiction",
+          "text": "Le texte peut demander peu de frappes tandis que le MIDI en impose beaucoup. Aucun branchement ne choisit automatiquement la priorité musicale souhaitée. Nous définissons cette priorité, puis mesurons le respect de chaque condition séparément."
+        },
+        {
+          "type": "callout",
+          "tone": "tip",
+          "label": "Pour aller plus loin",
+          "text": "Un système réel ajoute des informations de position et de modalité à sa mémoire. La FiLM globale montrée ici ne décrit pas une trajectoire précise. Une FiLM temporelle demanderait des coefficients alignés à chaque position."
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : je choisis le conditionnement selon l’information musicale à transmettre et sa précision temporelle. L’attention croisée consulte une mémoire, la concaténation réunit des tableaux et FiLM module les caractéristiques."
+        }
+      ],
+      "takeaways": [
+        "Texte, audio de référence et événements symboliques conservent des informations différentes.",
+        "L’axe choisi distingue concaténation de positions et concaténation de caractéristiques.",
+        "Le contrôle temporel exige un alignement ; des commandes contradictoires exigent une priorité explicite."
+      ],
+      "checkpoint": {
+        "prompt": "L’audio a la forme (1, 4, 4). Une carte alignée a la forme (1, 4, 2). Que produit leur concaténation par caractéristiques ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "(1, 8, 4), parce que toutes les positions sont doublées."
+          },
+          {
+            "id": "b",
+            "text": "(1, 4, 6), parce que nous ajoutons les caractéristiques."
+          },
+          {
+            "id": "c",
+            "text": "(2, 4, 4), parce que chaque condition devient un extrait."
+          },
+          {
+            "id": "d",
+            "text": "(1, 4, 4), parce que concaténer applique déjà FiLM."
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Les extraits et positions restent alignés. Seule la largeur change : les quatre caractéristiques audio reçoivent les deux caractéristiques de commande."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-b-attn-clap",
+        "rev-b-attn-clap-repo",
+        "rev-b-attn-film",
+        "rev-b-attn-midi",
+        "rev-b-attn-multihead"
+      ]
+    },
+    {
       "id": "vae-et-echantillonnage",
       "title": "Une autre piste : varier autour d’une représentation continue",
       "summary": "Comprendre ce qu’un VAE tire au hasard, avant de parler de son objectif.",
@@ -1344,6 +2063,245 @@
       }
     },
     {
+      "id": "objectifs-diffusion-et-flow",
+      "title": "Quelle cible apprendre pour retirer le bruit ?",
+      "summary": "Comparer les cibles de bruit et de vitesse avant de discuter la génération.",
+      "questionIds": [],
+      "sourceIds": [
+        "rev-b-efficient-ddpm",
+        "rev-b-efficient-cfg",
+        "rev-b-efficient-flow",
+        "rev-b-efficient-latent"
+      ],
+      "context": {
+        "recall": "Nous savons mélanger une représentation de percussion avec du bruit.",
+        "problem": "Le réseau ne peut apprendre sans connaître la réponse attendue pour chaque mélange.",
+        "why": "Définir cette cible permet de lire une perte et de comprendre ce qu’elle mesure.",
+        "connection": "Nous allons comparer deux façons de construire une tâche supervisée à partir de sons non annotés.",
+        "next": "Nous pourrons ensuite choisir comment transmettre une intention musicale au réseau."
+      },
+      "progression": {
+        "input": "Une représentation propre et un bruit que nous avons nous-mêmes tiré.",
+        "action": "Construire une observation intermédiaire et la quantité que le réseau doit prédire.",
+        "output": "Deux objectifs explicables, sans confondre entraînement et génération."
+      },
+      "notions": [
+        {
+          "name": "Prédiction du bruit (noise prediction)",
+          "explanation": "Le réseau estime le bruit ajouté, connu pendant l’entraînement."
+        },
+        {
+          "name": "Guidance sans classifieur (classifier-free guidance)",
+          "explanation": "Une combinaison de prédictions avec et sans condition règle la force du conditionnement."
+        },
+        {
+          "name": "Appariement de flux (flow matching)",
+          "explanation": "Le réseau apprend un champ de vitesses qui transporte une distribution vers une autre."
+        },
+        {
+          "name": "Diffusion latente (latent diffusion)",
+          "explanation": "La diffusion travaille sur les représentations d’un autoencodeur, plutôt que directement sur le signal."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Notre percussionniste voudrait une nouvelle résonance, avec le caractère de ses instruments. Imaginons une photo progressivement brouillée : pour apprendre à la nettoyer, nous conservons le brouillage ajouté. Le même principe s’applique à une représentation sonore."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un modèle probabiliste de diffusion débruitante (Denoising Diffusion Probabilistic Model, DDPM) apprend ici la prédiction du bruit (noise prediction). Pendant l’entraînement, nous connaissons la représentation propre x0 et le bruit ε. Nous tirons aussi un instant t."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le mélange est xt=√ᾱt×x0+√(1−ᾱt)×ε. Le coefficient ᾱt fixe la part cumulée du signal conservée. Nous demandons au réseau de retrouver ε depuis xt, t et une éventuelle condition musicale."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Un seul nombre pour voir la cible",
+          "columns": [
+            "Étape",
+            "Calcul manuel",
+            "Interprétation"
+          ],
+          "rows": [
+            [
+              "Donnée et bruit",
+              "x0=2 ; ε=−1",
+              "Une coordonnée de représentation, pas un extrait audio."
+            ],
+            [
+              "Mélange",
+              "ᾱt=0,64 ; xt=0,8×2+0,6×(−1)=1",
+              "Le réseau reçoit 1, pas le son propre 2."
+            ],
+            [
+              "Prédiction",
+              "ε prédit=−0,5",
+              "La réponse attendue reste −1."
+            ],
+            [
+              "Erreur",
+              "(−0,5−(−1))²=0,25",
+              "Nous comparons deux bruits, sans comparer directement deux sons."
+            ]
+          ],
+          "caption": "Ces nombres viennent du programme ci-dessous. Les coefficients fixés permettent de vérifier chaque opération à la main."
+        },
+        {
+          "type": "paragraph",
+          "text": "L’erreur quadratique moyenne (mean squared error, MSE) moyenne ces écarts au carré sur un lot. Les exemples changent de bruit et d’instant pendant l’apprentissage. À la génération, nous partons du bruit et effectuons plusieurs étapes inverses. Ce programme montre l’objectif, sans implémenter cet échantillonneur."
+        },
+        {
+          "type": "paragraph",
+          "text": "La guidance sans classifieur (classifier-free guidance, CFG) combine deux prédictions du même réseau : avec et sans condition. Pour apprendre les deux, nous retirons aléatoirement la condition sur certains exemples. Aucun classifieur séparé n’est nécessaire."
+        },
+        {
+          "type": "paragraph",
+          "text": "Fixons notre convention : εguidé=εsans+s×(εavec−εsans). Avec εsans=−0,2, εavec=−0,5 et s=3, nous obtenons −1,1. Ici, s=1 garde la prédiction conditionnelle. Augmenter s accentue sa direction ; cela ne garantit ni fidélité musicale ni diversité."
+        },
+        {
+          "type": "paragraph",
+          "text": "L’appariement de flux (flow matching) choisit une autre cible : une vitesse. Version simplifiée : relions un bruit z à une donnée x par une ligne droite. Au temps t, xt=(1−t)z+t×x et la vitesse cible vaut x−z."
+        },
+        {
+          "type": "paragraph",
+          "text": "Avec z=−1, x=2 et t=0,25, le point vaut −0,25 et la vitesse cible vaut 3. Une vitesse prédite de 2,5 donne une MSE de 0,25. Ce chemin élémentaire ne décrit pas tous les chemins possibles du flow matching."
+        },
+        {
+          "type": "walkthrough",
+          "title": "Les deux cibles, dans le même programme",
+          "goal": "Retrouver les nombres du tableau et comprendre ce qui change entre les objectifs.",
+          "steps": [
+            {
+              "title": "Prédire le bruit connu",
+              "text": "Le mélange DDPM conserve une partie du signal. Sa cible est le bruit injecté, indépendamment de la valeur du mélange.",
+              "state": "DDPM : xt=1.00, cible=-1.00, MSE=0.25",
+              "lines": [
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+              ]
+            },
+            {
+              "title": "Combiner deux prédictions",
+              "text": "La guidance réutilise les réponses conditionnelle et non conditionnelle. Le coefficient suit la convention écrite juste avant.",
+              "state": "CFG : bruit guidé=-1.10",
+              "lines": [
+                12,
+                13,
+                14,
+                15,
+                16
+              ]
+            },
+            {
+              "title": "Apprendre une vitesse",
+              "text": "Le chemin linéaire définit le point intermédiaire et sa dérivée. Le réseau doit prédire cette dérivée, pas le bruit du premier objectif.",
+              "state": "Flow : point=-0.25, vitesse=3.00, MSE=0.25",
+              "lines": [
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                24
+              ]
+            },
+            {
+              "title": "Distinguer apprendre et intégrer",
+              "text": "Un pas d’Euler ajoute la vitesse multipliée par la durée du pas. Nous utilisons ici la cible exacte, connue uniquement dans cet exemple.",
+              "state": "Euler depuis z : -0.25",
+              "lines": [
+                26,
+                27,
+                28
+              ]
+            }
+          ],
+          "result": "Sorties CPU réellement capturées dans scripts/verify/b-diffusion-efficiency-results.json. Les deux pertes identiques comparent des tâches différentes.",
+          "code": "import torch\ntorch.set_num_threads(1)\n# Une coordonnée pédagogique, pas un enregistrement audio.\nx0 = torch.tensor(2., dtype=torch.float64)\nbruit = torch.tensor(-1., dtype=torch.float64)\nalpha_bar = torch.tensor(0.64, dtype=torch.float64)\nxt = alpha_bar.sqrt() * x0 + (1 - alpha_bar).sqrt() * bruit\nbruit_predit = torch.tensor(-0.5, dtype=torch.float64)\nperte_ddpm = (bruit_predit - bruit).square()\nprint(f\"DDPM : xt={xt.item():.2f}, cible={bruit.item():.2f}, MSE={perte_ddpm.item():.2f}\")\n# Convention : s=0 sans condition ; s=1 avec condition.\nsans_condition = torch.tensor(-0.2, dtype=torch.float64)\navec_condition = bruit_predit\ns = 3.\nguide = sans_condition + s * (avec_condition - sans_condition)\nprint(f\"CFG : bruit guidé={guide.item():.2f}\")\n# Flow matching simplifié : t=0 au bruit, t=1 à la donnée.\nz = bruit\nt = 0.25\npoint = (1 - t) * z + t * x0\nvitesse_cible = x0 - z\nvitesse_predite = torch.tensor(2.5, dtype=torch.float64)\nperte_flow = (vitesse_predite - vitesse_cible).square()\nprint(f\"Flow : point={point.item():.2f}, vitesse={vitesse_cible.item():.2f}, MSE={perte_flow.item():.2f}\")\n# Un pas d'Euler avec la vitesse cible, connue seulement dans ce jouet.\npas = 0.25\npoint_suivant = z + pas * vitesse_cible\nprint(f\"Euler depuis z : {point_suivant.item():.2f}\")",
+          "language": "python"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pendant une vraie génération par flux, un solveur numérique (numerical solver) avance avec les vitesses prédites. La méthode d’Euler (Euler method) est son approximation élémentaire. Apprendre sans simuler toute la trajectoire ne signifie donc pas générer sans étapes."
+        },
+        {
+          "type": "paragraph",
+          "text": "La diffusion latente (latent diffusion) applique ce raisonnement dans la représentation comprimée d’un autoencodeur. Un décodeur transforme ensuite le latent généré en son. Le codec peut déjà perdre des détails : aucun objectif génératif ne garantit leur restitution."
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Un piège : comparer seulement les pertes",
+          "text": "Une MSE de bruit et une MSE de vitesse n’ont pas la même cible. Leur valeur ne classe pas la qualité sonore. Comparons aussi écoute, respect du contrôle, diversité et coût. Le t simplifié du flux va du bruit vers la donnée ; la corruption DDPM suit l’autre direction."
+        },
+        {
+          "type": "list",
+          "title": "Revenir aux briques utiles",
+          "items": [
+            "Relier cet objectif aux mélanges déjà étudiés, puis aux contraintes sur les régions connues."
+          ],
+          "links": [
+            {
+              "text": "Diffusion et bruit : construire le mélange",
+              "themeId": "generation-controle",
+              "chapterId": "diffusion-et-bruit"
+            },
+            {
+              "text": "Guidance et zones connues : utiliser le contrôle",
+              "themeId": "generation-controle",
+              "chapterId": "guidance-et-zones-connues"
+            },
+            {
+              "text": "Autoencodeur mel : comprendre le latent",
+              "themeId": "pytorch",
+              "chapterId": "conv-mel-autoencodeur"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : « Je précise d’abord la cible : bruit en DDPM, vitesse dans notre flux simplifié. Ensuite, j’évalue la génération sonore et le contrôle, au-delà de cette perte. »"
+        }
+      ],
+      "takeaways": [
+        "Une corruption connue fournit une cible de bruit sans annotation musicale supplémentaire.",
+        "La guidance combine des prédictions ; sa formule doit préciser la convention du coefficient.",
+        "Le flow matching apprend une vitesse ; un solveur reste nécessaire pour générer."
+      ],
+      "checkpoint": {
+        "prompt": "Deux modèles ont chacun une MSE de 0,25, l’un sur le bruit, l’autre sur la vitesse. Que pouvons-nous conclure ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Leur qualité musicale est identique."
+          },
+          {
+            "id": "b",
+            "text": "Le modèle de flux est forcément plus rapide."
+          },
+          {
+            "id": "c",
+            "text": "Leurs erreurs portent sur des cibles différentes ; une évaluation commune reste nécessaire."
+          },
+          {
+            "id": "d",
+            "text": "Ils utilisent nécessairement le même échantillonneur."
+          }
+        ],
+        "correctOptionId": "c",
+        "explanation": "La valeur d’une perte dépend de la cible, de son échelle et des données. Elle ne remplace pas un protocole d’évaluation commun."
+      }
+    },
+    {
       "id": "guidance-et-zones-connues",
       "title": "Renforcer une commande et garder le début joué",
       "summary": "Distinguer une préférence plus forte d’une conservation exacte des échantillons.",
@@ -1671,6 +2629,274 @@
         "action": "Geler la base et apprendre une modification de faible rang sur des données réservées au développement.",
         "output": "Une adaptation dont le nombre de paramètres est compris et le bénéfice reste à évaluer."
       }
+    },
+    {
+      "id": "efficacite-petit-budget",
+      "title": "Choisir ce que notre budget doit réellement économiser",
+      "summary": "Séparer coût d’adaptation, stockage des poids et délai de production sonore.",
+      "questionIds": [],
+      "sourceIds": [
+        "rev-b-efficient-adapters",
+        "rev-b-efficient-lora",
+        "rev-b-efficient-distillation",
+        "rev-b-efficient-quantization",
+        "rev-b-efficient-realtime"
+      ],
+      "context": {
+        "recall": "LoRA nous a montré comment adapter certains poids sans réentraîner tout le modèle.",
+        "problem": "La percussionniste dispose d’un petit corpus et veut utiliser son outil sur une machine limitée.",
+        "why": "Une économie sur les paramètres entraînables ne garantit pas une économie pendant la production sonore.",
+        "connection": "Nous allons tenir un budget précis avant de choisir une technique.",
+        "next": "Ce budget devient une contrainte explicite du protocole d’évaluation et du prototype musical."
+      },
+      "progression": {
+        "input": "Un modèle disponible, des exemples personnels et une machine cible.",
+        "action": "Choisir ce qui doit diminuer, puis mesurer la perte acceptable sur la même tâche.",
+        "output": "Un compromis argumenté entre adaptation, stockage, fidélité et réactivité."
+      },
+      "notions": [
+        {
+          "name": "Adaptation parcimonieuse (parameter-efficient adaptation)",
+          "explanation": "Entraîner une petite partie des paramètres ou des modules ajoutés, tout en conservant une base préentraînée."
+        },
+        {
+          "name": "Distillation (knowledge distillation)",
+          "explanation": "Entraîner un élève à reproduire des réponses d’un enseignant, souvent plus coûteux."
+        },
+        {
+          "name": "Quantification numérique (numerical quantization)",
+          "explanation": "Approcher des nombres avec une grille de précision réduite pour modifier leur représentation informatique."
+        },
+        {
+          "name": "Échéance temps réel (real-time deadline)",
+          "explanation": "Le délai maximal disponible pour fournir le prochain bloc audio sans interruption."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Notre instrument doit apprendre les matériaux d’une percussionniste, puis répondre pendant une répétition. Pensons à deux factures : préparer l’instrument et le faire jouer. Réduire la première ne paie pas automatiquement la seconde."
+        },
+        {
+          "type": "paragraph",
+          "text": "L’adaptation parcimonieuse (parameter-efficient adaptation) limite les paramètres entraînables d’une base préentraînée. Le réentraînement partiel (partial fine-tuning) dégèle quelques couches existantes. Il garde leur architecture, mais le reste du modèle demeure nécessaire pendant l’utilisation."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un module adaptateur (adapter) ajoute un petit détour entraînable : réduire la dimension, appliquer une non-linéarité, puis remonter. Sa sortie s’ajoute à l’entrée. Le goulot (bottleneck) est cette dimension intermédiaire réduite."
+        },
+        {
+          "type": "paragraph",
+          "text": "LoRA, l’adaptation de faible rang (low-rank adaptation), corrige plutôt une matrice par le produit de deux petites matrices. LoRA et adapters peuvent réduire les paramètres appris. Leurs opérations et leur coût final restent différents. Le modèle de base doit toujours être disponible."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Le budget commence par une question",
+          "columns": [
+            "Besoin",
+            "Piste",
+            "Vérification"
+          ],
+          "rows": [
+            [
+              "Apprendre sur le corpus personnel",
+              "Couches dégelées, adapter ou LoRA",
+              "Paramètres entraînables, mémoire et généralisation."
+            ],
+            [
+              "Déployer un modèle plus petit",
+              "Petit réseau ou distillation",
+              "Fidélité des sorties et coût d’entraînement de l’élève."
+            ],
+            [
+              "Stocker moins de bits",
+              "Quantification des poids",
+              "Taille réelle et erreur sur les sorties."
+            ],
+            [
+              "Réagir pendant le jeu",
+              "Architecture et moteur adaptés",
+              "Durée du calcul complet et respect des échéances."
+            ]
+          ],
+          "caption": "Ces pistes visent des dépenses différentes. Nous choisissons d’abord celle qui bloque réellement le prototype."
+        },
+        {
+          "type": "paragraph",
+          "text": "La distillation (knowledge distillation) entraîne un élève à reproduire les réponses d’un enseignant. L’élève peut être plus petit. Nous comptons aussi le coût de production des cibles. Version simplifiée : imiter un professeur n’assure pas de conserver toutes ses capacités."
+        },
+        {
+          "type": "paragraph",
+          "text": "Un petit modèle (small model) peut aussi être entraîné directement sur une tâche plus étroite. Le bon choix dépend du besoin musical. Préserver une attaque précise et générer une longue structure ne demandent pas forcément le même système."
+        },
+        {
+          "type": "paragraph",
+          "text": "La quantification numérique (numerical quantization) approche les poids par une grille. À la main, avec un pas de 1/3, le poids 0,4 devient environ 0,333. Cette approximation peut réduire le stockage, mais elle change les calculs suivants."
+        },
+        {
+          "type": "paragraph",
+          "text": "Vérifions le compromis sur une projection pédagogique de 64 caractéristiques vers 64 sorties. Nous utilisons 256 vecteurs synthétiques et des poids fixés par la graine. Ces sorties sont des nombres de test, sans interprétation de qualité audio."
+        },
+        {
+          "type": "walkthrough",
+          "title": "Compter les paramètres, puis observer l’erreur",
+          "goal": "Relier chaque économie annoncée à un calcul reproductible.",
+          "steps": [
+            {
+              "title": "Retrouver la grille à la main",
+              "text": "Arrondir 0,4 au multiple de 1/3 le plus proche donne environ 0,333. Le changement vient de la précision choisie.",
+              "state": "À la main : 0.400 -> 0.333",
+              "lines": [
+                6,
+                7,
+                8
+              ]
+            },
+            {
+              "title": "Compter sans confondre",
+              "text": "La projection possède 4096 poids. Le détour 64→8→64 en ajoute 1024, sans biais. Le compteur ne mesure pas une qualité d’adaptation.",
+              "state": "Paramètres : projection=4096, adapter=1024, fraction=0.25",
+              "lines": [
+                10,
+                11,
+                12,
+                13,
+                14,
+                15,
+                16
+              ]
+            },
+            {
+              "title": "Comparer les mêmes sorties",
+              "text": "Nous gardons les mêmes entrées. Seule la grille des poids change. La MSE compare les sorties approchées à celles de la projection initiale.",
+              "state": "Float32 : MSE=0.00000000 ; poids=16384 octets\n8 bits : poids logiques=4096 octets, MSE=0.00003770\n3 bits : poids logiques=1536 octets, MSE=0.06974661",
+              "lines": [
+                18,
+                19,
+                20,
+                21,
+                22,
+                24,
+                25,
+                26,
+                27,
+                28,
+                29,
+                30,
+                31,
+                32,
+                33
+              ]
+            },
+            {
+              "title": "Calculer une échéance",
+              "text": "Un bloc de 256 échantillons à 48 kHz dure environ 5,333 millisecondes. C’est un budget analytique, pas le temps mesuré de notre réseau.",
+              "state": "256 échantillons à 48 kHz : 5.333 ms",
+              "lines": [
+                35,
+                36
+              ]
+            }
+          ],
+          "result": "Exécution CPU conservée dans scripts/verify/b-diffusion-efficiency-results.json. Les tailles sont calculées ; les erreurs numériques sont réellement obtenues.",
+          "code": "import torch\nfrom torch import nn\ntorch.manual_seed(17)\ntorch.set_num_threads(1)\n# Minuscule calcul manuel : 0.4 sur une grille de pas 1/3.\nmini = torch.tensor(0.4, dtype=torch.float64)\nmini_q = (mini * 3).round() / 3\nprint(f\"À la main : {mini.item():.3f} -> {mini_q.item():.3f}\")\n# Comptes hors biais : une projection 64 -> 64 et un goulot 64 -> 8 -> 64.\nd, rang = 64, 8\nprojection = nn.Linear(d, d, bias=False)\nadapter = nn.Sequential(nn.Linear(d, rang, bias=False), nn.ReLU(),\n                        nn.Linear(rang, d, bias=False))\ntotal = sum(p.numel() for p in projection.parameters())\najout = sum(p.numel() for p in adapter.parameters())\nprint(f\"Paramètres : projection={total}, adapter={ajout}, fraction={ajout / total:.2f}\")\n# Test synthétique : 256 vecteurs de 64 caractéristiques, sans audio.\npoids = torch.randn(d, d) * 0.1\nentrees = torch.randn(256, d)\nreference = entrees @ poids.T\nmse_reference = (reference - reference).square().mean().item()\nprint(f\"Float32 : MSE={mse_reference:.8f} ; poids={total * 4} octets\")\nmesures = []\nfor bits in (8, 3):\n    maximum = 2 ** (bits - 1) - 1\n    echelle = poids.abs().max() / maximum\n    entiers = (poids / echelle).round().clamp(-maximum, maximum)\n    reconstruits = entiers * echelle\n    approximation = entrees @ reconstruits.T\n    mse = (approximation - reference).square().mean().item()\n    octets = (total * bits + 7) // 8\n    mesures.append({\"bits\": bits, \"logicalWeightBytes\": octets, \"mse\": mse})\n    print(f\"{bits} bits : poids logiques={octets} octets, MSE={mse:.8f}\")\n# Une échéance analytique, pas une durée mesurée du réseau.\necheance_ms = 1000 * 256 / 48000\nprint(f\"256 échantillons à 48 kHz : {echeance_ms:.3f} ms\")",
+          "language": "python"
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Sur notre projection synthétique uniquement",
+          "columns": [
+            "Format",
+            "Poids logiques",
+            "MSE des sorties"
+          ],
+          "rows": [
+            [
+              "Float32, référence",
+              "16384 octets",
+              "0,00000000"
+            ],
+            [
+              "8 bits",
+              "4096 octets",
+              "0,00003770"
+            ],
+            [
+              "3 bits",
+              "1536 octets",
+              "0,06974661"
+            ]
+          ],
+          "caption": "Moins de bits peut augmenter l’erreur. Les octets supposent un empaquetage idéal ; ils excluent les échelles, activations et autres états."
+        },
+        {
+          "type": "paragraph",
+          "text": "La grille symétrique utilise ici les entiers de −3 à 3 pour trois bits ; une combinaison reste inutilisée. Le programme simule la reconstruction des poids en float32. Il ne stocke pas réellement un modèle compact et ne teste aucun noyau de calcul entier."
+        },
+        {
+          "type": "paragraph",
+          "text": "L’échéance temps réel (real-time deadline) impose de fournir le prochain bloc à temps. Notre exemple donne environ 5,333 ms pour produire 256 nouveaux échantillons à 48 kHz. Il faut mesurer tout le trajet sur la machine cible, avec une marge. La latence totale inclut aussi les tampons et le contexte audio nécessaire."
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Un piège : transformer un compte en promesse",
+          "text": "Un adapter de 1024 poids ne remplace pas les 4096 poids de base. Moins de bits ne garantit pas une accélération. La MSE synthétique ne mesure pas la préservation d’une attaque. Nous devons vérifier ces trois résultats séparément. Les articles originaux LoRA et adapters étudient le langage ; leur compromis audio reste à tester."
+        },
+        {
+          "type": "list",
+          "title": "Relier le budget à l’expérience",
+          "items": [
+            "Préparer une adaptation, puis comparer les variantes sur un protocole commun."
+          ],
+          "links": [
+            {
+              "text": "LoRA et petit corpus : choisir l’adaptation",
+              "themeId": "generation-controle",
+              "chapterId": "adaptation-lora-et-petit-corpus"
+            },
+            {
+              "text": "PyTorch : geler et détacher correctement",
+              "themeId": "pytorch",
+              "chapterId": "detacher-geler-journaliser"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : « Je sépare adaptation, stockage et réactivité. Puis je mesure le coût réellement réduit et ce que nous perdons sur la tâche musicale. »"
+        }
+      ],
+      "takeaways": [
+        "Une adaptation légère conserve le coût de la base pendant l’utilisation.",
+        "La quantification modifie une précision numérique ; son impact musical doit être évalué.",
+        "Le temps réel se vérifie sur le trajet complet, avec les contraintes de la machine cible."
+      ],
+      "checkpoint": {
+        "prompt": "Un adapter entraîne 25 % de poids additionnels par rapport à une projection gelée. Quelle conclusion est justifiée ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "La mémoire totale et la latence ont forcément diminué de 75 %."
+          },
+          {
+            "id": "b",
+            "text": "Le nombre de poids adaptés est réduit, mais il faut encore compter la base et mesurer le fonctionnement."
+          },
+          {
+            "id": "c",
+            "text": "La qualité audio est garantie inchangée."
+          },
+          {
+            "id": "d",
+            "text": "Nous pouvons supprimer la projection gelée après entraînement."
+          }
+        ],
+        "correctOptionId": "b",
+        "explanation": "Le compteur porte sur les poids entraînables ajoutés. Les poids de base et les calculs nécessaires restent présents."
+      }
     }
   ],
   "edition": 2,
@@ -1681,33 +2907,48 @@
     "destination": "Une chaîne dont on sait isoler les erreurs, expliquer les réglages et préparer la comparaison base/adaptation.",
     "stages": [
       {
-        "title": "Construire une représentation et apprendre des suites",
+        "title": "Choisir la représentation",
         "chapterIds": [
           "representation-et-reconstruction",
           "quantification-et-tokens",
-          "autoregression-et-causalite"
+          "codecs-neuronaux-rvq",
+          "symbolique-midi-et-audio"
         ]
       },
       {
-        "title": "Choisir des sorties et préciser le contrôle",
+        "title": "Apprendre et échantillonner une suite",
         "chapterIds": [
-          "echantillonnage-contexte-et-cout",
-          "conditions-et-intention-musicale"
+          "autoregression-et-causalite",
+          "echantillonnage-contexte-et-cout"
         ]
       },
       {
-        "title": "Comprendre les distributions et le débruitage",
+        "title": "Exprimer une intention",
+        "chapterIds": [
+          "conditions-et-intention-musicale",
+          "controle-multimodal-formes"
+        ]
+      },
+      {
+        "title": "Construire une distribution latente",
         "chapterIds": [
           "vae-et-echantillonnage",
-          "kl-et-latent-inutilise",
+          "kl-et-latent-inutilise"
+        ]
+      },
+      {
+        "title": "Apprendre le débruitage et préserver des zones",
+        "chapterIds": [
           "diffusion-et-bruit",
+          "objectifs-diffusion-et-flow",
           "guidance-et-zones-connues"
         ]
       },
       {
-        "title": "Adapter le système au corpus",
+        "title": "Adapter sous un budget limité",
         "chapterIds": [
-          "adaptation-lora-et-petit-corpus"
+          "adaptation-lora-et-petit-corpus",
+          "efficacite-petit-budget"
         ]
       }
     ],
@@ -1724,6 +2965,120 @@
       "title": "AudioCraft — MusicGen, documentation officielle",
       "url": "https://facebookresearch.github.io/audiocraft/docs/MUSICGEN.html",
       "accessed": "2026-11-10"
+    },
+    {
+      "id": "rev-b-attn-clap",
+      "title": "Wu et al. — Large-scale Contrastive Language-Audio Pretraining",
+      "url": "https://arxiv.org/html/2211.06687v4",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-attn-clap-repo",
+      "title": "LAION — CLAP, README officiel",
+      "url": "https://github.com/LAION-AI/CLAP/blob/main/README.md",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-attn-film",
+      "title": "Perez et al. — FiLM: Visual Reasoning with a General Conditioning Layer",
+      "url": "https://arxiv.org/abs/1709.07871",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-attn-midi",
+      "title": "MIDI Association — Summary of MIDI 1.0 Messages",
+      "url": "https://midi.org/summary-of-midi-1-0-messages",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-codec-rave",
+      "title": "RAVE: A variational autoencoder for fast and high-quality neural audio synthesis",
+      "url": "https://arxiv.org/html/2111.05011v2",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-codec-encodec",
+      "title": "High Fidelity Neural Audio Compression — EnCodec",
+      "url": "https://arxiv.org/html/2210.13438v1",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-codec-dac",
+      "title": "High-Fidelity Audio Compression with Improved RVQGAN — DAC",
+      "url": "https://arxiv.org/html/2306.06546v2",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-codec-midi",
+      "title": "MIDI Association — Summary of MIDI 1.0 Messages",
+      "url": "https://midi.org/summary-of-midi-1-0-messages",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-codec-musictransformer",
+      "title": "Music Transformer: Generating music with long-term structure",
+      "url": "https://arxiv.org/html/1809.04281v3",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-codec-musictransformer-demo",
+      "title": "Magenta — Music Transformer: Generating Music with Long-Term Structure",
+      "url": "https://magenta.tensorflow.org/music-transformer",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-efficient-ddpm",
+      "title": "Ho, Jain et Abbeel — Denoising Diffusion Probabilistic Models",
+      "url": "https://arxiv.org/html/2006.11239v2",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-efficient-cfg",
+      "title": "Ho et Salimans — Classifier-Free Diffusion Guidance",
+      "url": "https://arxiv.org/html/2207.12598v1",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-efficient-flow",
+      "title": "Lipman et al. — Flow Matching for Generative Modeling",
+      "url": "https://arxiv.org/html/2210.02747v2",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-efficient-latent",
+      "title": "Rombach et al. — High-Resolution Image Synthesis with Latent Diffusion Models",
+      "url": "https://arxiv.org/abs/2112.10752",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-efficient-adapters",
+      "title": "Houlsby et al. — Parameter-Efficient Transfer Learning for NLP",
+      "url": "https://arxiv.org/abs/1902.00751",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-efficient-lora",
+      "title": "Hu et al. — LoRA: Low-Rank Adaptation of Large Language Models",
+      "url": "https://arxiv.org/html/2106.09685v2",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-efficient-distillation",
+      "title": "Hinton, Vinyals et Dean — Distilling the Knowledge in a Neural Network",
+      "url": "https://arxiv.org/abs/1503.02531",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-efficient-quantization",
+      "title": "PyTorch / torchao — Quantization Overview",
+      "url": "https://docs.pytorch.org/ao/stable/contributing/quantization_overview.html",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-efficient-realtime",
+      "title": "Cycling ’74 — How MSP Works",
+      "url": "https://docs.cycling74.com/learn/articles/03_msphowmspworks/",
+      "accessed": "2026-11-17"
     }
   ],
   "moduleIntroduction": {
@@ -1731,44 +3086,44 @@
     "goal": "Choisir une chaîne de génération pour notre instrument de percussion, expliquer son hasard et son contrôle, puis identifier ce qu’une adaptation au petit corpus doit encore démontrer.",
     "concepts": [
       {
-        "name": "Représentation et latent",
-        "explanation": "Une description interne conserve une partie de l’information du son pour permettre sa reconstruction.",
+        "name": "Garder le caractère d’une frappe avant d’en inventer une autre",
+        "explanation": "Écouter la reconstruction pour savoir ce que notre représentation conserve déjà.",
         "chapterId": "representation-et-reconstruction"
       },
       {
-        "name": "Token",
-        "explanation": "Un indice désigne une entrée d’un dictionnaire ; plusieurs indices peuvent décrire un même instant audio.",
-        "chapterId": "quantification-et-tokens"
+        "name": "Transporter un son par corrections successives : les codecs neuronaux",
+        "explanation": "La quantification résiduelle décrit progressivement un son, puis un décodeur le reconstruit.",
+        "chapterId": "codecs-neuronaux-rvq"
       },
       {
-        "name": "Autorégression",
-        "explanation": "La suite est construite en prédisant chaque élément à partir des précédents.",
+        "name": "Écrire les gestes ou produire le son : symbolique, audio, ou les deux ?",
+        "explanation": "Le choix de représentation détermine ce que nous pouvons modifier et ce que le modèle doit apprendre.",
+        "chapterId": "symbolique-midi-et-audio"
+      },
+      {
+        "name": "Continuer une percussion sans regarder la réponse",
+        "explanation": "Construire les cibles suivantes et vérifier l’information réellement disponible.",
         "chapterId": "autoregression-et-causalite"
       },
       {
-        "name": "Logits et softmax",
-        "explanation": "Les scores proposés par un modèle sont transformés en probabilités utilisables pour choisir une sortie.",
-        "chapterId": "echantillonnage-contexte-et-cout"
+        "name": "Choisir comment les commandes entrent dans le modèle",
+        "explanation": "Texte, son de référence et notes n’apportent pas la même précision de contrôle.",
+        "chapterId": "controle-multimodal-formes"
       },
       {
-        "name": "Conditionnement",
-        "explanation": "Décrire un accent ou une évolution temporelle avec une information assez précise pour être alignée au son.",
-        "chapterId": "conditions-et-intention-musicale"
-      },
-      {
-        "name": "Distribution latente et prior",
-        "explanation": "Un autoencodeur variationnel (VAE) décrit plusieurs codes possibles pour une entrée. Une distribution de référence, le prior, donne un point de départ pour en tirer de nouveaux.",
+        "name": "Une autre piste : varier autour d’une représentation continue",
+        "explanation": "Comprendre ce qu’un VAE tire au hasard, avant de parler de son objectif.",
         "chapterId": "vae-et-echantillonnage"
       },
       {
-        "name": "Diffusion",
-        "explanation": "Le modèle apprend à estimer une corruption, puis un processus itératif transforme du bruit en représentation structurée.",
-        "chapterId": "diffusion-et-bruit"
+        "name": "Quelle cible apprendre pour retirer le bruit ?",
+        "explanation": "Comparer les cibles de bruit et de vitesse avant de discuter la génération.",
+        "chapterId": "objectifs-diffusion-et-flow"
       },
       {
-        "name": "Adaptation LoRA",
-        "explanation": "Une petite modification des poids ajuste une base préentraînée à un corpus sans réentraîner tous ses paramètres.",
-        "chapterId": "adaptation-lora-et-petit-corpus"
+        "name": "Choisir ce que notre budget doit réellement économiser",
+        "explanation": "Séparer coût d’adaptation, stockage des poids et délai de production sonore.",
+        "chapterId": "efficacite-petit-budget"
       }
     ]
   }

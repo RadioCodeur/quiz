@@ -1781,6 +1781,244 @@
         "action": "Distinguer comparaison de vecteurs, apprentissage contrastif et combinaison de contenus par attention.",
         "output": "Nous pouvons lire les scores intermédiaires et les masques sans leur attribuer directement une probabilité de présence ou une explication causale."
       }
+    },
+    {
+      "id": "transformer-complet",
+      "title": "Assembler l’attention en Transformer",
+      "summary": "Construire une suite de blocs qui écoute le contexte sans consulter le futur.",
+      "context": {
+        "recall": "Nous savons transformer des compatibilités en poids d’attention, puis réunir des contenus.",
+        "problem": "Notre percussion contient plusieurs attaques identiques. Comment préserver leur ordre et préparer une continuation ?",
+        "why": "Comprendre le bloc complet permet de lire une architecture, ses formes et ses restrictions temporelles.",
+        "connection": "Nous conservons l’attention déjà expliquée. Nous ajoutons les briques nécessaires autour d’elle.",
+        "next": "Nous pourrons ensuite fournir une mémoire externe, comme des mots ou une partition."
+      },
+      "progression": {
+        "input": "Des caractéristiques audio ordonnées, avec une position pour chaque instant.",
+        "action": "Ajouter la position, puis empiler attention, normalisation et transformations locales sous un masque causal.",
+        "output": "Une représentation contextualisée dont les positions passées restent indépendantes des entrées futures."
+      },
+      "notions": [
+        {
+          "name": "Encodage positionnel (positional encoding)",
+          "explanation": "Une information ajoutée aux caractéristiques pour distinguer les places dans la séquence."
+        },
+        {
+          "name": "Autoattention multi-têtes (multi-head self-attention)",
+          "explanation": "Plusieurs projections apprises comparent les positions de la même séquence, puis leurs résultats sont réunis."
+        },
+        {
+          "name": "Normalisation et connexion résiduelle (LayerNorm, residual connection)",
+          "explanation": "La première règle l’échelle des caractéristiques. La seconde additionne l’entrée au résultat d’une transformation."
+        },
+        {
+          "name": "Pile causale (causal stack)",
+          "explanation": "Des blocs successifs enrichissent chaque position en interdisant leurs relations vers le futur."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "paragraph",
+          "text": "Imaginons trois frappes identiques, placées à différents moments. Leur contenu seul ne distingue pas leur place. Un Transformer actualise chaque position avec son contexte. Pour continuer notre percussion, ce contexte doit rester limité au passé disponible. Nous allons assembler son cœur, puis vérifier cette restriction."
+        },
+        {
+          "type": "list",
+          "title": "Les briques que nous réutilisons",
+          "items": [
+            "L’attention : comparer des requêtes et des clés, puis pondérer des valeurs.",
+            "Les modules PyTorch : enregistrer les couches et définir leur calcul."
+          ],
+          "links": [
+            {
+              "text": "Reprendre le calcul d’attention",
+              "themeId": "audio-ml",
+              "chapterId": "similarites-contraste-attention"
+            },
+            {
+              "text": "Revoir la construction d’un module",
+              "themeId": "pytorch",
+              "chapterId": "construire-un-module"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "text": "L’encodage positionnel (positional encoding) donne une adresse à chaque place. Ici, des sinus et cosinus produisent cette adresse. À la position zéro, [0, 1, 0, 1] s’ajoute au contenu [1, 0, 1, 0]. Nous obtenons [1, 1, 1, 1]. Le même contenu reçoit une adresse différente ailleurs."
+        },
+        {
+          "type": "paragraph",
+          "text": "La normalisation de couche (LayerNorm) règle l’échelle des caractéristiques, séparément à chaque position. Sur [1, 3], la moyenne vaut 2 et la variance vaut 1. Centrer donne [−1, 1]. Diviser par la racine de cette variance donne presque le même vecteur. Un petit epsilon évite une division par zéro."
+        },
+        {
+          "type": "paragraph",
+          "text": "L’autoattention multi-têtes (multi-head self-attention) effectue plusieurs lectures de la même séquence. Chaque tête utilise ses projections de requêtes, clés et valeurs. Ici, quatre caractéristiques sont réparties entre deux têtes, de dimension deux. Leurs résultats sont réunis et projetés. Une tête n’est pas obligatoirement spécialisée dans le rythme ou le timbre."
+        },
+        {
+          "type": "paragraph",
+          "text": "Une connexion résiduelle (residual connection) additionne l’entrée au résultat de l’attention. Un réseau point par point (position-wise feed-forward network) transforme ensuite chaque position séparément. Ses poids sont partagés entre les positions. Une autre addition conserve encore un chemin direct. Empiler ces blocs permet de retravailler le contexte déjà construit."
+        },
+        {
+          "type": "visual",
+          "kind": "flow",
+          "title": "Le trajet d’une séquence dans notre pile",
+          "nodes": [
+            {
+              "title": "Contenu + position",
+              "text": "Entrée (1, 3, 4) : extrait, positions, caractéristiques.",
+              "arrowLabel": "Normaliser les caractéristiques"
+            },
+            {
+              "title": "LayerNorm → attention multi-têtes",
+              "text": "Le masque causal interdit les clés futures.",
+              "arrowLabel": "Ajouter l’entrée conservée : h + attention"
+            },
+            {
+              "title": "Première addition résiduelle",
+              "text": "Le résultat garde la forme (1, 3, 4).",
+              "arrowLabel": "LayerNorm → réseau point par point"
+            },
+            {
+              "title": "Transformation locale",
+              "text": "Les caractéristiques passent de 4 à 8, puis reviennent à 4.",
+              "arrowLabel": "Ajouter de nouveau le chemin direct"
+            },
+            {
+              "title": "Second bloc",
+              "text": "Même organisation, paramètres distincts, même masque causal.",
+              "arrowLabel": "Répéter sans changer les axes"
+            },
+            {
+              "title": "Représentation contextualisée",
+              "text": "Sortie (1, 3, 4), avant une éventuelle tête de prédiction."
+            }
+          ],
+          "caption": "Nous employons une variante pré-normalisée : LayerNorm précède chaque transformation. Les additions résiduelles entourent les transformations."
+        },
+        {
+          "type": "callout",
+          "tone": "tip",
+          "label": "Version simplifiée",
+          "text": "Version simplifiée : deux blocs, petites caractéristiques et aucun apprentissage. Nous n’ajoutons ni jetons audio réels, ni tête de prédiction. Les sorties vérifient le mécanisme, sans démontrer une qualité musicale."
+        },
+        {
+          "type": "walkthrough",
+          "title": "Construire la pile et tester sa causalité",
+          "goal": "Retrouver le calcul miniature, puis modifier le futur pour observer les positions passées.",
+          "language": "python",
+          "code": "import torch\nfrom torch import nn\ntorch.manual_seed(4)\ntorch.set_num_threads(1)\n\n# Un extrait, trois positions, quatre caractéristiques fictives.\ntokens = torch.tensor([[[1., 0., 1., 0.]] * 3])\np = torch.arange(3, dtype=torch.float32)\nposition = torch.stack((p.sin(), p.cos(), (p / 100).sin(), (p / 100).cos()), dim=1)\nx = tokens + position.unsqueeze(0)\nmini = torch.tensor([1., 3.])\nnormalise = nn.LayerNorm(2)(mini)\n\nclass Bloc(nn.Module):\n    def __init__(self):\n        super().__init__()\n        self.norm1, self.norm2 = nn.LayerNorm(4), nn.LayerNorm(4)\n        self.attention = nn.MultiheadAttention(4, 2, dropout=0., batch_first=True)\n        self.reseau = nn.Sequential(nn.Linear(4, 8), nn.ReLU(), nn.Linear(8, 4))\n\n    def forward(self, h, masque):\n        z = self.norm1(h)  # Normaliser seulement les caractéristiques.\n        contexte, poids = self.attention(z, z, z, attn_mask=masque,\n                                         average_attn_weights=False)\n        h = h + contexte  # Connexion résiduelle : conserver un chemin direct.\n        return h + self.reseau(self.norm2(h)), poids\n\nblocs = nn.ModuleList([Bloc(), Bloc()]).eval()\n# True interdit une relation : chaque ligne ne consulte pas son futur.\nmasque = torch.triu(torch.ones(3, 3, dtype=torch.bool), diagonal=1)\n\ndef calcul(entree, masque):\n    h, formes = entree, []\n    for bloc in blocs:\n        h, poids = bloc(h, masque)\n        formes.append(list(h.shape))\n    return h, poids, formes\n\nwith torch.no_grad():\n    sortie, poids, formes = calcul(x, masque)\n    modifie = x.clone()\n    modifie[:, 2] += torch.tensor([10., -8., 6., -4.])\n    causal, _, _ = calcul(modifie, masque)\n    libre, _, _ = calcul(x, None)\n    libre_modifie, _, _ = calcul(modifie, None)\n    ecart_causal = (sortie[:, :2] - causal[:, :2]).abs().max().item()\n    ecart_libre = (libre[:, :2] - libre_modifie[:, :2]).abs().max().item()\n\nprint(\"position_zero\", position[0].tolist())\nprint(\"entree_zero\", x[0, 0].tolist())\nprint(\"moyenne_variance\", mini.mean().item(), mini.var(unbiased=False).item())\nprint(\"normalisation\", [round(v, 6) for v in normalise.tolist()])\nprint(\"dimension_tete\", 4 // 2)\nprint(\"formes_couches\", formes)\nprint(\"forme_poids\", list(poids.shape))\nprint(\"masque\", masque.int().tolist())\nprint(\"ecart_passe_causal\", round(ecart_causal, 6))\nprint(\"ecart_passe_libre\", round(ecart_libre, 6))\n",
+          "steps": [
+            {
+              "title": "Donner une place au contenu",
+              "text": "Les axes représentent un extrait, trois positions et quatre caractéristiques. L’adresse positionnelle est ajoutée avant les blocs.",
+              "state": "position_zero [0.0, 1.0, 0.0, 1.0]\nentree_zero [1.0, 1.0, 1.0, 1.0]",
+              "lines": [
+                7,
+                8,
+                9,
+                10
+              ]
+            },
+            {
+              "title": "Vérifier la normalisation miniature",
+              "text": "Les coefficients appris de LayerNorm commencent à un et zéro. L’epsilon explique l’écart minuscule avec [−1, 1].",
+              "state": "moyenne_variance 2.0 1.0\nnormalisation [-0.999995, 0.999995]",
+              "lines": [
+                11,
+                12
+              ]
+            },
+            {
+              "title": "Assembler les transformations",
+              "text": "Le bloc normalise, consulte le contexte, additionne, puis transforme localement. Les deux instances possèdent leurs propres poids.",
+              "state": "formes_couches [[1, 3, 4], [1, 3, 4]]",
+              "lines": [
+                14,
+                17,
+                18,
+                19,
+                22,
+                23,
+                25,
+                26,
+                28
+              ]
+            },
+            {
+              "title": "Lire le masque et les poids",
+              "text": "Chaque ligne du masque correspond à une requête. True interdit une clé. Les poids ont les axes extrait, tête, requête et clé.",
+              "state": "forme_poids [1, 2, 3, 3]\nmasque [[0, 1, 1], [0, 0, 1], [0, 0, 0]]",
+              "lines": [
+                30
+              ]
+            },
+            {
+              "title": "Perturber seulement la dernière position",
+              "text": "Avec le masque, les deux positions précédentes ne changent pas. Sans lui, elles utilisent le futur et changent.",
+              "state": "ecart_passe_causal 0.0\necart_passe_libre 0.204499",
+              "lines": [
+                41,
+                42,
+                43,
+                44,
+                45,
+                46,
+                47
+              ]
+            }
+          ],
+          "result": "La causalité tient après les deux blocs : l’écart passé vaut 0. Sans masque, il vaut 0,204499 pour ces poids initialisés. Ce nombre n’est pas une performance."
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Un masque dans chaque bloc",
+          "text": "Masquer uniquement le premier bloc ne suffit pas. Un bloc suivant pourrait réintroduire le futur. En classification d’extrait complet, une attention dans les deux directions peut au contraire convenir."
+        },
+        {
+          "type": "callout",
+          "tone": "tip",
+          "label": "Pour aller plus loin",
+          "text": "Le Transformer original normalise après les additions résiduelles. Il associe aussi un encodeur et un décodeur. Une attention croisée relie alors les requêtes du décodeur à la mémoire de l’encodeur. Notre pile pré-normalisée expose seulement le cœur causal."
+        },
+        {
+          "type": "paragraph",
+          "text": "À dire en entretien : un Transformer combine position, attention multi-têtes et transformations locales, avec normalisation et connexions résiduelles. Pour générer une suite, chaque bloc doit empêcher les positions de consulter le futur."
+        }
+      ],
+      "takeaways": [
+        "La position distingue l’ordre ; l’attention seule ne fournit pas cette adresse.",
+        "Normalisation, résidus et réseau local complètent l’attention dans chaque bloc.",
+        "Le masque causal doit rester actif dans toute la pile générative."
+      ],
+      "checkpoint": {
+        "prompt": "Nous modifions la dernière entrée d’une pile causale. Que doivent faire les sorties aux positions précédentes ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Rester identiques si chaque bloc respecte le masque causal."
+          },
+          {
+            "id": "b",
+            "text": "Changer dès que nous ajoutons une seconde tête."
+          },
+          {
+            "id": "c",
+            "text": "Devenir nulles après LayerNorm."
+          },
+          {
+            "id": "d",
+            "text": "Changer parce que les connexions résiduelles retirent le masque."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Les positions précédentes ne dépendent d’aucune entrée future. Les connexions résiduelles et les transformations locales conservent cette propriété."
+      },
+      "questionIds": [],
+      "sourceIds": [
+        "rev-b-attn-transformer",
+        "rev-b-attn-multihead",
+        "rev-b-attn-layernorm"
+      ]
     }
   ],
   "edition": 2,
@@ -1811,7 +2049,8 @@
         "chapterIds": [
           "augmentations-cibles-validation",
           "masquage-mixup-representations",
-          "similarites-contraste-attention"
+          "similarites-contraste-attention",
+          "transformer-complet"
         ]
       }
     ],
@@ -1835,6 +2074,24 @@
       "title": "scikit-learn — Courbe ROC et effet du seuil de décision",
       "url": "https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html",
       "accessed": "2026-11-10"
+    },
+    {
+      "id": "rev-b-attn-transformer",
+      "title": "Vaswani et al. — Attention Is All You Need",
+      "url": "https://arxiv.org/html/1706.03762v7",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-attn-multihead",
+      "title": "PyTorch 2.10 — MultiheadAttention",
+      "url": "https://docs.pytorch.org/docs/2.10/generated/torch.nn.MultiheadAttention.html",
+      "accessed": "2026-11-17"
+    },
+    {
+      "id": "rev-b-attn-layernorm",
+      "title": "PyTorch 2.10 — LayerNorm",
+      "url": "https://docs.pytorch.org/docs/2.10/generated/torch.nn.LayerNorm.html",
+      "accessed": "2026-11-17"
     }
   ],
   "moduleIntroduction": {
@@ -1877,8 +2134,8 @@
         "chapterId": "augmentations-cibles-validation"
       },
       {
-        "name": "Comparer et réunir des descriptions",
-        "explanation": "Comparer des embeddings et pondérer des positions sans confondre ces opérations avec une présence.",
+        "name": "Attention et Transformer complet",
+        "explanation": "Nous relions des positions, puis construisons une pile qui respecte la causalité.",
         "chapterId": "similarites-contraste-attention"
       }
     ]

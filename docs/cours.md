@@ -71,3 +71,13 @@ Les sources, scripts et résultats du lot sont dans `scripts/verify/pytorch-exis
 Chaque chapitre PyTorch possède son fichier dans `public/notebooks/`, un téléchargement et un lien Colab. Les cellules du cours sont complètes ; les deux exercices à trous sont en Markdown pour préserver « Tout exécuter ». Les deux solutions restent repliées en fin de document. Aucun paquet ni dataset n’est téléchargé pendant l’exécution.
 
 Les vingt notebooks et leurs quarante solutions ont été exécutés avec de vrais noyaux Jupyter sur CPU. Les durées mesurées, démarrage compris, vont de 5.391 à 8.222 secondes sur la machine de contrôle. Le seuil demandé est 120 secondes par notebook ; il ne prédit pas le temps sur tout matériel. `scripts/verify/notebooks.py` conserve les sorties et les empreintes dans `notebooks-results.json`. Le moteur dépend de nbformat 5.11.1 et nbclient 0.11.0, installés dans un environnement local isolé.
+
+Les vingt fichiers sont présents dans l’arbre GitHub du commit `0ec5874`. Le lien Colab public a répondu HTTP 200, avec une interface de connexion. Aucune session Colab authentifiée n’a été disponible ; l’exécution attestée est celle des noyaux CPU locaux. Voir `scripts/verify/notebook-links.json`.
+
+## Lot B — architecture, représentation et contrôle
+
+Six chapitres complètent les modules techniques : Transformer complet dans Audio ML ; codecs RVQ, événements symboliques, objectifs DDPM/flow, interfaces multimodales et calcul limité dans Génération. Chaque programme est autonome et son empreinte correspond à une véritable exécution CPU. Les scripts et résultats sont les trois paires `scripts/verify/b-attention-control.*`, `b-codecs-symbolic.*` et `b-diffusion-efficiency.*`.
+
+Les interfaces texte, audio et MIDI sont des représentations pédagogiques explicitement simulées. Aucun modèle préentraîné n’est téléchargé ni évalué. La comparaison de quantification rapporte l’erreur d’une projection synthétique et le stockage logique des poids ; elle ne démontre ni qualité audio ni accélération. Les différences entre RAVE continu et EnCodec/DAC à RVQ sont explicites.
+
+Les blocs `list` peuvent porter `links: [{text, themeId, chapterId}]`. Le rendu produit des liens internes ; le validateur exige une cible existante. Les 65 chapitres initiaux, leurs correspondances QCM, leurs références et leurs checkpoints restent protégés par les tests de contrat.

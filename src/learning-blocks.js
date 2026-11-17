@@ -1,6 +1,12 @@
 import { shuffle } from './quiz.js';
+import { courseHref } from './course-model.js';
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[char]);
 const number = value => new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 3 }).format(value);
+
+export function renderLessonList(block) {
+  const links=(block.links??[]).map(link=>`<li><a href="${escape(courseHref(link.themeId,link.chapterId))}">${escape(link.text)} →</a></li>`).join('');
+  return `<div class="lesson-list">${block.title?`<h3>${escape(block.title)}</h3>`:''}<ul>${block.items.map(item=>`<li>${escape(item)}</li>`).join('')}${links}</ul></div>`;
+}
 
 export function renderFirstExample(block) {
   const isText=block.language==='text';

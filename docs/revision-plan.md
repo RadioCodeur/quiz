@@ -66,7 +66,7 @@ L’accès à l’interface Colab connectée n’est pas supposé. L’URL publi
 
 - [x] A — PyTorch : vingt chapitres, preuves CPU, 38 tests et 23 contrôles navigateur réussis.
 - [x] C — Notebooks : vingt documents et quarante solutions exécutés ; 40 tests et 24 contrôles navigateur réussis.
-- [ ] B — Génération et Audio ML
+- [x] B — Six chapitres ajoutés, preuves CPU ; 43 tests et 25 contrôles navigateur réussis.
 - [ ] D — Contexte
 - [ ] E — Entretien et glossaire
 - [ ] F — Parcours et audit

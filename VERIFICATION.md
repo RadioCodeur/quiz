@@ -65,3 +65,13 @@ Vingt notebooks Jupyter 4.5 exécutés de bout en bout, avec deux solutions supp
 Les notebooks sont vérifiés localement avec Jupyter. L’interface Colab connectée n’est pas exécutée par l’agent ; ses URL et les fichiers GitHub publics sont contrôlés après push. Cette limite ne remplace pas le contrôle CPU de toutes les cellules.
 
 Lot C : 40 tests Node, construction Vite et 24 contrôles navigateur réussis.
+
+Les vingt sources GitHub ont été retrouvées au commit `0ec5874`. Un GET du lien Colab PyTorch retourne HTTP 200 et une interface proposant la connexion. Le détail et la limite d’accès sont enregistrés dans `scripts/verify/notebook-links.json`.
+
+## Lot B — génération et contrôle
+
+Six chapitres ajoutés, 77 au total, sans modifier les 200 QCM. Scripts CPU exécutés : `scripts/verify/b-attention-control.py`, `b-codecs-symbolic.py`, `b-diffusion-efficiency.py`. Les rapports `*-results.json` relient les codes affichés à leurs empreintes et sorties. Python 3.11.9, torch 2.10.0+cpu, un thread.
+
+Le test causal vérifie un écart nul dans le passé après modification du futur ; sans masque, l’écart est 0,204499. Les interfaces multimodales vérifient leurs formes, sans prétendre charger CLAP. La RVQ miniature reconstruit ses valeurs avec une erreur quadratique moyenne de 0,006250. La quantification compare des projections synthétiques ; ni qualité perceptive, ni mémoire résidente, ni accélération ne sont mesurées.
+
+Validation des cours, 43 tests Node, construction et 25 contrôles navigateur réussis. Les 77 chapitres passent le contrôle de rendu à 360 px ; les liens techniques ouvrent les bonnes cibles. Les six nouveaux chapitres respectent les limites de prose et terminent par une formulation orale.
