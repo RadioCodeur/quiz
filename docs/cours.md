@@ -1,42 +1,75 @@
 # Les cours du professeur Squoinks
 
-La page **Cours** est accessible dans le header. Le quiz reste la page principale. Pour essayer la version locale sous Windows, lancer `Lancer.cmd` puis ouvrir `http://127.0.0.1:5173/cours.html`.
+État de la révision pédagogique : **19 novembre 2026**. La page Cours est accessible dans le header ; le quiz reste la page principale. Sous Windows, lancer `Lancer.cmd`, puis ouvrir `http://127.0.0.1:5173/cours.html`.
 
-## Contenu
+## Parcours actuel
 
-Huit modules, **107 chapitres** dont deux rappels Python facultatifs. L’ordre conseillé est Python → signal audio → PyTorch → apprentissage audio → génération et contrôle → évaluation et recherche → contexte IRCAM → entretien. Les identifiants historiques sont conservés : les liens du quiz et les repères personnels restent valides, même si le parcours Python a été réordonné.
+Les huit modules contiennent **120 chapitres**. Le parcours suppose une pratique du Python algorithmique et introduit les conventions scientifiques au moment de leur utilisation.
 
-Le public connaît le Python algorithmique. Le parcours principal démarre donc sur le besoin numérique ; les rappels sur les valeurs et les indices restent en fin de sommaire et la navigation « suivant » ne les impose pas. Les six modules techniques suivent un problème explicite : préparer une sonothèque, homogénéiser ses signaux, apprendre un classifieur, adapter la tâche aux mélanges, construire un instrument de percussion, puis vérifier une amélioration.
+| Module | Chapitres | Besoin qui organise le cours |
+| --- | ---: | --- |
+| Python scientifique | 13 | Préparer des données et comprendre leurs formes, leurs copies et leurs transformations. |
+| Signal audio | 9 | Comparer deux sons, puis choisir comment les représenter et les transformer. |
+| PyTorch | 32 | Construire tôt une petite boucle d’apprentissage, puis traiter les besoins plus complexes. |
+| Apprentissage audio | 11 | Relier tâches, représentations, objectifs et architectures. |
+| Génération et contrôle | 15 | Comprendre les mécanismes génératifs et les commandes qu’ils permettent. |
+| Évaluation et recherche | 10 | Construire une comparaison interprétable et connaître ses limites. |
+| Contexte IRCAM et recherche | 4 | Relier les outils, les lectures et les choix de recherche. |
+| Entretien | 26 | Préparer 25 réponses ouvertes et un pitch hypothétique. |
 
-Chaque chapitre situe brièvement son entrée, son action et son résultat. Les définitions se déplient à la demande ; les notions scientifiques sont aussi expliquées dans le récit au moment de leur usage. Les premiers exemples et leurs variantes sont facultatifs : leur présence dépend du bénéfice pédagogique, pas d’un quota. Les répétitions et petits exemples sans lien ont été retirés. Le **mode lecture** masque le sommaire et **Aa +** agrandit le texte. Les schémas larges et le code défilent dans leur propre conteneur. Le portrait du professeur reste local.
+Les deux rappels Python de base restent facultatifs, accessibles par le sommaire et les liens. Les niveaux « Socle à pratiquer », « À discuter » et « Approfondissement » indiquent l’effort attendu ; ils ne certifient pas une compétence.
 
-Les exemples guidés possèdent des boutons précédent/suivant : ils surlignent les lignes de code concernées et expliquent les états avant/après. Il s’agit d’un déroulé rédigé et vérifié à l’avance, sans interpréteur Python. Une vue « toutes les étapes » reste disponible. Les tableaux et graphiques ont une légende interprétative ; les valeurs des graphiques sont consultables sous forme de tableau. Un QCM facultatif de transfert avec quatre choix et une correction immédiate suit chaque chapitre. Ces réponses ne sont pas ajoutées au score du quiz et ne sont pas conservées comme mesure de maîtrise.
+La progression PyTorch présente d’abord les données fixes, les scores, `Linear`, la perte, les gradients et une première boucle. Dataset, padding, masques, axes, buffers, convolutions et CUDA/AMP viennent ensuite selon leurs prérequis. Le contraste et l’attention ont désormais deux chapitres distincts dans Apprentissage audio.
 
-La case **J’ai lu ce chapitre** est un repère volontaire, pas un test de maîtrise. Le dernier chapitre et les préférences sont enregistrés dans `localStorage`, sous la clé distincte **`a-lecoute.courses.v1`**. La session du quiz reste intacte. Les données corrompues ou les identifiants retirés sont filtrés. Sans stockage disponible, la lecture fonctionne en mémoire.
+## Lire, prévoir, puis vérifier
 
-## Sources et couverture
+Chaque introduction situe le problème, les notions à venir et le résultat attendu. Les nombres choisis, les axes, les arguments importants et les mutations sont expliqués avant leur utilisation. Les analogies et les exemples restent liés au besoin traité.
 
-Les cours sont de vrais JSON dans `public/courses/`, avec un fichier par thème. Chaque chapitre déclare les `questionIds` dont il explique les connaissances et les `sourceIds` provenant des registres de références du quiz. Le validateur vérifie que les **200 questions** possèdent chacune un chapitre dans leur thème principal, sans oubli ni doublon. Cette vérification structurelle est complétée par une relecture pédagogique ; elle ne prouve pas automatiquement qu’un lecteur saura répondre juste.
+Les exemples guidés surlignent les lignes concernées. Les boutons précédent/suivant permettent de suivre un calcul ; « toutes les étapes » donne une vue d’ensemble. Certains détails locaux se déplient pour examiner une opération, ses valeurs ou sa forme. Ce déroulé est rédigé et vérifié à l’avance : **le navigateur n’exécute pas Python**.
 
-Les introductions de module utilisent `moduleIntroduction` (`startingPoint`, `goal`, `concepts` reliés par `chapterId`). Chaque chapitre porte `progression` (`input`, `action`, `output`) et `notions`. Le rôle `readingRole: "reference"` identifie un complément disponible par lien direct et sommaire, hors navigation principale. Le bloc facultatif `first-example` contient `title`, `introduction`, `code`, `language`, `output`, `explanation` ; son éventuelle `variant` contient `change`, `output`, `explanation` et se déplie à la demande. Aucun interpréteur n’est intégré au site.
+Six laboratoires de tenseurs calculent de petites variations en JavaScript : axes d’argmax, reshape/transpose, broadcasting, couche linéaire, gradient et convolution. Leur nature pédagogique est annoncée. Ils ne sont pas des exécutions PyTorch. Le padding et les moyennes masquées sont expliqués par les tableaux et le code ; le laboratoire de padding disponible dans le composant n’est pas inséré dans les cours. Les tableaux, figures et images possèdent des indications de lecture et des légendes.
 
-Les extraits supposent les imports usuels (`np` pour NumPy, `torch` pour PyTorch) lorsqu’ils ne sont pas montrés. Aucun code Python n’est exécuté par le site. Les résultats des exemples sont expliqués pour permettre le raisonnement.
+Les programmes portent la mention « Programme autonome » ou « Extrait à lire ». Les objets nécessaires et leurs contrats sont annoncés avant un extrait. Les programmes audio indiquent les fichiers à télécharger et le dossier attendu. Les compléments peuvent être repliés pour préserver la première lecture.
 
-## Fichiers
+Les questions de transfert invitent à prévoir une forme, une valeur, une mutation ou un diagnostic. Elles possèdent quatre options et peuvent expliquer l’erreur propre à chaque choix. Elles restent indépendantes du score des 200 questions du quiz.
 
-- `cours.html` : deuxième point d’entrée de Vite, compatible avec un sous-chemin GitHub Pages.
-- `src/courses.js` et `src/courses.css` : navigation et lecture.
-- `src/course-model.js` : liens, progression et correspondances question/chapitre.
-- `src/course-figures.js` : schémas SVG légendés, dont copies imbriquées et réductions NumPy.
-- `src/learning-blocks.js` et `src/learning.css` : exemples guidés, graphiques, schémas et QCM de transfert.
-- `public/courses/*.json` : textes, exemples et références des huit modules.
-- `public/images/professeur-squoinks.png` : portrait du personnage.
-- `tests/courses.test.mjs` : tests du modèle et de la couverture.
-- `scripts/validate-courses.mjs` : contrôle du contenu et des prérequis.
+## Repères personnels et liens
 
-Les paramètres d’URL et les ancres permettent des liens directs, par exemple `cours.html?theme=pytorch&question=pt-020` ou `cours.html?theme=pytorch#organiser-les-axes`. Un identifiant de chapitre périmé revient au premier chapitre au lieu de bloquer l’affichage. Un thème inconnu revient au catalogue.
+« J’ai lu ce chapitre » et « À revoir » sont deux repères distincts. Le dernier chapitre, les étapes guidées, la position de lecture, les préférences et les tentatives de transfert sont conservés dans `localStorage`, sous `a-lecoute.courses.v1`. Une question réécrite n’hérite pas d’une ancienne réponse devenue ambiguë. Les repères valides de l’ancien format sont conservés ; un stockage indisponible laisse la lecture fonctionner en mémoire.
 
-## Vérifier et construire
+La session du quiz reste séparée. Les notes du pitch utilisent `a-lecoute.pitch.v1`. Lire un chapitre ou réussir sa petite question ne constitue pas une mesure de maîtrise.
+
+Les **107 identifiants de chapitre du point de départ sont conservés**. Treize chapitres ont été ajoutés. Les déplacements de couverture de 15 questions sont documentés dans `scripts/verify/audit-question-moves.json`. La banque garde ses **200 questions**, sans ajout, suppression ni renumérotation.
+
+Les liens directs utilisent le thème et l’ancre, par exemple `cours.html?theme=pytorch#organiser-les-axes`. Un lien issu du quiz peut utiliser `cours.html?theme=pytorch&question=pt-020` ; il rejoint le chapitre qui couvre désormais cette question. Une ancre inconnue revient au premier chapitre, et un thème inconnu au catalogue.
+
+## Voir et écouter les données
+
+Les médias des révisions antérieures sont conservés : 18 WAV, 61 figures scientifiques, cinq illustrations externes créditées, onze ateliers d’écoute et douze blocs d’images commentées. La provenance, les licences et les conventions de calcul sont documentées dans `audio-lab.md` et `media-sources.md`.
+
+Le laboratoire d’écoute utilise de véritables extraits de voix et de percussion. Les mesures dépendent des fichiers, du segment et des conventions annoncés. Le code peut travailler sur le fichier source mono à 16 kHz, tandis que le lecteur utilise un dérivé à 48 kHz : cette distinction est explicitée dans le cours.
+
+Les petits tableaux RMS/crête de PyTorch sont des **valeurs choisies pour le calcul**, pas les mesures de ces fichiers. Les ondes de 220 et 440 Hz sont synthétiques. Une comparaison de nombres ou une baisse de perte ne prouve pas la qualité d’un modèle audio entraîné.
+
+Les blocs `audio-lab`, `analysis-image` et `illustration` gardent leurs fichiers et crédits. `validate:media` contrôle les chemins, les empreintes et les mesures recalculées depuis le PCM.
+
+## Notebooks PyTorch
+
+Chacun des **32 chapitres PyTorch** possède un notebook téléchargeable et un lien Colab. L’accès est placé après la première explication du chapitre.
+
+Les 38 programmes du cours sont répartis en cellules progressives. Chaque instruction composée reste entière. Leur concaténation reproduit exactement le code affiché ; les identifiants des cellules et les empreintes figurent dans `metadata.quiz.programs`. Des cellules distinctes observent les valeurs, les formes et les gradients.
+
+Chaque notebook contient **deux cellules de code à compléter**, deux indices repliés et deux solutions repliées en fin de document. « Tout exécuter » sur les exercices vides affiche « À compléter » ; aucun succès n’est annoncé. Les contrôles s’activent lorsque la réponse est renseignée. Les solutions complètes sont aussi conservées dans les métadonnées pour être exécutées par le vérificateur.
+
+Les **654 cellules de code livrées et les 64 solutions** ont été exécutées avec de vrais noyaux CPU. Les durées finales vont de **6,182 à 11,872 secondes** par notebook, démarrage compris, sous le seuil de 120 secondes sur cette machine. L’environnement mesuré utilise Python 3.11.9 et PyTorch/TorchAudio 2.10.0 CPU.
+
+Le générateur courant est `scripts/make-progressive-notebooks.py`. `scripts/verify/notebooks.py` exécute les documents, conserve leurs sorties et écrit `scripts/verify/notebooks-results.json`. **Aucune exécution Colab authentifiée n’est attestée pour cette révision.**
+
+## Organisation et vérification
+
+Les textes se trouvent dans `public/courses/*.json`. Les `questionIds` relient les notions au quiz ; les `sourceIds` pointent vers les références du thème. Les introductions annoncent leurs concepts et les prérequis. Les blocs peuvent déclarer `codeMode`, `requires`, `resources`, des détails d’étapes et une correction par option.
+
+Les principaux composants sont `src/courses.js`, `src/course-model.js`, `src/learning-blocks.js`, `src/tensor-labs.js` et `src/course-media.js`. Le site conserve trois entrées : quiz, cours et glossaire. Le glossaire propose 160 paires FR–EN, avec recherche et liens vers les chapitres.
 
 ```powershell
 npm run validate:courses
@@ -45,63 +78,10 @@ npm run build
 npm run test:browser
 ```
 
-Si npm n’est pas dans le PATH, utiliser `node scripts/run.mjs validate:courses`, puis les mêmes noms de scripts (`test`, `build`, `test:browser`). La construction valide la banque et les cours avant de produire `dist/index.html`, `dist/cours.html` et `dist/glossaire.html`. Le test navigateur parcourt les 107 chapitres à 360 px et vérifie les trois pages sous `/qr-entretien/`.
+Si npm n’est pas dans le PATH, utiliser `node scripts/run.mjs` suivi du nom du script. Les commandes scientifiques et les preuves actuelles sont détaillées dans `../VERIFICATION.md`.
 
-La publication utilise le workflow manuel GitHub Pages du dépôt, après validation et vérification dans le navigateur. Les principes pédagogiques et leur portée sont documentés dans `docs/pedagogie.md` et accessibles depuis le catalogue des cours.
+Au 19 novembre, les **59 tests unitaires**, la construction, les exécutions CPU et les **33 contrôles Edge sur les fichiers finaux** sont attestés. La révision `3bbeb56` est [publiée et vérifiée en ligne](https://radiocodeur.github.io/quiz/cours.html). Le workflow et les contrôles des huit modules et 32 téléchargements sont consignés dans `../VERIFICATION.md` et `audit-revision-report.md`.
 
+## Historique
 
-## Voir et écouter les données réelles
-
-La révision du 13 novembre 2026 ajoute deux extraits réels et leurs transformations : 18 WAV, 61 images calculées, cinq illustrations externes créditées, onze laboratoires d’écoute et douze blocs d’images commentées, répartis sur les six modules. La section niveaux explique amplitude, carré moyen, RMS, dBFS, dB SPL et LUFS avant le code, puis conclut sur les mesures des fichiers.
-
-Les nouveaux blocs `audio-lab` utilisent une vue parmi `overview`, `level`, `resample`, `stft`, `mel`, `phase`, `augmentation`. Les `illustration` référencent `public/media/illustrations.json` et les `analysis-image` référencent les figures de `public/media/audio-lab.json`. L’interface, les légendes et les crédits se trouvent dans `src/course-media.js` et `src/course-media.css`. La provenance et les conventions de mesure sont documentées dans `docs/audio-lab.md` et `docs/media-sources.md`.
-
-`validate:media` vérifie les chemins locaux, les licences déclarées, les fichiers, les empreintes et les mesures recalculées depuis le PCM. La construction lance ce contrôle. Les contenus et liens historiques des 200 QCM restent conservés.
-
-
-## Lot A — introduction PyTorch, 17 novembre 2026
-
-Le module PyTorch comprend vingt chapitres : les quatorze identifiants historiques sont conservés, et six chapitres introduisent la carte des briques, la rétropropagation manuelle, la boucle complète, le diagnostic, le pilotage de l’apprentissage et l’autoencodeur mel. Le calcul à deux poids et tous les programmes sont réellement exécutés sur CPU. Le script de boucle complète apparaît une fois et possède un bouton de copie. Les libellés des arêtes du graphe sont affichés entre ses nœuds.
-
-Les sources, scripts et résultats du lot sont dans `scripts/verify/pytorch-existing.py`, `pytorch-existing-cases.py`, `pytorch-existing-results.json`, `pytorch-additions.py` et `pytorch-additions-results.json`. Les preuves portent l’empreinte du code affiché. La page reste une lecture de code ; les notebooks du lot C sont séparés.
-
-
-## Lot C — vingt notebooks CPU
-
-Chaque chapitre PyTorch possède son fichier dans `public/notebooks/`, un téléchargement et un lien Colab. Les cellules du cours sont complètes ; les deux exercices à trous sont en Markdown pour préserver « Tout exécuter ». Les deux solutions restent repliées en fin de document. Aucun paquet ni dataset n’est téléchargé pendant l’exécution.
-
-Les vingt notebooks et leurs quarante solutions ont été exécutés avec de vrais noyaux Jupyter sur CPU. Les durées mesurées, démarrage compris, vont de 5.515 à 8.360 secondes sur la machine de contrôle. Le seuil demandé est 120 secondes par notebook ; il ne prédit pas le temps sur tout matériel. `scripts/verify/notebooks.py` conserve les sorties et les empreintes dans `notebooks-results.json`. Le moteur dépend de nbformat 5.11.1 et nbclient 0.11.0, installés dans un environnement local isolé.
-
-Les vingt fichiers sont présents dans l’arbre GitHub du commit `0ec5874`. Le lien Colab public a répondu HTTP 200, avec une interface de connexion. Aucune session Colab authentifiée n’a été disponible ; l’exécution attestée est celle des noyaux CPU locaux. Voir `scripts/verify/notebook-links.json`.
-
-## Lot B — architecture, représentation et contrôle
-
-Six chapitres complètent les modules techniques : Transformer complet dans Audio ML ; codecs RVQ, événements symboliques, objectifs DDPM/flow, interfaces multimodales et calcul limité dans Génération. Chaque programme est autonome et son empreinte correspond à une véritable exécution CPU. Les scripts et résultats sont les trois paires `scripts/verify/b-attention-control.*`, `b-codecs-symbolic.*` et `b-diffusion-efficiency.*`.
-
-Les interfaces texte, audio et MIDI sont des représentations pédagogiques explicitement simulées. Aucun modèle préentraîné n’est téléchargé ni évalué. La comparaison de quantification rapporte l’erreur d’une projection synthétique et le stockage logique des poids ; elle ne démontre ni qualité audio ni accélération. Les différences entre RAVE continu et EnCodec/DAC à RVQ sont explicites.
-
-Les blocs `list` peuvent porter `links: [{text, themeId, chapterId}]`. Le rendu produit des liens internes ; le validateur exige une cible existante. Les 65 chapitres initiaux, leurs correspondances QCM, leurs références et leurs checkpoints restent protégés par les tests de contrat.
-
-## Lot D — contexte IRCAM et recherche
-
-Le septième module contient quatre chapitres : lire l’offre, situer les outils musicaux, comprendre le cycle post-génératif et préparer huit lectures. Chacun contient des liens techniques explicites. Le registre des modules est distinct des six thèmes du quiz ; le nouveau module ne modifie aucune couverture de question.
-
-`kind: "context"` autorise un module court avec quatre jalons. Ses exemples sont des tableaux de raisonnement explicitement nommés, sans programme artificiel : le résultat attendu est un choix argumenté ou un protocole. Cette adaptation de R1 est visible dans chaque walkthrough. Le registre documentaire `scripts/verify/research-sources.json` conserve les pages primaires ouvertes, les faits utilisables et les limites d’interprétation.
-
-## Lot E — réponses orales et glossaire
-
-Le module `entretien`, de format `kind: "interview"`, contient 25 questions ouvertes et un pitch hypothétique. Les réponses comptent 184 à 220 mots ; le pitch en compte 303. Les durées annoncées sont indicatives, pas chronométrées. Chaque question possède trois points obligatoires, un piège et une relance. Le modèle est replié pour permettre un essai préalable.
-
-Les paragraphes autorisés portent le rôle `oral-answer`. Le gabarit utilise un bloc `list` de rôle `pitch-template` ; ses six champs conservent les notes dans `a-lecoute.pitch.v1`. Le format oral n’impose pas de code ou de schéma artificiel : l’exemple demandé est une réponse argumentée, reliée aux mécanismes techniques. Les contraintes de longueur des réponses sont validées.
-
-`glossaire.html` propose 160 paires FR–EN dans six domaines, avec recherche sans accents, filtre et liens vers les cours. Les définitions sont dans `public/glossary.json`. Les trois pages partagent un accès dans leur header ; Vite construit les trois entrées. Les notes de pitch ne modifient jamais la session du quiz.
-
-## Lot F — parcours et audit global
-
-Le catalogue propose un parcours priorisé sur quatre semaines : PyTorch, Audio ML, Génération, puis Évaluation et Entretien. Neuf chapitres Python/Signal portent un indicateur « À survoler si acquis », avec une condition précise. Les niveaux, axes et phases restent à revoir dès qu’une explication hésite.
-
-Les 65 chapitres historiques ont été harmonisés : définitions FR–EN, transitions, pièges après les bases et finales orales. Les codes et les médias restent conservés, sauf les deux bruits fixes VAE/diffusion corrigés puis réexécutés. Les tableaux sans code portent `calculationTable: true` et une justification visible. Le walkthrough de boucle complète référence son bloc `code` unique avec `codeBlockIndex`.
-
-`scripts/audit-prose.mjs` et `tests/final-audit.test.mjs` contrôlent les phrases, les conclusions, les exceptions de longueur, les liens du parcours et les empreintes de tous les blocs Python. La justification `lengthJustification` du chapitre des niveaux est affichée avant la lecture. Les checkpoints historiques sont conservés conformément à V5.
-
-Le rapport exhaustif des chapitres créés et modifiés est dans `docs/revision-report.md`. Les mesures, commandes et limites d’accès Colab sont regroupées dans `VERIFICATION.md`.
+`revision-report.md` décrit le lot antérieur à 107 chapitres et 20 notebooks. Ses chiffres, ses finales orales obligatoires et ses exercices en Markdown ne décrivent plus l’état courant. Les anciens rapports CPU et de liens restent des archives. Les quatre rapports `audit-*-results.json` et le rapport des 32 notebooks font foi pour cette révision. `prose-audit.json` a été régénéré sur les 120 chapitres comme aide à la lecture, sans imposer de finale orale. Le détail des changements est dans `audit-revision-report.md`.
