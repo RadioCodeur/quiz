@@ -12,10 +12,11 @@ export const QUICK_CHAPTERS = [
 
 export const REVISION_WEEKS = [
   {title:'Semaine 1 · Prendre PyTorch en main',goal:'Priorité à la chaîne données → modèle → perte → gradients → mise à jour.',links:[
-    {text:'La carte de PyTorch',themeId:'pytorch',chapterId:'pytorch-en-une-page'},
-    {text:'Lire tenseurs et scores',themeId:'pytorch',chapterId:'tenseur-forme-type-device'},
-    {text:'Remonter deux poids à la main',themeId:'pytorch',chapterId:'retropropagation-a-la-main'},
+    {text:'Préparer les trois extraits',themeId:'pytorch',chapterId:'tenseur-forme-type-device'},
+    {text:'Calculer les scores avec une couche',themeId:'pytorch',chapterId:'construire-un-module'},
+    {text:'Comprendre le gradient et le premier pas',themeId:'pytorch',chapterId:'autograd-et-derivees'},
     {text:'Écrire la première boucle minimale',themeId:'pytorch',chapterId:'premiere-boucle-minimale'},
+    {text:'Valider sur des observations réservées',themeId:'pytorch',chapterId:'entrainer-ou-evaluer'},
   ],deliverable:'Sans le modèle, réécrire une boucle CPU et expliquer chaque étape. Faire les exercices des notebooks quand une brique reste fragile.'},
   {title:'Semaine 2 · Relier les modèles aux sons',goal:'Passer d’une tâche claire aux représentations et au contexte temporel.',links:[
     {text:'Charger des exemples simples',themeId:'pytorch',chapterId:'dataset-et-batches'},

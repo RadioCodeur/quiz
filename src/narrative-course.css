@@ -1,0 +1,36 @@
+.narrative-sidebar .sidebar-title small{display:block;font-size:.88rem;line-height:1.65;margin-top:13px;color:#496447}
+.narrative-sidebar .chapter-toc>summary,.reference-toc>summary,.course-diagnostics>summary{font-weight:650;line-height:1.5;display:flex;justify-content:space-between;gap:12px;padding:16px 0;cursor:pointer}
+.reference-toc>summary,.course-diagnostics>summary{display:list-item}
+.reference-toc>summary span{display:block;font-size:.82rem;font-weight:400;margin-top:5px}
+.narrative-sidebar nav ol{padding:0;list-style:none;margin:0}
+.narrative-sidebar nav a{display:flex;gap:12px;padding:12px 9px;line-height:1.6;font-size:.9rem;border-radius:6px;text-decoration:none}
+.narrative-sidebar nav a[aria-current]{background:#e4edd8;box-shadow:inset 3px 0 #456947;font-weight:650}
+.narrative-sidebar .toc-number{min-width:27px;color:#486948;font-variant-numeric:tabular-nums}
+.toc-reading-group{margin:8px 0 25px;border-top:1px solid #d1ddc5;padding-top:13px}
+.toc-reading-group h3{font-size:1rem;margin:0 0 8px}.toc-reading-group>p,.reference-toc>p,.course-diagnostics p{font-size:.88rem;line-height:1.75;margin:8px 0 13px}
+.reference-toc{border-top:2px solid #b5c6a4;margin-top:22px;padding-top:7px}.course-diagnostics,.narrative-sidebar .course-introduction{border-top:1px solid #ccd9c0;margin-top:18px}
+.course-diagnostics details{padding:10px 0;border-top:1px solid #d5decf}.course-diagnostics details>summary{font-size:.88rem;font-weight:650;line-height:1.65;cursor:pointer}
+.course-diagnostics pre{font-size:.8rem;line-height:1.65;overflow:auto;background:#eff4e8;padding:10px}.course-diagnostics a{text-underline-offset:4px;font-size:.88rem}.course-diagnostics ul{padding-left:19px}
+.reading-migration{font-size:.82rem!important;line-height:1.7;color:#4e644c}
+.first-training-route{border-left:3px solid #8aa66a;background:#f1f5e9;padding:16px 20px;margin:23px 0;font-size:1rem;line-height:1.8}.first-training-route p{margin:8px 0 0}.first-training-route a{text-underline-offset:4px}
+.narrative-module .lesson-body>p{font-size:1.08rem;line-height:1.95;margin:21px 0}.narrative-module .lesson-body>h3{margin-top:37px}
+.narrative-module .story-fragment{margin:20px 0;border:1px solid #c9d8ba;border-radius:8px;background:#f5f8ef;overflow:hidden}
+.story-fragment .code-label{font-size:.78rem;letter-spacing:.025em;line-height:1.7;flex-wrap:wrap;gap:9px}.story-fragment pre{padding:18px!important;font-size:.93rem;line-height:1.8;overflow:auto;margin:0}
+.story-fragment figcaption{font-size:.9rem;padding:12px 18px;line-height:1.75;background:#edf3e4}.fragment-context{font-size:.82rem;line-height:1.75;margin:9px 0 0;color:#4e6749}.fragment-context p{margin:0}
+.narrative-module .optional-example{background:#f5f8ef;padding:14px 18px}.narrative-module .optional-example>summary{font-size:.93rem}
+.current-code-lines{margin:15px 0;background:#fff;border:1px solid #c7d7b5;border-left:4px solid #567b3b;padding:12px;overflow:auto;line-height:1.8;font-size:.88rem}
+.current-code-lines code>span{display:block;white-space:pre}.current-code-lines .current-line-number{display:inline-block;color:#5d7652;min-width:34px;user-select:none}
+.narrative-module .walk-state>span{font-size:.82rem}.narrative-module .walk-state pre{font-size:.88rem}
+.narrative-module .lesson-checkpoint{margin:28px 0}.narrative-module .lesson-checkpoint h2{font-size:1.25rem}.narrative-module .lesson-code figcaption{overflow-wrap:anywhere}
+.large-reading-text .story-fragment pre,.large-reading-text .current-code-lines{font-size:1.1rem}.large-reading-text .narrative-module .lesson-body>p{font-size:1.22rem}
+@media(max-width:740px){.narrative-module .lesson-body>p{font-size:1rem;line-height:1.9}.story-fragment pre{font-size:.85rem}.first-training-route{padding:14px 16px}.narrative-sidebar .toc-reading-group h3{font-size:1rem}.narrative-sidebar{min-width:0}.current-code-lines{font-size:.8rem}}
+
+.story-fragment .fragment-context{margin:0;padding:10px 18px;background:#edf3e4;font-size:.88rem;overflow-wrap:anywhere}
+
+.narrative-journey>summary{padding:14px 24px}
+.narrative-module .chapter-context{border:0;padding:0;margin:16px 0 22px;background:transparent}
+.narrative-module .introduced-notions{border:0;padding:0;margin:0}
+.narrative-module .chapter-position{margin:5px 0 0}
+.narrative-module .chapter-position>summary{min-height:28px}
+.narrative-module .first-training-route{background:transparent;border:0;padding:0;margin:14px 0;font-size:.94rem;line-height:1.8}
+.narrative-module .lesson-heading{margin-bottom:20px}

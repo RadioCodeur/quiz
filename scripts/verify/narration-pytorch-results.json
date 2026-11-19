@@ -1,0 +1,3540 @@
+{
+  "python": "3.11.9",
+  "torch": "2.10.0+cpu",
+  "device": "cpu",
+  "threads": 1,
+  "programs": [
+    {
+      "chapterId": "tenseur-forme-type-device",
+      "programId": "main",
+      "sha256": "5ac1de4157c916dabd4a361f3f0d8fef1e2e69c9015aad1970e16abce79785a9",
+      "stdout": "formes : (3, 2) (3,)\nselection : (2,) ()\nfacteur A : 1.5\ntypes : torch.float32 torch.int64 device : cpu\nvaleurs finies : True\n",
+      "seconds": 0.003341,
+      "assertions": [
+        "tuple(X.shape) == (3, 2) and tuple(cibles.shape) == (3,)",
+        "X.dtype == torch.float32 and cibles.dtype == torch.int64",
+        "tuple(premiere_ligne.shape) == (2,) and tuple(facteur_A.shape) == () and facteur_A.item() == 1.5",
+        "controle is True and finies.shape == X.shape"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "X": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ]
+        },
+        "cibles": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0
+          ]
+        },
+        "premiere_ligne": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            0.10000000149011612,
+            1.5
+          ]
+        },
+        "facteur_A": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": 1.5
+        },
+        "finies": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.bool",
+          "requiresGrad": false,
+          "values": [
+            [
+              true,
+              true
+            ],
+            [
+              true,
+              true
+            ],
+            [
+              true,
+              true
+            ]
+          ]
+        },
+        "toutes_finies": {
+          "shape": [],
+          "dtype": "torch.bool",
+          "requiresGrad": false,
+          "values": true
+        },
+        "controle": true
+      }
+    },
+    {
+      "chapterId": "du-pipeline-au-modele",
+      "programId": "main",
+      "sha256": "d1a66e1e69ae06cdcdc3f42ca21d4643c4cdfccc2570711ef8b8f16072b9ef6a",
+      "stdout": "decisions : [0, 0, 0]\naccords : [True, False, True]\ndecisions apres modification : [0, 1, 0]\nancien score percussion B : -4.5\n",
+      "seconds": 0.001595,
+      "assertions": [
+        "predictions.tolist() == [0, 0, 0] and accords.tolist() == [True, False, True]",
+        "predictions_modifiees.tolist() == [0, 1, 0]",
+        "scores[1, 1].item() == -4.5 and scores_modifies[1, 1].item() == 5."
+      ],
+      "values": {
+        "__name__": "__main__",
+        "scores": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              1.5,
+              -1.5
+            ],
+            [
+              4.5,
+              -4.5
+            ],
+            [
+              2.5,
+              -2.5
+            ]
+          ]
+        },
+        "cibles": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0
+          ]
+        },
+        "predictions": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            0,
+            0
+          ]
+        },
+        "accords": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.bool",
+          "requiresGrad": false,
+          "values": [
+            true,
+            false,
+            true
+          ]
+        },
+        "scores_modifies": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              1.5,
+              -1.5
+            ],
+            [
+              4.5,
+              5.0
+            ],
+            [
+              2.5,
+              -2.5
+            ]
+          ]
+        },
+        "predictions_modifiees": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "chapterId": "construire-un-module",
+      "programId": "main",
+      "sha256": "6cc2337984d7ef3c7c717893346b938d1e64a647dc918b6241523d0b670cfc1c",
+      "stdout": "scores de depart : tensor([[ 1.5000, -1.5000],\n        [ 4.5000, -4.5000],\n        [ 2.5000, -2.5000]], grad_fn=<AddmmBackward0>)\nscores avec biais voix : tensor([[ 2.5000, -1.5000],\n        [ 5.5000, -4.5000],\n        [ 3.5000, -2.5000]], grad_fn=<AddmmBackward0>)\ndecisions : [0, 0, 0]\n",
+      "seconds": 0.004687,
+      "assertions": [
+        "torch.allclose(scores, torch.tensor([[1.5, -1.5], [4.5, -4.5], [2.5, -2.5]]))",
+        "torch.allclose(scores_avec_biais[:, 0] - scores[:, 0], torch.ones(3))",
+        "torch.equal(scores_avec_biais[:, 1], scores[:, 1]) and decisions_avec_biais.tolist() == [0, 0, 0]",
+        "torch.equal(couche.weight, torch.tensor([[0., 1.], [0., -1.]])) and couche.bias.tolist() == [1., 0.]"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "X": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ]
+        },
+        "scores": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": [
+            [
+              1.5,
+              -1.5
+            ],
+            [
+              4.5,
+              -4.5
+            ],
+            [
+              2.5,
+              -2.5
+            ]
+          ]
+        },
+        "scores_avec_biais": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": [
+            [
+              2.5,
+              -1.5
+            ],
+            [
+              5.5,
+              -4.5
+            ],
+            [
+              3.5,
+              -2.5
+            ]
+          ]
+        },
+        "decisions_avec_biais": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "chapterId": "choisir-la-perte",
+      "programId": "main",
+      "sha256": "36284a6e5f87909cb5587aebc1329702b307d3f82d53a7befd50dd73cf90197f",
+      "stdout": "pertes par extrait : tensor([4.8587e-02, 9.0001e+00, 6.7153e-03])\ndeux reponses pour B : tensor([0.7444, 9.0001])\nmoyenne : 3.0184755325317383\nprobabilite voix A : 0.9525741338729858\ncout A verifie : 0.04858734458684921\n",
+      "seconds": 0.002916,
+      "assertions": [
+        "tuple(pertes.shape) == (3,) and tuple(moyenne.shape) == ()",
+        "torch.allclose(pertes, torch.tensor([0.04858733, 9.00012302, 0.00671535]), atol=1e-6)",
+        "couts_B[1] > couts_B[0] and abs(couts_B[0].item() - 0.7443967) < 1e-6",
+        "torch.allclose(cout_A, pertes[0], atol=1e-6) and abs(moyenne.item() - 3.0184753) < 2e-6"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "scores": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              1.5,
+              -1.5
+            ],
+            [
+              4.5,
+              -4.5
+            ],
+            [
+              2.5,
+              -2.5
+            ]
+          ]
+        },
+        "cibles": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0
+          ]
+        },
+        "reponses_B": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.10000000149011612,
+              0.0
+            ],
+            [
+              4.5,
+              -4.5
+            ]
+          ]
+        },
+        "cibles_B": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            1,
+            1
+          ]
+        },
+        "pertes": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            0.04858732968568802,
+            9.000123023986816,
+            0.006715348921716213
+          ]
+        },
+        "couts_B": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            0.7443966865539551,
+            9.000123023986816
+          ]
+        },
+        "moyenne": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": 3.0184755325317383
+        },
+        "probabilites": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.9525741338729858,
+              0.04742587357759476
+            ],
+            [
+              0.9998766183853149,
+              0.00012339458044152707
+            ],
+            [
+              0.9933071732521057,
+              0.006692850962281227
+            ]
+          ]
+        },
+        "probabilite_A": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": 0.9525741338729858
+        },
+        "cout_A": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": 0.04858734458684921
+        }
+      }
+    },
+    {
+      "chapterId": "autograd-et-derivees",
+      "programId": "main",
+      "sha256": "a675f21652e3843b24d71432a3806ba06334ca12abd4b108231f3b01cd660d4f",
+      "stdout": "gradient : -4.0\npoids avant et apres : 0.0 0.4000000059604645\nancienne perte : 4.0\nnouvelle perte : 2.56000018119812\n",
+      "seconds": 1.546597,
+      "assertions": [
+        "gradient == -4. and avant == 0.",
+        "abs(apres - 0.4) < 1e-6 and abs(perte_recalculee.item() - 2.56) < 1e-6",
+        "perte.item() == 4. and w.grad.item() == -4."
+      ],
+      "values": {
+        "__name__": "__main__",
+        "w": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 0.4000000059604645
+        },
+        "perte": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 4.0
+        },
+        "gradient": -4.0,
+        "avant": 0.0,
+        "apres": 0.4000000059604645,
+        "perte_recalculee": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 2.56000018119812
+        }
+      }
+    },
+    {
+      "chapterId": "premiere-boucle-minimale",
+      "programId": "main",
+      "sha256": "531cc1d451816bccef0ffca516403292ad460d076ae82d7e7801e4dc33c7313b",
+      "stdout": "tour 0 perte avant pas : 3.018\ntour 50 perte avant pas : 0.514\ntour 200 perte avant pas : 0.226\ndecisions finales : [0, 1, 0]\nperte apres les 201 pas : 0.225\n",
+      "seconds": 0.043671,
+      "assertions": [
+        "len(historique) == 201 and predictions.tolist() == [0, 1, 0]",
+        "abs(historique[0] - 3.018476) < 2e-6 and abs(historique[50] - 0.514087) < 2e-6",
+        "abs(historique[200] - 0.226087) < 2e-6 and abs(perte_finale.item() - 0.225241) < 2e-6",
+        "isinstance(modele, nn.Module) and len(list(modele.parameters())) == 2"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "X": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ]
+        },
+        "cibles": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0
+          ]
+        },
+        "epoque": 200,
+        "scores": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": [
+            [
+              1.039505958557129,
+              -1.039506196975708
+            ],
+            [
+              -0.6757900714874268,
+              0.675789475440979
+            ],
+            [
+              0.4691281318664551,
+              -0.4691286087036133
+            ]
+          ]
+        },
+        "perte": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 0.2260865569114685
+        },
+        "scores_finaux": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              1.0430032014846802,
+              -1.0430035591125488
+            ],
+            [
+              -0.6777912378311157,
+              0.677790641784668
+            ],
+            [
+              0.47079944610595703,
+              -0.4707998037338257
+            ]
+          ]
+        },
+        "predictions": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0
+          ]
+        },
+        "perte_finale": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": 0.22524137794971466
+        }
+      }
+    },
+    {
+      "chapterId": "entrainer-ou-evaluer",
+      "programId": "main",
+      "sha256": "0639a15cb74c938c49ce03072367683e9962fee7ef6483b5378084fcd7baac20",
+      "stdout": "decisions reservees : [0, 1, 0, 1]\ncibles reservees : [0, 1, 0, 1]\naccords : 4 / 4\nperte reservee : 0.31\nmode entrainement : False\ngraphe des nouveaux scores : False\npoids et biais inchanges : True True\n",
+      "seconds": 0.042189,
+      "assertions": [
+        "tuple(X_reserve.shape) == (4, 2) and cibles_reserve.tolist() == [0, 1, 0, 1]",
+        "predictions_reserve.tolist() == [0, 1, 0, 1] and nombre_correct == 4",
+        "poids_identiques and biais_identiques and not modele.training",
+        "not scores_reserve.requires_grad and not perte_reserve.requires_grad",
+        "abs(perte_reserve.item() - 0.30957514) < 2e-6"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "X": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ]
+        },
+        "cibles": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0
+          ]
+        },
+        "epoque": 200,
+        "scores": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": [
+            [
+              1.039505958557129,
+              -1.039506196975708
+            ],
+            [
+              -0.6757900714874268,
+              0.675789475440979
+            ],
+            [
+              0.4691281318664551,
+              -0.4691286087036133
+            ]
+          ]
+        },
+        "perte": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 0.2260865569114685
+        },
+        "X_reserve": {
+          "shape": [
+            4,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.11999999731779099,
+              1.7999999523162842
+            ],
+            [
+              0.18000000715255737,
+              4.0
+            ],
+            [
+              0.1599999964237213,
+              2.200000047683716
+            ],
+            [
+              0.2199999988079071,
+              3.799999952316284
+            ]
+          ]
+        },
+        "cibles_reserve": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0,
+            1
+          ]
+        },
+        "biais_avant": [
+          1.8992172479629517,
+          -1.8992173671722412
+        ],
+        "scores_reserve": {
+          "shape": [
+            4,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.8717604875564575,
+              -0.8717608451843262
+            ],
+            [
+              -0.3912709951400757,
+              0.39127039909362793
+            ],
+            [
+              0.6445522308349609,
+              -0.6445525884628296
+            ],
+            [
+              -0.27264702320098877,
+              0.2726466655731201
+            ]
+          ]
+        },
+        "perte_reserve": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": 0.3095751404762268
+        },
+        "predictions_reserve": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0,
+            1
+          ]
+        },
+        "accords_reserve": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.bool",
+          "requiresGrad": false,
+          "values": [
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "nombre_correct": 4,
+        "poids_identiques": true,
+        "biais_identiques": true
+      }
+    },
+    {
+      "chapterId": "dataset-et-batches",
+      "programId": "main",
+      "sha256": "e3fcd864d1c3b5a6148e8e22609366eaee18c47a5ccb8890391586522affdcbd",
+      "stdout": "lot manuel : tensor([[0.1000, 1.5000],\n        [0.2000, 4.5000]])\npremier lot : (2, 2) [0, 1]\ndernier lot : (1, 2) [0]\nreconstitue X : True\n",
+      "seconds": 0.003286,
+      "assertions": [
+        "len(dataset) == 3 and tuple(lot_manuel.shape) == (2,2)",
+        "torch.equal(lot_manuel, entrees) and annotations.tolist() == [0,1]",
+        "tuple(dernieres_entrees.shape) == (1,2) and dernieres_cibles.tolist() == [0]",
+        "torch.equal(reuni, X) and cibles.tolist() == [0,1,0]"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "X": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ]
+        },
+        "cibles": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0
+          ]
+        },
+        "mesures_a": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            0.10000000149011612,
+            1.5
+          ]
+        },
+        "cible_a": {
+          "shape": [],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": 0
+        },
+        "mesures_b": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            0.20000000298023224,
+            4.5
+          ]
+        },
+        "cible_b": {
+          "shape": [],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": 1
+        },
+        "lot_manuel": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ]
+          ]
+        },
+        "entrees": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ]
+          ]
+        },
+        "annotations": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1
+          ]
+        },
+        "dernieres_entrees": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ]
+        },
+        "dernieres_cibles": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0
+          ]
+        },
+        "reuni": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "chapterId": "selection-diffusion-reduction",
+      "programId": "main",
+      "sha256": "80379e414f263d117fe9351a8c88b36cb6a0ba4b0336312eab4aa8860c2c8c40",
+      "stdout": "reference : tensor([[0.1500, 2.8333]]) forme (1, 2)\ncentres : tensor([[-0.0500, -1.3333],\n        [ 0.0500,  1.6667],\n        [ 0.0000, -0.3333]])\nmasque : [False, True, True]\nlignes retenues : tensor([[ 0.0500,  1.6667],\n        [ 0.0000, -0.3333]])\ncibles retenues : [1, 0]\nX reste brut : tensor([[0.1000, 1.5000],\n        [0.2000, 4.5000],\n        [0.1500, 2.5000]])\n",
+      "seconds": 0.003748,
+      "assertions": [
+        "tuple(reference.shape) == (1,2) and torch.allclose(reference, torch.tensor([[.15,17/6]]), atol=1e-6)",
+        "torch.allclose(centres, torch.tensor([[-.05,-4/3],[.05,5/3],[0.,-1/3]]), atol=1e-6)",
+        "masque.tolist() == [False,True,True] and cibles_retenues.tolist() == [1,0]",
+        "tuple(retenus.shape) == (2,2) and torch.equal(X, torch.tensor([[.1,1.5],[.2,4.5],[.15,2.5]]))",
+        "controle_fini and not torch.isfinite(torch.tensor([.1,float(\"nan\")])).all().item()"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "X": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ]
+        },
+        "cibles": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0
+          ]
+        },
+        "valeurs_finies": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.bool",
+          "requiresGrad": false,
+          "values": [
+            [
+              true,
+              true
+            ],
+            [
+              true,
+              true
+            ],
+            [
+              true,
+              true
+            ]
+          ]
+        },
+        "controle_fini": true,
+        "reference": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.15000000596046448,
+              2.8333332538604736
+            ]
+          ]
+        },
+        "centres": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              -0.05000000447034836,
+              -1.3333332538604736
+            ],
+            [
+              0.04999999701976776,
+              1.6666667461395264
+            ],
+            [
+              0.0,
+              -0.33333325386047363
+            ]
+          ]
+        },
+        "cretes": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            1.5,
+            4.5,
+            2.5
+          ]
+        },
+        "masque": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.bool",
+          "requiresGrad": false,
+          "values": [
+            false,
+            true,
+            true
+          ]
+        },
+        "retenus": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.04999999701976776,
+              1.6666667461395264
+            ],
+            [
+              0.0,
+              -0.33333325386047363
+            ]
+          ]
+        },
+        "cibles_retenues": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            1,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "chapterId": "organiser-les-axes",
+      "programId": "main",
+      "sha256": "d30066ab07ab934624f4fb9c53a1cf83b042ea19a6fc812be340a0ac3eb78c4b",
+      "stdout": "reshape : [[1, 2], [3, 4], [5, 6]]\ntranspose : [[1, 4], [2, 5], [3, 6]]\nordre logique aplati : [1, 4, 2, 5, 3, 6]\ncanal : (2, 1, 3)\nNone equivalent : True\naxes permutes : (2, 3, 1)\ndernier lot : (1, 1, 3)\nsqueeze(1) : (1, 3)\nsqueeze() : (3,)\n",
+      "seconds": 0.001997,
+      "assertions": [
+        "redecoupe.tolist() == [[1,2],[3,4],[5,6]] and transpose.tolist() == [[1,4],[2,5],[3,6]]",
+        "aplati.tolist() == [1,4,2,5,3,6] and not transpose.is_contiguous()",
+        "tuple(avec_canal.shape) == (2,1,3) and torch.equal(avec_canal, autre_ecriture)",
+        "tuple(temps_avant.shape) == (2,3,1) and tuple(retrait_cible.shape) == (1,3) and tuple(retrait_total.shape) == (3,)"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "source": {
+          "shape": [
+            2,
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            [
+              1,
+              2,
+              3
+            ],
+            [
+              4,
+              5,
+              6
+            ]
+          ]
+        },
+        "redecoupe": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            [
+              1,
+              2
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              5,
+              6
+            ]
+          ]
+        },
+        "transpose": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            [
+              1,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              6
+            ]
+          ]
+        },
+        "aplati": {
+          "shape": [
+            6
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            1,
+            4,
+            2,
+            5,
+            3,
+            6
+          ]
+        },
+        "avec_canal": {
+          "shape": [
+            2,
+            1,
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            [
+              [
+                1,
+                2,
+                3
+              ]
+            ],
+            [
+              [
+                4,
+                5,
+                6
+              ]
+            ]
+          ]
+        },
+        "autre_ecriture": {
+          "shape": [
+            2,
+            1,
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            [
+              [
+                1,
+                2,
+                3
+              ]
+            ],
+            [
+              [
+                4,
+                5,
+                6
+              ]
+            ]
+          ]
+        },
+        "temps_avant": {
+          "shape": [
+            2,
+            3,
+            1
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            [
+              [
+                1
+              ],
+              [
+                2
+              ],
+              [
+                3
+              ]
+            ],
+            [
+              [
+                4
+              ],
+              [
+                5
+              ],
+              [
+                6
+              ]
+            ]
+          ]
+        },
+        "dernier_lot": {
+          "shape": [
+            1,
+            1,
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            [
+              [
+                4,
+                5,
+                6
+              ]
+            ]
+          ]
+        },
+        "retrait_cible": {
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            [
+              4,
+              5,
+              6
+            ]
+          ]
+        },
+        "retrait_total": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            4,
+            5,
+            6
+          ]
+        }
+      }
+    },
+    {
+      "chapterId": "padding-et-collate",
+      "programId": "main",
+      "sha256": "75af609b9211562a9a591ee258e78349301259a9c0e0bd89bb26c2333d74ed9a",
+      "stdout": "lot : [[2.0, 4.0], [6.0, 0.0]] forme (2, 2, 1)\nmasque : [[True, True], [True, False]]\nsommes : [6.0, 6.0]\ncomptes : [2, 1]\nmoyennes masquees : [3.0, 6.0]\nmoyennes naives : [3.0, 3.0]\nMSE vers zero : 18.666666 sur 3 valeurs\n",
+      "seconds": 0.002903,
+      "assertions": [
+        "tuple(batch.shape) == (2,2,1) and masque.tolist() == [[True,True],[True,False]] and cibles.tolist() == [0,1]",
+        "moyennes.squeeze(-1).tolist() == [3.,6.] and naives.squeeze(-1).tolist() == [3.,3.]",
+        "comptes.squeeze(-1).tolist() == [2,1] and int(denominateur) == 3",
+        "abs(mse.item()-56/3) < 2e-6"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "sequence_a": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              2.0
+            ],
+            [
+              4.0
+            ]
+          ]
+        },
+        "sequence_b": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              6.0
+            ]
+          ]
+        },
+        "batch": {
+          "shape": [
+            2,
+            2,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              [
+                2.0
+              ],
+              [
+                4.0
+              ]
+            ],
+            [
+              [
+                6.0
+              ],
+              [
+                0.0
+              ]
+            ]
+          ]
+        },
+        "cibles": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1
+          ]
+        },
+        "masque": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "torch.bool",
+          "requiresGrad": false,
+          "values": [
+            [
+              true,
+              true
+            ],
+            [
+              true,
+              false
+            ]
+          ]
+        },
+        "validite": {
+          "shape": [
+            2,
+            2,
+            1
+          ],
+          "dtype": "torch.bool",
+          "requiresGrad": false,
+          "values": [
+            [
+              [
+                true
+              ],
+              [
+                true
+              ]
+            ],
+            [
+              [
+                true
+              ],
+              [
+                false
+              ]
+            ]
+          ]
+        },
+        "sommes": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              6.0
+            ],
+            [
+              6.0
+            ]
+          ]
+        },
+        "comptes": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            [
+              2
+            ],
+            [
+              1
+            ]
+          ]
+        },
+        "moyennes": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              3.0
+            ],
+            [
+              6.0
+            ]
+          ]
+        },
+        "naives": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              3.0
+            ],
+            [
+              3.0
+            ]
+          ]
+        },
+        "cible_zero": {
+          "shape": [
+            2,
+            2,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              [
+                0.0
+              ],
+              [
+                0.0
+              ]
+            ],
+            [
+              [
+                0.0
+              ],
+              [
+                0.0
+              ]
+            ]
+          ]
+        },
+        "carres_valides": {
+          "shape": [
+            2,
+            2,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              [
+                4.0
+              ],
+              [
+                16.0
+              ]
+            ],
+            [
+              [
+                36.0
+              ],
+              [
+                0.0
+              ]
+            ]
+          ]
+        },
+        "denominateur": {
+          "shape": [],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": 3
+        },
+        "mse": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": 18.66666603088379
+        }
+      }
+    },
+    {
+      "chapterId": "boucle-entrainement-complete",
+      "programId": "main",
+      "sha256": "d3691563f9807331a932dbcbd6c21653a8658235f358147fc3a1d9a14f7d259a",
+      "stdout": "pertes avant les pas 1 et 201 : 3.018476 0.226087\nentrainement : [0, 1, 0]\nreserve : [0, 1, 0, 1] cibles [0, 1, 0, 1]\nperte reserve : 0.309575\nrechargement identique : True\n",
+      "seconds": 0.04931,
+      "assertions": [
+        "len(historique) == 201 and historique[-1] < historique[0]",
+        "predictions_train.tolist() == [0,1,0] and predictions_reserve.tolist() == [0,1,0,1]",
+        "not scores_reserve.requires_grad and not copie.training",
+        "identiques and torch.equal(scores_reserve, scores_recharges) and set(etat) == {\"linear.weight\",\"linear.bias\"}"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "X": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ]
+        },
+        "cibles": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0
+          ]
+        },
+        "X_reserve": {
+          "shape": [
+            4,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.11999999731779099,
+              1.7999999523162842
+            ],
+            [
+              0.18000000715255737,
+              4.0
+            ],
+            [
+              0.1599999964237213,
+              2.200000047683716
+            ],
+            [
+              0.2199999988079071,
+              3.799999952316284
+            ]
+          ]
+        },
+        "cibles_reserve": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0,
+            1
+          ]
+        },
+        "pas": 200,
+        "scores": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": [
+            [
+              1.039505958557129,
+              -1.039506196975708
+            ],
+            [
+              -0.6757900714874268,
+              0.675789475440979
+            ],
+            [
+              0.4691281318664551,
+              -0.4691286087036133
+            ]
+          ]
+        },
+        "perte": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 0.2260865569114685
+        },
+        "predictions_train": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0
+          ]
+        },
+        "scores_reserve": {
+          "shape": [
+            4,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.8717604875564575,
+              -0.8717608451843262
+            ],
+            [
+              -0.3912709951400757,
+              0.39127039909362793
+            ],
+            [
+              0.6445522308349609,
+              -0.6445525884628296
+            ],
+            [
+              -0.27264702320098877,
+              0.2726466655731201
+            ]
+          ]
+        },
+        "predictions_reserve": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0,
+            1
+          ]
+        },
+        "perte_reserve": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": 0.3095751404762268
+        },
+        "scores_recharges": {
+          "shape": [
+            4,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.8717604875564575,
+              -0.8717608451843262
+            ],
+            [
+              -0.3912709951400757,
+              0.39127039909362793
+            ],
+            [
+              0.6445522308349609,
+              -0.6445525884628296
+            ],
+            [
+              -0.27264702320098877,
+              0.2726466655731201
+            ]
+          ]
+        },
+        "identiques": true
+      }
+    },
+    {
+      "chapterId": "convolution-a-la-main",
+      "programId": "main",
+      "sha256": "98099c6d0b14bb25665358275f87da298b9aead7d8007ff9772dab5e4d033366",
+      "stdout": "produits locaux : [[1.0, 0.0], [0.0, -5.0]]\npremiere somme : -4.0\nsortie : [[-4.0, -4.0], [-4.0, -4.0]] forme (1, 1, 2, 2)\npoids modifie : [[-3.0, -2.0], [0.0, 1.0]]\nConv1d : (4, 8, 96)\n",
+      "seconds": 0.003701,
+      "assertions": [
+        "produits.tolist() == [[1.,0.],[0.,-5.]] and produits.sum().item() == -4.",
+        "tuple(sortie.shape) == (1,1,2,2) and sortie[0,0].tolist() == [[-4.,-4.],[-4.,-4.]]",
+        "variante[0,0].tolist() == [[-3.,-2.],[0.,1.]] and tuple(sortie_1d.shape) == (4,8,96)"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "carte": {
+          "shape": [
+            1,
+            1,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              [
+                [
+                  1.0,
+                  2.0,
+                  3.0
+                ],
+                [
+                  4.0,
+                  5.0,
+                  6.0
+                ],
+                [
+                  7.0,
+                  8.0,
+                  9.0
+                ]
+              ]
+            ]
+          ]
+        },
+        "noyau": {
+          "shape": [
+            1,
+            1,
+            2,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              [
+                [
+                  1.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  -1.0
+                ]
+              ]
+            ]
+          ]
+        },
+        "fenetre": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              1.0,
+              2.0
+            ],
+            [
+              4.0,
+              5.0
+            ]
+          ]
+        },
+        "produits": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              -5.0
+            ]
+          ]
+        },
+        "sortie": {
+          "shape": [
+            1,
+            1,
+            2,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": [
+            [
+              [
+                [
+                  -4.0,
+                  -4.0
+                ],
+                [
+                  -4.0,
+                  -4.0
+                ]
+              ]
+            ]
+          ]
+        },
+        "variante": {
+          "shape": [
+            1,
+            1,
+            2,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": [
+            [
+              [
+                [
+                  -3.0,
+                  -2.0
+                ],
+                [
+                  0.0,
+                  1.0
+                ]
+              ]
+            ]
+          ]
+        },
+        "onde": {
+          "shape": [
+            4,
+            1,
+            100
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": null
+        },
+        "sortie_1d": {
+          "shape": [
+            4,
+            8,
+            96
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": null
+        }
+      }
+    },
+    {
+      "chapterId": "conv-mel-autoencodeur",
+      "programId": "main",
+      "sha256": "631e5cde697f71b95fe5f93ba8aff51ad451e0a553fd5348db79e5b16ee5cfa3",
+      "stdout": "ondes : (2, 16000)\nmel avant decoupe : (2, 64, 98)\nentree / latent / reconstruction : (2, 1, 64, 96) (2, 8, 16, 24) (2, 1, 64, 96)\nMSE avant=0.875999, apres=0.796794\n",
+      "seconds": 0.118219,
+      "assertions": [
+        "tuple(ondes.shape) == (2,16000) and tuple(mel_db.shape) == (2,64,98)",
+        "tuple(entree.shape) == (2,1,64,96) and tuple(latent.shape) == (2,8,16,24)",
+        "reconstruction.shape == entree.shape and (entree < 0).any().item()",
+        "activation_exemple.tolist() == [0.,0.,3.]",
+        "abs(avant-.8759986758232117) < 2e-6 and abs(apres-.796794) < 2e-6 and apres < avant"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "sr": 16000,
+        "temps": {
+          "shape": [
+            16000
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": null
+        },
+        "onde_220": {
+          "shape": [
+            16000
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": null
+        },
+        "onde_440": {
+          "shape": [
+            16000
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": null
+        },
+        "ondes": {
+          "shape": [
+            2,
+            16000
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": null
+        },
+        "fenetre": {
+          "shape": [
+            400
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": null
+        },
+        "mel_brut": {
+          "shape": [
+            2,
+            64,
+            98
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": null
+        },
+        "puissance": {
+          "shape": [
+            2,
+            64,
+            98
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": null
+        },
+        "mel_db": {
+          "shape": [
+            2,
+            64,
+            98
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": null
+        },
+        "mel_reduit": {
+          "shape": [
+            2,
+            64,
+            98
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": null
+        },
+        "mel_court": {
+          "shape": [
+            2,
+            64,
+            96
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": null
+        },
+        "entree": {
+          "shape": [
+            2,
+            1,
+            64,
+            96
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": null
+        },
+        "activation_exemple": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            0.0,
+            0.0,
+            3.0
+          ]
+        },
+        "latent": {
+          "shape": [
+            2,
+            8,
+            16,
+            24
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": null
+        },
+        "reconstruction": {
+          "shape": [
+            2,
+            1,
+            64,
+            96
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": null
+        },
+        "perte": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 0.8759986758232117
+        },
+        "avant": 0.8759986758232117,
+        "apres": 0.7967938780784607
+      }
+    },
+    {
+      "chapterId": "retropropagation-a-la-main",
+      "programId": "main",
+      "sha256": "dd22d1d9499afccae09da30ff834fb8f298ad25681c710dafd62bef9263cbb27",
+      "stdout": "h, y, perte : 6.0 -6.0 36.0\ngradients y, h : -12.0 12.0\ngradients w1, w2 : 24.0 -72.0\n",
+      "seconds": 0.003233,
+      "assertions": [
+        "h.item() == 6 and y.item() == -6 and perte.item() == 36",
+        "w1.grad.item() == 24 and w2.grad.item() == -72",
+        "h.grad.item() == 12 and y.grad.item() == -12",
+        "w1.item() == 3 and w2.item() == -1"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "x": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": 2.0
+        },
+        "w1": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 3.0
+        },
+        "w2": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": -1.0
+        },
+        "h": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 6.0
+        },
+        "y": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": -6.0
+        },
+        "perte": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 36.0
+        }
+      }
+    },
+    {
+      "chapterId": "optimiseurs-regularisation-pratique",
+      "programId": "main",
+      "sha256": "79a8793b92d5449c6b382b7d75a278540a099996c617e537016a78dd29061c4f",
+      "stdout": "SGD gradient : -2.0 poids : 1.19\nAdam gradient : -2.0 poids : 1.1\nAdamW gradient : -2.0 poids : 1.09\n",
+      "seconds": 0.004068,
+      "assertions": [
+        "all(g == -2 for g, w in resultats.values())",
+        "abs(resultats['SGD'][1] - 1.19) < 1e-6",
+        "abs(resultats['Adam'][1] - 1.1) < 1e-6 and abs(resultats['AdamW'][1] - 1.09) < 1e-6"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "poids": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 1.090000033378601
+        },
+        "perte": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 1.0
+        },
+        "gradient": -2.0
+      }
+    },
+    {
+      "chapterId": "detacher-geler-journaliser",
+      "programId": "main",
+      "sha256": "7c8c9e6d19be625ef40d402cab7e2de44ebced890f9b47c87d3016c5d1180175",
+      "stdout": "journal : 1.0 float\noriginal et copie : [1.0, 2.0] [99.0, 2.0]\ngraphe conserve par clone : True\ngradient du poids : -2.0\n",
+      "seconds": 0.003068,
+      "assertions": [
+        "isinstance(nombre, float) and nombre == 1",
+        "valeurs.tolist() == [1., 2.] and copie.tolist() == [99., 2.]",
+        "detachees.data_ptr() == valeurs.data_ptr() and copie.data_ptr() != valeurs.data_ptr()",
+        "clone_differentiable.requires_grad and not copie.requires_grad",
+        "archive_cpu.device.type == \"cpu\" and not archive_cpu.requires_grad",
+        "poids.grad.item() == -2"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "poids": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 1.0
+        },
+        "perte": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 1.0
+        },
+        "nombre": 1.0,
+        "valeurs": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": [
+            1.0,
+            2.0
+          ]
+        },
+        "detachees": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            1.0,
+            2.0
+          ]
+        },
+        "copie": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            99.0,
+            2.0
+          ]
+        },
+        "clone_differentiable": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": [
+            1.0,
+            2.0
+          ]
+        },
+        "archive_cpu": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            1.0,
+            2.0
+          ]
+        }
+      }
+    },
+    {
+      "chapterId": "detacher-geler-journaliser",
+      "programId": "gel",
+      "sha256": "ff1715ccf78f53ee31e18f24953d9d5e254be0f32fc5c6e8f8ba5946abdd4e70",
+      "stdout": "gradient encodeur : None\ngradient tete present : True\nencodeur identique : True\n",
+      "seconds": 0.003683,
+      "assertions": [
+        "encodeur.weight.grad is None and tete.weight.grad is not None",
+        "torch.equal(avant, encodeur.weight)",
+        "torch.equal(representation, X) and not representation.requires_grad"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "X": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ]
+        },
+        "cibles": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0
+          ]
+        },
+        "avant": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "representation": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ]
+        },
+        "scores": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": [
+            [
+              1.5,
+              -1.5
+            ],
+            [
+              4.5,
+              -4.5
+            ],
+            [
+              2.5,
+              -2.5
+            ]
+          ]
+        },
+        "perte": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 3.0184755325317383
+        }
+      }
+    },
+    {
+      "chapterId": "pertes-multi-etiquettes",
+      "programId": "main",
+      "sha256": "5230d6a0254c59664b1b4a53232c3090e5c26cf252b270ff437d6d2bc027dae1",
+      "stdout": "probabilites : [[0.5, 0.5]]\ncout par presence : [[0.6931471824645996, 0.6931471824645996]]\ndecisions : [[True, True]]\ngradient des scores : [[-0.25, -0.25]]\n",
+      "seconds": 0.003295,
+      "assertions": [
+        "par_etiquette.shape == scores.shape == presences.shape == (1, 2)",
+        "torch.allclose(par_etiquette, torch.log(torch.full((1, 2), 2.)))",
+        "torch.allclose(scores.grad, torch.tensor([[-0.25, -0.25]]))",
+        "decisions.tolist() == [[True, True]]"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "scores": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": [
+            [
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "presences": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        },
+        "par_etiquette": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": [
+            [
+              0.6931471824645996,
+              0.6931471824645996
+            ]
+          ]
+        },
+        "perte": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 0.6931471824645996
+        },
+        "probabilites": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": [
+            [
+              0.5,
+              0.5
+            ]
+          ]
+        },
+        "decisions": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.bool",
+          "requiresGrad": false,
+          "values": [
+            [
+              true,
+              true
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "chapterId": "modules-et-buffers",
+      "programId": "main",
+      "sha256": "34d67bdb848df81262c0e5203f087255d4a986e003e82aa0824c7e9e17b9f596",
+      "stdout": "sortie : [[0.10000000149011612, 3.0]]\nparametres : ['couches.0.weight']\nbuffers : ['moyenne']\netat : ['moyenne', 'couches.0.weight']\n",
+      "seconds": 0.003724,
+      "assertions": [
+        "noms_parametres == ['couches.0.weight'] and noms_buffers == ['moyenne']",
+        "set(noms_etat) == {'moyenne', 'couches.0.weight'}",
+        "torch.allclose(sortie, torch.tensor([[0.1, 3.]]))",
+        "not modele.moyenne.requires_grad"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "x": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.20000000298023224,
+              4.5
+            ]
+          ]
+        },
+        "sortie": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": [
+            [
+              0.10000000149011612,
+              3.0
+            ]
+          ]
+        },
+        "noms_parametres": [
+          "couches.0.weight"
+        ],
+        "noms_buffers": [
+          "moyenne"
+        ],
+        "noms_etat": [
+          "moyenne",
+          "couches.0.weight"
+        ]
+      }
+    },
+    {
+      "chapterId": "modules-et-buffers",
+      "programId": "reprise-adam",
+      "sha256": "8f0f28aef6974077119c3354990ef2ed481bf0f59aac6a8cbcaf3fd27dc747e5",
+      "stdout": "continuation identique : True\ncompteur Adam restaure puis avance : 2.0\necart avec Adam neuf : 0.003067\n",
+      "seconds": 0.011006,
+      "assertions": [
+        "reprise_identique and compteur == 2",
+        "ecart_sans_etat > 1e-4",
+        "len(optim_copie.state) == 2 and etat[\"pas\"] == 1",
+        "torch.equal(modele.bias, copie.bias)"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "X": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ]
+        },
+        "cibles": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0
+          ]
+        },
+        "reprise_identique": true,
+        "ecart_sans_etat": 0.003066958859562874,
+        "compteur": 2.0
+      }
+    },
+    {
+      "chapterId": "moyennes-et-microbatches",
+      "programId": "main",
+      "sha256": "d48ae795d5b3b1e2cd459cf4a6a2121094e8932dfabe19832f9e34df0f6eef5c",
+      "stdout": "moyenne des exemples : 2.6 des lots : 3.5\ngradients : -15.0 -15.0\npoids : 2.5 2.5\n",
+      "seconds": 0.004002,
+      "assertions": [
+        "moyenne_globale == 2.6 and moyenne_des_lots == 3.5",
+        "perte_complete.item() == 7.5 and gradient_complet == -15",
+        "gradient_decoupe == gradient_complet",
+        "poids_decoupe.item() == poids_complet.item() == 2.5"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "moyenne_globale": 2.6,
+        "moyenne_des_lots": 3.5,
+        "X": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            1.0,
+            2.0,
+            3.0,
+            4.0
+          ]
+        },
+        "cibles": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            2.0,
+            4.0,
+            6.0,
+            8.0
+          ]
+        },
+        "poids_complet": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 2.5
+        },
+        "perte_complete": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 7.5
+        },
+        "gradient_complet": -15.0,
+        "poids_decoupe": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 2.5
+        },
+        "debut": 3,
+        "fin": 4,
+        "x": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            4.0
+          ]
+        },
+        "cible": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            8.0
+          ]
+        },
+        "perte_locale": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 16.0
+        },
+        "contribution": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 4.0
+        },
+        "gradient_decoupe": -15.0
+      }
+    },
+    {
+      "chapterId": "scheduler-et-arret-anticipe",
+      "programId": "main",
+      "sha256": "3d79a1c80bca5a7480dbed99338bfcf63e25b9bbdce6944cad431e12b1457767",
+      "stdout": "epoque, taux, validation, attente : [(1, 0.1, 0.9, 0), (2, 0.1, 0.6, 0), (3, 0.05, 0.62, 1), (4, 0.05, 0.65, 2)]\npoids restaure : 1.36\n",
+      "seconds": 0.004127,
+      "assertions": [
+        "len(historique) == 4 and historique[-1][0] == 4 and attente == 2",
+        "[taux for _, taux, _, _ in historique] == [0.1, 0.1, 0.05, 0.05]",
+        "meilleure == 0.6 and abs(poids.item() - 1.36) < 1e-6"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "poids": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 1.3600000143051147
+        },
+        "validations_fictives": [
+          0.9,
+          0.6,
+          0.62,
+          0.65,
+          0.7
+        ],
+        "meilleure": 0.6,
+        "attente": 2,
+        "meilleur_poids": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": 1.3600000143051147
+        },
+        "epoque": 4,
+        "validation": 0.65,
+        "perte": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 0.331775963306427
+        },
+        "taux": 0.05
+      }
+    },
+    {
+      "chapterId": "scheduler-et-arret-anticipe",
+      "programId": "clipping",
+      "sha256": "61d6798cec224701b8eacd693ceb10dd0c648397b97aaa0430d18e53abe6ad44",
+      "stdout": "norme avant : 10.0\ngradient utilise : 1.0\npoids apres : 0.9\n",
+      "seconds": 0.003284,
+      "assertions": [
+        "norme_avant.item() == 10",
+        "abs(gradient_utilise - 1) < 1e-6",
+        "abs(poids.item() - 0.9) < 1e-6"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "poids": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 0.8999999761581421
+        },
+        "perte": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 10.0
+        },
+        "norme_avant": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": 10.0
+        },
+        "gradient_utilise": 0.9999999403953552
+      }
+    },
+    {
+      "chapterId": "cuda-amp-memoire",
+      "programId": "main",
+      "sha256": "34a987ba523b443ea53f7e3d6fafc1b5d6970c61a5d1af293ed7121d7094b047",
+      "stdout": "device et AMP : cpu False\noctets des parametres : 24\n",
+      "seconds": 0.003986,
+      "assertions": [
+        "device.type == \"cpu\" and not amp_active and not scaler.is_enabled()",
+        "octets_poids == 24",
+        "scores.shape == (3, 2) and cibles.dtype == torch.int64 and torch.isfinite(perte).item()",
+        "not torch.equal(poids_avant, modele.weight)",
+        "all(p.device == X.device == cibles.device for p in modele.parameters())"
+      ],
+      "values": {
+        "__name__": "__main__",
+        "X": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ]
+        },
+        "cibles": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requiresGrad": false,
+          "values": [
+            0,
+            1,
+            0
+          ]
+        },
+        "amp_active": false,
+        "poids_avant": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": false,
+          "values": [
+            [
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              -1.0
+            ]
+          ]
+        },
+        "scores": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": [
+            [
+              1.5,
+              -1.5
+            ],
+            [
+              4.5,
+              -4.5
+            ],
+            [
+              2.5,
+              -2.5
+            ]
+          ]
+        },
+        "perte": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "requiresGrad": true,
+          "values": 3.0184755325317383
+        },
+        "octets_poids": 24
+      }
+    }
+  ],
+  "fragments": [
+    {
+      "chapterId": "tenseur-forme-type-device",
+      "programId": "main",
+      "sourceLines": [
+        2,
+        3
+      ],
+      "sha256": "6b07502c307ebac4b4a8549feff69026f603581aa17f378ec7d58158006864b8",
+      "programSha256": "5ac1de4157c916dabd4a361f3f0d8fef1e2e69c9015aad1970e16abce79785a9"
+    },
+    {
+      "chapterId": "tenseur-forme-type-device",
+      "programId": "main",
+      "sourceLines": [
+        4,
+        5
+      ],
+      "sha256": "1688d08dbd1ed35d2c5c4780d8a53c80e7c17c88c7f7599638b2042cec42c226",
+      "programSha256": "5ac1de4157c916dabd4a361f3f0d8fef1e2e69c9015aad1970e16abce79785a9"
+    },
+    {
+      "chapterId": "du-pipeline-au-modele",
+      "programId": "main",
+      "sourceLines": [
+        4,
+        5
+      ],
+      "sha256": "4346e962bf982b024deb1e3c4830a80961086c0aadd8f3fc22e3df96b53e5a34",
+      "programSha256": "d1a66e1e69ae06cdcdc3f42ca21d4643c4cdfccc2570711ef8b8f16072b9ef6a"
+    },
+    {
+      "chapterId": "du-pipeline-au-modele",
+      "programId": "main",
+      "sourceLines": [
+        8,
+        10
+      ],
+      "sha256": "d35f44e2522b7d467d5c87834a17539d9bbd02342144a9f32429c08194fca697",
+      "programSha256": "d1a66e1e69ae06cdcdc3f42ca21d4643c4cdfccc2570711ef8b8f16072b9ef6a"
+    },
+    {
+      "chapterId": "construire-un-module",
+      "programId": "main",
+      "sourceLines": [
+        4,
+        4
+      ],
+      "sha256": "be868337038d313219b383edf2f1e929b53fd9ce22d62233a59301cc6a573966",
+      "programSha256": "6cc2337984d7ef3c7c717893346b938d1e64a647dc918b6241523d0b670cfc1c"
+    },
+    {
+      "chapterId": "construire-un-module",
+      "programId": "main",
+      "sourceLines": [
+        8,
+        8
+      ],
+      "sha256": "73381bc80b99e3f02450f0949d25642a1ff3060c7cf18a7931f2560f9f56f0a3",
+      "programSha256": "6cc2337984d7ef3c7c717893346b938d1e64a647dc918b6241523d0b670cfc1c"
+    },
+    {
+      "chapterId": "construire-un-module",
+      "programId": "main",
+      "sourceLines": [
+        10,
+        11
+      ],
+      "sha256": "f444fa4c801ba258ab2f81996a775677bc5acddd231c4ef6e72980a589a49e1f",
+      "programSha256": "6cc2337984d7ef3c7c717893346b938d1e64a647dc918b6241523d0b670cfc1c"
+    },
+    {
+      "chapterId": "choisir-la-perte",
+      "programId": "main",
+      "sourceLines": [
+        7,
+        8
+      ],
+      "sha256": "7f896f42defaf377dc514c7a76b9e451c474861d6d7579041f26a1904bfeb221",
+      "programSha256": "36284a6e5f87909cb5587aebc1329702b307d3f82d53a7befd50dd73cf90197f"
+    },
+    {
+      "chapterId": "choisir-la-perte",
+      "programId": "main",
+      "sourceLines": [
+        14,
+        16
+      ],
+      "sha256": "e6af65aaa4fde0f14cb1c1f0744456a613968578c4fe3caf866b2fdc083b16b7",
+      "programSha256": "36284a6e5f87909cb5587aebc1329702b307d3f82d53a7befd50dd73cf90197f"
+    },
+    {
+      "chapterId": "autograd-et-derivees",
+      "programId": "main",
+      "sourceLines": [
+        2,
+        2
+      ],
+      "sha256": "642311d2d9adb416c449386bf8cb886c8d8405e262710fe7bbe492b52070c228",
+      "programSha256": "a675f21652e3843b24d71432a3806ba06334ca12abd4b108231f3b01cd660d4f"
+    },
+    {
+      "chapterId": "autograd-et-derivees",
+      "programId": "main",
+      "sourceLines": [
+        3,
+        5
+      ],
+      "sha256": "a5a2ed6ef93a0c7e78cb4ac5675eac279976f1da5ac807af8e34c5752095ea07",
+      "programSha256": "a675f21652e3843b24d71432a3806ba06334ca12abd4b108231f3b01cd660d4f"
+    },
+    {
+      "chapterId": "autograd-et-derivees",
+      "programId": "main",
+      "sourceLines": [
+        7,
+        7
+      ],
+      "sha256": "dab9eb53f8b44e43debe8705e051fe4041b13f813fb3fee2333cc19e6cd5b43e",
+      "programSha256": "a675f21652e3843b24d71432a3806ba06334ca12abd4b108231f3b01cd660d4f"
+    },
+    {
+      "chapterId": "autograd-et-derivees",
+      "programId": "main",
+      "sourceLines": [
+        8,
+        10
+      ],
+      "sha256": "c605280e2d16ba80d8f9e5a4a14579a47c877736336e8cea57c7b7e13b50e872",
+      "programSha256": "a675f21652e3843b24d71432a3806ba06334ca12abd4b108231f3b01cd660d4f"
+    },
+    {
+      "chapterId": "premiere-boucle-minimale",
+      "programId": "main",
+      "sourceLines": [
+        5,
+        10
+      ],
+      "sha256": "2334c9ebc35e5f2ca2907767b6e1b09dfe0f3eec6bd6e121b8c90eb93a193618",
+      "programSha256": "531cc1d451816bccef0ffca516403292ad460d076ae82d7e7801e4dc33c7313b"
+    },
+    {
+      "chapterId": "premiere-boucle-minimale",
+      "programId": "main",
+      "sourceLines": [
+        15,
+        16
+      ],
+      "sha256": "47dc29d1046ca4c0edbd5678d29929d670fe67e1f8c8d9b7b29cba2a95ea1167",
+      "programSha256": "531cc1d451816bccef0ffca516403292ad460d076ae82d7e7801e4dc33c7313b"
+    },
+    {
+      "chapterId": "premiere-boucle-minimale",
+      "programId": "main",
+      "sourceLines": [
+        18,
+        23
+      ],
+      "sha256": "eca54235e05c7f5b5bb953ab9e945a7bec3b5ef0a2b966c74a47ff9c076b3500",
+      "programSha256": "531cc1d451816bccef0ffca516403292ad460d076ae82d7e7801e4dc33c7313b"
+    },
+    {
+      "chapterId": "premiere-boucle-minimale",
+      "programId": "main",
+      "sourceLines": [
+        27,
+        30
+      ],
+      "sha256": "7a1bc1547abdc200b6b95faab216263cc22d57e80d1eff309b1394a12fc2e3e8",
+      "programSha256": "531cc1d451816bccef0ffca516403292ad460d076ae82d7e7801e4dc33c7313b"
+    },
+    {
+      "chapterId": "entrainer-ou-evaluer",
+      "programId": "main",
+      "sourceLines": [
+        23,
+        24
+      ],
+      "sha256": "317a680c66590dd1d2a8f7f520b5211a3abb6cb48f06f96c193ceafc58b52820",
+      "programSha256": "0639a15cb74c938c49ce03072367683e9962fee7ef6483b5378084fcd7baac20"
+    },
+    {
+      "chapterId": "entrainer-ou-evaluer",
+      "programId": "main",
+      "sourceLines": [
+        27,
+        31
+      ],
+      "sha256": "9325b98e9c267e7683db576b9b88fdfd9e7afcfad7bc44fe0b781561fe0a86db",
+      "programSha256": "0639a15cb74c938c49ce03072367683e9962fee7ef6483b5378084fcd7baac20"
+    },
+    {
+      "chapterId": "entrainer-ou-evaluer",
+      "programId": "main",
+      "sourceLines": [
+        32,
+        33
+      ],
+      "sha256": "55607505a6be779db00b62efe99ed8fbdf3698fe9a2f590175cc2ed4cf373aba",
+      "programSha256": "0639a15cb74c938c49ce03072367683e9962fee7ef6483b5378084fcd7baac20"
+    },
+    {
+      "chapterId": "dataset-et-batches",
+      "programId": "main",
+      "sourceLines": [
+        6,
+        12
+      ],
+      "sha256": "1d57acd33ea58559b63e3ff3215b6d2ac85f551254f80c6315a37d35d5263e68",
+      "programSha256": "e3fcd864d1c3b5a6148e8e22609366eaee18c47a5ccb8890391586522affdcbd"
+    },
+    {
+      "chapterId": "dataset-et-batches",
+      "programId": "main",
+      "sourceLines": [
+        14,
+        17
+      ],
+      "sha256": "3333b22a1f873350a213a0b08d3b7a46de6631332a0b2105f00e040e15838805",
+      "programSha256": "e3fcd864d1c3b5a6148e8e22609366eaee18c47a5ccb8890391586522affdcbd"
+    },
+    {
+      "chapterId": "dataset-et-batches",
+      "programId": "main",
+      "sourceLines": [
+        18,
+        20
+      ],
+      "sha256": "206a646a971654ba79b144924dd212674fcbf3ad3370e5c0ec6278ca8ff4d041",
+      "programSha256": "e3fcd864d1c3b5a6148e8e22609366eaee18c47a5ccb8890391586522affdcbd"
+    },
+    {
+      "chapterId": "dataset-et-batches",
+      "programId": "main",
+      "sourceLines": [
+        21,
+        22
+      ],
+      "sha256": "6c3267f63dac1ce2f785bf3695c56b9500becf1c5faedf32a09e7017b4665802",
+      "programSha256": "e3fcd864d1c3b5a6148e8e22609366eaee18c47a5ccb8890391586522affdcbd"
+    },
+    {
+      "chapterId": "selection-diffusion-reduction",
+      "programId": "main",
+      "sourceLines": [
+        8,
+        8
+      ],
+      "sha256": "dacb8012c779b89bfe5d83ae40dd35b1d3131d0023549bd0e1a51c38c1710040",
+      "programSha256": "80379e414f263d117fe9351a8c88b36cb6a0ba4b0336312eab4aa8860c2c8c40"
+    },
+    {
+      "chapterId": "selection-diffusion-reduction",
+      "programId": "main",
+      "sourceLines": [
+        9,
+        9
+      ],
+      "sha256": "6ea428610c31d2456c49fbb6cc318091fd1f9f86f57661703785963261e10bd0",
+      "programSha256": "80379e414f263d117fe9351a8c88b36cb6a0ba4b0336312eab4aa8860c2c8c40"
+    },
+    {
+      "chapterId": "selection-diffusion-reduction",
+      "programId": "main",
+      "sourceLines": [
+        10,
+        13
+      ],
+      "sha256": "0fcf5f871e614a039bf8f96e10ab234f4b548eceec6a26446dad4403cd93c749",
+      "programSha256": "80379e414f263d117fe9351a8c88b36cb6a0ba4b0336312eab4aa8860c2c8c40"
+    },
+    {
+      "chapterId": "organiser-les-axes",
+      "programId": "main",
+      "sourceLines": [
+        3,
+        4
+      ],
+      "sha256": "10bbe3674e54ea4970c7cb31c2443b6ea7b8319fbe2757bb00f5e21b447e13f1",
+      "programSha256": "d30066ab07ab934624f4fb9c53a1cf83b042ea19a6fc812be340a0ac3eb78c4b"
+    },
+    {
+      "chapterId": "organiser-les-axes",
+      "programId": "main",
+      "sourceLines": [
+        6,
+        8
+      ],
+      "sha256": "1bcb54cf2c6d46bffbcde9ffe1a22d256c12125c090c90ebb7780e55af0e5bc0",
+      "programSha256": "d30066ab07ab934624f4fb9c53a1cf83b042ea19a6fc812be340a0ac3eb78c4b"
+    },
+    {
+      "chapterId": "organiser-les-axes",
+      "programId": "main",
+      "sourceLines": [
+        9,
+        11
+      ],
+      "sha256": "dd4aff855806012725fecbc95db9002c299980b04e73e692efde32ab17df772b",
+      "programSha256": "d30066ab07ab934624f4fb9c53a1cf83b042ea19a6fc812be340a0ac3eb78c4b"
+    },
+    {
+      "chapterId": "padding-et-collate",
+      "programId": "main",
+      "sourceLines": [
+        10,
+        13
+      ],
+      "sha256": "af8502e15d75df0cb0c7375deb9c187fdada242ba4e492add226c2f2d12f56c1",
+      "programSha256": "75af609b9211562a9a591ee258e78349301259a9c0e0bd89bb26c2333d74ed9a"
+    },
+    {
+      "chapterId": "padding-et-collate",
+      "programId": "main",
+      "sourceLines": [
+        17,
+        18
+      ],
+      "sha256": "a3ab08e015326f00828d18116a039934f4fa5202520be7d8e947d899f4679571",
+      "programSha256": "75af609b9211562a9a591ee258e78349301259a9c0e0bd89bb26c2333d74ed9a"
+    },
+    {
+      "chapterId": "padding-et-collate",
+      "programId": "main",
+      "sourceLines": [
+        19,
+        23
+      ],
+      "sha256": "d5b2fbf8182994a2f8a7e02513acc4cf846f1240c9d6f247bd744b3111a83dcb",
+      "programSha256": "75af609b9211562a9a591ee258e78349301259a9c0e0bd89bb26c2333d74ed9a"
+    },
+    {
+      "chapterId": "padding-et-collate",
+      "programId": "main",
+      "sourceLines": [
+        24,
+        27
+      ],
+      "sha256": "f1da4b013356e19fbcb6a8ca2980cec66983c9d8979d706315e0498793ab2db7",
+      "programSha256": "75af609b9211562a9a591ee258e78349301259a9c0e0bd89bb26c2333d74ed9a"
+    },
+    {
+      "chapterId": "boucle-entrainement-complete",
+      "programId": "main",
+      "sourceLines": [
+        23,
+        30
+      ],
+      "sha256": "76484c165b630dcd0f74a50a387487ec3a47967d92926cc4e5006620e8f3d814",
+      "programSha256": "d3691563f9807331a932dbcbd6c21653a8658235f358147fc3a1d9a14f7d259a"
+    },
+    {
+      "chapterId": "boucle-entrainement-complete",
+      "programId": "main",
+      "sourceLines": [
+        32,
+        37
+      ],
+      "sha256": "d33fcf77adbebd106b63a0700ee985350cbbd0d1e8ef1969826d158c1289372b",
+      "programSha256": "d3691563f9807331a932dbcbd6c21653a8658235f358147fc3a1d9a14f7d259a"
+    },
+    {
+      "chapterId": "boucle-entrainement-complete",
+      "programId": "main",
+      "sourceLines": [
+        38,
+        39
+      ],
+      "sha256": "eacf72b6762686f7e0451939d761eaad5c4d0b6dddd1e7fcefea29cff63c597c",
+      "programSha256": "d3691563f9807331a932dbcbd6c21653a8658235f358147fc3a1d9a14f7d259a"
+    },
+    {
+      "chapterId": "boucle-entrainement-complete",
+      "programId": "main",
+      "sourceLines": [
+        40,
+        45
+      ],
+      "sha256": "359f03b1dd1e8069be4b1d24f0295e09ae109a297a3b2ae95b7eddb3e2e8a40f",
+      "programSha256": "d3691563f9807331a932dbcbd6c21653a8658235f358147fc3a1d9a14f7d259a"
+    },
+    {
+      "chapterId": "convolution-a-la-main",
+      "programId": "main",
+      "sourceLines": [
+        5,
+        6
+      ],
+      "sha256": "3a79f1b2366cd85f004333705cb5826b96a7a4636c6aa8b751e3022fd8c9c0d9",
+      "programSha256": "98099c6d0b14bb25665358275f87da298b9aead7d8007ff9772dab5e4d033366"
+    },
+    {
+      "chapterId": "convolution-a-la-main",
+      "programId": "main",
+      "sourceLines": [
+        7,
+        10
+      ],
+      "sha256": "52d671afefa1750dfa8c457e1efcfadebd8056a5dcdd63288c2763da30842aff",
+      "programSha256": "98099c6d0b14bb25665358275f87da298b9aead7d8007ff9772dab5e4d033366"
+    },
+    {
+      "chapterId": "convolution-a-la-main",
+      "programId": "main",
+      "sourceLines": [
+        11,
+        13
+      ],
+      "sha256": "d28389e57d3c706e38c89e8c6d5eb74ea4a42996d858a722c2d1a5aec7a67f1c",
+      "programSha256": "98099c6d0b14bb25665358275f87da298b9aead7d8007ff9772dab5e4d033366"
+    },
+    {
+      "chapterId": "conv-mel-autoencodeur",
+      "programId": "main",
+      "sourceLines": [
+        15,
+        17
+      ],
+      "sha256": "f4f47f5bef45b1efe9534a1a0c48885682e57b6490acbdf771ce2d359901a46e",
+      "programSha256": "631e5cde697f71b95fe5f93ba8aff51ad451e0a553fd5348db79e5b16ee5cfa3"
+    },
+    {
+      "chapterId": "conv-mel-autoencodeur",
+      "programId": "main",
+      "sourceLines": [
+        18,
+        20
+      ],
+      "sha256": "46d927c78902c3799eb684fa3b2c4d0467220f9c98a08e7d0d3cf0a939e8cd2c",
+      "programSha256": "631e5cde697f71b95fe5f93ba8aff51ad451e0a553fd5348db79e5b16ee5cfa3"
+    },
+    {
+      "chapterId": "conv-mel-autoencodeur",
+      "programId": "main",
+      "sourceLines": [
+        21,
+        24
+      ],
+      "sha256": "fe74c2b3f2dd69f66f411846d4216abc59ef1b1df777ddc57da35d688cee6e8e",
+      "programSha256": "631e5cde697f71b95fe5f93ba8aff51ad451e0a553fd5348db79e5b16ee5cfa3"
+    },
+    {
+      "chapterId": "conv-mel-autoencodeur",
+      "programId": "main",
+      "sourceLines": [
+        25,
+        30
+      ],
+      "sha256": "d97cc8cddc656c259af2ae6e8217a38f0db40ceb0be753c1bf1de9c8e642822e",
+      "programSha256": "631e5cde697f71b95fe5f93ba8aff51ad451e0a553fd5348db79e5b16ee5cfa3"
+    },
+    {
+      "chapterId": "conv-mel-autoencodeur",
+      "programId": "main",
+      "sourceLines": [
+        34,
+        37
+      ],
+      "sha256": "59924fa75ead6689be70ce8410b9cc01e7ad774372774fa6b7a866ecf07d2a13",
+      "programSha256": "631e5cde697f71b95fe5f93ba8aff51ad451e0a553fd5348db79e5b16ee5cfa3"
+    },
+    {
+      "chapterId": "retropropagation-a-la-main",
+      "programId": "main",
+      "sourceLines": [
+        5,
+        9
+      ],
+      "sha256": "dc04650224deee0a61fdc0f61cfb8c42df947b14284d004452645c7b2ffab71f",
+      "programSha256": "dd22d1d9499afccae09da30ff834fb8f298ad25681c710dafd62bef9263cbb27"
+    },
+    {
+      "chapterId": "optimiseurs-regularisation-pratique",
+      "programId": "main",
+      "sourceLines": [
+        5,
+        9
+      ],
+      "sha256": "7d9f51f7be5cfd7eb64f944ac256b817b47ce0625180463ec85b4e202c2571d1",
+      "programSha256": "79a8793b92d5449c6b382b7d75a278540a099996c617e537016a78dd29061c4f"
+    },
+    {
+      "chapterId": "detacher-geler-journaliser",
+      "programId": "main",
+      "sourceLines": [
+        4,
+        8
+      ],
+      "sha256": "a2b53ea1ae70564ea1c300b9b955966c4fd9c4041f5582a5b8c6853bbfa72aa5",
+      "programSha256": "7c8c9e6d19be625ef40d402cab7e2de44ebced890f9b47c87d3016c5d1180175"
+    },
+    {
+      "chapterId": "detacher-geler-journaliser",
+      "programId": "main",
+      "sourceLines": [
+        10,
+        10
+      ],
+      "sha256": "f56380a4eb0db79b030597ac296799e3166fb5a2c8c818cec6cc4c6f37517e66",
+      "programSha256": "7c8c9e6d19be625ef40d402cab7e2de44ebced890f9b47c87d3016c5d1180175"
+    },
+    {
+      "chapterId": "detacher-geler-journaliser",
+      "programId": "gel",
+      "sourceLines": [
+        11,
+        12
+      ],
+      "sha256": "60ed94c663ba7b907caa64758a254494d80a7dc493c1fd46ecbeba024ae99e37",
+      "programSha256": "ff1715ccf78f53ee31e18f24953d9d5e254be0f32fc5c6e8f8ba5946abdd4e70"
+    },
+    {
+      "chapterId": "pertes-multi-etiquettes",
+      "programId": "main",
+      "sourceLines": [
+        5,
+        7
+      ],
+      "sha256": "abed7799abab6986b69a8bcd2a6debca7a7c05e6907980fb73c25c3426c35497",
+      "programSha256": "5230d6a0254c59664b1b4a53232c3090e5c26cf252b270ff437d6d2bc027dae1"
+    },
+    {
+      "chapterId": "pertes-multi-etiquettes",
+      "programId": "main",
+      "sourceLines": [
+        8,
+        9
+      ],
+      "sha256": "0091257a8573104ae6a694b28099cb2d788e8299ef17e94da1d776b49ef3ec17",
+      "programSha256": "5230d6a0254c59664b1b4a53232c3090e5c26cf252b270ff437d6d2bc027dae1"
+    },
+    {
+      "chapterId": "modules-et-buffers",
+      "programId": "main",
+      "sourceLines": [
+        6,
+        7
+      ],
+      "sha256": "c4d180a8aa2b63b06e6e9113b1799fb438bc1cfcdd95d3a985f7e9e28b164f7c",
+      "programSha256": "34d67bdb848df81262c0e5203f087255d4a986e003e82aa0824c7e9e17b9f596"
+    },
+    {
+      "chapterId": "modules-et-buffers",
+      "programId": "reprise-adam",
+      "sourceLines": [
+        17,
+        18
+      ],
+      "sha256": "546c0b1b55f2933b9e5c3765f5f279c47dbf64a5300a625542e4cbb386ac86b7",
+      "programSha256": "8f0f28aef6974077119c3354990ef2ed481bf0f59aac6a8cbcaf3fd27dc747e5"
+    },
+    {
+      "chapterId": "modules-et-buffers",
+      "programId": "reprise-adam",
+      "sourceLines": [
+        20,
+        23
+      ],
+      "sha256": "99f9c3dea2bdae00c51013c9eb9a15913965780ba470ef3e34d9f5b018ee0d90",
+      "programSha256": "8f0f28aef6974077119c3354990ef2ed481bf0f59aac6a8cbcaf3fd27dc747e5"
+    },
+    {
+      "chapterId": "moyennes-et-microbatches",
+      "programId": "main",
+      "sourceLines": [
+        14,
+        20
+      ],
+      "sha256": "846022a8b102dee9014440113efeaac8b1df5d0387c13df7bf9d44b0c4158f7f",
+      "programSha256": "d48ae795d5b3b1e2cd459cf4a6a2121094e8932dfabe19832f9e34df0f6eef5c"
+    },
+    {
+      "chapterId": "moyennes-et-microbatches",
+      "programId": "main",
+      "sourceLines": [
+        21,
+        22
+      ],
+      "sha256": "bac52665aa7bfecaf578b05d4f374411942df176ecab58c4e5683070a02af4c0",
+      "programSha256": "d48ae795d5b3b1e2cd459cf4a6a2121094e8932dfabe19832f9e34df0f6eef5c"
+    },
+    {
+      "chapterId": "scheduler-et-arret-anticipe",
+      "programId": "main",
+      "sourceLines": [
+        4,
+        4
+      ],
+      "sha256": "b01d36fab27ddfdf2f41f3d0add7557e5399658ddfc6995c0523454a3c70aa4e",
+      "programSha256": "3d79a1c80bca5a7480dbed99338bfcf63e25b9bbdce6944cad431e12b1457767"
+    },
+    {
+      "chapterId": "scheduler-et-arret-anticipe",
+      "programId": "main",
+      "sourceLines": [
+        16,
+        21
+      ],
+      "sha256": "9827a780a1c7e5e7c256efa92b9884b9c75eef6e0132abb75168b442a3182a11",
+      "programSha256": "3d79a1c80bca5a7480dbed99338bfcf63e25b9bbdce6944cad431e12b1457767"
+    },
+    {
+      "chapterId": "scheduler-et-arret-anticipe",
+      "programId": "clipping",
+      "sourceLines": [
+        5,
+        8
+      ],
+      "sha256": "f1d95982f5fba4e9c6acab4fa927381b8b7c5a37b68e442694e114b98fc457f9",
+      "programSha256": "61d6798cec224701b8eacd693ceb10dd0c648397b97aaa0430d18e53abe6ad44"
+    },
+    {
+      "chapterId": "cuda-amp-memoire",
+      "programId": "main",
+      "sourceLines": [
+        8,
+        10
+      ],
+      "sha256": "54afc69828e1bf1e4b5698c435dcce79cba093d31b3a72d013905ff38efe18b9",
+      "programSha256": "34a987ba523b443ea53f7e3d6fafc1b5d6970c61a5d1af293ed7121d7094b047"
+    },
+    {
+      "chapterId": "cuda-amp-memoire",
+      "programId": "main",
+      "sourceLines": [
+        16,
+        21
+      ],
+      "sha256": "2abe5a9f3486658fbfefe49b2fd5ec633441c167bcb8494b2d801073e0a745fa",
+      "programSha256": "34a987ba523b443ea53f7e3d6fafc1b5d6970c61a5d1af293ed7121d7094b047"
+    }
+  ],
+  "limits": [
+    "The CUDA branches are not executed on this CPU runtime.",
+    "The classification descriptors and reserved examples are chosen; the mel signals are synthetic.",
+    "Reading fragments are exact slices of executed complete programs, not standalone executions."
+  ]
+}

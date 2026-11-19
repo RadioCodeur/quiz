@@ -1,0 +1,151 @@
+{
+  "tenseur-forme-type-device/main": [
+    "tuple(X.shape) == (3, 2) and tuple(cibles.shape) == (3,)",
+    "X.dtype == torch.float32 and cibles.dtype == torch.int64",
+    "tuple(premiere_ligne.shape) == (2,) and tuple(facteur_A.shape) == () and facteur_A.item() == 1.5",
+    "controle is True and finies.shape == X.shape"
+  ],
+  "du-pipeline-au-modele/main": [
+    "predictions.tolist() == [0, 0, 0] and accords.tolist() == [True, False, True]",
+    "predictions_modifiees.tolist() == [0, 1, 0]",
+    "scores[1, 1].item() == -4.5 and scores_modifies[1, 1].item() == 5."
+  ],
+  "construire-un-module/main": [
+    "torch.allclose(scores, torch.tensor([[1.5, -1.5], [4.5, -4.5], [2.5, -2.5]]))",
+    "torch.allclose(scores_avec_biais[:, 0] - scores[:, 0], torch.ones(3))",
+    "torch.equal(scores_avec_biais[:, 1], scores[:, 1]) and decisions_avec_biais.tolist() == [0, 0, 0]",
+    "torch.equal(couche.weight, torch.tensor([[0., 1.], [0., -1.]])) and couche.bias.tolist() == [1., 0.]"
+  ],
+  "choisir-la-perte/main": [
+    "tuple(pertes.shape) == (3,) and tuple(moyenne.shape) == ()",
+    "torch.allclose(pertes, torch.tensor([0.04858733, 9.00012302, 0.00671535]), atol=1e-6)",
+    "couts_B[1] > couts_B[0] and abs(couts_B[0].item() - 0.7443967) < 1e-6",
+    "torch.allclose(cout_A, pertes[0], atol=1e-6) and abs(moyenne.item() - 3.0184753) < 2e-6"
+  ],
+  "autograd-et-derivees/main": [
+    "gradient == -4. and avant == 0.",
+    "abs(apres - 0.4) < 1e-6 and abs(perte_recalculee.item() - 2.56) < 1e-6",
+    "perte.item() == 4. and w.grad.item() == -4."
+  ],
+  "premiere-boucle-minimale/main": [
+    "len(historique) == 201 and predictions.tolist() == [0, 1, 0]",
+    "abs(historique[0] - 3.018476) < 2e-6 and abs(historique[50] - 0.514087) < 2e-6",
+    "abs(historique[200] - 0.226087) < 2e-6 and abs(perte_finale.item() - 0.225241) < 2e-6",
+    "isinstance(modele, nn.Module) and len(list(modele.parameters())) == 2"
+  ],
+  "entrainer-ou-evaluer/main": [
+    "tuple(X_reserve.shape) == (4, 2) and cibles_reserve.tolist() == [0, 1, 0, 1]",
+    "predictions_reserve.tolist() == [0, 1, 0, 1] and nombre_correct == 4",
+    "poids_identiques and biais_identiques and not modele.training",
+    "not scores_reserve.requires_grad and not perte_reserve.requires_grad",
+    "abs(perte_reserve.item() - 0.30957514) < 2e-6"
+  ],
+  "dataset-et-batches/main": [
+    "len(dataset) == 3 and tuple(lot_manuel.shape) == (2,2)",
+    "torch.equal(lot_manuel, entrees) and annotations.tolist() == [0,1]",
+    "tuple(dernieres_entrees.shape) == (1,2) and dernieres_cibles.tolist() == [0]",
+    "torch.equal(reuni, X) and cibles.tolist() == [0,1,0]"
+  ],
+  "selection-diffusion-reduction/main": [
+    "tuple(reference.shape) == (1,2) and torch.allclose(reference, torch.tensor([[.15,17/6]]), atol=1e-6)",
+    "torch.allclose(centres, torch.tensor([[-.05,-4/3],[.05,5/3],[0.,-1/3]]), atol=1e-6)",
+    "masque.tolist() == [False,True,True] and cibles_retenues.tolist() == [1,0]",
+    "tuple(retenus.shape) == (2,2) and torch.equal(X, torch.tensor([[.1,1.5],[.2,4.5],[.15,2.5]]))",
+    "controle_fini and not torch.isfinite(torch.tensor([.1,float(\"nan\")])).all().item()"
+  ],
+  "organiser-les-axes/main": [
+    "redecoupe.tolist() == [[1,2],[3,4],[5,6]] and transpose.tolist() == [[1,4],[2,5],[3,6]]",
+    "aplati.tolist() == [1,4,2,5,3,6] and not transpose.is_contiguous()",
+    "tuple(avec_canal.shape) == (2,1,3) and torch.equal(avec_canal, autre_ecriture)",
+    "tuple(temps_avant.shape) == (2,3,1) and tuple(retrait_cible.shape) == (1,3) and tuple(retrait_total.shape) == (3,)"
+  ],
+  "padding-et-collate/main": [
+    "tuple(batch.shape) == (2,2,1) and masque.tolist() == [[True,True],[True,False]] and cibles.tolist() == [0,1]",
+    "moyennes.squeeze(-1).tolist() == [3.,6.] and naives.squeeze(-1).tolist() == [3.,3.]",
+    "comptes.squeeze(-1).tolist() == [2,1] and int(denominateur) == 3",
+    "abs(mse.item()-56/3) < 2e-6"
+  ],
+  "boucle-entrainement-complete/main": [
+    "len(historique) == 201 and historique[-1] < historique[0]",
+    "predictions_train.tolist() == [0,1,0] and predictions_reserve.tolist() == [0,1,0,1]",
+    "not scores_reserve.requires_grad and not copie.training",
+    "identiques and torch.equal(scores_reserve, scores_recharges) and set(etat) == {\"linear.weight\",\"linear.bias\"}"
+  ],
+  "convolution-a-la-main/main": [
+    "produits.tolist() == [[1.,0.],[0.,-5.]] and produits.sum().item() == -4.",
+    "tuple(sortie.shape) == (1,1,2,2) and sortie[0,0].tolist() == [[-4.,-4.],[-4.,-4.]]",
+    "variante[0,0].tolist() == [[-3.,-2.],[0.,1.]] and tuple(sortie_1d.shape) == (4,8,96)"
+  ],
+  "conv-mel-autoencodeur/main": [
+    "tuple(ondes.shape) == (2,16000) and tuple(mel_db.shape) == (2,64,98)",
+    "tuple(entree.shape) == (2,1,64,96) and tuple(latent.shape) == (2,8,16,24)",
+    "reconstruction.shape == entree.shape and (entree < 0).any().item()",
+    "activation_exemple.tolist() == [0.,0.,3.]",
+    "abs(avant-.8759986758232117) < 2e-6 and abs(apres-.796794) < 2e-6 and apres < avant"
+  ],
+  "retropropagation-a-la-main/main": [
+    "h.item() == 6 and y.item() == -6 and perte.item() == 36",
+    "w1.grad.item() == 24 and w2.grad.item() == -72",
+    "h.grad.item() == 12 and y.grad.item() == -12",
+    "w1.item() == 3 and w2.item() == -1"
+  ],
+  "optimiseurs-regularisation-pratique/main": [
+    "all(g == -2 for g, w in resultats.values())",
+    "abs(resultats['SGD'][1] - 1.19) < 1e-6",
+    "abs(resultats['Adam'][1] - 1.1) < 1e-6 and abs(resultats['AdamW'][1] - 1.09) < 1e-6"
+  ],
+  "detacher-geler-journaliser/main": [
+    "isinstance(nombre, float) and nombre == 1",
+    "valeurs.tolist() == [1., 2.] and copie.tolist() == [99., 2.]",
+    "detachees.data_ptr() == valeurs.data_ptr() and copie.data_ptr() != valeurs.data_ptr()",
+    "clone_differentiable.requires_grad and not copie.requires_grad",
+    "archive_cpu.device.type == \"cpu\" and not archive_cpu.requires_grad",
+    "poids.grad.item() == -2"
+  ],
+  "detacher-geler-journaliser/gel": [
+    "encodeur.weight.grad is None and tete.weight.grad is not None",
+    "torch.equal(avant, encodeur.weight)",
+    "torch.equal(representation, X) and not representation.requires_grad"
+  ],
+  "pertes-multi-etiquettes/main": [
+    "par_etiquette.shape == scores.shape == presences.shape == (1, 2)",
+    "torch.allclose(par_etiquette, torch.log(torch.full((1, 2), 2.)))",
+    "torch.allclose(scores.grad, torch.tensor([[-0.25, -0.25]]))",
+    "decisions.tolist() == [[True, True]]"
+  ],
+  "modules-et-buffers/main": [
+    "noms_parametres == ['couches.0.weight'] and noms_buffers == ['moyenne']",
+    "set(noms_etat) == {'moyenne', 'couches.0.weight'}",
+    "torch.allclose(sortie, torch.tensor([[0.1, 3.]]))",
+    "not modele.moyenne.requires_grad"
+  ],
+  "modules-et-buffers/reprise-adam": [
+    "reprise_identique and compteur == 2",
+    "ecart_sans_etat > 1e-4",
+    "len(optim_copie.state) == 2 and etat[\"pas\"] == 1",
+    "torch.equal(modele.bias, copie.bias)"
+  ],
+  "moyennes-et-microbatches/main": [
+    "moyenne_globale == 2.6 and moyenne_des_lots == 3.5",
+    "perte_complete.item() == 7.5 and gradient_complet == -15",
+    "gradient_decoupe == gradient_complet",
+    "poids_decoupe.item() == poids_complet.item() == 2.5"
+  ],
+  "scheduler-et-arret-anticipe/main": [
+    "len(historique) == 4 and historique[-1][0] == 4 and attente == 2",
+    "[taux for _, taux, _, _ in historique] == [0.1, 0.1, 0.05, 0.05]",
+    "meilleure == 0.6 and abs(poids.item() - 1.36) < 1e-6"
+  ],
+  "scheduler-et-arret-anticipe/clipping": [
+    "norme_avant.item() == 10",
+    "abs(gradient_utilise - 1) < 1e-6",
+    "abs(poids.item() - 0.9) < 1e-6"
+  ],
+  "cuda-amp-memoire/main": [
+    "device.type == \"cpu\" and not amp_active and not scaler.is_enabled()",
+    "octets_poids == 24",
+    "scores.shape == (3, 2) and cibles.dtype == torch.int64 and torch.isfinite(perte).item()",
+    "not torch.equal(poids_avant, modele.weight)",
+    "all(p.device == X.device == cibles.device for p in modele.parameters())"
+  ]
+}

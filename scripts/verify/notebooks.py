@@ -22,25 +22,39 @@ def one(path):
     from nbclient import NotebookClient
     notebook=nbformat.read(path,as_version=4)
     nbformat.validate(notebook)
+    assert not notebook.metadata.quiz.get('notebookAlias'),'Un renvoi Markdown ne doit pas être exécuté'
     course=json.loads((ROOT/'public/courses/pytorch.json').read_text(encoding='utf-8'))
     chapter=next(chapter for chapter in course['chapters'] if chapter['id']==notebook.metadata.quiz.chapterId)
     cell_by_id={cell.id:cell for cell in notebook.cells}
     programs=notebook.metadata.quiz.get('programs',[])
-    displayed=[(index,block)for index,block in enumerate(chapter['blocks'])if block.get('code')and block.get('language','python')=='python']
+    displayed=[(index,block)for index,block in enumerate(chapter['blocks'])if block.get('readingCompanion')and block.get('code')and block.get('language','python')=='python']
     assert len(programs)==len(displayed),'Chaque programme du cours possède ses cellules progressives'
+    checks=json.loads((ROOT/'scripts/verify/narration-pytorch-checks.json').read_text('utf-8'))
     for program,(index,block)in zip(programs,displayed):
         assert program['blockIndex']==index
+        assert program['programId']==block['programId']
         reconstructed=''.join(cell_by_id[id].source for id in program['cellIds'])
         assert reconstructed==block['code'],'Les cellules doivent conserver exactement le programme du cours'
         assert hashlib.sha256(reconstructed.encode()).hexdigest()==program['sourceSha256']
+        assert all(cell_by_id[id].metadata.programId==program['programId'] for id in program['cellIds'])
+        expressions=checks[chapter['id']+'/'+program['programId']]
+        assert program['assertions']==expressions and len(expressions)>=2
+        expected='\n'.join('assert bool('+expression+'), '+repr(chapter['id']+'/'+program['programId']+': '+expression)for expression in expressions)
+        expected+='\nprint("Contrôles numériques de la démonstration réussis.")'
+        assert cell_by_id[program['assertionCellId']].source==expected
     exercise_cells=[cell for cell in notebook.cells if 'exercise'in cell.metadata.get('tags',[])]
     assert len(exercise_cells)==2 and all(cell.cell_type=='code'for cell in exercise_cells),'Deux vrais espaces de pratique exécutables'
     source_hash=hashlib.sha256(json.dumps([cell.source for cell in notebook.cells],ensure_ascii=False).encode()).hexdigest()
-    original_count=len(notebook.cells)
     solutions=notebook.metadata.get('quiz',{}).get('exerciseSolutions',[])
     assert len(solutions)==2,'Deux solutions exécutables par notebook'
+    cleanup_index=next(index for index,cell in enumerate(notebook.cells)if 'cleanup'in cell.metadata.get('tags',[]))
+    solution_cells=[]
     for index,solution in enumerate(solutions):
-        notebook.cells.append(nbformat.v4.new_code_cell(solution,metadata={'tags':['verification-only'],'jupyter':{'source_hidden':True}}))
+        solution_cells.append(nbformat.v4.new_code_cell(solution,id='verify-solution-'+str(index+1),metadata={'tags':['verification-only'],'jupyter':{'source_hidden':True}}))
+    # Solutions may save a checkpoint; run them before the temporary folder is
+    # cleaned up, so verification cannot leave files in the repository.
+    solution_ids={cell.id for cell in solution_cells}
+    notebook.cells[cleanup_index:cleanup_index]=solution_cells
     started=time.perf_counter()
     with tempfile.TemporaryDirectory(prefix='quiz-notebook-') as folder:
         client=NotebookClient(notebook,timeout=100,kernel_name='python3',allow_errors=False,resources={'metadata':{'path':folder}})
@@ -51,9 +65,12 @@ def one(path):
     elapsed=time.perf_counter()-started
     assert elapsed<120,f'Notebook trop long : {elapsed:.2f}s'
     solution_outputs=[]
-    for cell in executed.cells[original_count:]:
-        solution_outputs.append([output.get('text','') for output in cell.get('outputs',[]) if output.output_type=='stream'])
-    executed.cells=executed.cells[:original_count]
+    for cell in executed.cells:
+        if cell.id in solution_ids:
+            outputs=[output.get('text','')for output in cell.get('outputs',[])if output.output_type=='stream']
+            assert 'Contrôle réussi' in ''.join(outputs),'La solution doit passer ses assertions'
+            solution_outputs.append(outputs)
+    executed.cells=[cell for cell in executed.cells if cell.id not in solution_ids]
     exercise_outputs=[]
     for cell in executed.cells:
         if 'exercise'in cell.metadata.get('tags',[]):
@@ -64,7 +81,7 @@ def one(path):
     nbformat.validate(executed)
     nbformat.write(executed,path)
     notebook_hash=hashlib.sha256(json.dumps(json.loads(path.read_text('utf-8')),ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
-    record={'path':str(path.relative_to(ROOT)).replace('\\','/'),'sourceSha256':source_hash,'notebookSha256':notebook_hash,'elapsedSeconds':round(elapsed,3),'device':'cpu','codeCells':sum(cell.cell_type=='code' for cell in executed.cells),'exerciseSolutions':2,'solutionOutputs':solution_outputs,'exerciseDefaultOutputs':exercise_outputs,'programsVerified':len(programs),'exerciseCellsReady':2,'unfinishedExercisesReported':2}
+    record={'path':str(path.relative_to(ROOT)).replace('\\','/'),'sourceSha256':source_hash,'notebookSha256':notebook_hash,'elapsedSeconds':round(elapsed,3),'device':'cpu','codeCells':sum(cell.cell_type=='code' for cell in executed.cells),'exerciseSolutions':2,'solutionOutputs':solution_outputs,'exerciseDefaultOutputs':exercise_outputs,'programsVerified':len(programs),'programIds':[program['programId']for program in programs],'numericalAssertions':sum(len(program['assertions'])for program in programs),'exerciseCellsReady':2,'unfinishedExercisesReported':2}
     return record
 
 def main():
@@ -78,6 +95,15 @@ def main():
     assert len(set(paths))==len(paths),'Un fichier distinct par chapitre'
     notebooks=[ROOT/'public'/path for path in paths]
     assert all(path.is_file()for path in notebooks),'Tous les notebooks liés sont présents'
+    aliases=[]
+    for previous,target in course.get('notebookAliases',{}).items():
+        assert target in paths and previous not in paths,'Le renvoi cible directement un notebook canonique'
+        alias_path=ROOT/'public'/previous
+        alias=json.loads(alias_path.read_text('utf-8'))
+        assert alias['metadata']['quiz']['notebookAlias']==target
+        assert alias['cells']and all(cell['cell_type']=='markdown'for cell in alias['cells']),'Un ancien fichier ne conserve pas de code périmé'
+        assert target in '\n'.join(cell['source']if isinstance(cell['source'],str)else''.join(cell['source'])for cell in alias['cells'])
+        aliases.append({'path':'public/'+previous,'target':'public/'+target,'codeCells':0,'sha256':hashlib.sha256(alias_path.read_bytes()).hexdigest()})
     records=[]
     for path in notebooks:
         print('Exécution CPU : '+path.stem,flush=True)
@@ -87,8 +113,8 @@ def main():
         record=json.loads(result.stdout.strip().splitlines()[-1]);records.append(record)
         print(f"  terminé en {record['elapsedSeconds']} s",flush=True)
     from importlib.metadata import version
-    report={'python':platform.python_version(),'torch':version('torch'),'torchaudio':version('torchaudio'),'nbformat':version('nbformat'),'nbclient':version('nbclient'),'device':'cpu','limitSeconds':120,'linkedChapters':len(paths),'notebooks':records}
+    report={'python':platform.python_version(),'torch':version('torch'),'torchaudio':version('torchaudio'),'nbformat':version('nbformat'),'nbclient':version('nbclient'),'device':'cpu','limitSeconds':120,'linkedChapters':len(paths),'notebooks':records,'aliases':aliases}
     (ROOT/'scripts/verify/notebooks-results.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-    print(f'{len(records)} notebooks exécutés, solutions comprises.',flush=True)
+    print(f'{len(records)} notebooks exécutés, solutions comprises ; {len(aliases)} renvois Markdown vérifiés sans exécution.',flush=True)
 
 if __name__=='__main__':main()

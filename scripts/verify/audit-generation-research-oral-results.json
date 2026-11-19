@@ -13,7 +13,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "1 2.0",
-      "seconds": 0.000348,
+      "seconds": 0.000158,
       "values": {
         "value": 2.6,
         "index": 1
@@ -28,7 +28,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "2 4.0",
-      "seconds": 0.000135,
+      "seconds": 8.5e-05,
       "values": {
         "value": 3.6,
         "index": 2
@@ -43,7 +43,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "étage 1 : indices [2, 0]\n  résidu : [-0.1, 0.2]\nétage 2 : indices [1, 2]\n  résidu : [-0.1, -0.05]\nreconstruction : [1.0, -0.75]\nerreur quadratique moyenne : 0.006250",
-      "seconds": 0.002225,
+      "seconds": 0.001423,
       "values": {
         "z": {
           "shape": [
@@ -169,7 +169,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "jetons : [6, 0, 4, 2, 7, 1, 5, 3]\nnote 60 : début 0.00 s ; durée 0.25 s ; vélocité 80\nnote 64 : début 0.25 s ; durée 0.50 s ; vélocité 100\ndurée totale : 0.75 s\nreprésentations : 8 jetons ; 12000 échantillons mono à 16000 Hz",
-      "seconds": 0.000428,
+      "seconds": 0.000377,
       "values": {
         "tokens": {
           "shape": [
@@ -213,7 +213,7 @@
       "codeMode": "excerpt",
       "scaffold": "import torch\ntorch.manual_seed(0)\nclass MiniCausalModel(torch.nn.Module):\n    \"\"\"Small randomly initialized causal model, not a trained audio generator.\"\"\"\n    def __init__(self):\n        super().__init__()\n        self.embedding = torch.nn.Embedding(10, 4)\n        self.layer = torch.nn.TransformerEncoderLayer(\n            d_model=4, nhead=2, dim_feedforward=8, dropout=0., batch_first=True)\n        self.head = torch.nn.Linear(4, 10)\n    def forward(self, tokens):\n        length = tokens.shape[1]\n        causal = torch.ones(length, length, dtype=torch.bool).triu(diagonal=1)\n        return self.head(self.layer(self.embedding(tokens), src_mask=causal))\nmodel = MiniCausalModel()\n",
       "stdout": "",
-      "seconds": 0.004441,
+      "seconds": 0.003629,
       "values": {
         "tokens": {
           "shape": [
@@ -317,7 +317,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "entrées [[0, 4, 7]] [1, 3]\ncibles [[4, 7, 9]] [1, 3]\nlogits [1, 3, 10]",
-      "seconds": 0.002618,
+      "seconds": 0.002756,
       "values": {
         "tokens": {
           "shape": [
@@ -421,7 +421,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "[0.11920291185379028, 0.8807970285415649]\n[0.01798621006309986, 0.9820137619972229]",
-      "seconds": 0.000258,
+      "seconds": 0.000245,
       "values": {
         "logits": {
           "shape": [
@@ -464,7 +464,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "entrees {'audio': [1, 4, 4], 'texte': [1, 2, 4], 'reference': [1, 3, 4], 'MIDI': [1, 2, 4]}\nconditions [1, 7, 4]\ncroisee [1, 4, 4] poids [1, 2, 4, 7]\nconcat_positions [1, 11, 4] audio_retenu [1, 4, 4]\nindices_evenements [0, 3]\nconcat_caracteristiques [1, 4, 6] projection [1, 4, 4]\nFiLM [1, 4] [1, 1, 4] [1, 1, 4] [1, 4, 4]\nFiLM_manuel [1.0, 2.5]",
-      "seconds": 0.003276,
+      "seconds": 0.003449,
       "values": {
         "audio": {
           "shape": [
@@ -987,7 +987,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "1.0",
-      "seconds": 6.3e-05,
+      "seconds": 6.7e-05,
       "values": {
         "mean": 2.0,
         "variance": 4.0,
@@ -1019,7 +1019,7 @@
       "codeMode": "excerpt",
       "scaffold": "import torch\nmu = torch.tensor([[2.]])\nlogvar = torch.log(torch.tensor([[4.]]))\ndecoder = torch.nn.Identity()\n",
       "stdout": "",
-      "seconds": 0.000911,
+      "seconds": 0.000921,
       "values": {
         "mu": {
           "shape": [
@@ -1104,7 +1104,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "mu [[2.0]] std [[2.0]] eps [[-0.5]]\nz [[1.0]] reconstruction identité [[1.0]]",
-      "seconds": 0.000266,
+      "seconds": 0.000253,
       "values": {
         "mu": {
           "shape": [
@@ -1189,7 +1189,7 @@
       "codeMode": "excerpt",
       "scaffold": "import torch\nmu = torch.ones((2, 4))\nlogvar = torch.zeros((2, 4))\nreconstruction_loss = torch.tensor(.25)\nbeta = .1\n",
       "stdout": "",
-      "seconds": 0.000253,
+      "seconds": 0.000264,
       "values": {
         "mu": {
           "shape": [
@@ -1291,7 +1291,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "par dimension [[0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5]]\npar exemple [2.0, 2.0]\nKL 2.0 perte 0.44999998807907104",
-      "seconds": 0.000243,
+      "seconds": 0.000235,
       "values": {
         "mu": {
           "shape": [
@@ -1393,7 +1393,7 @@
       "codeMode": "excerpt",
       "scaffold": "import torch\nx0 = torch.tensor([1.])\nalpha_bar = torch.tensor(.64)\nt = torch.tensor([1])\ndef model(xt, t):\n    # A specified toy prediction, not a learned denoiser.\n    return torch.full_like(xt, -.8)\n",
       "stdout": "",
-      "seconds": 0.000344,
+      "seconds": 0.000353,
       "values": {
         "x0": {
           "shape": [
@@ -1461,7 +1461,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "propre [1.0] bruit [-1.0] mélange [0.19999998807907104]\nprédiction [-0.800000011920929] perte 0.03999999538064003",
-      "seconds": 0.00033,
+      "seconds": 0.00025,
       "values": {
         "x0": {
           "shape": [
@@ -1529,7 +1529,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "point -0.25 vitesse 3.0\nperte 0.25 pas exact -0.25",
-      "seconds": 0.000822,
+      "seconds": 0.000208,
       "values": {
         "z": {
           "shape": [],
@@ -1579,7 +1579,7 @@
       "codeMode": "excerpt",
       "scaffold": "import torch\neps_u = torch.tensor([2.])\neps_c = torch.tensor([5.])\ns = 2.\nknown_mask = torch.tensor([True, True, False, False])\nobserved = torch.tensor([.1, .2, .3, .4])\ngenerated = torch.tensor([9., 8., 7., 6.])\n",
       "stdout": "",
-      "seconds": 0.000326,
+      "seconds": 0.000232,
       "values": {
         "eps_u": {
           "shape": [
@@ -1668,7 +1668,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "bruit guidé [8.0]\nsortie [0.10000000149011612, 0.20000000298023224, 7.0, 6.0]\nobservé conservé [0.10000000149011612, 0.20000000298023224, 0.30000001192092896, 0.4000000059604645] proposé conservé [9.0, 8.0, 7.0, 6.0]",
-      "seconds": 0.000266,
+      "seconds": 0.000217,
       "values": {
         "eps_u": {
           "shape": [
@@ -1757,7 +1757,7 @@
       "codeMode": "excerpt",
       "scaffold": "import torch\ntorch.manual_seed(0)\nd_in, d_out, r = 4, 3, 1\nbase = torch.nn.Linear(d_in, d_out, bias=False)\nW0 = base.weight\nx = torch.tensor([1., 2., 3., 4.])\n",
       "stdout": "",
-      "seconds": 0.004136,
+      "seconds": 0.001839,
       "values": {
         "d_in": 4,
         "d_out": 3,
@@ -1914,7 +1914,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "activation [1] correction [0.0, 0.0, 0.0]\nsortie initiale identique True\ngradient base None gradient A nul True\ngradient B non nul True",
-      "seconds": 0.00312,
+      "seconds": 0.002294,
       "values": {
         "d_in": 4,
         "d_out": 3,
@@ -2071,7 +2071,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "À la main : 0.400 -> 0.333\nParamètres : projection=4096, adapter=1024, fraction=0.25\nFloat32 : MSE=0.00000000 ; poids=16384 octets\n8 bits : poids logiques=4096 octets, MSE=0.00003770\n3 bits : poids logiques=1536 octets, MSE=0.06974661\n256 échantillons à 48 kHz : 5.333 ms",
-      "seconds": 0.004942,
+      "seconds": 0.00277,
       "values": {
         "mini": {
           "shape": [],
@@ -2151,7 +2151,7 @@
       "codeMode": "excerpt",
       "scaffold": "import numpy as np\nrecording_ids = [\"D01\", \"D02\", \"D03\", \"D04\", \"D05\", \"D06\"]\ndef split_recording_ids(ids):\n    assert len(set(ids)) == len(ids)\n    return ids[:3], ids[3:5], ids[5:]\nclass Windows:\n    def __init__(self, ids):\n        self.recording_ids = [id for id in ids for _ in range(2)]\n        self.features = np.array([[float(id[1:]), float(j)] for id in ids for j in range(2)])\ndef make_windows(ids):\n    return Windows(ids)\nclass Scaler:\n    def fit(self, features):\n        self.mean_ = features.mean(axis=0)\n        self.scale_ = np.maximum(features.std(axis=0), 1e-8)\n        return self\n    def transform(self, features):\n        return (features - self.mean_) / self.scale_\nscaler = Scaler()\n",
       "stdout": "",
-      "seconds": 0.000617,
+      "seconds": 0.00049,
       "values": {
         "valid_scaled": [
           [
@@ -2182,7 +2182,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "prises ['D01', 'D02', 'D03'] ['D04', 'D05'] ['D06']\nsources train ['D01', 'D01', 'D02', 'D02', 'D03', 'D03']\nmoyenne train [2.0, 0.5]\nvalidation transformée [[2.449489742783178, -1.0], [2.449489742783178, 1.0], [3.6742346141747673, -1.0], [3.6742346141747673, 1.0]]",
-      "seconds": 0.000387,
+      "seconds": 0.000454,
       "values": {
         "valid_scaled": [
           [
@@ -2213,7 +2213,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "0.75 0.6 0.7",
-      "seconds": 9.2e-05,
+      "seconds": 9.8e-05,
       "values": {
         "tn": 40,
         "fp": 10,
@@ -2234,7 +2234,7 @@
       "codeMode": "excerpt",
       "scaffold": "import math\nimport torch\nmodel = torch.nn.Identity()\ncriterion = torch.nn.MSELoss(reduction=\"mean\")\nvalid_loader = [\n    (torch.zeros(8, 1, dtype=torch.float64), torch.ones(8, 1, dtype=torch.float64)),\n    (torch.zeros(2, 1, dtype=torch.float64), torch.full((2, 1), math.sqrt(3), dtype=torch.float64)),\n]\n",
       "stdout": "",
-      "seconds": 0.000509,
+      "seconds": 0.000477,
       "values": {
         "loss_sum": 14.0,
         "count": 10,
@@ -2285,7 +2285,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "somme 14.0 effectif 10 moyenne 1.4",
-      "seconds": 0.000391,
+      "seconds": 0.000417,
       "values": {
         "loss_sum": 14.0,
         "count": 10,
@@ -2336,7 +2336,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "Base 70 / 100\nBase+A 72 / 100\nBase+B 71 / 100\nBase+A+B 76 / 100\nconfusion base [[40, 10], [20, 30]]\ninteraction 3",
-      "seconds": 0.000394,
+      "seconds": 0.00039,
       "values": {
         "recording_ids": [
           "R01",
@@ -2418,7 +2418,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "1.0",
-      "seconds": 7.5e-05,
+      "seconds": 7.7e-05,
       "values": {
         "mu_ref": 2.0,
         "var_ref": 1.0,
@@ -2436,7 +2436,7 @@
       "codeMode": "excerpt",
       "scaffold": "import numpy as np\nrecording_ids = np.array([f\"R{i:02}\" for i in range(1, 21)])\ntruth = np.repeat(np.array([0] * 10 + [1] * 10), 5).reshape(20, 5)\npred_base = np.array([[0, 0, 0, 0, 1]] * 10 + [[1, 1, 1, 0, 0]] * 10)\npred_a = pred_base.copy()\npred_a[10:12, 3] = 1  # Deux erreurs corrigées : R11 et R12.\npred_b = pred_base.copy()\npred_b[0, 4] = 0     # Une erreur corrigée : R01.\npred_ab = pred_a.copy()\npred_ab[0, 4] = 0\npred_ab[12:15, 3] = 1  # Trois corrections propres à la combinaison.\nbase = {id: float(score) for id, score in zip(recording_ids, (pred_base == truth).mean(axis=1))}\nadapted = {id: float(score) for id, score in zip(recording_ids, (pred_ab == truth).mean(axis=1))}\ndef score_on_groups(scores, sampled):\n    return float(np.mean([scores[id] for id in sampled]))\nrng = np.random.default_rng(0)\n",
       "stdout": "",
-      "seconds": 0.000617,
+      "seconds": 0.000801,
       "values": {
         "recording_ids": [
           "R01",
@@ -2526,7 +2526,7 @@
       "codeMode": "standalone",
       "scaffold": "",
       "stdout": "premier tirage ['R18', 'R13', 'R11', 'R06', 'R07', 'R01', 'R02', 'R01', 'R04', 'R17', 'R13', 'R19', 'R11', 'R13', 'R20', 'R15', 'R13', 'R11', 'R12', 'R19']\nscores appariés 0.66 0.77 0.11\nmoyennes du jeu 0.7 0.76\nintervalle percentile 0.02 0.1",
-      "seconds": 0.082845,
+      "seconds": 0.071852,
       "values": {
         "recording_ids": [
           "R01",

@@ -11,7 +11,7 @@
       "role": "demonstration",
       "sourceSha256": "39cec5150b7bdff5e3a80a1105b6f988d16884164db56f3c89d1d99612205215",
       "stdout": "[-0.5, 0.5, -0.5, 0.5]\n[-1.0, 1.0]\n",
-      "seconds": 0.019743,
+      "seconds": 0.015221,
       "values": {}
     },
     {
@@ -21,7 +21,7 @@
       "role": "demonstration",
       "sourceSha256": "62d547a0480d8104a671625f639e6b1932a0cc8dfc5070f7f026ba1b183942b9",
       "stdout": "[-0.5, 0.5, -0.5, 0.5] (4,)\n[[-0.5, 0.5, -0.5, 0.5]] (1, 4)\n[[-0.5, 0.5], [0.0, 1.0]] (2, 2)\n",
-      "seconds": 0.005212,
+      "seconds": 0.001715,
       "values": {
         "S": {
           "shape": [
@@ -97,7 +97,7 @@
       "role": "demonstration",
       "sourceSha256": "e267c9fa9909a8134b7dea1c9e1d05d8e4bcd6ba8fd75d799855f4c54206b4a6",
       "stdout": "[[2, 6], [14, 18], [26, 30], [38, 42]]\n(4, 2)\n",
-      "seconds": 0.002019,
+      "seconds": 0.001426,
       "values": {
         "X": {
           "shape": [
@@ -141,7 +141,7 @@
       "role": "demonstration",
       "sourceSha256": "c67526ea4f469caae272cc40828ee7c5c403fd7587231d4218d8d1a1bda428b7",
       "stdout": "",
-      "seconds": 0.001639,
+      "seconds": 0.001384,
       "values": {
         "signal": {
           "shape": [
@@ -184,7 +184,7 @@
       "role": "demonstration",
       "sourceSha256": "a55d8efa2b30ba9e8f709fe152e9ca1a6dddd545ccef90e5135e3a9a75e4a3b0",
       "stdout": "[[0.25, 0.25, 0.25, 0.25], [0.0, 0.0, 0.0, 1.0]] [0.25, 0.25]\n[0.5, 0.5] [0.5, 1.0] [1.0, 2.0]\n[[0.5, 1.0], [0.5, 2.0]]\n",
-      "seconds": 0.001625,
+      "seconds": 0.001455,
       "values": {
         "S": {
           "shape": [
@@ -315,7 +315,7 @@
       "role": "demonstration",
       "sourceSha256": "f32665b64fadcaeb863581f24557ad713a8e82b29e5a085309c701c18ea00921",
       "stdout": "",
-      "seconds": 0.001371,
+      "seconds": 0.001354,
       "values": {
         "F": {
           "shape": [
@@ -390,7 +390,7 @@
       "role": "demonstration",
       "sourceSha256": "0609c10423fa736e1fa6cdb4ec146814d53c7efd22c0e95d53a265fbaada8893",
       "stdout": "(2, 1, 2) (1, 1, 2) (2, 1, 2)\n[[[0.0, 0.0]], [[0.0, 1.0]]] [[0.0], [1.0]]\n",
-      "seconds": 0.001564,
+      "seconds": 0.001368,
       "values": {
         "X": {
           "shape": [
@@ -528,7 +528,7 @@
       "role": "demonstration",
       "sourceSha256": "eb479239b54073b95ec6bfee78739e844058a30ffec5797716fc3e27f36a93b3",
       "stdout": "",
-      "seconds": 0.001384,
+      "seconds": 0.001395,
       "values": {
         "F_train": {
           "shape": [
@@ -612,7 +612,7 @@
       "role": "demonstration",
       "sourceSha256": "e9c54ac32d23014fe2748e8536283e5de183da62d61499a62297f6b7fb845c52",
       "stdout": "",
-      "seconds": 0.001304,
+      "seconds": 0.001256,
       "values": {
         "mu": {
           "shape": [
@@ -662,7 +662,7 @@
       "role": "demonstration",
       "sourceSha256": "38e57a099a15c815c551c6495e37a1f970e1aba0051c736a9885d6da7dec5894",
       "stdout": "['voix_a.wav']\n['voix_a.wav', 'perc_b.wav']\n",
-      "seconds": 0.001332,
+      "seconds": 0.001172,
       "values": {}
     },
     {
@@ -672,7 +672,7 @@
       "role": "demonstration",
       "sourceSha256": "04f1671151b36b83e8dd6e156c95c40d7848771133929dc3cb9cd91d38902986",
       "stdout": "",
-      "seconds": 0.001549,
+      "seconds": 0.001384,
       "values": {}
     },
     {
@@ -682,7 +682,7 @@
       "role": "demonstration",
       "sourceSha256": "f8d857f9cf20b8bdd99f017dae876ccc840fd5bb7d4b58a94403c4626eac33d0",
       "stdout": "1 ('voix_a.wav', 0)\n2 ('voix_c.wav', 0)\n",
-      "seconds": 0.001534,
+      "seconds": 0.001381,
       "values": {
         "numero": 2
       }
@@ -694,7 +694,7 @@
       "role": "demonstration",
       "sourceSha256": "78249cc6e73f7a87d05dc47ffd1db03461cc1b4d3597e359a567b59cf3d7ca00",
       "stdout": "",
-      "seconds": 0.001418,
+      "seconds": 0.001243,
       "values": {}
     },
     {
@@ -704,7 +704,7 @@
       "role": "demonstration",
       "sourceSha256": "6b35758bc91292e9a2ecf044d73531cdfe18a47f29324240348dc4936ece6dfd",
       "stdout": "",
-      "seconds": 0.001697,
+      "seconds": 0.001358,
       "values": {
         "S": {
           "shape": [
@@ -826,7 +826,7 @@
       "role": "demonstration",
       "sourceSha256": "4b394fa6d993b084a55598bb9bae3d6457e4d8dd436cb8e01e1417eaef61e7d4",
       "stdout": "",
-      "seconds": 0.003868,
+      "seconds": 0.00116,
       "values": {
         "nombre": 16000,
         "frequence": 16000,
@@ -841,7 +841,7 @@
       "role": "demonstration",
       "sourceSha256": "1972221a9591be9124f0caf2324788eba1ca2af9f2d0067381d4e84a5308f615",
       "stdout": "",
-      "seconds": 0.003554,
+      "seconds": 0.0013,
       "values": {
         "premier": 10.0
       }
@@ -853,7 +853,7 @@
       "role": "demonstration",
       "sourceSha256": "91375191bbce26623680bc36a8c3825e609e05996b929832d4bd29ae612f5cfe",
       "stdout": "(64000,) 16000 4.0\n(8000,)\n",
-      "seconds": 0.032368,
+      "seconds": 0.024205,
       "values": {
         "source": {
           "shape": [
@@ -886,7 +886,7 @@
       "role": "demonstration",
       "sourceSha256": "33d342305867f791ec1e15e43dd3ea80498b13ff48facb162db546d97f3a408e",
       "stdout": "(192000,) 48000 (64000,) 16000\n4.0 4.0\n",
-      "seconds": 1.326864,
+      "seconds": 0.924133,
       "values": {
         "x": {
           "shape": [
@@ -911,7 +911,7 @@
       "role": "demonstration",
       "sourceSha256": "525c9bdfcaaa81dee18ab5ad345b316febc7a11ef4d65ac2aae7a8340e3e43a3",
       "stdout": "crête 0.8021240234375 carré moyen 0.014579350650475439 RMS 0.12074498188527522\ndBFS crête -1.9151695288248036 dBFS RMS -18.362618186240418 facteur dB 16.447448657415613\n",
-      "seconds": 0.015102,
+      "seconds": 0.010228,
       "values": {
         "x": {
           "shape": [
@@ -935,7 +935,7 @@
       "role": "demonstration",
       "sourceSha256": "af56d35ebd97006a138998d358c97a21bc60cfaa1b14a195614c11c9e8a68030",
       "stdout": "[0.0, 1000.0, 2000.0, 3000.0, 4000.0]\n[0.0, 0.0, 4.0, 0.0, 0.0]\n",
-      "seconds": 0.007864,
+      "seconds": 0.002182,
       "values": {
         "x": {
           "shape": [
@@ -1017,7 +1017,7 @@
       "role": "demonstration",
       "sourceSha256": "67f1019f580a7d7c072081225634ecebe070dd6c1c6a42a280a4bed0cafc16dd",
       "stdout": "(400,) (400,)\n(201, 98)\n",
-      "seconds": 2.347146,
+      "seconds": 1.955843,
       "values": {
         "complet": {
           "shape": [
@@ -1062,7 +1062,7 @@
       "role": "demonstration",
       "sourceSha256": "68bddeee205aa84d97f3a2b6115a5d4ed5db936ab66a69e01c75d1af4768a500",
       "stdout": "(512,) (2048,)\n(257,) (1025,) (1025,)\n",
-      "seconds": 0.01612,
+      "seconds": 0.010218,
       "values": {
         "y": {
           "shape": [
@@ -1110,7 +1110,7 @@
       "role": "demonstration",
       "sourceSha256": "541a8dd9f86a2655b6891492f0da9a1c62b445ab49856cdcd09c36e2fd587638",
       "stdout": "(201, 98) (201, 98) (64, 201) (64, 98)\n-100.0 -35.476\n",
-      "seconds": 0.018887,
+      "seconds": 0.011346,
       "values": {
         "complet": {
           "shape": [
@@ -1189,7 +1189,7 @@
       "role": "demonstration",
       "sourceSha256": "fc23b37318bfc6e15e9b70b8e8e9812ced767747ed7ea15ecc725e800584bba3",
       "stdout": "",
-      "seconds": 0.002191,
+      "seconds": 0.002103,
       "values": {
         "left": {
           "shape": [
@@ -1257,7 +1257,7 @@
       "role": "demonstration",
       "sourceSha256": "453d33dcc7467664eb7740c279ec6ca297a52f8f4632accda650455bb53d4ed9",
       "stdout": "(257, 501) (64000,) (64000,)\nSTFT complete : erreur max 3.3306690738754696e-16\nContexte futur 0.032\n",
-      "seconds": 0.340828,
+      "seconds": 0.287832,
       "values": {
         "y": {
           "shape": [
@@ -1297,7 +1297,7 @@
       "role": "demonstration",
       "sourceSha256": "acaae066128ca3f6441f67e658a9671a748bb29cb1b4c39797bf3d7d2723ccff",
       "stdout": "[[0.5, 0.7500000596046448]] 0.4904146194458008\n",
-      "seconds": 0.003201,
+      "seconds": 0.003452,
       "values": {
         "logits": {
           "shape": [
@@ -1352,7 +1352,7 @@
       "role": "demonstration",
       "sourceSha256": "aa00f005eac886cacfc2e5f5893464161dbceb99c3f57c926b2b7ca47b0c2438",
       "stdout": "",
-      "seconds": 0.001917,
+      "seconds": 0.001618,
       "values": {
         "train": {
           "shape": [
@@ -1393,7 +1393,7 @@
       "role": "demonstration",
       "sourceSha256": "715dcf1114da7de4600f5a92d85c9499a09ddcda0524b33fefab4116c569a7bb",
       "stdout": "torch.Size([1, 4, 1]) [[6.0]] [[2.0]]\n[[1.5]] [[3.0]]\n",
-      "seconds": 0.001902,
+      "seconds": 0.001569,
       "values": {
         "x": {
           "shape": [
@@ -1554,7 +1554,7 @@
       "role": "demonstration",
       "sourceSha256": "10dd60bf0a45922b64b7ebb71d5fae4f8fc104e7d3304f0831a3f2cc63740d23",
       "stdout": "torch.Size([3, 4]) torch.Size([3, 512]) torch.Size([3, 2])\nencodeur conserve True tete modifiee True\n",
-      "seconds": 2.244693,
+      "seconds": 1.73184,
       "values": {
         "x": {
           "shape": [
@@ -1661,7 +1661,7 @@
       "role": "demonstration",
       "sourceSha256": "4c883ac50987454d12a93d7b7755786e17c0c8156b99f354c990754f630298d5",
       "stdout": "",
-      "seconds": 0.051768,
+      "seconds": 0.015098,
       "values": {
         "x": {
           "shape": [
@@ -1704,7 +1704,7 @@
       "role": "demonstration",
       "sourceSha256": "bbeb2762a6cb1a198572dc7452821a974144995ba83602348f9e79418a1b00a5",
       "stdout": "",
-      "seconds": 0.004908,
+      "seconds": 0.002674,
       "values": {
         "p": {
           "shape": [
@@ -1739,7 +1739,7 @@
       "role": "demonstration",
       "sourceSha256": "a1ae9f984dce63f71972f419e60a2bda2f68ed5b5d2a9189c81c7b2f79b9ecb7",
       "stdout": "10.0 8.0 125.0\n1.0 1.0 62\n",
-      "seconds": 1.240128,
+      "seconds": 0.835848,
       "values": {
         "sr": 16000,
         "t": {
@@ -1790,7 +1790,7 @@
       "role": "demonstration",
       "sourceSha256": "839ea2e7e6b31bba0ae1bb7f223a2db05a8220b25c6fbfaf330b3c8d9e9c570c",
       "stdout": "[[4.0, 5.0], [6.0, 7.0]]\n[0.25, 0.75]\n",
-      "seconds": 0.002859,
+      "seconds": 0.002339,
       "values": {
         "x_a": {
           "shape": [
@@ -1883,7 +1883,7 @@
       "role": "demonstration",
       "sourceSha256": "ec3bf0c559259f1b3000f18f36a79ec543605f5afbf8bc305d36448b54844f32",
       "stdout": "0.6\n0.6\n",
-      "seconds": 0.001979,
+      "seconds": 0.001628,
       "values": {
         "a": {
           "shape": [
@@ -1914,7 +1914,7 @@
       "role": "variant",
       "sourceSha256": "96ff14de45a74df6ae0b6db342b3a9dfd20ef68efb2ece8c011bad5f597154e6",
       "stdout": "1.2\n0.6\n",
-      "seconds": 0.001739,
+      "seconds": 0.002069,
       "values": {
         "a": {
           "shape": [
@@ -1945,7 +1945,7 @@
       "role": "demonstration",
       "sourceSha256": "8e93c362e8acb7fa6c6641751683860ac9c50361e33b25d34857529b00f67da3",
       "stdout": "",
-      "seconds": 0.002953,
+      "seconds": 0.002674,
       "values": {
         "scores": {
           "shape": [
@@ -2016,7 +2016,7 @@
       "role": "demonstration",
       "sourceSha256": "db6081ad0d4d94d820a9c12466e2edf9d9738cacb0ffd805d7980b0741d9f159",
       "stdout": "torch.Size([2, 3, 8]) torch.Size([2, 3, 3])\n[0.0, 0.0, 0.0]\n",
-      "seconds": 0.00872,
+      "seconds": 0.005919,
       "values": {
         "D": 8,
         "x": {
@@ -2107,7 +2107,7 @@
       "role": "demonstration",
       "sourceSha256": "884af461565ecb8e59d455d765e0af3e8e4316d3ac10b9cea156aeed9a59f3bc",
       "stdout": "position_zero [0.0, 1.0, 0.0, 1.0]\nentree_zero [1.0, 1.0, 1.0, 1.0]\nmoyenne_variance 2.0 1.0\nnormalisation [-0.999995, 0.999995]\ndimension_tete 2\nformes_couches [[1, 3, 4], [1, 3, 4]]\nforme_poids [1, 2, 3, 3]\nmasque [[0, 1, 1], [0, 0, 1], [0, 0, 0]]\necart_passe_causal 0.0\necart_passe_libre 0.204499\n",
-      "seconds": 0.009615,
+      "seconds": 0.007988,
       "values": {
         "tokens": {
           "shape": [

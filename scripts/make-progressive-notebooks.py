@@ -15,104 +15,469 @@ ROOT=Path(__file__).resolve().parents[1]
 def exercise(prompt,setup,var,answer,test,hint):
     return dict(prompt=prompt,setup=setup,var=var,answer=answer,test=test,hint=hint)
 
-EXERCISES={
-'pytorch-en-une-page':[
- exercise('Trois extraits possèdent chacun deux descripteurs. Prévoyez la forme, avant de lancer cette cellule.','exo_mesures = torch.tensor([[.1,1.5],[.2,4.5],[.15,2.5]])','exo_forme','(3, 2)','assert tuple(exo_forme) == tuple(exo_mesures.shape)','La première taille compte les lignes, la seconde les valeurs de chaque ligne.'),
- exercise('Combien d’exemples ce tableau représente-t-il ? Le nombre de valeurs stockées est une autre question.','exo_mesures = torch.tensor([[.1,1.5],[.2,4.5],[.15,2.5]])','exo_nombre','3','assert exo_nombre == exo_mesures.shape[0]','Chaque extrait correspond à une ligne entière, pas à une case.')],
-'tenseur-forme-type-device':[
- exercise('Choisissez le dtype des indices de classes [0,1,0] pour CrossEntropyLoss dans son mode à indices.','exo_valeurs = [0,1,0]','exo_dtype','torch.long','exo_cibles = torch.tensor(exo_valeurs,dtype=exo_dtype)\nassert exo_cibles.dtype == torch.int64','long est un autre nom de int64. Cela ne signifie pas que toutes les cibles de toutes les tâches sont entières.'),
- exercise('Le calcul complet isfinite(...).all().item() renverra-t-il True ici ?','exo_x = torch.tensor([1.,float("nan"),2.])','exo_fini','False','assert exo_fini is torch.isfinite(exo_x).all().item()','isfinite teste chaque case ; all demande que toutes soient valides ; item extrait le booléen scalaire.')],
-'du-pipeline-au-modele':[
- exercise('Prévoyez les indices de classes renvoyés par argmax sur les colonnes.','exo_scores = torch.tensor([[1.5,-1.5],[4.5,-4.5],[2.5,-2.5]])','exo_predictions','torch.tensor([0,0,0])','torch.testing.assert_close(torch.as_tensor(exo_predictions),exo_scores.argmax(dim=1))','Les trois lignes ont leur maximum en colonne 0. La taille du lot n’est pas le nombre de classes.'),
- exercise('Reliez chaque décision à sa cible : quelles lignes sont correctement classées ?','exo_predictions = torch.tensor([0,0,0])\nexo_cibles = torch.tensor([0,1,0])','exo_accords','torch.tensor([True,False,True])','assert torch.equal(torch.as_tensor(exo_accords),exo_predictions == exo_cibles)','Comparez les deux vecteurs position par position, en conservant l’ordre des extraits.')],
-'construire-un-module':[
- exercise('Calculez le premier score d’une couche linéaire avec ces poids et ce biais.','exo_x = torch.tensor([.1,1.5])\nexo_w = torch.tensor([0.,1.])\nexo_b = torch.tensor(0.)','exo_score','1.5','assert abs(float(exo_score) - float((exo_x*exo_w).sum()+exo_b)) < 1e-6','Faites les deux produits, puis leur somme et enfin le biais.'),
- exercise('Nous changeons seulement le poids du premier descripteur, de 0 à 2. Quel score obtient-on ?','exo_x = torch.tensor([.1,1.5])\nexo_w = torch.tensor([2.,1.])','exo_score','1.7','assert abs(float(exo_score)-float((exo_x*exo_w).sum())) < 1e-6','Le nouveau terme vaut 0,1×2. La seconde contribution reste 1,5.')],
-'choisir-la-perte':[
- exercise('Quelle ligne reçoit la plus grande perte individuelle : 0, 1 ou 2 ?','exo_scores = torch.tensor([[1.5,-1.5],[4.5,-4.5],[2.5,-2.5]])\nexo_cibles = torch.tensor([0,1,0])\nexo_pertes = torch.nn.CrossEntropyLoss(reduction="none")(exo_scores,exo_cibles)','exo_indice','1','assert exo_indice == exo_pertes.argmax().item()','La seconde ligne préfère fortement la classe voix alors que la cible demande percussion.'),
- exercise('Avec reduction="none", quelle est la forme de la sortie pour ces trois extraits ?','exo_scores = torch.zeros(3,2)\nexo_cibles = torch.tensor([0,1,0])','exo_forme','(3,)','assert tuple(exo_forme) == tuple(torch.nn.CrossEntropyLoss(reduction="none")(exo_scores,exo_cibles).shape)','Une perte par extrait reste disponible avant une éventuelle moyenne.')],
-'pertes-multi-etiquettes':[
- exercise('Un seul extrait contient voix ET percussion. Écrivez sa cible multi-étiquettes flottante dans cet ordre.','exo_logits = torch.tensor([[.2,-.1]])','exo_cible','torch.tensor([[1.,1.]])','assert torch.as_tensor(exo_cible).dtype.is_floating_point\nassert torch.equal(torch.as_tensor(exo_cible),torch.ones_like(exo_logits))','Deux présences simultanées donnent deux 1, dans une ligne de forme (1,2).'),
- exercise('Ces deux probabilités sigmoïdes doivent-elles nécessairement sommer à un ? Répondez par True ou False.','exo_probabilites = torch.sigmoid(torch.tensor([[2.,2.]]))','exo_somme_un','False','assert exo_somme_un is bool(torch.isclose(exo_probabilites.sum(),torch.tensor(1.)).item())','Chaque présence est traitée séparément. La softmax répond à une autre convention.')],
-'autograd-et-derivees':[
- exercise('Prévoyez le gradient de (w−2)² au point w=0.','exo_w = torch.tensor(0.,requires_grad=True)\nexo_perte = (exo_w-2.)**2\nexo_perte.backward()','exo_gradient','-4.','assert abs(float(exo_gradient)-exo_w.grad.item()) < 1e-6','La dérivée vaut 2×(w−2), évaluée au poids actuel.'),
- exercise('Deux backward successifs sur 3u puis 4u, sans remise à zéro : que contient u.grad ?','exo_u = torch.tensor(1.,requires_grad=True)\n(3*exo_u).backward()\n(4*exo_u).backward()','exo_gradient','7.','assert abs(float(exo_gradient)-exo_u.grad.item()) < 1e-6','Les contributions des deux graphes s’accumulent dans le même champ grad.')],
-'retropropagation-a-la-main':[
- exercise('Complétez le gradient du premier poids dans le graphe x=2, w1=3, w2=−1.','exo_w1 = torch.tensor(3.,requires_grad=True)\nexo_w2 = torch.tensor(-1.,requires_grad=True)\nexo_h = exo_w1*2\nexo_y = exo_w2*exo_h\n(exo_y**2).backward()','exo_gradient','24.','assert abs(float(exo_gradient)-exo_w1.grad.item()) < 1e-6','Remontez −12 vers h avec le facteur −1, puis vers w1 avec le facteur 2.'),
- exercise('Complétez cette fois le gradient du second poids, avec le même calcul.','exo_w1 = torch.tensor(3.,requires_grad=True)\nexo_w2 = torch.tensor(-1.,requires_grad=True)\nexo_h = exo_w1*2\nexo_y = exo_w2*exo_h\n(exo_y**2).backward()','exo_gradient','-72.','assert abs(float(exo_gradient)-exo_w2.grad.item()) < 1e-6','La variation locale de y par rapport à w2 vaut h=6. Multipliez-la par −12.')],
-'une-iteration-entrainement':[
- exercise('Après un pas SGD de taux 0,25 sur (w−2)², depuis w=0, quelle valeur prend w ?','exo_w = torch.tensor(0.,requires_grad=True)\nexo_optimiseur = torch.optim.SGD([exo_w],lr=.25)\n((exo_w-2.)**2).backward()\nexo_optimiseur.step()','exo_apres','1.','assert abs(float(exo_apres)-exo_w.item()) < 1e-6','SGD soustrait taux×gradient : le gradient initial est −4.'),
- exercise('En changeant seulement le taux à 0,5, quelle perte obtient-on après le pas ?','exo_w = torch.tensor(0.,requires_grad=True)\nexo_optimiseur = torch.optim.SGD([exo_w],lr=.5)\n((exo_w-2.)**2).backward()\nexo_optimiseur.step()','exo_perte_apres','0.','assert abs(float(exo_perte_apres)-((exo_w-2.)**2).item()) < 1e-6','Le poids arrive à 2 dans cette fonction quadratique particulière. Cela ne se généralise pas à tout réseau.')],
-'premiere-boucle-minimale':[
- exercise('Diagnostiquez deux itérations sur w² sans zero_grad : quel poids final depuis w=1, avec lr=0,1 ?','exo_w = torch.tensor(1.,requires_grad=True)\nexo_opt = torch.optim.SGD([exo_w],lr=.1)\nfor _ in range(2):\n    (exo_w**2).backward()\n    exo_opt.step()','exo_poids','0.44','assert abs(float(exo_poids)-exo_w.item()) < 1e-6','Le premier gradient vaut 2. Le second, 1,6, s’ajoute au précédent.'),
- exercise('Nous remettons cette fois les gradients à zéro au début de chaque tour. Prévoyez le poids final.','exo_w = torch.tensor(1.,requires_grad=True)\nexo_opt = torch.optim.SGD([exo_w],lr=.1)\nfor _ in range(2):\n    exo_opt.zero_grad()\n    (exo_w**2).backward()\n    exo_opt.step()','exo_poids','0.64','assert abs(float(exo_poids)-exo_w.item()) < 1e-6','Le premier poids devient 0,8. Le second pas utilise seulement le gradient courant, 1,6.')],
-'entrainer-ou-evaluer':[
- exercise('Un modèle est en eval, mais sans no_grad. Sa nouvelle sortie possède-t-elle requires_grad=True ?','exo_modele = torch.nn.Linear(1,1).eval()\nexo_sortie = exo_modele(torch.ones(1,1))','exo_gradient_actif','True','assert exo_gradient_actif is exo_sortie.requires_grad','eval change le comportement des modules concernés ; il ne désactive pas autograd.'),
- exercise('Dans no_grad, cette nouvelle opération conserve-t-elle un graphe de dérivées ?','exo_modele = torch.nn.Linear(1,1).eval()\nwith torch.no_grad():\n    exo_sortie = exo_modele(torch.ones(1,1))','exo_gradient_actif','False','assert exo_gradient_actif is exo_sortie.requires_grad','Nous regardons la sortie d’une opération nouvelle, pas un tenseur créé avant le contexte.')],
-'organiser-les-axes':[
- exercise('Une grille 2×3 est reshaped en 3×2. Quelle valeur trouve-t-on à la coordonnée [1,0] ?','exo_x = torch.arange(6).reshape(2,3)\nexo_r = exo_x.reshape(3,2)','exo_valeur','2','assert exo_valeur == exo_r[1,0].item()','reshape conserve ici le parcours des cases 0,1,2,3,4,5.'),
- exercise('Même grille initiale, mais avec transpose(0,1). Que vaut maintenant [1,0] ?','exo_x = torch.arange(6).reshape(2,3)\nexo_t = exo_x.transpose(0,1)','exo_valeur','1','assert exo_valeur == exo_t[1,0].item()','La nouvelle case [1,0] correspond à l’ancienne case [0,1].')],
-'ajouter-retirer-un-axe':[
- exercise('Ajoutez l’axe canal en position 1 à une entrée (3,2). Prévoyez la forme.','exo_x = torch.zeros(3,2)\nexo_canal = exo_x.unsqueeze(1)','exo_forme','(3,1,2)','assert tuple(exo_forme) == tuple(exo_canal.shape)','Les valeurs ne sont ni répétées ni mélangées. Un axe de taille un est inséré.'),
- exercise('Retirez uniquement cet axe canal de taille un. Quelle forme reste-t-il ?','exo_x = torch.zeros(3,1,2)\nexo_sans_canal = exo_x.squeeze(1)','exo_forme','(3,2)','assert tuple(exo_forme) == tuple(exo_sans_canal.shape)','squeeze(1) vise un axe nommé ; il ne retire pas les autres axes.')],
-'concatener-ou-empiler':[
- exercise('Deux lots (3,2) sont concaténés sur dim=0. Quelle forme obtient-on ?','exo_a = torch.zeros(3,2)\nexo_b = torch.ones(3,2)','exo_forme','(6,2)','assert tuple(exo_forme) == tuple(torch.cat([exo_a,exo_b],dim=0).shape)','cat allonge un axe existant : 3+3 lignes.'),
- exercise('Les mêmes lots sont empilés avec stack(...,dim=0). Quelle forme obtient-on ?','exo_a = torch.zeros(3,2)\nexo_b = torch.ones(3,2)','exo_forme','(2,3,2)','assert tuple(exo_forme) == tuple(torch.stack([exo_a,exo_b],dim=0).shape)','stack crée un nouvel axe qui compte les deux tableaux fournis.')],
-'selection-diffusion-reduction':[
- exercise('Choisissez dim pour obtenir une moyenne par ligne, soit [1,5 ; 3,5 ; 5,5].','exo_x = torch.tensor([[1.,2.],[3.,4.],[5.,6.]])','exo_dim','1','torch.testing.assert_close(exo_x.mean(dim=exo_dim),torch.tensor([1.5,3.5,5.5]))','Nous rassemblons les deux colonnes de chaque ligne ; les trois lignes restent distinctes.'),
- exercise('Prévoyez argmax(dim=0) sur cette grille.','exo_x = torch.tensor([[1.,2.],[3.,4.],[5.,6.]])','exo_indices','torch.tensor([2,2])','assert torch.equal(torch.as_tensor(exo_indices),exo_x.argmax(dim=0))','Chaque colonne compare ses trois lignes. Les deux maxima sont en ligne 2.')],
-'broadcasting-pas-a-pas':[
- exercise('Calculez X−référence, avec une correction par colonne.','exo_x = torch.tensor([[1.,2.],[3.,4.],[5.,6.]])\nexo_reference = torch.tensor([1.,2.])','exo_resultat','torch.tensor([[0.,0.],[2.,2.],[4.,4.]])','torch.testing.assert_close(torch.as_tensor(exo_resultat),exo_x-exo_reference)','La référence de taille 2 est réutilisée sur les trois lignes.'),
- exercise('Cette fois, soustrayez une référence par ligne : 1, 3, puis 5. Écrivez le tableau de références.','exo_x = torch.tensor([[1.,2.],[3.,4.],[5.,6.]])','exo_reference','torch.tensor([[1.],[3.],[5.]])','assert tuple(exo_reference.shape) == (3,1)\ntorch.testing.assert_close(exo_x-exo_reference,torch.tensor([[0.,1.],[0.,1.],[0.,1.]]))','Il faut garder l’axe des colonnes avec une taille un : (3,1), et non (3,).')],
-'filtrer-et-preserver-les-cibles':[
- exercise('Prévoyez le masque qui conserve les lignes dont la seconde colonne dépasse 3.','exo_x = torch.tensor([[1.,2.],[3.,4.],[5.,6.]])','exo_masque','torch.tensor([False,True,True])','assert torch.equal(torch.as_tensor(exo_masque),exo_x[:,1]>3)','Le test utilise la seconde valeur de chaque ligne, pas les numéros de lignes.'),
- exercise('Appliquez le même masque aux cibles. Quel vecteur accompagne les deux lignes retenues ?','exo_cibles = torch.tensor([0,1,0])\nexo_masque = torch.tensor([False,True,True])','exo_cibles_gardees','torch.tensor([1,0])','assert torch.equal(torch.as_tensor(exo_cibles_gardees),exo_cibles[exo_masque])','Les positions 1 et 2 gardent leurs annotations dans cet ordre.')],
-'modules-et-buffers':[
- exercise('Un buffer moyenne est enregistré. Doit-il apparaître dans state_dict ?','exo_modele = torch.nn.Linear(2,2)\nexo_modele.register_buffer("moyenne",torch.zeros(2))','exo_sauvegarde','True','assert exo_sauvegarde is ("moyenne" in exo_modele.state_dict())','Le buffer fait partie de l’état conservé, même s’il n’est pas appris comme un poids.'),
- exercise('Ce buffer doit-il apparaître dans named_parameters ?','exo_modele = torch.nn.Linear(2,2)\nexo_modele.register_buffer("moyenne",torch.zeros(2))','exo_parametre','False','assert exo_parametre is ("moyenne" in dict(exo_modele.named_parameters()))','Un buffer enregistré est distinct d’un paramètre enregistré.')],
-'dataset-et-batches':[
- exercise('Ce jeu contient trois paires. Combien d’exemples contient-il ?','exo_x = torch.tensor([[.1,1.5],[.2,4.5],[.15,2.5]])\nexo_y = torch.tensor([0,1,0])\nexo_dataset = torch.utils.data.TensorDataset(exo_x,exo_y)','exo_nombre','3','assert exo_nombre == len(exo_dataset)','Chaque paire mesures/cible compte pour un exemple. La largeur des mesures ne compte pas les exemples.'),
- exercise('Avec batch_size=2 et drop_last=False, quelle forme aura le dernier lot de mesures ?','exo_x = torch.zeros(3,2)\nexo_y = torch.tensor([0,1,0])\nexo_loader = torch.utils.data.DataLoader(torch.utils.data.TensorDataset(exo_x,exo_y),batch_size=2,shuffle=False)','exo_forme','(1,2)','assert tuple(exo_forme) == tuple(list(exo_loader)[-1][0].shape)','Après le premier lot de deux exemples, il reste un exemple avec ses deux caractéristiques.')],
-'padding-et-collate':[
- exercise('Deux séquences contiennent deux positions puis une seule. Complétez leur masque de validité après padding.','exo_longueurs = torch.tensor([2,1])\nexo_positions = torch.arange(2)[None,:]','exo_masque','torch.tensor([[True,True],[True,False]])','assert torch.equal(torch.as_tensor(exo_masque),exo_positions<exo_longueurs[:,None])','La deuxième case du second extrait a été ajoutée pour le stockage.'),
- exercise('Une séquence [5] est stockée comme [5,9]. Le second nombre est du padding. Quelle moyenne pertinente conserve-t-on ?','exo_x = torch.tensor([5.,9.])\nexo_valide = torch.tensor([True,False])','exo_moyenne','5.','assert abs(float(exo_moyenne)-exo_x[exo_valide].mean().item()) < 1e-6','Le masque dépend de la longueur d’origine, pas de la valeur zéro.')],
-'moyennes-masquees':[
- exercise('Calculez la moyenne de [2,4,0,0] quand seules les deux premières positions sont réelles.','exo_x = torch.tensor([2.,4.,0.,0.])\nexo_valide = torch.tensor([True,True,False,False])','exo_moyenne','3.','assert abs(float(exo_moyenne)-exo_x[exo_valide].mean().item()) < 1e-6','Le numérateur vaut 6 et le nombre d’observations vaut 2.'),
- exercise('Changez seulement les deux valeurs de padding en 9 et 20. Quel résumé masqué obtient-on ?','exo_x = torch.tensor([2.,4.,9.,20.])\nexo_valide = torch.tensor([True,True,False,False])','exo_moyenne','3.','assert abs(float(exo_moyenne)-exo_x[exo_valide].mean().item()) < 1e-6','Les positions invalides ne deviennent pas des observations lorsque leur valeur change.')],
-'detacher-geler-journaliser':[
- exercise('Nous modifions la première case d’un tenseur détaché. Que vaut la première case de la source ?','exo_x = torch.tensor([1.,2.],requires_grad=True)\nexo_detache = exo_x.detach()\nexo_detache[0] = 9.','exo_source','9.','assert abs(float(exo_source)-exo_x[0].item()) < 1e-6','detach retire le lien au graphe, mais partage encore le stockage.'),
- exercise('Construisez cette fois une copie détachée indépendante avant de modifier sa première case.','exo_x = torch.tensor([1.,2.],requires_grad=True)','exo_copie','exo_x.detach().clone()','exo_copie[0]=9.\nassert exo_x[0].item() == 1.\nassert not exo_copie.requires_grad','Deux propriétés sont demandées : aucun lien au graphe et aucun stockage partagé.')],
-'moyennes-et-microbatches':[
- exercise('Un lot de huit exemples a une perte moyenne de 1 ; le dernier de deux exemples, de 3. Quelle moyenne globale ?','exo_tailles = [8,2]\nexo_pertes = [1.,3.]','exo_moyenne','1.4','assert abs(float(exo_moyenne)-sum(n*p for n,p in zip(exo_tailles,exo_pertes))/sum(exo_tailles)) < 1e-6','Additionnez d’abord les contributions 8×1 et 2×3, puis divisez par dix exemples.'),
- exercise('Quel résultat erroné donnerait une moyenne simple des deux moyennes de lots ?','exo_pertes = [1.,3.]','exo_moyenne_naive','2.','assert abs(float(exo_moyenne_naive)-sum(exo_pertes)/len(exo_pertes)) < 1e-6','Ce calcul donne le même poids au petit lot et au grand lot. Expliquer l’erreur fait partie de l’exercice.')],
-'sauvegarder-et-reprendre':[
- exercise('Après sauvegarde et rechargement de ce Linear, quelle sortie obtient-on pour x=1 ?','exo_modele = torch.nn.Linear(1,1)\nwith torch.no_grad():\n    exo_modele.weight.fill_(2.)\n    exo_modele.bias.fill_(1.)\ntorch.save(exo_modele.state_dict(),"exo-modele.pt")\nexo_recharge = torch.nn.Linear(1,1)\nexo_recharge.load_state_dict(torch.load("exo-modele.pt",weights_only=True))','exo_sortie','3.','assert abs(float(exo_sortie)-exo_recharge(torch.ones(1,1)).item()) < 1e-6','La sauvegarde garde ici poids et biais : 2×1+1.'),
- exercise('Un nouveau Linear sans chargement est-il nécessairement identique au modèle précédent ?','exo_a = torch.nn.Linear(1,1)\nexo_b = torch.nn.Linear(1,1)\nwith torch.no_grad():\n    exo_a.weight.fill_(2.)\n    exo_b.weight.fill_(0.)','exo_identique','False','assert exo_identique is torch.equal(exo_a.weight,exo_b.weight)','Créer la même architecture ne recopie pas ses paramètres. Les valeurs ont été explicitement rendues différentes ici.')],
-'optimiseurs-regularisation-pratique':[
- exercise('AdamW reçoit un poids 1, un gradient nul, lr=0,1 et weight_decay=0,1. Quel poids suit le pas ?','exo_p = torch.nn.Parameter(torch.tensor(1.))\nexo_opt = torch.optim.AdamW([exo_p],lr=.1,weight_decay=.1)\nexo_p.grad = torch.zeros_like(exo_p)\nexo_opt.step()','exo_poids','0.99','assert abs(float(exo_poids)-exo_p.item()) < 1e-6','Avec un gradient nul explicite, la décroissance découplée applique ici le facteur 1−lr×weight_decay.'),
- exercise('SGD reçoit un poids 1, un gradient 2, lr=0,1 et weight_decay=0,1. Quel poids suit le pas ?','exo_p = torch.nn.Parameter(torch.tensor(1.))\nexo_opt = torch.optim.SGD([exo_p],lr=.1,weight_decay=.1)\nexo_p.grad = torch.tensor(2.)\nexo_opt.step()','exo_poids','0.79','assert abs(float(exo_poids)-exo_p.item()) < 1e-6','La contribution de décroissance vaut 0,1×1. Soustrayez 0,1×(2+0,1).')],
-'scheduler-et-arret-anticipe':[
- exercise('ReduceLROnPlateau utilise factor=0,5 et patience=0. Après deux mesures identiques, quel taux reste-t-il ?','exo_p = torch.nn.Parameter(torch.tensor(1.))\nexo_opt = torch.optim.SGD([exo_p],lr=1.)\nexo_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(exo_opt,factor=.5,patience=0)\nexo_scheduler.step(1.)\nexo_scheduler.step(1.)','exo_taux','0.5','assert abs(float(exo_taux)-exo_opt.param_groups[0]["lr"]) < 1e-6','La première mesure fixe la référence. La suivante ne l’améliore pas ; le taux est multiplié par le facteur.'),
- exercise('Un arrêt anticipé autorise deux validations sans amélioration. Faut-il arrêter après les valeurs 0,5 puis 0,6, avec meilleur=0,4 ?','exo_meilleur = .4\nexo_attente = 0\nfor exo_mesure in [.5,.6]:\n    if exo_mesure < exo_meilleur:\n        exo_meilleur,exo_attente=exo_mesure,0\n    else:\n        exo_attente+=1','exo_arreter','True','assert exo_arreter is (exo_attente >= 2)','Les deux validations dépassent la meilleure perte. L’arrêt est une règle de sélection, pas une mise à jour des poids.')],
-'cuda-amp-memoire':[
- exercise('Dans ce notebook vérifié sur CPU, quel placement doit produire le choix avec fallback ?','exo_device = torch.device("cuda" if torch.cuda.is_available() else "cpu")','exo_type','"cpu"','assert exo_type == exo_device.type','CUDA_VISIBLE_DEVICES est vide dans l’environnement du notebook. Nous n’inventons pas une exécution GPU.'),
- exercise('Combien d’octets logiques occupent vingt poids float32 ?','exo_poids = torch.zeros(5,4,dtype=torch.float32)','exo_octets','80','assert exo_octets == exo_poids.numel()*exo_poids.element_size()','Comptez les valeurs puis les quatre octets par valeur. Ce n’est pas la mémoire totale d’un entraînement.')],
-'preparer-mel-pour-conv':[
- exercise('Combien de bins donne la partie non redondante d’une FFT réelle de taille 400 ?','exo_n_fft = 400','exo_bins','201','assert exo_bins == torch.fft.rfft(torch.zeros(exo_n_fft)).numel()','Les fréquences zéro et de Nyquist sont présentes pour cette taille paire : N//2+1.'),
- exercise('Un mel a la forme (2 extraits,64 bandes,96 trames). Ajoutez le canal mono attendu par Conv2d. Quelle forme ?','exo_mel = torch.zeros(2,64,96)','exo_forme','(2,1,64,96)','assert tuple(exo_forme) == tuple(exo_mel.unsqueeze(1).shape)','Le canal s’insère après les extraits. Les bandes restent un axe spatial de la représentation.')],
-'convolution-a-la-main':[
- exercise('Calculez le premier résultat d’un noyau [[1,0],[0,−1]] appliqué à la grille 1 à 9.','exo_x = torch.arange(1.,10.).reshape(1,1,3,3)\nexo_noyau = torch.tensor([[[[1.,0.],[0.,-1.]]]])','exo_valeur','-4.','assert abs(float(exo_valeur)-torch.nn.functional.conv2d(exo_x,exo_noyau)[0,0,0,0].item()) < 1e-6','La première fenêtre est [[1,2],[4,5]]. Faites les quatre produits, puis leur somme.'),
- exercise('Avec le même noyau 2×2 et stride=2, quelle forme de sortie reste-t-il sur une entrée 3×3 ?','exo_x = torch.arange(1.,10.).reshape(1,1,3,3)\nexo_noyau = torch.ones(1,1,2,2)','exo_forme','(1,1,1,1)','assert tuple(exo_forme) == tuple(torch.nn.functional.conv2d(exo_x,exo_noyau,stride=2).shape)','Le premier placement couvre indices 0 et 1. Un nouveau départ à 2 dépasserait le bord sans padding.')],
-'conv-mel-autoencodeur':[
- exercise('Conv2d(1,8,3,stride=2,padding=1) reçoit (2,1,64,96). Quelle forme produit-elle ?','exo_x = torch.zeros(2,1,64,96)\nexo_conv = torch.nn.Conv2d(1,8,3,stride=2,padding=1)','exo_forme','(2,8,32,48)','assert tuple(exo_forme) == tuple(exo_conv(exo_x).shape)','Le lot reste 2, les canaux deviennent 8, et les deux tailles spatiales sont divisées par deux ici.'),
- exercise('Une reconstruction [1,2] est comparée à une cible [0,0] par MSE moyenne. Quelle perte ?','exo_reconstruction = torch.tensor([1.,2.])\nexo_cible = torch.zeros(2)','exo_perte','2.5','assert abs(float(exo_perte)-torch.nn.functional.mse_loss(exo_reconstruction,exo_cible).item()) < 1e-6','La moyenne des erreurs au carré vaut (1+4)/2. Ce n’est pas la moyenne des valeurs.')],
-'lire-erreurs-pytorch':[
- exercise('Après une transposition, choisissez la méthode qui peut aplatir ce tableau sans exiger sa contiguïté.','exo_x = torch.arange(6).reshape(2,3).transpose(0,1)','exo_methode','"reshape"','exo_resultat=getattr(exo_x,exo_methode)(-1)\nassert exo_resultat.tolist() == [0,3,1,4,2,5]','reshape peut copier si nécessaire ; view impose une compatibilité de strides.'),
- exercise('Corrigez le type d’indices de classe stockés par erreur en float32.','exo_cibles = torch.tensor([0.,1.],dtype=torch.float32)','exo_correction','exo_cibles.to(torch.long)','assert exo_correction.dtype == torch.int64\nassert exo_correction.tolist() == [0,1]','La conversion porte sur des indices déjà entiers dans leur sens. Une cible multi-étiquettes demanderait un autre contrat.')],
-'boucle-entrainement-complete':[
- exercise('Assemblez les mesures des deux paires en une matrice : une ligne par extrait, trois coordonnées par ligne.','exo_exemples=[(torch.tensor([1.,2.,3.]),0),(torch.tensor([4.,5.,6.]),1)]','exo_entrees','torch.stack([exemple[0] for exemple in exo_exemples])','assert tuple(exo_entrees.shape) == (2,3)\nassert exo_entrees.tolist() == [[1,2,3],[4,5,6]]','Chaque paire contient un vecteur puis sa cible. stack ajoute l’axe des exemples.'),
- exercise('Construisez les indices de classe dans le même ordre, au format demandé par CrossEntropyLoss.','exo_exemples=[(torch.tensor([1.,2.,3.]),0),(torch.tensor([4.,5.,6.]),1)]','exo_cibles','torch.tensor([exemple[1] for exemple in exo_exemples],dtype=torch.long)','assert exo_cibles.dtype == torch.int64\nassert exo_cibles.tolist() == [0,1]','Le second élément de chaque paire est l’annotation. Ne triez pas les cibles séparément des mesures.')],
-}
+EXERCISES = {'tenseur-forme-type-device': [{'prompt': 'Choisissez le dtype des indices de classes [0,1,0] pour '
+                                          'CrossEntropyLoss dans son mode à indices.',
+                                'setup': 'exo_valeurs = [0,1,0]',
+                                'var': 'exo_dtype',
+                                'answer': 'torch.long',
+                                'test': 'exo_cibles = torch.tensor(exo_valeurs,dtype=exo_dtype)\n'
+                                        'assert exo_cibles.dtype == torch.int64',
+                                'hint': 'long est un autre nom de int64. Les présences multi-étiquettes demandent '
+                                        'un autre contrat.'},
+                               {'prompt': 'Trois extraits ont deux descripteurs chacun. Quelle forme reste-t-il '
+                                          'en sélectionnant seulement la première ligne ?',
+                                'setup': 'exo_x = torch.tensor([[.1,1.5],[.2,4.5],[.15,2.5]])',
+                                'var': 'exo_forme',
+                                'answer': '(2,)',
+                                'test': 'assert tuple(exo_forme) == tuple(exo_x[0].shape)',
+                                'hint': 'Sélectionner une ligne retire l’axe des extraits ; il reste le vecteur '
+                                        'de ses deux mesures.'}],
+ 'du-pipeline-au-modele': [{'prompt': 'Prévoyez les indices de classes renvoyés par argmax sur les colonnes.',
+                            'setup': 'exo_scores = torch.tensor([[1.5,-1.5],[4.5,-4.5],[2.5,-2.5]])',
+                            'var': 'exo_predictions',
+                            'answer': 'torch.tensor([0,0,0])',
+                            'test': 'torch.testing.assert_close(torch.as_tensor(exo_predictions),exo_scores.argmax(dim=1))',
+                            'hint': 'Les trois lignes ont leur maximum en colonne 0. La taille du lot n’est pas '
+                                    'le nombre de classes.'},
+                           {'prompt': 'Reliez chaque décision à sa cible : quelles lignes sont correctement '
+                                      'classées ?',
+                            'setup': 'exo_predictions = torch.tensor([0,0,0])\nexo_cibles = torch.tensor([0,1,0])',
+                            'var': 'exo_accords',
+                            'answer': 'torch.tensor([True,False,True])',
+                            'test': 'assert torch.equal(torch.as_tensor(exo_accords),exo_predictions == '
+                                    'exo_cibles)',
+                            'hint': 'Comparez les deux vecteurs position par position, en conservant l’ordre des '
+                                    'extraits.'}],
+ 'construire-un-module': [{'prompt': 'Calculez le premier score d’une couche linéaire avec ces poids et ce biais.',
+                           'setup': 'exo_x = torch.tensor([.1,1.5])\n'
+                                    'exo_w = torch.tensor([0.,1.])\n'
+                                    'exo_b = torch.tensor(0.)',
+                           'var': 'exo_score',
+                           'answer': '1.5',
+                           'test': 'assert abs(float(exo_score) - float((exo_x*exo_w).sum()+exo_b)) < 1e-6',
+                           'hint': 'Faites les deux produits, puis leur somme et enfin le biais.'},
+                          {'prompt': 'Gardez les mêmes poids [0,1], mais fixez le biais à 0,5. Quel est le '
+                                     'nouveau score pour [.1,1.5] ?',
+                           'setup': 'exo_x=torch.tensor([.1,1.5])\n'
+                                    'exo_w=torch.tensor([0.,1.])\n'
+                                    'exo_b=torch.tensor(.5)',
+                           'var': 'exo_score',
+                           'answer': '2.',
+                           'test': 'assert abs(float(exo_score)-((exo_x*exo_w).sum()+exo_b).item()) < 1e-6',
+                           'hint': 'Le biais ajoute ici 0,5 au score déjà calculé. Il ne multiplie pas les '
+                                   'mesures.'}],
+ 'choisir-la-perte': [{'prompt': 'Quelle ligne reçoit la plus grande perte individuelle : 0, 1 ou 2 ?',
+                       'setup': 'exo_scores = torch.tensor([[1.5,-1.5],[4.5,-4.5],[2.5,-2.5]])\n'
+                                'exo_cibles = torch.tensor([0,1,0])\n'
+                                'exo_pertes = torch.nn.CrossEntropyLoss(reduction="none")(exo_scores,exo_cibles)',
+                       'var': 'exo_indice',
+                       'answer': '1',
+                       'test': 'assert exo_indice == exo_pertes.argmax().item()',
+                       'hint': 'La seconde ligne préfère fortement la classe voix alors que la cible demande '
+                               'percussion.'},
+                      {'prompt': 'Avec reduction="none", quelle est la forme de la sortie pour ces trois extraits '
+                                 '?',
+                       'setup': 'exo_scores = torch.zeros(3,2)\nexo_cibles = torch.tensor([0,1,0])',
+                       'var': 'exo_forme',
+                       'answer': '(3,)',
+                       'test': 'assert tuple(exo_forme) == '
+                               'tuple(torch.nn.CrossEntropyLoss(reduction="none")(exo_scores,exo_cibles).shape)',
+                       'hint': 'Une perte par extrait reste disponible avant une éventuelle moyenne.'}],
+ 'autograd-et-derivees': [{'prompt': 'Prévoyez le gradient de (w−2)² au point w=0.',
+                           'setup': 'exo_w = torch.tensor(0.,requires_grad=True)\n'
+                                    'exo_perte = (exo_w-2.)**2\n'
+                                    'exo_perte.backward()',
+                           'var': 'exo_gradient',
+                           'answer': '-4.',
+                           'test': 'assert abs(float(exo_gradient)-exo_w.grad.item()) < 1e-6',
+                           'hint': 'La dérivée vaut 2×(w−2), évaluée au poids actuel.'},
+                          {'prompt': 'Deux backward successifs sur 3u puis 4u, sans remise à zéro : que contient '
+                                     'u.grad ?',
+                           'setup': 'exo_u = torch.tensor(1.,requires_grad=True)\n'
+                                    '(3*exo_u).backward()\n'
+                                    '(4*exo_u).backward()',
+                           'var': 'exo_gradient',
+                           'answer': '7.',
+                           'test': 'assert abs(float(exo_gradient)-exo_u.grad.item()) < 1e-6',
+                           'hint': 'Les contributions des deux graphes s’accumulent dans le même champ grad.'}],
+ 'premiere-boucle-minimale': [{'prompt': 'Diagnostiquez deux itérations sur w² sans zero_grad : quel poids final '
+                                         'depuis w=1, avec lr=0,1 ?',
+                               'setup': 'exo_w = torch.tensor(1.,requires_grad=True)\n'
+                                        'exo_opt = torch.optim.SGD([exo_w],lr=.1)\n'
+                                        'for _ in range(2):\n'
+                                        '    (exo_w**2).backward()\n'
+                                        '    exo_opt.step()',
+                               'var': 'exo_poids',
+                               'answer': '0.44',
+                               'test': 'assert abs(float(exo_poids)-exo_w.item()) < 1e-6',
+                               'hint': 'Le premier gradient vaut 2. Le second, 1,6, s’ajoute au précédent.'},
+                              {'prompt': 'Nous remettons cette fois les gradients à zéro au début de chaque tour. '
+                                         'Prévoyez le poids final.',
+                               'setup': 'exo_w = torch.tensor(1.,requires_grad=True)\n'
+                                        'exo_opt = torch.optim.SGD([exo_w],lr=.1)\n'
+                                        'for _ in range(2):\n'
+                                        '    exo_opt.zero_grad()\n'
+                                        '    (exo_w**2).backward()\n'
+                                        '    exo_opt.step()',
+                               'var': 'exo_poids',
+                               'answer': '0.64',
+                               'test': 'assert abs(float(exo_poids)-exo_w.item()) < 1e-6',
+                               'hint': 'Le premier poids devient 0,8. Le second pas utilise seulement le gradient '
+                                       'courant, 1,6.'}],
+ 'entrainer-ou-evaluer': [{'prompt': 'Un modèle est en eval, mais sans no_grad. Sa nouvelle sortie possède-t-elle '
+                                     'requires_grad=True ?',
+                           'setup': 'exo_modele = torch.nn.Linear(1,1).eval()\n'
+                                    'exo_sortie = exo_modele(torch.ones(1,1))',
+                           'var': 'exo_gradient_actif',
+                           'answer': 'True',
+                           'test': 'assert exo_gradient_actif is exo_sortie.requires_grad',
+                           'hint': 'eval change le comportement des modules concernés ; il ne désactive pas '
+                                   'autograd.'},
+                          {'prompt': 'Dans no_grad, cette nouvelle opération conserve-t-elle un graphe de '
+                                     'dérivées ?',
+                           'setup': 'exo_modele = torch.nn.Linear(1,1).eval()\n'
+                                    'with torch.no_grad():\n'
+                                    '    exo_sortie = exo_modele(torch.ones(1,1))',
+                           'var': 'exo_gradient_actif',
+                           'answer': 'False',
+                           'test': 'assert exo_gradient_actif is exo_sortie.requires_grad',
+                           'hint': 'Nous regardons la sortie d’une opération nouvelle, pas un tenseur créé avant '
+                                   'le contexte.'}],
+ 'dataset-et-batches': [{'prompt': 'Ce jeu contient trois paires. Combien d’exemples contient-il ?',
+                         'setup': 'exo_x = torch.tensor([[.1,1.5],[.2,4.5],[.15,2.5]])\n'
+                                  'exo_y = torch.tensor([0,1,0])\n'
+                                  'exo_dataset = torch.utils.data.TensorDataset(exo_x,exo_y)',
+                         'var': 'exo_nombre',
+                         'answer': '3',
+                         'test': 'assert exo_nombre == len(exo_dataset)',
+                         'hint': 'Chaque paire mesures/cible compte pour un exemple. La largeur des mesures ne '
+                                 'compte pas les exemples.'},
+                        {'prompt': 'Avec batch_size=2 et drop_last=False, quelle forme aura le dernier lot de '
+                                   'mesures ?',
+                         'setup': 'exo_x = torch.zeros(3,2)\n'
+                                  'exo_y = torch.tensor([0,1,0])\n'
+                                  'exo_loader = '
+                                  'torch.utils.data.DataLoader(torch.utils.data.TensorDataset(exo_x,exo_y),batch_size=2,shuffle=False)',
+                         'var': 'exo_forme',
+                         'answer': '(1,2)',
+                         'test': 'assert tuple(exo_forme) == tuple(list(exo_loader)[-1][0].shape)',
+                         'hint': 'Après le premier lot de deux exemples, il reste un exemple avec ses deux '
+                                 'caractéristiques.'}],
+ 'selection-diffusion-reduction': [{'prompt': 'Centrez chaque descripteur en retirant sa moyenne sur les trois '
+                                              'extraits. Gardez un axe de taille un dans la référence.',
+                                    'setup': 'exo_x = torch.tensor([[.1,1.5],[.2,4.5],[.15,2.5]])',
+                                    'var': 'exo_reference',
+                                    'answer': 'exo_x.mean(dim=0,keepdim=True)',
+                                    'test': 'assert tuple(exo_reference.shape) == (1,2)\n'
+                                            'exo_centre=exo_x-exo_reference\n'
+                                            'torch.testing.assert_close(exo_centre.mean(dim=0),torch.zeros(2),atol=1e-6,rtol=0)',
+                                    'hint': 'Réduire l’axe 0 rassemble les extraits séparément pour chaque '
+                                            'colonne. La référence se rediffuse sur les lignes.'},
+                                   {'prompt': 'Conservez les lignes dont la crête dépasse 2. Quelles cibles '
+                                              'accompagnent les mesures dans le même ordre ?',
+                                    'setup': 'exo_x = torch.tensor([[.1,1.5],[.2,4.5],[.15,2.5]])\n'
+                                             'exo_cibles = torch.tensor([0,1,0])\n'
+                                             'exo_masque = exo_x[:,1] > 2',
+                                    'var': 'exo_cibles_gardees',
+                                    'answer': 'exo_cibles[exo_masque]',
+                                    'test': 'assert torch.equal(exo_cibles_gardees,torch.tensor([1,0]))\n'
+                                            'assert len(exo_cibles_gardees) == len(exo_x[exo_masque])',
+                                    'hint': 'Appliquez le même masque aux lignes et à leurs annotations.'}],
+ 'organiser-les-axes': [{'prompt': 'Avec la grille [[1,2,3],[4,5,6]], comparez la case [1,0] après reshape(3,2), '
+                                   'puis après transpose(0,1). Donnez les deux valeurs dans cet ordre.',
+                         'setup': 'exo_x = torch.arange(1,7).reshape(2,3)\n'
+                                  'exo_r = exo_x.reshape(3,2)\n'
+                                  'exo_t = exo_x.transpose(0,1)',
+                         'var': 'exo_valeurs',
+                         'answer': '(3,2)',
+                         'test': 'assert tuple(exo_valeurs) == (exo_r[1,0].item(),exo_t[1,0].item())',
+                         'hint': 'reshape conserve le parcours 1 à 6 ; transpose échange le rôle des axes. Une '
+                                 'forme identique ne garantit pas le même contenu.'},
+                        {'prompt': 'Ajoutez un axe canal en position 1 à cette grille 2×3, sans répéter ses '
+                                   'valeurs.',
+                         'setup': 'exo_x = torch.arange(1,7).reshape(2,3)',
+                         'var': 'exo_avec_canal',
+                         'answer': 'exo_x.unsqueeze(1)',
+                         'test': 'assert tuple(exo_avec_canal.shape) == (2,1,3)\n'
+                                 'assert torch.equal(exo_avec_canal.squeeze(1),exo_x)',
+                         'hint': 'unsqueeze insère un axe de taille un ; squeeze(1) vérifie ensuite la '
+                                 'conservation des valeurs.'}],
+ 'padding-et-collate': [{'prompt': 'A contient [2,4] et B [6], stockés après padding comme [[2,4],[6,0]]. Écrivez '
+                                   'les deux moyennes qui ne comptent que les trames valides.',
+                         'setup': 'exo_batch = torch.tensor([[[2.],[4.]],[[6.],[0.]]])\n'
+                                  'exo_masque = torch.tensor([[True,True],[True,False]])\n'
+                                  'exo_validite = exo_masque.unsqueeze(-1)',
+                         'var': 'exo_moyennes',
+                         'answer': '(exo_batch*exo_validite).sum(dim=1)/exo_validite.sum(dim=1)',
+                         'test': 'torch.testing.assert_close(exo_moyennes,torch.tensor([[3.],[6.]]))',
+                         'hint': 'La somme vaut six dans chaque extrait, mais les comptes sont deux et un. Gardez '
+                                 'l’axe des mesures.'},
+                        {'prompt': 'Chaque trame valide porte maintenant D=2 descripteurs. Quel dénominateur '
+                                   'utiliser pour la MSE par valeur vers zéro ?',
+                         'setup': 'exo_batch = torch.tensor([[[2.,20.],[4.,40.]],[[6.,60.],[0.,0.]]])\n'
+                                  'exo_masque = torch.tensor([[True,True],[True,False]])',
+                         'var': 'exo_denominateur',
+                         'answer': 'exo_masque.sum()*exo_batch.shape[-1]',
+                         'test': 'assert int(exo_denominateur) == 6\n'
+                                 'exo_mse=(exo_batch.square()*exo_masque.unsqueeze(-1)).sum()/exo_denominateur\n'
+                                 'torch.testing.assert_close(exo_mse,torch.tensor(5656/6))',
+                         'hint': 'Trois trames sont réelles, chacune avec deux erreurs carrées. Comptez les '
+                                 'valeurs, pas seulement les trames.'}],
+ 'boucle-entrainement-complete': [{'prompt': 'Les poids connus ont pour lignes [0,1] et [0,−1], avec biais nul. '
+                                             'Prévoyez les trois décisions sur X, avant apprentissage.',
+                                   'setup': 'exo_x=torch.tensor([[.1,1.5],[.2,4.5],[.15,2.5]])\n'
+                                            'exo_modele=torch.nn.Linear(2,2)\n'
+                                            'with torch.no_grad():\n'
+                                            '    exo_modele.weight.copy_(torch.tensor([[0.,1.],[0.,-1.]]))\n'
+                                            '    exo_modele.bias.zero_()',
+                                   'var': 'exo_decisions',
+                                   'answer': 'torch.tensor([0,0,0])',
+                                   'test': 'assert torch.equal(exo_decisions,exo_modele(exo_x).argmax(dim=1))',
+                                   'hint': 'Le premier score reste positif pour les trois lignes ; cela n’en fait '
+                                           'pas les trois bonnes classes.'},
+                                  {'prompt': 'Rechargez l’état du classifieur sauvegardé, puis calculez ses '
+                                             'scores sur ces deux descripteurs.',
+                                   'setup': 'exo_modele=torch.nn.Linear(2,2)\n'
+                                            'with torch.no_grad():\n'
+                                            '    exo_modele.weight.copy_(torch.tensor([[0.,1.],[0.,-1.]]))\n'
+                                            '    exo_modele.bias.zero_()\n'
+                                            'exo_x=torch.tensor([[.2,4.5]])\n'
+                                            'torch.save(exo_modele.state_dict(),"exo-classifieur.pt")\n'
+                                            'exo_copie=torch.nn.Linear(2,2)\n'
+                                            'exo_etat=torch.load("exo-classifieur.pt",map_location="cpu",weights_only=True)\n'
+                                            'exo_copie.load_state_dict(exo_etat)\n'
+                                            'exo_copie.eval()',
+                                   'var': 'exo_scores',
+                                   'answer': 'exo_copie(exo_x)',
+                                   'test': 'torch.testing.assert_close(exo_scores,torch.tensor([[4.5,-4.5]]))\n'
+                                           'assert torch.equal(exo_scores,exo_modele(exo_x))',
+                                   'hint': 'Même architecture, état chargé, puis nouvelle passe. Charger des '
+                                           'poids ne lance ni entraînement ni prédiction.'}],
+ 'convolution-a-la-main': [{'prompt': 'Calculez le premier résultat d’un noyau [[1,0],[0,−1]] appliqué à la '
+                                      'grille 1 à 9.',
+                            'setup': 'exo_x = torch.arange(1.,10.).reshape(1,1,3,3)\n'
+                                     'exo_noyau = torch.tensor([[[[1.,0.],[0.,-1.]]]])',
+                            'var': 'exo_valeur',
+                            'answer': '-4.',
+                            'test': 'assert '
+                                    'abs(float(exo_valeur)-torch.nn.functional.conv2d(exo_x,exo_noyau)[0,0,0,0].item()) '
+                                    '< 1e-6',
+                            'hint': 'La première fenêtre est [[1,2],[4,5]]. Faites les quatre produits, puis leur '
+                                    'somme.'},
+                           {'prompt': 'Avec le même noyau 2×2 et stride=2, quelle forme de sortie reste-t-il sur '
+                                      'une entrée 3×3 ?',
+                            'setup': 'exo_x = torch.arange(1.,10.).reshape(1,1,3,3)\n'
+                                     'exo_noyau = torch.ones(1,1,2,2)',
+                            'var': 'exo_forme',
+                            'answer': '(1,1,1,1)',
+                            'test': 'assert tuple(exo_forme) == '
+                                    'tuple(torch.nn.functional.conv2d(exo_x,exo_noyau,stride=2).shape)',
+                            'hint': 'Le premier placement couvre indices 0 et 1. Un nouveau départ à 2 '
+                                    'dépasserait le bord sans padding.'}],
+ 'conv-mel-autoencodeur': [{'prompt': 'Conv2d(1,4,3,stride=2,padding=1) reçoit une carte préparée (2,1,64,96). '
+                                      'Quelle forme produit-elle ?',
+                            'setup': 'exo_x=torch.zeros(2,1,64,96)\n'
+                                     'exo_conv=torch.nn.Conv2d(1,4,3,stride=2,padding=1)',
+                            'var': 'exo_forme',
+                            'answer': '(2,4,32,48)',
+                            'test': 'assert tuple(exo_forme) == tuple(exo_conv(exo_x).shape)',
+                            'hint': 'Le lot reste deux, les canaux deviennent quatre et les deux axes spatiaux '
+                                    'sont divisés par deux ici.'},
+                           {'prompt': 'Une cible logarithmique contient les valeurs choisies [−0,8 ; −0,2]. '
+                                      'Quelle MSE minimale donne une sortie forcée à zéro par ReLU ?',
+                            'setup': 'exo_cible=torch.tensor([-.8,-.2])\nexo_sortie=torch.nn.ReLU()(exo_cible)',
+                            'var': 'exo_perte',
+                            'answer': '0.34',
+                            'test': 'torch.testing.assert_close(torch.as_tensor(exo_perte),torch.nn.functional.mse_loss(exo_sortie,exo_cible))',
+                            'hint': 'Le meilleur nombre autorisé par ReLU pour chaque cible négative est zéro. '
+                                    'Faites la moyenne de 0,8² et 0,2².'}],
+ 'retropropagation-a-la-main': [{'prompt': 'Complétez le gradient du premier poids dans le graphe x=2, w1=3, '
+                                           'w2=−1.',
+                                 'setup': 'exo_w1 = torch.tensor(3.,requires_grad=True)\n'
+                                          'exo_w2 = torch.tensor(-1.,requires_grad=True)\n'
+                                          'exo_h = exo_w1*2\n'
+                                          'exo_y = exo_w2*exo_h\n'
+                                          '(exo_y**2).backward()',
+                                 'var': 'exo_gradient',
+                                 'answer': '24.',
+                                 'test': 'assert abs(float(exo_gradient)-exo_w1.grad.item()) < 1e-6',
+                                 'hint': 'Remontez −12 vers h avec le facteur −1, puis vers w1 avec le facteur '
+                                         '2.'},
+                                {'prompt': 'Complétez cette fois le gradient du second poids, avec le même '
+                                           'calcul.',
+                                 'setup': 'exo_w1 = torch.tensor(3.,requires_grad=True)\n'
+                                          'exo_w2 = torch.tensor(-1.,requires_grad=True)\n'
+                                          'exo_h = exo_w1*2\n'
+                                          'exo_y = exo_w2*exo_h\n'
+                                          '(exo_y**2).backward()',
+                                 'var': 'exo_gradient',
+                                 'answer': '-72.',
+                                 'test': 'assert abs(float(exo_gradient)-exo_w2.grad.item()) < 1e-6',
+                                 'hint': 'La variation locale de y par rapport à w2 vaut h=6. Multipliez-la par '
+                                         '−12.'}],
+ 'optimiseurs-regularisation-pratique': [{'prompt': 'AdamW reçoit un poids 1, un gradient nul, lr=0,1 et '
+                                                    'weight_decay=0,1. Quel poids suit le pas ?',
+                                          'setup': 'exo_p = torch.nn.Parameter(torch.tensor(1.))\n'
+                                                   'exo_opt = torch.optim.AdamW([exo_p],lr=.1,weight_decay=.1)\n'
+                                                   'exo_p.grad = torch.zeros_like(exo_p)\n'
+                                                   'exo_opt.step()',
+                                          'var': 'exo_poids',
+                                          'answer': '0.99',
+                                          'test': 'assert abs(float(exo_poids)-exo_p.item()) < 1e-6',
+                                          'hint': 'Avec un gradient nul explicite, la décroissance découplée '
+                                                  'applique ici le facteur 1−lr×weight_decay.'},
+                                         {'prompt': 'SGD reçoit un poids 1, un gradient 2, lr=0,1 et '
+                                                    'weight_decay=0,1. Quel poids suit le pas ?',
+                                          'setup': 'exo_p = torch.nn.Parameter(torch.tensor(1.))\n'
+                                                   'exo_opt = torch.optim.SGD([exo_p],lr=.1,weight_decay=.1)\n'
+                                                   'exo_p.grad = torch.tensor(2.)\n'
+                                                   'exo_opt.step()',
+                                          'var': 'exo_poids',
+                                          'answer': '0.79',
+                                          'test': 'assert abs(float(exo_poids)-exo_p.item()) < 1e-6',
+                                          'hint': 'La contribution de décroissance vaut 0,1×1. Soustrayez '
+                                                  '0,1×(2+0,1).'}],
+ 'detacher-geler-journaliser': [{'prompt': 'Nous modifions la première case d’un tenseur détaché. Que vaut la '
+                                           'première case de la source ?',
+                                 'setup': 'exo_x = torch.tensor([1.,2.],requires_grad=True)\n'
+                                          'exo_detache = exo_x.detach()\n'
+                                          'exo_detache[0] = 9.',
+                                 'var': 'exo_source',
+                                 'answer': '9.',
+                                 'test': 'assert abs(float(exo_source)-exo_x[0].item()) < 1e-6',
+                                 'hint': 'detach retire le lien au graphe, mais partage encore le stockage.'},
+                                {'prompt': 'Construisez cette fois une copie détachée indépendante avant de '
+                                           'modifier sa première case.',
+                                 'setup': 'exo_x = torch.tensor([1.,2.],requires_grad=True)',
+                                 'var': 'exo_copie',
+                                 'answer': 'exo_x.detach().clone()',
+                                 'test': 'exo_copie[0]=9.\n'
+                                         'assert exo_x[0].item() == 1.\n'
+                                         'assert not exo_copie.requires_grad',
+                                 'hint': 'Deux propriétés sont demandées : aucun lien au graphe et aucun stockage '
+                                         'partagé.'}],
+ 'pertes-multi-etiquettes': [{'prompt': 'Un seul extrait contient voix ET percussion. Écrivez sa cible '
+                                        'multi-étiquettes flottante dans cet ordre.',
+                              'setup': 'exo_logits = torch.tensor([[.2,-.1]])',
+                              'var': 'exo_cible',
+                              'answer': 'torch.tensor([[1.,1.]])',
+                              'test': 'assert torch.as_tensor(exo_cible).dtype.is_floating_point\n'
+                                      'assert torch.equal(torch.as_tensor(exo_cible),torch.ones_like(exo_logits))',
+                              'hint': 'Deux présences simultanées donnent deux 1, dans une ligne de forme (1,2).'},
+                             {'prompt': 'Ces deux probabilités sigmoïdes doivent-elles nécessairement sommer à un '
+                                        '? Répondez par True ou False.',
+                              'setup': 'exo_probabilites = torch.sigmoid(torch.tensor([[2.,2.]]))',
+                              'var': 'exo_somme_un',
+                              'answer': 'False',
+                              'test': 'assert exo_somme_un is '
+                                      'bool(torch.isclose(exo_probabilites.sum(),torch.tensor(1.)).item())',
+                              'hint': 'Chaque présence est traitée séparément. La softmax répond à une autre '
+                                      'convention.'}],
+ 'modules-et-buffers': [{'prompt': 'Un buffer moyenne est enregistré. Prévoyez sa présence dans state_dict, puis '
+                                   'dans named_parameters, avec deux booléens.',
+                         'setup': 'exo_modele = torch.nn.Linear(2,2)\n'
+                                  'exo_modele.register_buffer("moyenne",torch.zeros(2))',
+                         'var': 'exo_presences',
+                         'answer': '(True,False)',
+                         'test': 'assert tuple(exo_presences) == ("moyenne" in exo_modele.state_dict(),"moyenne" '
+                                 'in dict(exo_modele.named_parameters()))',
+                         'hint': 'Le buffer persistant est sauvegardé et déplacé avec le modèle, mais reste hors '
+                                 'des paramètres ajustables.'},
+                        {'prompt': 'Après un pas Adam, fournissez l’état à recharger dans le nouvel optimiseur. '
+                                   'Les poids du modèle sont déjà copiés.',
+                         'setup': 'exo_modele = torch.nn.Linear(2,2)\n'
+                                  'exo_opt = torch.optim.Adam(exo_modele.parameters(),lr=.01)\n'
+                                  'exo_perte = exo_modele(torch.ones(1,2)).square().mean()\n'
+                                  'exo_perte.backward()\n'
+                                  'exo_opt.step()\n'
+                                  'exo_copie = torch.nn.Linear(2,2)\n'
+                                  'exo_copie.load_state_dict(exo_modele.state_dict())\n'
+                                  'exo_opt_copie = torch.optim.Adam(exo_copie.parameters(),lr=.01)',
+                         'var': 'exo_etat_optim',
+                         'answer': 'exo_opt.state_dict()',
+                         'test': 'exo_opt_copie.load_state_dict(exo_etat_optim)\n'
+                                 'assert len(exo_opt_copie.state) == 2\n'
+                                 'for exo_a,exo_b in zip(exo_opt.state.values(),exo_opt_copie.state.values()):\n'
+                                 '    assert exo_b["step"].item() == 1\n'
+                                 '    assert torch.equal(exo_a["exp_avg"],exo_b["exp_avg"])\n'
+                                 '    assert torch.equal(exo_a["exp_avg_sq"],exo_b["exp_avg_sq"])',
+                         'hint': 'Les moments et compteurs appartiennent à optimizer.state_dict(), pas au dernier '
+                                 'nombre de perte.'}],
+ 'moyennes-et-microbatches': [{'prompt': 'Un lot de huit exemples a une perte moyenne de 1 ; le dernier de deux '
+                                         'exemples, de 3. Quelle moyenne globale ?',
+                               'setup': 'exo_tailles = [8,2]\nexo_pertes = [1.,3.]',
+                               'var': 'exo_moyenne',
+                               'answer': '1.4',
+                               'test': 'assert abs(float(exo_moyenne)-sum(n*p for n,p in '
+                                       'zip(exo_tailles,exo_pertes))/sum(exo_tailles)) < 1e-6',
+                               'hint': 'Additionnez d’abord les contributions 8×1 et 2×3, puis divisez par dix '
+                                       'exemples.'},
+                              {'prompt': 'Le lot x=[1,2,3,4], cible=2x, est coupé en trois exemples puis un. '
+                                         'Donnez les coefficients à appliquer aux deux MSE moyennes avant '
+                                         'backward.',
+                               'setup': 'exo_x = torch.tensor([1.,2.,3.,4.])\n'
+                                        'exo_cibles = 2*exo_x\n'
+                                        'exo_p = torch.tensor(1.,requires_grad=True)',
+                               'var': 'exo_coefficients',
+                               'answer': '(3/4,1/4)',
+                               'test': 'for exo_coefficient,(exo_a,exo_b) in '
+                                       'zip(exo_coefficients,[(0,3),(3,4)]):\n'
+                                       '    '
+                                       'exo_locale=((exo_p*exo_x[exo_a:exo_b]-exo_cibles[exo_a:exo_b])**2).mean()\n'
+                                       '    (exo_coefficient*exo_locale).backward()\n'
+                                       'assert abs(exo_p.grad.item()+15) < 1e-6',
+                               'hint': 'Chaque fraction représente un effectif. Gardez les poids fixes et ne '
+                                       'remettez pas les gradients à zéro entre les morceaux.'}],
+ 'scheduler-et-arret-anticipe': [{'prompt': 'StepLR multiplie le taux par 0,5 toutes les deux époques. Quel taux '
+                                            'est prêt après les deux premières mises à jour, depuis 0,1 ?',
+                                  'setup': 'exo_p = torch.nn.Parameter(torch.tensor(1.))\n'
+                                           'exo_opt = torch.optim.SGD([exo_p],lr=.1)\n'
+                                           'exo_scheduler = '
+                                           'torch.optim.lr_scheduler.StepLR(exo_opt,step_size=2,gamma=.5)\n'
+                                           'for _ in range(2):\n'
+                                           '    exo_opt.zero_grad()\n'
+                                           '    (exo_p**2).backward()\n'
+                                           '    exo_opt.step()\n'
+                                           '    exo_scheduler.step()',
+                                  'var': 'exo_taux',
+                                  'answer': '0.05',
+                                  'test': 'assert abs(float(exo_taux)-exo_opt.param_groups[0]["lr"]) < 1e-6',
+                                  'hint': 'Le scheduler est appelé après les mises à jour ; le nouveau taux '
+                                          'servira à la troisième époque.'},
+                                 {'prompt': 'Un gradient scalaire vaut 10. Limitez sa norme à 1 avant le pas SGD '
+                                            'de taux 0,1. Complétez avec l’appel de clipping.',
+                                  'setup': 'exo_p=torch.tensor(1.,requires_grad=True)\n'
+                                           'exo_opt=torch.optim.SGD([exo_p],lr=.1)\n'
+                                           '(10*exo_p).backward()',
+                                  'var': 'exo_norme_avant',
+                                  'answer': 'torch.nn.utils.clip_grad_norm_([exo_p],max_norm=1.)',
+                                  'test': 'assert exo_norme_avant.item() == 10\n'
+                                          'assert abs(exo_p.grad.item()-1) < 1e-6\n'
+                                          'exo_opt.step()\n'
+                                          'assert abs(exo_p.item()-.9) < 1e-6',
+                                  'hint': 'Le clipping modifie les gradients déjà calculés et renvoie leur norme '
+                                          'précédente. Il vient avant step.'}],
+ 'cuda-amp-memoire': [{'prompt': 'Placez les entrées sur le même device que le modèle. Conservez leur type '
+                                 'flottant.',
+                       'setup': 'exo_modele=torch.nn.Linear(2,2)\n'
+                                'exo_device=next(exo_modele.parameters()).device\n'
+                                'exo_entrees=torch.tensor([[.1,1.5],[.2,4.5]])',
+                       'var': 'exo_placees',
+                       'answer': 'exo_entrees.to(exo_device)',
+                       'test': 'assert exo_placees.device == next(exo_modele.parameters()).device\n'
+                               'assert exo_placees.dtype == torch.float32\n'
+                               'torch.testing.assert_close(exo_placees,exo_entrees)',
+                       'hint': 'Affectez le tenseur renvoyé par to(device). Sur ce noyau, tout reste sur CPU ; '
+                               'aucune mesure CUDA n’est produite.'},
+                      {'prompt': 'Combien d’octets logiques occupent les paramètres d’une Linear(2,2), avec '
+                                 'biais, en float32 ?',
+                       'setup': 'exo_modele=torch.nn.Linear(2,2,dtype=torch.float32)',
+                       'var': 'exo_octets',
+                       'answer': '24',
+                       'test': 'assert exo_octets == sum(p.numel()*p.element_size() for p in '
+                               'exo_modele.parameters())',
+                       'hint': 'Quatre poids et deux biais font six valeurs de quatre octets. Les gradients et '
+                               'activations ne sont pas comptés.'}]}
 
 ENVIRONMENT='''import os
 import sys
@@ -278,7 +643,7 @@ def context_markdown(blocks):
     return '\n\n'.join(paragraphs)
 
 
-def make(chapter):
+def make(chapter,checks):
     if chapter['id']not in EXERCISES:raise ValueError('Deux exercices à écrire pour '+chapter['id'])
     cells=[]
     title=chapter['title']
@@ -294,13 +659,14 @@ Environnement vérifié : Python 3.11.9, PyTorch 2.10.0 CPU et TorchAudio 2.10.0
 ''','presentation'))
     cells.append(md('## Préparer le noyau\n\nChoisissez un environnement CPU neuf. En cas de bibliothèque manquante, installez-la dans ce noyau, puis redémarrez-le. Les sorties affichent les versions réellement utilisées.','environment-help'))
     cells.append(code_cell(ENVIRONMENT,'environment',['setup']))
-    if any('torchaudio'in b.get('code','')for b in chapter['blocks']):
+    if any(b.get('readingCompanion') and 'torchaudio'in b.get('code','')for b in chapter['blocks']):
         cells.append(code_cell('try:\n    import torchaudio\nexcept (ImportError, OSError) as error:\n    raise RuntimeError("TorchAudio manque ou ne correspond pas à PyTorch. Installer torch==2.10.0 et torchaudio==2.10.0 ensemble, puis redémarrer.") from error\nprint("TorchAudio",torchaudio.__version__)','audio-environment',['setup']))
     cells.append(code_cell(OBSERVER,'observer-helper',['observation-helper'],{'jupyter':{'source_hidden':True}}))
     programs=[]
     relevant=[]
     for index,block in enumerate(chapter['blocks']):
-        if block.get('code')and block.get('language','python')=='python':relevant.append((index,block))
+        if block.get('readingCompanion') and block.get('code') and block.get('language','python')=='python':relevant.append((index,block))
+    assert relevant,chapter['id']+': programme compagnon manquant'
     previous_block_index=-1
     for program_index,(block_index,block)in enumerate(relevant,1):
         prefix=f'p{program_index:02}'
@@ -311,7 +677,10 @@ Environnement vérifié : Python 3.11.9, PyTorch 2.10.0 CPU et TorchAudio 2.10.0
         if block.get('codeMode')=='excerpt':
             cells.append(md('Ce programme annonce les prérequis suivants :\n\n'+'\n'.join('- '+item for item in block.get('requires',[])),prefix+'-requirements'))
         parts=chunks(block['code'],block.get('steps'))
-        program={'blockIndex':block_index,'sourceSha256':hashlib.sha256(block['code'].encode()).hexdigest(),'cellIds':[]}
+        program_id=block['programId']
+        assertions=checks.get(chapter['id']+'/'+program_id,[])
+        assert len(assertions)>=2,chapter['id']+'/'+program_id+': contrôles numériques manquants'
+        program={'blockIndex':block_index,'programId':program_id,'sourceSha256':hashlib.sha256(block['code'].encode()).hexdigest(),'cellIds':[],'assertions':assertions}
         program_names=[]
         for part_index,part in enumerate(parts,1):
             cell_id=f'{prefix}-c{part_index:02}'
@@ -330,7 +699,7 @@ Environnement vérifié : Python 3.11.9, PyTorch 2.10.0 CPU et TorchAudio 2.10.0
                 elif part['kind']=='sortie':text='Ces impressions lisent les objets calculés. Elles n’entraînent pas le modèle et ne modifient pas les tenseurs.'
                 else:text='Exécutez cette petite partie après la précédente. Si un objet est créé, la cellule d’observation suivante permet d’en examiner l’état.'
             cells.append(md('### '+heading+'\n\n'+text,cell_id+'-help'))
-            cells.append(code_cell(part['source'],cell_id,['demonstration'],{'quizProgram':program_index,'sourceLines':[part['firstLine'],part['lastLine']]}))
+            cells.append(code_cell(part['source'],cell_id,['demonstration'],{'quizProgram':program_index,'programId':program_id,'sourceLines':[part['firstLine'],part['lastLine']]}))
             program['cellIds'].append(cell_id)
             names=[]
             for node in part['nodes']:
@@ -346,6 +715,11 @@ Environnement vérifié : Python 3.11.9, PyTorch 2.10.0 CPU et TorchAudio 2.10.0
             if part['kind']in {'gradient','remise-zero','mise-jour'}:
                 scope='{'+', '.join(repr(name)+': '+name for name in program_names)+'}'
                 cells.append(code_cell('observer_entrainement('+scope+', montrer_poids='+str(part['kind']=='mise-jour')+')',cell_id+'-training-state',['observation']))
+        assertion_id=prefix+'-checks'
+        assertion_source='\n'.join('assert bool('+expression+'), '+repr(chapter['id']+'/'+program_id+': '+expression) for expression in assertions)
+        assertion_source+='\nprint("Contrôles numériques de la démonstration réussis.")'
+        cells.append(code_cell(assertion_source,assertion_id,['demonstration-check'],{'programId':program_id,'jupyter':{'source_hidden':True}}))
+        program['assertionCellId']=assertion_id
         programs.append(program)
         if block.get('result'):cells.append(md(block['result'],prefix+'-interpretation'))
     cells.append(md('## À vous de modifier le calcul\n\nLes deux cellules suivantes sont prêtes à éditer. Si vous les exécutez sans les compléter, elles le signalent et ne prétendent pas que vous avez réussi. Une réponse fausse déclenche le contrôle correspondant.','practice-intro'))
@@ -361,8 +735,26 @@ Environnement vérifié : Python 3.11.9, PyTorch 2.10.0 CPU et TorchAudio 2.10.0
     cells.append(code_cell('os.chdir(_quiz_initial_directory)\n_quiz_temporary_directory.cleanup()','cleanup',['cleanup']))
     return {'nbformat':4,'nbformat_minor':5,'metadata':{'kernelspec':{'display_name':'Python 3','language':'python','name':'python3'},'language_info':{'name':'python','version':'3.11.9'},'quiz':{'chapterId':chapter['id'],'themeId':'pytorch','programs':programs,'exerciseSolutions':solutions,'exerciseCount':2,'exerciseCellsReady':True,'demonstrationAndPracticeAreSeparate':True,'verifiedVersions':{'python':'3.11.9','torch':'2.10.0','torchaudio':'2.10.0'}}},'cells':cells}
 
+def alias_notebook(previous,canonical,chapter):
+    """Keep the former download URL without duplicating runnable content."""
+    assert previous.startswith('notebooks/') and canonical==chapter['notebook']
+    text=f'''# Ce notebook a été regroupé
+
+Le contenu de cette ancienne adresse est désormais intégré à **{chapter['title']}**.
+Ce fichier de renvoi ne contient pas de code à exécuter.
+
+- [Ouvrir le notebook complet dans Colab](https://colab.research.google.com/github/RadioCodeur/quiz/blob/main/public/{canonical})
+- [Consulter le fichier canonique sur GitHub](https://github.com/RadioCodeur/quiz/blob/main/public/{canonical})
+- [Revenir au chapitre](https://radiocodeur.github.io/quiz/cours.html?theme=pytorch#{chapter['id']})
+
+Le notebook canonique contient la démonstration progressive, ses contrôles et les deux exercices.
+'''
+    return {'nbformat':4,'nbformat_minor':5,'metadata':{'quiz':{'themeId':'pytorch','notebookAlias':canonical,'canonicalChapterId':chapter['id']}},'cells':[md(text,'canonical-notebook')]}
+
+
 def main():
     course=json.loads((ROOT/'public/courses/pytorch.json').read_text(encoding='utf-8'))
+    checks=json.loads((ROOT/'scripts/verify/narration-pytorch-checks.json').read_text(encoding='utf-8'))
     destination=ROOT/'public/notebooks';destination.mkdir(exist_ok=True)
     expected=set()
     for chapter in course['chapters']:
@@ -370,11 +762,21 @@ def main():
         assert relative==f'notebooks/{chapter["id"]}.ipynb'
         path=ROOT/'public'/relative
         expected.add(path.name)
-        notebook=make(chapter)
+        notebook=make(chapter,checks)
         path.write_text(json.dumps(notebook,ensure_ascii=False,indent=1)+'\n',encoding='utf-8')
         print(chapter['id'],len(notebook['cells']),'cellules',len(notebook['metadata']['quiz']['programs']),'programmes')
+    canonical={chapter['notebook']:chapter for chapter in course['chapters']}
+    aliases=course.get('notebookAliases',{})
+    for previous,target in aliases.items():
+        assert target in canonical and previous not in canonical
+        old_path=Path(previous)
+        assert old_path.parent==Path('notebooks') and old_path.suffix=='.ipynb' and '..'not in old_path.parts
+        assert old_path.name not in expected
+        path=ROOT/'public'/old_path
+        path.write_text(json.dumps(alias_notebook(previous,target,canonical[target]),ensure_ascii=False,indent=1)+'\n',encoding='utf-8')
+        expected.add(path.name)
     stale=[path.name for path in destination.glob('*.ipynb')if path.name not in expected]
     if stale:raise RuntimeError('Anciens notebooks à traiter explicitement : '+', '.join(stale))
-    print('Created',len(expected),'progressive notebooks. Execute them before delivery.')
+    print('Created',len(canonical),'progressive notebooks and',len(aliases),'Markdown redirects. Execute the canonical notebooks before delivery.')
 
 if __name__=='__main__':main()

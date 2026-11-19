@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readCourses,validateCourses } from '../scripts/validate-courses.mjs';
 import { readBank } from '../scripts/read-bank.mjs';
-import { buildCoverage, normalizeProgress, resolveChapter, setChapterRead, courseHref, chapterMinutes, chapterText, mergeCourseReferences, courseStage, chapterNavigation } from '../src/course-model.js';
+import { buildCoverage, normalizeProgress, resolveChapter, setChapterRead, courseHref, chapterMinutes, chapterText, mergeCourseReferences, courseStage, chapterNavigation,chapterById } from '../src/course-model.js';
 import { readFile } from 'node:fs/promises';
 import { plotGeometry, renderPlot, renderVisual, renderWalkthrough, renderCheckpoint, renderFirstExample } from '../src/learning-blocks.js';
 const courses=await readCourses();
@@ -49,7 +49,7 @@ test('cours : marquer et démarquer un chapitre sans modifier la session de quiz
 
 test('la refonte conserve les anciens liens et repères des 57 chapitres',async()=>{
   const previous=JSON.parse(await readFile(new URL('./fixtures/course-ids-v1.json',import.meta.url),'utf8'));
-  for(const course of courses)for(const id of previous[course.themeId]??[])assert.ok(course.chapters.some(ch=>ch.id===id),`${course.themeId}/${id}`);
+  for(const course of courses)for(const id of previous[course.themeId]??[])assert.ok(chapterById(course,id),`${course.themeId}/${id}`);
 });
 test('la destination annoncée du cours couvre tout le chemin sans saut de chapitre',()=>{
   for(const course of courses){

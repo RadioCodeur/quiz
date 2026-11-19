@@ -39,6 +39,10 @@ try {
   await page.goto(base);
   await page.locator('#start').waitFor();
   const getSession = () => page.evaluate(key=>JSON.parse(localStorage.getItem(key)).session,STORAGE_KEY);
+  const openCompanion=async(example)=>{
+    const folded=example.locator('xpath=ancestor::details[contains(@class,"optional-example")]');
+    if(await folded.count()&&!await folded.evaluate(el=>el.open))await folded.locator(':scope > summary').click();
+  };
   const clickAnswer = async correct => {
     const session = await getSession();
     const q = byId.get(session.questionIds[session.index]);
@@ -419,10 +423,58 @@ try {
     await page.locator(`.lesson-list a[href="${courseHref(target.themeId,target.chapterId)}"]`).click();
     assert.equal(await page.locator('#lesson-title').innerText(),courses.find(c=>c.themeId===target.themeId).chapters.find(ch=>ch.id===target.chapterId).title);
   });
+  await check('PyTorch : sept étapes continues jusqu’à la validation, programmes complets facultatifs',async()=>{
+    const course=courses.find(course=>course.themeId==='pytorch'),first=course.chapters.slice(0,7);
+    await page.goto(`${base}/cours.html?theme=pytorch#${first[0].id}`);await page.locator('#lesson-title').waitFor();
+    assert.equal(await page.locator('.chapter-toc nav a').count(),14);
+    assert.equal(await page.locator('.reference-toc nav a').count(),8);
+    assert.equal(await page.locator('.sidebar-title progress').getAttribute('max'),'14');
+    assert.equal(await page.locator('.course-journey').evaluate(el=>el.open),false);
+    for(const [index,chapter]of first.entries()){
+      assert.equal(await page.locator('#lesson-title').innerText(),chapter.title);
+      assert.equal(await page.locator('.lesson-tools>.eyebrow').innerText(),`CHAPITRE ${index+1} / 14`);
+      assert.ok(await page.locator('.story-fragment').first().isVisible());
+      assert.equal(await page.locator('.worked-example').first().evaluate(el=>el.closest('details').open),false);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+      if(index===2)await page.locator('.story-fragment').first().screenshot({path:'test-results/narration-linear-fragment.png'});
+      if(index<first.length-1)await page.locator('.chapter-next').click();
+    }
+  });
+  await check('PyTorch : alias, repères migrés et références indépendantes de la progression principale',async()=>{
+    const course=courses.find(course=>course.themeId==='pytorch');
+    const references=course.chapters.filter(chapter=>chapter.readingRole==='reference');
+    await page.evaluate(({key,completed})=>localStorage.setItem(key,JSON.stringify({version:1,completed})),{key:COURSE_STORAGE_KEY,completed:references.map(chapter=>'pytorch/'+chapter.id)});
+    await page.reload();await page.locator('#lesson-title').waitFor();
+    await page.goto(`${base}/cours.html?theme=pytorch#retropropagation-a-la-main`);await page.locator('#lesson-title').waitFor();
+    assert.equal(await page.locator('.sidebar-title progress').getAttribute('max'),'14');
+    assert.equal(await page.locator('.sidebar-title progress').evaluate(el=>el.value),0);
+    assert.ok((await page.locator('.lesson-tools>.eyebrow').innerText()).includes('FICHE A'));
+    await page.evaluate(key=>localStorage.setItem(key,JSON.stringify({completed:['pytorch/une-iteration-entrainement','pytorch/moyennes-masquees'],last:{themeId:'pytorch',chapterId:'moyennes-masquees'}})),COURSE_STORAGE_KEY);
+    await page.reload();await page.locator('#lesson-title').waitFor();
+    await page.goto(`${base}/cours.html?theme=pytorch#moyennes-masquees`);await page.locator('#lesson-title').waitFor();
+    assert.equal(await page.locator('#mark-read').isChecked(),true);
+    assert.equal(await page.locator('.sidebar-title progress').evaluate(el=>el.value),2);
+    for(const [alias,target]of Object.entries(course.chapterAliases)){
+      await page.evaluate(url=>{history.pushState(null,'',url);dispatchEvent(new PopStateEvent('popstate'));},courseHref('pytorch',alias));
+      assert.equal(await page.locator('#lesson-title').innerText(),course.chapters.find(chapter=>chapter.id===target).title,alias);
+    }
+    await page.goto(`${base}/cours.html?theme=pytorch#lire-erreurs-pytorch`);await page.locator('.course-diagnostics').waitFor();
+    assert.equal(await page.locator('.course-diagnostics').evaluate(el=>el.open),true);
+    assert.equal(await page.locator('.course-diagnostics>details').count(),course.diagnostics.situations.length);
+  });
+  await check('convolution : changer le poids annoncé modifie le produit et les quatre sorties',async()=>{
+    await page.goto(`${base}/cours.html?theme=pytorch#convolution-a-la-main`);await page.locator('.tensor-lab').waitFor();
+    await page.locator('[data-lab-control="w00"]').fill('2');
+    const rows=await page.locator('.lab-output .lab-matrix').last().locator('tbody tr').evaluateAll(rows=>rows.map(row=>[...row.querySelectorAll('td')].map(cell=>cell.textContent.trim())));
+    assert.deepEqual(rows,[['-3','-2'],['0','1']]);
+    await page.locator('[data-lab-control="position"]').selectOption('3');
+    assert.ok((await page.locator('.lab-output').innerText()).includes('= 1'));
+  });
   await check('axes : valeurs, erreur ciblée et reprise des étapes après retour et rechargement',async()=>{
     await page.goto(`${base}/cours.html?theme=pytorch#du-pipeline-au-modele`);
     await page.locator('#lesson-title').waitFor();
     const example=page.locator('.worked-example').first();
+    await openCompanion(example);
     assert.equal(await page.evaluate(()=>Boolean(document.querySelector('.lesson-body .concept-visual').compareDocumentPosition(document.querySelector('.worked-example'))&Node.DOCUMENT_POSITION_FOLLOWING)),true);
     await example.locator('[data-walk-next]').focus();await page.keyboard.press('Enter');
     assert.equal(await example.getAttribute('data-step'),'1');
@@ -443,13 +495,18 @@ try {
     assert.equal(await example.getAttribute('data-step'),'1');
     assert.deepEqual(await page.locator('[data-checkpoint-option]').evaluateAll(elements=>elements.map(el=>el.dataset.checkpointOption)),optionOrder);
     assert.equal(await page.locator('.checkpoint-options .is-wrong').count(),1);
-    await example.screenshot({path:'test-results/audit-scores-desktop.png'});
+    await openCompanion(example);await example.screenshot({path:'test-results/audit-scores-desktop.png'});
   });
   await check('retain_grad : décomposition locale et surlignage de la seule ligne concernée',async()=>{
     await page.goto(`${base}/cours.html?theme=pytorch#retropropagation-a-la-main`);await page.locator('#lesson-title').waitFor();
     const example=page.locator('.worked-example').first();
-    await example.locator('[data-walk-next]').click();await example.locator('[data-walk-next]').click();
-    assert.deepEqual(await example.locator('.walk-code-line.is-active').evaluateAll(lines=>lines.map(line=>Number(line.dataset.line))),[6]);
+    await openCompanion(example);
+    const block=courses.find(course=>course.themeId==='pytorch').chapters.find(chapter=>chapter.id==='retropropagation-a-la-main').blocks.find(block=>block.readingCompanion);
+    const target=block.steps.findIndex(step=>step.details?.some(detail=>detail.code==='h.retain_grad()'));
+    assert.ok(target>=0);
+    for(let index=0;index<target;index++)await example.locator('[data-walk-next]').click();
+    assert.deepEqual(await example.locator('.walk-code-line.is-active').evaluateAll(lines=>lines.map(line=>Number(line.dataset.line))),block.steps[target].lines);
+    assert.ok((await example.locator('.walk-explanation .current-code-lines').innerText()).includes('h.retain_grad()'));
     const detail=example.locator('.walk-explanation details').first();
     await detail.locator('summary').focus();await page.keyboard.press('Enter');
     assert.equal(await detail.evaluate(el=>el.open),true);

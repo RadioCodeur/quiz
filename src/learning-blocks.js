@@ -65,9 +65,10 @@ function codeLines(block,step) {
   return block.code.split('\n').map((line,index)=>`<span class="walk-code-line ${active.has(index+1)?'is-active':''}" data-line="${index+1}"><span class="line-number" aria-hidden="true">${active.has(index+1)?'→ ':''}${index+1}</span><span>${escape(line)||' '}</span></span>`).join('');
 }
 
-function stepContent(step,index,total) {
+function stepContent(step,index,total,block={}) {
   const details=step.details?.length?`<details class="line-details"><summary>Décomposer cette ligne</summary>${step.details.map(detail=>`<div>${detail.code?`<pre><code>${escape(detail.code)}</code></pre>`:''}<p>${escape(detail.explanation)}</p>${detail.state?`<pre>${escape(detail.state)}</pre>`:''}</div>`).join('')}</details>`:'';
-  return `<p class="walk-position">ÉTAPE ${index+1} / ${total}</p><h4>${escape(step.title)}</h4><p>${escape(step.text)}</p>${step.state?`<div class="walk-state"><span>Valeurs et formes à cette étape</span><pre>${escape(step.state)}</pre></div>`:''}${details}`;
+  const current=block.readingCompanion&&block.code&&step.lines?.length?`<pre class="current-code-lines" aria-label="Lignes expliquées dans cette étape"><code>${step.lines.map(line=>`<span><span class="current-line-number">${line}</span>${escape(block.code.split('\n')[line-1])}</span>`).join('')}</code></pre>`:'';
+  return `<p class="walk-position">ÉTAPE ${index+1} / ${total}</p><h4>${escape(step.title)}</h4>${current}<p>${escape(step.text)}</p>${step.state?`<div class="walk-state"><span>${escape(step.stateLabel??(block.readingCompanion?'État après ce passage':'Valeurs et formes à cette étape'))}</span><pre>${escape(step.state)}</pre></div>`:''}${details}`;
 }
 
 export function renderCodePreparation(block,base='./') {
@@ -80,9 +81,14 @@ export function renderCodePreparation(block,base='./') {
   return mode||required||resources?`<aside class="code-preparation">${mode?`<strong>${mode}</strong>`:''}${required}${resources?`<p>Fichiers nécessaires :</p><ul>${resources}</ul>`:''}</aside>`:'';
 }
 
+export function renderReadingFragment(block){
+  const requires=block.requires?.length?`<p class="fragment-context">On réutilise : ${block.requires.map(escape).join(' · ')}</p>`:'';
+  return `<figure class="lesson-code story-fragment"><div class="code-label">python · EXTRAIT DU PROGRAMME <button type="button" class="copy-course-code">Copier le code</button></div>${requires}<pre tabindex="0" role="region" aria-label="Nouvelles instructions du programme"><code>${escape(block.code)}</code></pre>${block.caption?`<figcaption>${escape(block.caption)}</figcaption>`:''}</figure>`;
+}
+
 export function renderWalkthrough(block,serial,base='./') {
   const first=block.steps[0];
-  return `<section class="worked-example" data-walkthrough="${serial}"><header><p class="eyebrow">ON LE FAIT ENSEMBLE</p><h3>${escape(block.title)}</h3><p class="worked-goal">${escape(block.goal)}</p></header>${renderCodePreparation(block,base)}<div class="worked-layout ${block.code?'has-code':''}">${block.code?`<div class="walk-code"><div class="code-label">${escape(block.language??'python')} · LIGNES À SUIVRE</div><pre tabindex="0" role="region" aria-label="Programme à parcourir"><code>${codeLines(block,first)}</code></pre><p class="walk-no-execution">Exemple expliqué à l’avance : aucun code n’est exécuté ici.</p></div>`:''}<div class="walk-explanation" aria-live="polite" aria-atomic="true">${stepContent(first,0,block.steps.length)}</div></div><nav class="walk-controls" aria-label="Étapes de ${escape(block.title)}"><button type="button" data-walk-prev disabled>← Étape précédente</button><button type="button" data-walk-next>Étape suivante →</button></nav><details class="all-walk-steps"><summary>Voir toutes les étapes à la suite</summary><ol>${block.steps.map((step,index)=>`<li>${stepContent(step,index,block.steps.length)}</li>`).join('')}</ol></details><p class="worked-result"><strong>Ce que cela nous apprend.</strong> ${escape(block.result)}</p></section>`;
+  return `<section class="worked-example" data-walkthrough="${serial}"><header><p class="eyebrow">ON LE FAIT ENSEMBLE</p><h3>${escape(block.title)}</h3><p class="worked-goal">${escape(block.goal)}</p></header>${renderCodePreparation(block,base)}<div class="worked-layout ${block.code?'has-code':''}">${block.code?`<div class="walk-code"><div class="code-label">${escape(block.language??'python')} · LIGNES À SUIVRE</div><pre tabindex="0" role="region" aria-label="Programme à parcourir"><code>${codeLines(block,first)}</code></pre><p class="walk-no-execution">Exemple expliqué à l’avance : aucun code n’est exécuté ici.</p></div>`:''}<div class="walk-explanation" aria-live="polite" aria-atomic="true">${stepContent(first,0,block.steps.length,block)}</div></div><nav class="walk-controls" aria-label="Étapes de ${escape(block.title)}"><button type="button" data-walk-prev disabled>← Étape précédente</button><button type="button" data-walk-next>Étape suivante →</button></nav><details class="all-walk-steps"><summary>Voir toutes les étapes à la suite</summary><ol>${block.steps.map((step,index)=>`<li>${stepContent(step,index,block.steps.length,block)}</li>`).join('')}</ol></details>${block.result?`<p class="worked-result"><strong>Ce que cela nous apprend.</strong> ${escape(block.result)}</p>`:""}</section>`;
 }
 
 export function attachWalkthroughs(root,blocks,{state={},onChange=()=>{}}={}) {
@@ -95,7 +101,7 @@ export function attachWalkthroughs(root,blocks,{state={},onChange=()=>{}}={}) {
     function update(delta){
       current=Math.max(0,Math.min(block.steps.length-1,current+delta));
       const step=block.steps[current];
-      section.querySelector('.walk-explanation').innerHTML=stepContent(step,current,block.steps.length);
+      section.querySelector('.walk-explanation').innerHTML=stepContent(step,current,block.steps.length,block);
       if(block.code)section.querySelector('.walk-code code').innerHTML=codeLines(block,step);
       previous.disabled=current===0;next.disabled=current===block.steps.length-1;
       section.dataset.step=String(current);state[key]=current;onChange(key,current);
@@ -112,7 +118,7 @@ export function attachWalkthroughs(root,blocks,{state={},onChange=()=>{}}={}) {
 
 export function renderCheckpoint(checkpoint,order=[]) {
   const ordered=order.length===checkpoint.options.length&&new Set(order).size===order.length&&order.every(id=>checkpoint.options.some(option=>option.id===id))?order.map(id=>checkpoint.options.find(option=>option.id===id)):shuffle(checkpoint.options);
-  return `<section class="lesson-checkpoint"><p class="eyebrow">ESSAYER SANS LE MODÈLE</p><h2>Que produit ce calcul ?</h2><p class="checkpoint-intro">Ce repère est facultatif et ne modifie pas votre score au quiz.</p><h3>${escape(checkpoint.prompt)}</h3><div class="checkpoint-options">${ordered.map((option,index)=>`<button type="button" data-checkpoint-option="${escape(option.id)}"><span class="checkpoint-letter" aria-hidden="true">${String.fromCharCode(65+index)}</span><span>${escape(option.text)}</span></button>`).join('')}</div><div class="checkpoint-feedback" role="status" hidden></div><button type="button" class="checkpoint-reset" hidden>Réessayer ce repère</button></section>`;
+  return `<section class="lesson-checkpoint"><p class="eyebrow">ESSAYER SANS LE MODÈLE</p><h2>${escape(checkpoint.taskTitle??"Que produit ce calcul ?")}</h2><p class="checkpoint-intro">Ce repère est facultatif et ne modifie pas votre score au quiz.</p><h3>${escape(checkpoint.prompt)}</h3><div class="checkpoint-options">${ordered.map((option,index)=>`<button type="button" data-checkpoint-option="${escape(option.id)}"><span class="checkpoint-letter" aria-hidden="true">${String.fromCharCode(65+index)}</span><span>${escape(option.text)}</span></button>`).join('')}</div><div class="checkpoint-feedback" role="status" hidden></div><button type="button" class="checkpoint-reset" hidden>Réessayer ce repère</button></section>`;
 }
 
 export function attachCheckpoint(root,checkpoint,{chosenId=null,onChange=()=>{}}={}) {

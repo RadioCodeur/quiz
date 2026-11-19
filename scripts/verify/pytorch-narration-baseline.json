@@ -1,0 +1,356 @@
+{
+  "revision": "9df9363",
+  "otherModules": {
+    "python-scientifique": "a118b3124c0b888e81ff50c0ee65d6100b15e7882c3ed3d713f40f3f38ba2efe",
+    "audio-signal": "b8e594c3242590447a28b6c5bee45ebe757b13b7af16cc73643787d5e5a147ba",
+    "audio-ml": "6a11f961e8ce281029967f3ba18a0939c39b06447321b279a45ddd1b236a773a",
+    "generation-controle": "0e85bdbf7bbee052f576568c3f7d6dab5b91cf8a9fa7665e610db0a990274eba",
+    "evaluation-recherche": "365ff851e1f64c80f7bddb5babccdaba9a3f65d7775512b4130e74fa186e1dca",
+    "contexte-recherche": "669607c95c4282775345241989995bb213ec8017d2092db207aa23d89e7a1d32",
+    "entretien": "24bbc7f11fcd17fb7708444765254ffc97acd5234f1ee1e19d953b4fdb3533b5"
+  },
+  "pytorch": [
+    {
+      "id": "pytorch-en-une-page",
+      "questionIds": [],
+      "sourceIds": [
+        "rev-pt-quickstart",
+        "rev-pt-autograd"
+      ]
+    },
+    {
+      "id": "tenseur-forme-type-device",
+      "questionIds": [
+        "pt-001",
+        "pt-002",
+        "pt-003",
+        "pt-004",
+        "pt-031",
+        "pt-043"
+      ],
+      "sourceIds": [
+        "torch-tensors",
+        "torch-autograd",
+        "torch-isfinite",
+        "audit-pt-types"
+      ]
+    },
+    {
+      "id": "du-pipeline-au-modele",
+      "questionIds": [],
+      "sourceIds": [
+        "course-pt-learn-basics",
+        "course-pt-quickstart"
+      ]
+    },
+    {
+      "id": "construire-un-module",
+      "questionIds": [
+        "pt-014",
+        "pt-015",
+        "pt-016"
+      ],
+      "sourceIds": [
+        "torch-buildmodel",
+        "torch-module",
+        "torch-conv1d"
+      ]
+    },
+    {
+      "id": "choisir-la-perte",
+      "questionIds": [
+        "pt-017",
+        "pt-025",
+        "pt-030"
+      ],
+      "sourceIds": [
+        "torch-ce",
+        "torch-bce",
+        "audit-pt-ce"
+      ]
+    },
+    {
+      "id": "autograd-et-derivees",
+      "questionIds": [
+        "pt-009",
+        "pt-010",
+        "pt-041"
+      ],
+      "sourceIds": [
+        "torch-autograd",
+        "torch-optimization"
+      ]
+    },
+    {
+      "id": "retropropagation-a-la-main",
+      "questionIds": [],
+      "sourceIds": [
+        "rev-pt-autograd"
+      ]
+    },
+    {
+      "id": "une-iteration-entrainement",
+      "questionIds": [
+        "pt-011"
+      ],
+      "sourceIds": [
+        "torch-optimization",
+        "torch-clipping"
+      ]
+    },
+    {
+      "id": "premiere-boucle-minimale",
+      "questionIds": [],
+      "sourceIds": [
+        "torch-tensors"
+      ]
+    },
+    {
+      "id": "entrainer-ou-evaluer",
+      "questionIds": [
+        "pt-012",
+        "pt-013",
+        "pt-042"
+      ],
+      "sourceIds": [
+        "torch-module",
+        "torch-autograd",
+        "torch-optimization"
+      ]
+    },
+    {
+      "id": "dataset-et-batches",
+      "questionIds": [
+        "pt-018",
+        "pt-039"
+      ],
+      "sourceIds": [
+        "torch-data",
+        "torch-loader",
+        "torch-padding"
+      ]
+    },
+    {
+      "id": "selection-diffusion-reduction",
+      "questionIds": [
+        "pt-022",
+        "pt-024"
+      ],
+      "sourceIds": [
+        "torch-broadcast",
+        "torch-tensors",
+        "torch-buildmodel"
+      ]
+    },
+    {
+      "id": "broadcasting-pas-a-pas",
+      "questionIds": [
+        "pt-023"
+      ],
+      "sourceIds": [
+        "torch-broadcast",
+        "torch-tensors"
+      ]
+    },
+    {
+      "id": "filtrer-et-preserver-les-cibles",
+      "questionIds": [
+        "pt-019"
+      ],
+      "sourceIds": [
+        "torch-tensors"
+      ]
+    },
+    {
+      "id": "organiser-les-axes",
+      "questionIds": [
+        "pt-005",
+        "pt-008",
+        "pt-044"
+      ],
+      "sourceIds": [
+        "torch-tensors",
+        "torch-views",
+        "torch-conv1d"
+      ]
+    },
+    {
+      "id": "ajouter-retirer-un-axe",
+      "questionIds": [
+        "pt-006",
+        "pt-007"
+      ],
+      "sourceIds": [
+        "torch-tensors",
+        "torch-views"
+      ]
+    },
+    {
+      "id": "concatener-ou-empiler",
+      "questionIds": [
+        "pt-020",
+        "pt-021"
+      ],
+      "sourceIds": [
+        "torch-tensors"
+      ]
+    },
+    {
+      "id": "padding-et-collate",
+      "questionIds": [
+        "pt-028",
+        "pt-038"
+      ],
+      "sourceIds": [
+        "torch-data",
+        "torch-loader",
+        "torch-padding"
+      ]
+    },
+    {
+      "id": "moyennes-masquees",
+      "questionIds": [
+        "pt-029",
+        "pt-048"
+      ],
+      "sourceIds": [
+        "torch-padding",
+        "torch-broadcast",
+        "torch-mse"
+      ]
+    },
+    {
+      "id": "optimiseurs-regularisation-pratique",
+      "questionIds": [
+        "pt-049"
+      ],
+      "sourceIds": [
+        "rev-pt-optim",
+        "rev-pt-scheduler",
+        "rev-pt-amp",
+        "torch-clipping"
+      ]
+    },
+    {
+      "id": "sauvegarder-et-reprendre",
+      "questionIds": [
+        "pt-036",
+        "pt-037",
+        "pt-050"
+      ],
+      "sourceIds": [
+        "torch-saving",
+        "torch-checkpoints",
+        "torch-module"
+      ]
+    },
+    {
+      "id": "detacher-geler-journaliser",
+      "questionIds": [
+        "pt-032",
+        "pt-033",
+        "pt-040",
+        "pt-045"
+      ],
+      "sourceIds": [
+        "torch-autograd",
+        "torch-views",
+        "torch-tensors",
+        "torch-module"
+      ]
+    },
+    {
+      "id": "convolution-a-la-main",
+      "questionIds": [
+        "pt-027"
+      ],
+      "sourceIds": [
+        "rev-pt-conv",
+        "torch-conv1d"
+      ]
+    },
+    {
+      "id": "preparer-mel-pour-conv",
+      "questionIds": [],
+      "sourceIds": [
+        "rev-pt-mel",
+        "rev-pt-stft"
+      ]
+    },
+    {
+      "id": "conv-mel-autoencodeur",
+      "questionIds": [],
+      "sourceIds": [
+        "rev-pt-conv",
+        "rev-pt-transpose",
+        "rev-pt-mel",
+        "rev-pt-stft"
+      ]
+    },
+    {
+      "id": "boucle-entrainement-complete",
+      "questionIds": [],
+      "sourceIds": [
+        "rev-pt-quickstart",
+        "rev-pt-data"
+      ]
+    },
+    {
+      "id": "pertes-multi-etiquettes",
+      "questionIds": [
+        "pt-026"
+      ],
+      "sourceIds": [
+        "torch-ce",
+        "torch-bce"
+      ]
+    },
+    {
+      "id": "modules-et-buffers",
+      "questionIds": [
+        "pt-034",
+        "pt-035"
+      ],
+      "sourceIds": [
+        "torch-module",
+        "torch-buildmodel"
+      ]
+    },
+    {
+      "id": "moyennes-et-microbatches",
+      "questionIds": [
+        "pt-046",
+        "pt-047"
+      ],
+      "sourceIds": [
+        "torch-optimization",
+        "torch-autograd"
+      ]
+    },
+    {
+      "id": "scheduler-et-arret-anticipe",
+      "questionIds": [],
+      "sourceIds": [
+        "rev-pt-scheduler",
+        "rev-pt-optim"
+      ]
+    },
+    {
+      "id": "cuda-amp-memoire",
+      "questionIds": [],
+      "sourceIds": [
+        "rev-pt-amp",
+        "rev-pt-optim"
+      ]
+    },
+    {
+      "id": "lire-erreurs-pytorch",
+      "questionIds": [],
+      "sourceIds": [
+        "rev-pt-view",
+        "rev-pt-data",
+        "rev-pt-autograd"
+      ]
+    }
+  ]
+}

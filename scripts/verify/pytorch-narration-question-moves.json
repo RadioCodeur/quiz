@@ -1,0 +1,117 @@
+[
+  {
+    "questionId": "pt-030",
+    "previousChapterId": "choisir-la-perte",
+    "chapterId": "tenseur-forme-type-device"
+  },
+  {
+    "questionId": "pt-022",
+    "previousChapterId": "selection-diffusion-reduction",
+    "chapterId": "du-pipeline-au-modele"
+  },
+  {
+    "questionId": "pt-011",
+    "previousChapterId": "une-iteration-entrainement",
+    "chapterId": "premiere-boucle-minimale"
+  },
+  {
+    "questionId": "pt-014",
+    "previousChapterId": "construire-un-module",
+    "chapterId": "premiere-boucle-minimale"
+  },
+  {
+    "questionId": "pt-040",
+    "previousChapterId": "detacher-geler-journaliser",
+    "chapterId": "premiere-boucle-minimale"
+  },
+  {
+    "questionId": "pt-041",
+    "previousChapterId": "autograd-et-derivees",
+    "chapterId": "premiere-boucle-minimale"
+  },
+  {
+    "questionId": "pt-005",
+    "previousChapterId": "organiser-les-axes",
+    "chapterId": "dataset-et-batches"
+  },
+  {
+    "questionId": "pt-006",
+    "previousChapterId": "ajouter-retirer-un-axe",
+    "chapterId": "dataset-et-batches"
+  },
+  {
+    "questionId": "pt-019",
+    "previousChapterId": "filtrer-et-preserver-les-cibles",
+    "chapterId": "selection-diffusion-reduction"
+  },
+  {
+    "questionId": "pt-023",
+    "previousChapterId": "broadcasting-pas-a-pas",
+    "chapterId": "selection-diffusion-reduction"
+  },
+  {
+    "questionId": "pt-043",
+    "previousChapterId": "tenseur-forme-type-device",
+    "chapterId": "selection-diffusion-reduction"
+  },
+  {
+    "questionId": "pt-007",
+    "previousChapterId": "ajouter-retirer-un-axe",
+    "chapterId": "organiser-les-axes"
+  },
+  {
+    "questionId": "pt-020",
+    "previousChapterId": "concatener-ou-empiler",
+    "chapterId": "organiser-les-axes"
+  },
+  {
+    "questionId": "pt-021",
+    "previousChapterId": "concatener-ou-empiler",
+    "chapterId": "organiser-les-axes"
+  },
+  {
+    "questionId": "pt-029",
+    "previousChapterId": "moyennes-masquees",
+    "chapterId": "padding-et-collate"
+  },
+  {
+    "questionId": "pt-048",
+    "previousChapterId": "moyennes-masquees",
+    "chapterId": "padding-et-collate"
+  },
+  {
+    "questionId": "pt-036",
+    "previousChapterId": "sauvegarder-et-reprendre",
+    "chapterId": "boucle-entrainement-complete"
+  },
+  {
+    "questionId": "pt-037",
+    "previousChapterId": "sauvegarder-et-reprendre",
+    "chapterId": "boucle-entrainement-complete"
+  },
+  {
+    "questionId": "pt-016",
+    "previousChapterId": "construire-un-module",
+    "chapterId": "conv-mel-autoencodeur"
+  },
+  {
+    "questionId": "pt-050",
+    "previousChapterId": "sauvegarder-et-reprendre",
+    "chapterId": "modules-et-buffers"
+  },
+  {
+    "questionId": "pt-049",
+    "previousChapterId": "optimiseurs-regularisation-pratique",
+    "chapterId": "scheduler-et-arret-anticipe"
+  },
+  {
+    "questionId": "pt-004",
+    "previousChapterId": "tenseur-forme-type-device",
+    "chapterId": "cuda-amp-memoire"
+  },
+  {
+    "questionId": "pt-031",
+    "previousChapterId": "tenseur-forme-type-device",
+    "chapterId": "cuda-amp-memoire"
+  }
+]

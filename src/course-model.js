@@ -20,7 +20,7 @@ export function wordCount(value) {
 }
 
 export function chapterMinutes(chapter) {
-  const text = chapterText(chapter);
+  const text = chapterText(chapter.readingStyle==='continuous'?{...chapter,blocks:chapter.blocks.filter(block=>!block.disclosure)}:chapter);
   // Includes time to read examples and diagrams; indicative, never a timer.
   return Math.max(3, Math.ceil(wordCount(text) / 150));
 }
@@ -41,7 +41,7 @@ export function courseStage(course,chapterId) {
 }
 
 export function chapterNavigation(course,chapter) {
-  const sequence=chapter.readingRole==='reference'?course.chapters:course.chapters.filter(item=>item.readingRole!=='reference');
+  const sequence=course.readingGroups?course.chapters.filter(item=>(item.readingRole==='reference')===(chapter.readingRole==='reference')):chapter.readingRole==='reference'?course.chapters:course.chapters.filter(item=>item.readingRole!=='reference');
   const index=sequence.indexOf(chapter);
   return {previous:sequence[index-1]??null,next:sequence[index+1]??null};
 }
@@ -51,13 +51,21 @@ export function mergeCourseReferences(base,courses) {
 }
 
 export function normalizeProgress(raw, courses) {
-  const valid = new Set(courses.flatMap(c => c.chapters.map(ch => `${c.themeId}/${ch.id}`)));
-  const completed = Array.isArray(raw?.completed) ? [...new Set(raw.completed.filter(key => valid.has(key)))] : [];
-  const last = raw?.last && valid.has(`${raw.last.themeId}/${raw.last.chapterId}`) ? { themeId: raw.last.themeId, chapterId: raw.last.chapterId } : null;
-  const review=Array.isArray(raw?.review)?[...new Set(raw.review.filter(key=>valid.has(key)))]:[];
+  const canonicalKey=key=>{
+    if(typeof key!=='string')return null;
+    const [theme,id,...extra]=key.split('/'),course=courses.find(course=>course.themeId===theme);
+    const chapter=!extra.length&&course&&chapterById(course,id);
+    return chapter?`${theme}/${chapter.id}`:null;
+  };
+  const completed = Array.isArray(raw?.completed) ? [...new Set(raw.completed.map(canonicalKey).filter(Boolean))] : [];
+  const lastCourse=courses.find(course=>course.themeId===raw?.last?.themeId),lastChapter=lastCourse&&chapterById(lastCourse,raw.last.chapterId);
+  const last=lastChapter?{themeId:lastCourse.themeId,chapterId:lastChapter.id}:null;
+  const review=Array.isArray(raw?.review)?[...new Set(raw.review.map(canonicalKey).filter(Boolean))]:[];
+  const migratedThemes=new Set((Array.isArray(raw?.migratedThemes)?raw.migratedThemes:[]).filter(theme=>courses.some(course=>course.themeId===theme)));
+  for(const key of [...(Array.isArray(raw?.completed)?raw.completed:[]),...(Array.isArray(raw?.review)?raw.review:[])])if(typeof key==='string'&&canonicalKey(key)&&canonicalKey(key)!==key)migratedThemes.add(key.split('/')[0]);
   const chapterStates={};
   for(const course of courses)for(const chapter of course.chapters){
-    const key=`${course.themeId}/${chapter.id}`,value=raw?.chapterStates?.[key];
+    const key=`${course.themeId}/${chapter.id}`,oldKey=Object.keys(raw?.chapterStates??{}).find(old=>canonicalKey(old)===key),value=raw?.chapterStates?.[key]??raw?.chapterStates?.[oldKey];
     if(!value||typeof value!=='object'||Array.isArray(value))continue;
     const state={walkthroughs:{},scrollY:Number.isFinite(value.scrollY)?Math.max(0,value.scrollY):0};
     chapter.blocks.filter(block=>block.type==='walkthrough').forEach((block,index)=>{
@@ -71,7 +79,7 @@ export function normalizeProgress(raw, courses) {
     }
     chapterStates[key]=state;
   }
-  return { version: 1, completed,review,chapterStates,last, readingMode: raw?.readingMode === true, largeText: raw?.largeText === true };
+  return { version: 1, completed,review,chapterStates,last,migratedThemes:[...migratedThemes], readingMode: raw?.readingMode === true, largeText: raw?.largeText === true };
 }
 
 export function checkpointSignature(checkpoint){return JSON.stringify([checkpoint.prompt,checkpoint.correctOptionId,checkpoint.options]);}
@@ -89,9 +97,24 @@ export function setChapterRead(progress, themeId, chapterId, read) {
 }
 
 export function resolveChapter(course, { chapterId, questionId } = {}) {
-  return course.chapters.find(ch => ch.id === chapterId)
+  return chapterById(course,chapterId)
     ?? course.chapters.find(ch => ch.questionIds.includes(questionId))
     ?? course.chapters[0];
+}
+
+export function chapterById(course,id){
+  const canonical=course.chapterAliases?.[id]??id;
+  return course.chapters.find(chapter=>chapter.id===canonical);
+}
+
+export function readingChapters(course){return course.chapters.filter(chapter=>chapter.readingRole!=='reference');}
+export function readingProgress(course,progress){
+  const chapters=course.readingGroups?readingChapters(course):course.chapters;
+  return {total:chapters.length,read:chapters.filter(chapter=>progress.completed.includes(`${course.themeId}/${chapter.id}`)).length};
+}
+export function chapterPosition(course,chapter){
+  const sequence=course.readingGroups?course.chapters.filter(item=>(item.readingRole==='reference')===(chapter.readingRole==='reference')):course.chapters;
+  return {position:sequence.indexOf(chapter)+1,total:sequence.length,reference:chapter.readingRole==='reference'};
 }
 
 

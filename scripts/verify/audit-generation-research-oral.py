@@ -117,6 +117,10 @@ def main():
         raw=json.loads(path.read_text(encoding='utf-8'))
         if 'chapters'in raw:all_courses.append(fragments_by_theme.get(raw['themeId'],raw))
     targets={(course['themeId'],ch['id'])for course in all_courses for ch in course['chapters']}
+    for course in all_courses:
+        for alias,canonical in course.get('chapterAliases',{}).items():
+            assert (course['themeId'],canonical)in targets
+            targets.add((course['themeId'],alias))
     scaffold_count=0;walkthrough_count=0
     for course in courses:
         assert [ch['id']for ch in course['chapters']]==list(original_ids[course['themeId']])

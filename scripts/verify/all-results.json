@@ -3,28 +3,22 @@
   "device": "cpu",
   "commands": [
     {
-      "script": "audit-pytorch-core.py",
+      "script": "narration-pytorch.py",
       "arguments": [],
       "exitCode": 0,
-      "seconds": 5.992
-    },
-    {
-      "script": "audit-pytorch-advanced.py",
-      "arguments": [],
-      "exitCode": 0,
-      "seconds": 6.317
+      "seconds": 5.165
     },
     {
       "script": "audit-python-signal-ml.py",
       "arguments": [],
       "exitCode": 0,
-      "seconds": 12.15
+      "seconds": 10.252
     },
     {
       "script": "audit-generation-research-oral.py",
       "arguments": [],
       "exitCode": 0,
-      "seconds": 3.534
+      "seconds": 4.326
     }
   ],
   "notebooksReexecuted": false

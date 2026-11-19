@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import {existsSync} from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { readBank } from './read-bank.mjs';
-import { COURSE_ORDER, wordCount, chapterText } from '../src/course-model.js';
+import { COURSE_ORDER, wordCount, chapterText,chapterById,readingChapters } from '../src/course-model.js';
 import { FIGURE_KINDS } from '../src/course-figures.js';
 import {LAB_KINDS} from '../src/tensor-labs.js';
 
@@ -35,6 +35,18 @@ export function validateCourses(courses, { bank, themes, sources }) {
     check(themeIds.has(course.themeId)||course.kind,'format explicite des modules complémentaires');
     check(Array.isArray(course.chapters)&&course.chapters.length>=(course.kind?1:6),'chapitres adaptés au format du module');
     check(new Set(course.chapters.map(ch=>ch.id)).size===course.chapters.length,'IDs de chapitres uniques');
+    for(const [alias,target]of Object.entries(course.chapterAliases??{})){
+      check(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(alias)&&!course.chapters.some(chapter=>chapter.id===alias),'ancienne ancre distincte');
+      check(course.chapters.some(chapter=>chapter.id===target),'destination canonique de l’ancienne ancre');
+    }
+    if(course.readingGroups){
+      check(course.readingGroups.every(group=>group.title?.trim()&&group.description?.trim()&&group.chapterIds.length),'parties du parcours principal');
+      assert.deepEqual(course.readingGroups.flatMap(group=>group.chapterIds),readingChapters(course).map(chapter=>chapter.id),'Parties limitées au parcours principal, sans doublons');
+    }
+    if(course.diagnostics)for(const situation of course.diagnostics.situations){
+      check(['title','symptom','check','explanation'].every(key=>situation[key]?.trim()),'situation de diagnostic concrète');
+      check(situation.links.length&&situation.links.every(link=>courses.some(target=>target.themeId===link.themeId&&chapterById(target,link.chapterId))),'diagnostic relié au cours');
+    }
     const moduleIntroduction=course.moduleIntroduction;
     check(moduleIntroduction?.startingPoint?.trim()&&moduleIntroduction.goal?.trim(),'présentation du module');
     check(moduleIntroduction.concepts?.length>=Math.min(5,course.chapters.length)&&moduleIntroduction.concepts.length<=8,'jalons annoncés selon le nombre de chapitres');
@@ -70,7 +82,7 @@ export function validateCourses(courses, { bank, themes, sources }) {
       if(firstExampleIndex>=0)assert.ok(firstExampleIndex<ch.blocks.findIndex(block=>block.type==='walkthrough'),fail('cas court avant le déroulé complet'));
       if(course.kind!=='interview')assert.ok(ch.blocks.some(b=>['visual','plot','tensor-lab'].includes(b.type)),fail('représentation propre à la notion'));
       if(ch.level)assert.ok(['practice','discuss','advanced'].includes(ch.level),fail('niveau de préparation valide'));
-      for(const link of ch.prerequisites??[])assert.ok(courses.some(target=>target.themeId===link.themeId&&target.chapters.some(chapter=>chapter.id===link.chapterId)),fail('prérequis de chapitre existant'));
+      for(const link of ch.prerequisites??[])assert.ok(courses.some(target=>target.themeId===link.themeId&&chapterById(target,link.chapterId)),fail('prérequis de chapitre existant'));
       if(course.kind==='interview'){
         const answer=ch.blocks.filter(block=>block.role==='oral-answer');
         const answerWords=wordCount(answer.map(block=>block.text).join(' '));
@@ -80,17 +92,25 @@ export function validateCourses(courses, { bank, themes, sources }) {
       }
       let chapterWords=0;
       for(const block of ch.blocks) {
-        assert.ok(['paragraph','heading','list','code','callout','example','figure','visual','plot','walkthrough','first-example','audio-lab','illustration','analysis-image','tensor-lab'].includes(block.type),fail('type de bloc'));
+        assert.ok(['paragraph','heading','list','code','callout','example','figure','visual','plot','walkthrough','first-example','audio-lab','illustration','analysis-image','tensor-lab','checkpoint'].includes(block.type),fail('type de bloc'));
+        if(block.type==='checkpoint')assert.ok(ch.checkpoint&&ch.blocks.filter(item=>item.type==='checkpoint').length===1,fail('une seule question intégrée au fil de lecture'));
         if(block.codeMode){
           assert.ok(['standalone','excerpt'].includes(block.codeMode),fail('statut du code'));
           if(block.codeMode==='excerpt')assert.ok(block.requires?.length&&block.requires.every(item=>typeof item==='string'&&item.trim()),fail('prérequis explicites de l’extrait'));
         }
         for(const resource of block.resources??[])assert.ok(resource.label?.trim()&&/^(?:media|notebooks)\/[a-zA-Z0-9_./-]+$/.test(resource.path)&&!resource.path.split('/').includes('..')&&existsSync(new URL(`../public/${resource.path}`,import.meta.url)),fail(`fichier nécessaire livré : ${resource.path}`));
         if(['paragraph','heading','callout','example'].includes(block.type))assert.ok(typeof block.text==='string'&&block.text.trim(),fail('texte non vide'));
-        if(block.type==='code'){assert.ok(block.code?.trim()&&block.caption?.trim(),fail('code commenté'));code++;}
+        if(block.type==='code'){assert.ok(block.code?.trim()&&(block.role==='reading-fragment'||block.caption?.trim()),fail('code expliqué dans le fil ou légendé'));code++;}
+        if(block.role==='reading-fragment'){
+          const programs=ch.blocks.filter(item=>item.readingCompanion&&item.programId===block.programId);
+          assert.equal(programs.length,1,fail('extrait relié à un programme complet unique'));
+          const [first,last]=block.sourceLines??[];
+          assert.ok(Number.isInteger(first)&&Number.isInteger(last)&&first>=1&&last>=first&&last<=programs[0].code.split('\n').length,fail('lignes de l’extrait présentes'));
+          assert.equal(block.code.replace(/\n$/,''),programs[0].code.split('\n').slice(first-1,last).join('\n').replace(/\n$/,''),fail('extrait identique aux lignes du programme complet'));
+        }
         if(block.type==='list'){
-          assert.ok(Array.isArray(block.items)&&block.items.length&&block.items.every(x=>typeof x==='string'&&x.trim()),fail('liste lisible'));
-          if(block.links)for(const link of block.links)assert.ok(link.text?.trim()&&courses.some(target=>target.themeId===link.themeId&&target.chapters.some(chapter=>chapter.id===link.chapterId)),fail(`lien de chapitre valide : ${link.themeId}/${link.chapterId}`));
+          assert.ok(Array.isArray(block.items)&&(block.items.length||block.links?.length)&&block.items.every(x=>typeof x==='string'&&x.trim()),fail('liste de textes ou de liens lisible'));
+          if(block.links)for(const link of block.links)assert.ok(link.text?.trim()&&courses.some(target=>target.themeId===link.themeId&&chapterById(target,link.chapterId)),fail(`lien de chapitre valide : ${link.themeId}/${link.chapterId}`));
         }
         if(block.type==='callout')assert.ok(['tip','pitfall','analogy'].includes(block.tone)&&block.label?.trim(),fail('encadré nommé'));
         if(block.type==='figure'){assert.ok(FIGURE_KINDS.includes(block.kind)&&block.caption?.trim(),fail('figure légendée'));figures++;}
@@ -116,7 +136,8 @@ export function validateCourses(courses, { bank, themes, sources }) {
           assert.ok(block.series?.length&&block.series.every(s=>s.name?.trim()&&s.points.length>=2&&s.points.every((p,i)=>p.length===2&&p.every(Number.isFinite)&&(!i||p[0]>=s.points[i-1][0]))),fail('coordonnées finies et ordonnées'));
         }
         if(block.type==='walkthrough'){
-          walkthroughs++;assert.ok(block.title?.trim()&&block.goal?.trim()&&block.result?.trim(),fail('objectif et conclusion de l’exemple'));
+          if(block.readingCompanion)assert.ok(block.disclosure===true&&block.codeMode==='standalone'&&block.programId?.trim(),fail('programme autonome complémentaire replié'));
+          walkthroughs++;assert.ok(block.title?.trim()&&block.goal?.trim()&&(block.readingCompanion||block.result?.trim()),fail('objectif de l’exemple et conclusion lorsque nécessaire'));
           assert.ok(block.steps.length>=1,fail('étapes du calcul'));
           const lineCount=block.code?.split('\n').length??0;
           if(block.code){code++;assert.ok(block.steps.some(step=>step.lines?.length),fail('lien entre les étapes et les lignes de code'));}

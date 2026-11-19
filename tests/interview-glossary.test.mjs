@@ -1,3 +1,4 @@
+import {chapterById} from '../src/course-model.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -37,7 +38,7 @@ test('le glossaire contient au moins 120 paires uniques et chaque définition re
   for(const term of terms){
     assert.match(term.id,/^[a-z0-9]+(?:-[a-z0-9]+)*$/u);
     assert.ok(term.fr&&term.en&&term.definition);
-    assert.ok(courses.some(course=>course.themeId===term.themeId&&course.chapters.some(chapter=>chapter.id===term.chapterId)),term.id);
+    assert.ok(courses.some(course=>course.themeId===term.themeId&&chapterById(course,term.chapterId)),term.id);
   }
 });
 

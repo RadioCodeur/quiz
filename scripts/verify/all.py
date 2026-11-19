@@ -1,6 +1,6 @@
 """Run the offline CPU examples, never imported by the website.
 
-Use --notebooks to re-execute all twenty Jupyter documents and forty solutions.
+Use --notebooks to re-execute the linked Jupyter documents and their solutions.
 The regular check binds unchanged notebooks to their existing execution evidence.
 """
 import argparse
@@ -16,7 +16,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--notebooks',action='store_true')
     args=parser.parse_args()
-    commands=[['audit-pytorch-core.py'],['audit-pytorch-advanced.py'],['audit-python-signal-ml.py'],['audit-generation-research-oral.py']]
+    commands=[['narration-pytorch.py'],['audit-python-signal-ml.py'],['audit-generation-research-oral.py']]
     if args.notebooks:commands.append(['notebooks.py'])
     report={'python':platform.python_version(),'device':'cpu','commands':[],'notebooksReexecuted':args.notebooks}
     for command in commands:
