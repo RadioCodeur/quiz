@@ -1,0 +1,92 @@
+[
+  {
+    "questionId": "pt-006",
+    "themeId": "pytorch",
+    "previousChapterId": "organiser-les-axes",
+    "chapterId": "ajouter-retirer-un-axe"
+  },
+  {
+    "questionId": "pt-007",
+    "themeId": "pytorch",
+    "previousChapterId": "organiser-les-axes",
+    "chapterId": "ajouter-retirer-un-axe"
+  },
+  {
+    "questionId": "pt-020",
+    "themeId": "pytorch",
+    "previousChapterId": "organiser-les-axes",
+    "chapterId": "concatener-ou-empiler"
+  },
+  {
+    "questionId": "pt-021",
+    "themeId": "pytorch",
+    "previousChapterId": "organiser-les-axes",
+    "chapterId": "concatener-ou-empiler"
+  },
+  {
+    "questionId": "pt-019",
+    "themeId": "pytorch",
+    "previousChapterId": "selection-diffusion-reduction",
+    "chapterId": "filtrer-et-preserver-les-cibles"
+  },
+  {
+    "questionId": "pt-023",
+    "themeId": "pytorch",
+    "previousChapterId": "selection-diffusion-reduction",
+    "chapterId": "broadcasting-pas-a-pas"
+  },
+  {
+    "questionId": "pt-028",
+    "themeId": "pytorch",
+    "previousChapterId": "dataset-et-batches",
+    "chapterId": "padding-et-collate"
+  },
+  {
+    "questionId": "pt-038",
+    "themeId": "pytorch",
+    "previousChapterId": "dataset-et-batches",
+    "chapterId": "padding-et-collate"
+  },
+  {
+    "questionId": "pt-027",
+    "themeId": "pytorch",
+    "previousChapterId": "construire-un-module",
+    "chapterId": "convolution-a-la-main"
+  },
+  {
+    "questionId": "pt-034",
+    "themeId": "pytorch",
+    "previousChapterId": "construire-un-module",
+    "chapterId": "modules-et-buffers"
+  },
+  {
+    "questionId": "pt-035",
+    "themeId": "pytorch",
+    "previousChapterId": "construire-un-module",
+    "chapterId": "modules-et-buffers"
+  },
+  {
+    "questionId": "pt-026",
+    "themeId": "pytorch",
+    "previousChapterId": "choisir-la-perte",
+    "chapterId": "pertes-multi-etiquettes"
+  },
+  {
+    "questionId": "pt-049",
+    "themeId": "pytorch",
+    "previousChapterId": "une-iteration-entrainement",
+    "chapterId": "optimiseurs-regularisation-pratique"
+  },
+  {
+    "questionId": "aml-025",
+    "themeId": "audio-ml",
+    "previousChapterId": "similarites-contraste-attention",
+    "chapterId": "similarite-cosinus-et-contraste"
+  },
+  {
+    "questionId": "aml-029",
+    "themeId": "audio-ml",
+    "previousChapterId": "similarites-contraste-attention",
+    "chapterId": "similarite-cosinus-et-contraste"
+  }
+]

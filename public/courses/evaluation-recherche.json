@@ -3,8 +3,8 @@
   "title": "Décider si notre système audio s’améliore vraiment",
   "subtitle": "Une comparaison suivie : mêmes données, critères explicites, puis limites de la conclusion.",
   "intro": [
-    "La percussionniste préfère quelques sorties du générateur adapté à ses prises. Gardons ce projet pour décider si l’adaptation aide réellement : suit-elle mieux l’accent demandé, conserve-t-elle le timbre et à quel coût ? La base non adaptée sera notre référence. Tous les scores pédagogiques du module sont fictifs.",
-    "Le travail suit l’ordre d’une expérience : écrire la décision recherchée, retrouver ce qui a tourné, réserver les données, mesurer, expliquer les écarts, puis discuter leur incertitude. Les métriques de classification réutilisent le détecteur d’attaques nécessaire à notre commande ; elles ne transforment pas à elles seules la qualité d’une musique en un score."
+    "Nous comparons la base et son adaptation sur des situations réservées. Le module construit un protocole, des comptes vérifiables, puis une conclusion limitée à ces observations.",
+    "Le jeu pédagogique contient vingt prises fictives R01 à R20, avec cinq fenêtres par prise. Les décisions sont fabriquées pour refaire les métriques ; elles ne sont les résultats d’aucun modèle audio réel."
   ],
   "prerequisites": [
     "pytorch",
@@ -20,7 +20,7 @@
   "chapters": [
     {
       "id": "question-de-recherche-et-baseline",
-      "title": "Écrire ce qui ferait adopter la nouvelle version",
+      "title": "Protocole : une hypothèse, une référence et une décision",
       "summary": "Fixer la décision et les observations avant de chercher un résultat favorable.",
       "questionIds": [],
       "context": {
@@ -38,6 +38,66 @@
         {
           "type": "paragraph",
           "text": "Une hypothèse (hypothesis) est une proposition que les observations peuvent mettre en défaut. Demandons si l’adaptation place mieux l’accent, à commandes identiques, sans dépasser une dégradation acoustique acceptable. Nous précisons les critères, la marge éventuelle et leur observation. Sinon, mieux pourrait changer de sens dès qu’un résultat déplaît."
+        },
+        {
+          "type": "paragraph",
+          "text": "Notre jeu de calcul comporte vingt prises réservées, cinq fenêtres chacune. Les dix premières sont de classe 0, sans attaque ; les dix autres de classe 1, avec attaque. Nous gardons ces mêmes cent décisions pour les métriques, ablations et tirages de prises. Les critères d’écoute restent des observations séparées."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Le jeu fictif qui accompagnera les calculs",
+          "columns": [
+            "Prises",
+            "Classe réelle",
+            "Base",
+            "Base+A",
+            "Base+B",
+            "Base+A+B"
+          ],
+          "rows": [
+            [
+              "R01",
+              "0",
+              "4/5",
+              "4/5",
+              "5/5",
+              "5/5"
+            ],
+            [
+              "R02–R10",
+              "0",
+              "4/5",
+              "4/5",
+              "4/5",
+              "4/5"
+            ],
+            [
+              "R11–R12",
+              "1",
+              "3/5",
+              "4/5",
+              "3/5",
+              "4/5"
+            ],
+            [
+              "R13–R15",
+              "1",
+              "3/5",
+              "3/5",
+              "3/5",
+              "4/5"
+            ],
+            [
+              "R16–R20",
+              "1",
+              "3/5",
+              "3/5",
+              "3/5",
+              "3/5"
+            ]
+          ],
+          "caption": "Chaque fraction compte des décisions correctes parmi cinq fenêtres de la même prise. Les groupes restent présents même lorsque leurs scores coïncident."
         },
         {
           "type": "walkthrough",
@@ -65,7 +125,7 @@
               "text": "Décidons comment rendre visible un contrôle meilleur mais un son dégradé. Si tout résultat peut être déclaré positif, la question n’est pas assez testable."
             }
           ],
-          "result": "Ce tableau de calcul raisonné formalise les comparaisons ; aucun programme artificiel n’est nécessaire. La mesure sert une décision de composition et peut révéler un compromis plutôt que confirmer automatiquement le modèle.",
+          "result": "La décision est définie avant les essais : meilleur contrôle, propriétés sonores examinées séparément et budget annoncé. Ce tableau peut aussi conduire à conserver la base.",
           "calculationTable": true
         },
         {
@@ -108,7 +168,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Je pars d’une décision musicale, d’une hypothèse précise et d’une référence crédible. Mon protocole doit révéler un compromis ou un échec autant qu’une amélioration."
+          "text": "Pour continuer, nous avons besoin de retrouver les conditions de chaque essai. Un résultat sans ses données et ses réglages ne suffit pas à décider quelle version adopter."
         }
       ],
       "takeaways": [
@@ -162,11 +222,12 @@
         "input": "Une base et une adaptation dont quelques sorties plaisent à la percussionniste.",
         "action": "Séparer contrôle de l’accent, qualité sonore et coût dans une hypothèse testable.",
         "output": "Un contrat de comparaison qui peut aussi révéler un compromis ou une régression."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "environnement-linux-et-traces",
-      "title": "Pouvoir retrouver la version qui a produit un son",
+      "title": "GNU/Linux : relier un résultat à son exécution",
       "summary": "Passer d’un lancement sur serveur à une expérience identifiable.",
       "questionIds": [],
       "context": {
@@ -227,10 +288,22 @@
               "lines": [
                 7
               ],
-              "state": "Un essai identifié, un fichier de configuration, un journal."
+              "state": "Un essai identifié, un fichier de configuration, un journal.",
+              "details": [
+                {
+                  "code": "> runs/essai-01/console.log 2>&1",
+                  "explanation": "> redirige la sortie standard vers le fichier. 2>&1 envoie aussi les erreurs vers cette même destination. Cela ne vérifie pas le résultat de l’apprentissage.",
+                  "state": "La console du lancement est enregistrée, pas le code ni les données automatiquement."
+                }
+              ]
             }
           ],
-          "result": "Le lancement possède une provenance et des sorties inspectables, avant même de discuter sa performance."
+          "result": "Le lancement possède une provenance et des sorties inspectables, avant même de discuter sa performance.",
+          "codeMode": "excerpt",
+          "requires": [
+            "Un shell GNU/Linux, dans un projet disposant de train.py, requirements.txt et configs/base.json. Ces fichiers fictifs ne sont pas livrés par ce site.",
+            "Sous Windows, ces commandes ne sont pas des commandes PowerShell ; utiliser un environnement Linux adapté."
+          ]
         },
         {
           "type": "visual",
@@ -274,7 +347,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Chaque son doit retrouver son code, ses poids, ses données et sa configuration effective. Je distingue le poste local, l’environnement distant et les ressources réellement disponibles."
+          "text": "Partons d’un son et retrouvons son identifiant d’essai, puis code, configuration et poids. Si une de ces correspondances manque, la trace reste incomplète."
         }
       ],
       "takeaways": [
@@ -336,11 +409,12 @@
         "input": "Un contrat de comparaison entre la base et l’adaptation.",
         "action": "Associer chaque exécution à son environnement, sa configuration, ses données et ses journaux.",
         "output": "Des sorties dont on peut retrouver la provenance et diagnostiquer un échec."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "splits-et-fuites",
-      "title": "Réserver de vraies nouvelles prises",
+      "title": "Séparation des données : prises, fenêtres et fuites",
       "summary": "Choisir les groupes avant les fenêtres et protéger ce qui doit rester inconnu.",
       "questionIds": [
         "eval-001",
@@ -384,7 +458,39 @@
         },
         {
           "type": "paragraph",
-          "text": "Cent enregistrements donnent ici vingt fenêtres chacun, donc 2 000 lignes. Ces lignes restent liées à cent sources. Le partage se fait d’abord entre ces sources pertinentes. Les fenêtres héritent ensuite de leur ensemble, et la validation reçoit uniquement les statistiques apprises sur train."
+          "text": "Pour lire ce découpage, utilisons six prises de développement D01 à D06, avec deux fenêtres chacune. Les douze fenêtres gardent ces six parents. Ce petit cas prépare la séparation ; il ne remplace pas les vingt prises R réservées à la comparaison."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Une fenêtre hérite de sa source",
+          "columns": [
+            "Source",
+            "Ensemble choisi avant découpage",
+            "Fenêtres"
+          ],
+          "rows": [
+            [
+              "Prise D01",
+              "train",
+              "D01-00, D01-01 : train"
+            ],
+            [
+              "Prise D04",
+              "validation",
+              "D04-00, D04-01 : validation"
+            ],
+            [
+              "Prise D06",
+              "test de cette miniature",
+              "D06-00, D06-01 : test"
+            ]
+          ],
+          "caption": "Cette miniature de développement utilise six prises D01–D06. Elle explique le découpage ; elle ne réaffecte pas les vingt prises R du jeu d’évaluation."
+        },
+        {
+          "type": "paragraph",
+          "text": "L’annexe fabrique deux valeurs de test par fenêtre : le numéro numérique de sa prise et son indice 0 ou 1. Elles rendent les statistiques vérifiables ; elles ne constituent pas une représentation acoustique à apprendre."
         },
         {
           "type": "walkthrough",
@@ -395,7 +501,7 @@
           "steps": [
             {
               "title": "identifier les parents",
-              "text": "Cent enregistrements donnent vingt fenêtres chacun : 2 000 exemples, mais cent sources seulement. Deux fenêtres peuvent partager une attaque ou un fond acoustique.",
+              "text": "Six prises fournissent deux fenêtres chacune : douze exemples, mais six sources. Deux fenêtres d’une prise peuvent partager une attaque ou le même fond acoustique.",
               "state": "Chaque fenêtre garde son recording_id.",
               "lines": [
                 1
@@ -423,10 +529,31 @@
               "lines": [
                 4,
                 5
+              ],
+              "details": [
+                {
+                  "code": "scaler.fit(train.features)",
+                  "explanation": "fit calcule et garde les statistiques sur train. transform applique ces valeurs à la validation, sans refaire fit sur elle.",
+                  "state": "La validation change d’échelle, pas l’origine des statistiques."
+                }
               ]
             }
           ],
-          "result": "Le découpage et le prétraitement respectent le contrat des données réservées."
+          "result": "Le découpage et le prétraitement respectent le contrat des données réservées.",
+          "codeMode": "excerpt",
+          "requires": [
+            "recording_ids contient les identifiants de prises. split_recording_ids les répartit sans partager un identifiant entre ensembles.",
+            "make_windows garde recording_id pour chaque fenêtre. scaler expose fit et transform ; ses statistiques viennent uniquement de train.features."
+          ]
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "codeMode": "standalone",
+          "disclosure": true,
+          "caption": "Programme autonome : six prises de développement et deux fenêtres chacune. Les fonctions sont définies ici, avec leurs statistiques de train.",
+          "code": "import numpy as np\nrecording_ids = [\"D01\", \"D02\", \"D03\", \"D04\", \"D05\", \"D06\"]\ndef split_recording_ids(ids):\n    assert len(set(ids)) == len(ids)\n    return ids[:3], ids[3:5], ids[5:]\nclass Windows:\n    def __init__(self, ids):\n        self.recording_ids = [id for id in ids for _ in range(2)]\n        self.features = np.array([[float(id[1:]), float(j)] for id in ids for j in range(2)])\ndef make_windows(ids):\n    return Windows(ids)\nclass Scaler:\n    def fit(self, features):\n        self.mean_ = features.mean(axis=0)\n        self.scale_ = np.maximum(features.std(axis=0), 1e-8)\n        return self\n    def transform(self, features):\n        return (features - self.mean_) / self.scale_\nscaler = Scaler()\ntrain_ids, valid_ids, test_ids = split_recording_ids(recording_ids)\ntrain = make_windows(train_ids)\nvalid = make_windows(valid_ids)\nscaler.fit(train.features)\nvalid_scaled = scaler.transform(valid.features)\nprint(\"prises\", train_ids, valid_ids, test_ids)\nprint(\"sources train\", train.recording_ids)\nprint(\"moyenne train\", scaler.mean_.tolist())\nprint(\"validation transformée\", valid_scaled.tolist())",
+          "title": "Exécuter la miniature complète"
         },
         {
           "type": "paragraph",
@@ -444,7 +571,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Je sépare les groupes selon la nouveauté que je veux mesurer. Les fenêtres héritent de cette séparation et les données réservées ne règlent pas le système."
+          "text": "Pour détecter une fuite, comparons les identifiants parents et l’origine des statistiques. Mélanger les fenêtres plus finement ne crée pas de nouvelles prises."
         }
       ],
       "takeaways": [
@@ -509,11 +636,12 @@
         "input": "Des prises avec leurs identifiants et un lancement traçable.",
         "action": "Séparer les groupes pertinents, puis ajuster le prétraitement uniquement sur les données autorisées.",
         "output": "Un ensemble réservé qui correspond au type de nouveauté annoncé."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "metriques-et-seuils",
-      "title": "Compter les bons événements, avec le bon dénominateur",
+      "title": "Matrice de confusion : précision, rappel et seuil",
       "summary": "Évaluer le détecteur d’attaques qui sert à mesurer notre commande temporelle.",
       "questionIds": [
         "eval-003",
@@ -527,6 +655,33 @@
         {
           "type": "paragraph",
           "text": "Pour vérifier l’accent, nous utilisons un détecteur d’attaques avec une règle de correspondance temporelle fixée. Il peut trouver une attaque, la manquer ou inventer une alerte. Une métrique (metric) résume un aspect précis de ces décisions. Ses erreurs doivent être connues. Elles ne deviennent pas automatiquement des défauts du générateur."
+        },
+        {
+          "type": "paragraph",
+          "text": "Dans ce jeu fictif, une fenêtre contient au plus une attaque et une alerte. 0 signifie absence ; 1 présence. Les lignes donnent la réalité ; les colonnes donnent la prédiction. Le tableau agrège les cent fenêtres sans supprimer leurs identifiants de prise."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Matrice de la base sur les cent fenêtres",
+          "columns": [
+            "Classe réelle / classe prédite",
+            "Prédit 0",
+            "Prédit 1"
+          ],
+          "rows": [
+            [
+              "Réel 0 : sans attaque",
+              "40 : négatifs corrects",
+              "10 : fausses alertes"
+            ],
+            [
+              "Réel 1 : avec attaque",
+              "20 : attaques manquées",
+              "30 : attaques trouvées"
+            ]
+          ],
+          "caption": "La colonne 1 contient quarante alertes. La ligne 1 contient cinquante attaques réelles : les dénominateurs répondent à deux questions."
         },
         {
           "type": "paragraph",
@@ -569,7 +724,7 @@
           "title": "Lire les quatre cases avant le score",
           "goal": "Calculer précision, rappel et balanced accuracy sur les mêmes erreurs.",
           "language": "python",
-          "code": "cm = [[40, 10],\n      [20, 30]]\n# lignes : vrai [0, 1], colonnes : prédit [0, 1]\nprecision = 30 / (30 + 10)\nrecall = 30 / (30 + 20)\nbalanced_accuracy = (40 / 50 + 30 / 50) / 2",
+          "code": "cm = [[40, 10], [20, 30]]\n# Lignes : réel [0,1] ; colonnes : prédit [0,1].\ntn, fp = cm[0]\nfn, tp = cm[1]\nprecision = tp / (tp + fp)\nrecall = tp / (tp + fn)\nrappel_classe_0 = tn / (tn + fp)\nbalanced_accuracy = (rappel_classe_0 + recall) / 2\nprint(precision, recall, balanced_accuracy)",
           "steps": [
             {
               "title": "annoncer les axes",
@@ -577,33 +732,44 @@
               "lines": [
                 1,
                 2,
-                3
+                3,
+                4
               ],
-              "state": "TP=30 ; FN=20 ; FP=10 ; TN=40."
+              "state": "TP=30 ; FN=20 ; FP=10 ; TN=40.",
+              "details": [
+                {
+                  "code": "tn, fp = cm[0]",
+                  "explanation": "cm[0] est la ligne des cas réellement négatifs. Le dépaquetage donne un nom à chacune de ses deux cases, sans modifier le tableau.",
+                  "state": "tn=40 ; fp=10 ; fn=20 ; tp=30."
+                }
+              ]
             },
             {
               "title": "Examiner les alertes",
               "text": "Trente alertes sur quarante sont correctes : la précision vaut 0,75. Son dénominateur contient les décisions positives du système.",
               "lines": [
-                4
+                5
               ]
             },
             {
               "title": "Examiner les événements",
               "text": "Trente positifs sur cinquante sont trouvés : le rappel vaut 0,6. Son dénominateur contient la vraie classe.",
               "lines": [
-                5
+                6
               ]
             },
             {
               "title": "équilibrer les classes",
               "text": "Le rappel négatif vaut 0,8. La moyenne des deux rappels donne (0,8+0,6)/2 = 0,7, indépendamment ici de leur effectif.",
               "lines": [
-                6
+                7,
+                8,
+                9
               ]
             }
           ],
-          "result": "Les mêmes décisions donnent plusieurs scores répondant à des questions différentes."
+          "result": "Les mêmes décisions donnent plusieurs scores répondant à des questions différentes.",
+          "codeMode": "standalone"
         },
         {
           "type": "illustration",
@@ -631,7 +797,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Je choisis la métrique selon les erreurs qui comptent pour la tâche. Je précise les dénominateurs et je fixe le seuil avant l’évaluation finale."
+          "text": "Avant de comparer deux scores, pointons les cases qui ont changé. Une alerte supplémentaire affecte la précision ; une attaque manquée affecte le rappel."
         }
       ],
       "takeaways": [
@@ -656,27 +822,32 @@
         "next": "La boucle d’évaluation devra ensuite agréger ces observations sans changer leur poids."
       },
       "checkpoint": {
-        "prompt": "Une classe rare est presque toujours manquée alors que la majorité est bien reconnue. Que montrer pour voir ce problème ?",
+        "prompt": "La base garde 30 attaques trouvées, mais ses fausses alertes passent de 10 à 20. Quel calcul change directement ?",
         "options": [
           {
             "id": "a",
-            "text": "La seule accuracy sans effectifs"
+            "text": "Le rappel passe de 30/50 à 30/60."
           },
           {
             "id": "b",
-            "text": "Le seul nombre de fichiers"
+            "text": "La précision passe de 30/40 à 30/50."
           },
           {
             "id": "c",
-            "text": "La seule moyenne des probabilités maximales"
+            "text": "Le nombre d’attaques réelles augmente de dix."
           },
           {
             "id": "d",
-            "text": "Des scores par classe et un agrégat macro annoncé"
+            "text": "La précision reste 0,75 puisque TP est inchangé."
           }
         ],
-        "correctOptionId": "d",
-        "explanation": "La majorité peut dominer l’accuracy. Les scores par classe rendent l’erreur visible ; l’agrégat doit correspondre à la question."
+        "correctOptionId": "b",
+        "explanation": "La précision compte les bonnes alertes parmi toutes les alertes. Le rappel garde le même numérateur et les mêmes attaques réelles.",
+        "optionFeedback": {
+          "a": "Les nouvelles erreurs sont de fausses alertes, pas des attaques réelles supplémentaires. Le dénominateur du rappel reste TP+FN.",
+          "c": "Une prédiction supplémentaire ne crée aucune attaque réelle. La ligne de la classe réelle reste inchangée.",
+          "d": "Le numérateur reste 30, mais le dénominateur des alertes passe de 40 à 50. La précision diminue."
+        }
       },
       "notions": [
         {
@@ -700,11 +871,12 @@
         "input": "Des sorties réservées et une commande d’accent à vérifier.",
         "action": "Lire les erreurs du détecteur puis choisir la métrique et le seuil adaptés au besoin.",
         "output": "Des scores dont on connaît les cas comptés et les limites."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "boucle-evaluation-et-surapprentissage",
-      "title": "Ne pas fausser le résultat en le rassemblant",
+      "title": "Moyenne de validation : garder le bon dénominateur",
       "summary": "Garder les bonnes unités dans la boucle et sélectionner sans consulter le test.",
       "questionIds": [
         "eval-004",
@@ -714,7 +886,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Deux versions utilisent des tailles de lots (batch sizes) différentes. Cela ne devrait pas changer leur moyenne finale. Moyenner les moyennes des lots donne pourtant le même poids au petit dernier lot qu’au grand premier. Additionnons d’abord les contributions et les effectifs. Nous diviserons seulement à la fin."
+          "text": "Nous isolons maintenant un autre calcul : dix pertes fictives, sans reprendre les cent décisions de classification. Les huit premières valent 1 et les deux dernières 3. Ce changement permet de vérifier ce que fait une moyenne de validation quand les lots sont inégaux."
         },
         {
           "type": "paragraph",
@@ -764,7 +936,14 @@
                 5,
                 6
               ],
-              "state": "Total=8 ; effectif=8."
+              "state": "Total=8 ; effectif=8.",
+              "details": [
+                {
+                  "code": "loss.item() * len(x)",
+                  "explanation": "item extrait le nombre contenu dans la perte moyenne. len(x) compte ici les exemples du lot. Leur produit retrouve la contribution de ce lot.",
+                  "state": "Premier lot : 1×8=8 ; dernier lot : 3×2=6."
+                }
+              ]
             },
             {
               "title": "Suivre le dernier batch",
@@ -783,7 +962,21 @@
               ]
             }
           ],
-          "result": "La moyenne finale conserve l’unité annoncée par le protocole."
+          "result": "La moyenne finale conserve l’unité annoncée par le protocole.",
+          "codeMode": "excerpt",
+          "requires": [
+            "torch est importé ; model, criterion et valid_loader sont déjà définis.",
+            "criterion renvoie ici une moyenne par exemple. valid_loader ne doit pas être vide. Une moyenne par trame demanderait un autre dénominateur."
+          ]
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "codeMode": "standalone",
+          "disclosure": true,
+          "caption": "Programme autonome : dix pertes fictives, avec une fonction identité. L’exemple isole l’agrégation, pas l’apprentissage d’un classifieur.",
+          "code": "import math\nimport torch\nmodel = torch.nn.Identity()\ncriterion = torch.nn.MSELoss(reduction=\"mean\")\nvalid_loader = [\n    (torch.zeros(8, 1, dtype=torch.float64), torch.ones(8, 1, dtype=torch.float64)),\n    (torch.zeros(2, 1, dtype=torch.float64), torch.full((2, 1), math.sqrt(3), dtype=torch.float64)),\n]\nmodel.eval()\nloss_sum, count = 0.0, 0\nwith torch.no_grad():\n    for x, y in valid_loader:\n        loss = criterion(model(x), y)\n        loss_sum += loss.item() * len(x)\n        count += len(x)\nmean_loss = loss_sum / count\nprint(\"somme\", loss_sum, \"effectif\", count, \"moyenne\", mean_loss)",
+          "title": "Exécuter la miniature complète"
         },
         {
           "type": "paragraph",
@@ -862,7 +1055,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : La moyenne finale doit respecter son unité, même avec des lots inégaux. Je règle séparément le comportement du modèle et le calcul des gradients pendant l’évaluation."
+          "text": "Changeons seulement le découpage des dix pertes en lots. La moyenne par exemple doit rester 1,4 : ce test simple révèle une moyenne de moyennes incorrecte."
         }
       ],
       "takeaways": [
@@ -927,11 +1120,12 @@
         "input": "Un critère défini et des lots de validation de tailles parfois différentes.",
         "action": "Évaluer dans le bon mode, additionner les contributions puis lire les courbes.",
         "output": "Une moyenne fidèle et un choix d’époque réservé à la validation."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "baselines-et-ablations",
-      "title": "Savoir quelle modification aide notre instrument",
+      "title": "Ablations : contributions séparées et interaction",
       "summary": "Changer un facteur à la fois et examiner aussi leurs interactions.",
       "questionIds": [
         "eval-013",
@@ -944,7 +1138,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Appelons A la condition locale d’attaque et B le nouveau décodeur. Quatre configurations permettent de voir ce qui se passe : base, base+A, base+B et base+A+B. Les valeurs fictives du tableau donnent 70, 72, 71 et 76 sur un même critère. Le gain combiné vaut 6, alors que les gains séparés totalisent 3 : les facteurs ne s’additionnent pas simplement."
+          "text": "Nous reprenons les vingt prises et leurs cent fenêtres, sans changer les cas. A corrige deux décisions, B une décision. Leur combinaison en corrige six : les trois autres corrections apparaissent seulement ensemble. Les scores 70, 72, 71 et 76 viennent de ce tableau fictif, pas de nouveaux entraînements."
         },
         {
           "type": "visual",
@@ -980,6 +1174,34 @@
           "caption": "Valeurs inventées pour isoler le raisonnement ; elles ne proviennent pas de MusicGen."
         },
         {
+          "type": "visual",
+          "kind": "table",
+          "title": "Relier les gains aux mêmes prises",
+          "columns": [
+            "Modification",
+            "Prises concernées",
+            "Corrections sur cent fenêtres"
+          ],
+          "rows": [
+            [
+              "A seule",
+              "R11, R12",
+              "2"
+            ],
+            [
+              "B seule",
+              "R01",
+              "1"
+            ],
+            [
+              "A+B",
+              "R01, R11–R15",
+              "6"
+            ]
+          ],
+          "caption": "La combinaison produit trois corrections supplémentaires. Nous pouvons identifier leurs prises au lieu de commenter seulement quatre pourcentages."
+        },
+        {
           "type": "walkthrough",
           "title": "Observer une interaction entre deux idées",
           "goal": "Tableau de calcul raisonné, sans code à exécuter. Distinguer gain séparé et gain combiné à protocole commun.",
@@ -1005,8 +1227,17 @@
               "text": "Ce tableau suggère une interaction dans ce protocole. Il ne prouve pas sa stabilité sans examiner répétitions et incertitude, ni son intérêt sur toutes les musiques."
             }
           ],
-          "result": "Ce tableau de calcul raisonné formalise les comparaisons ; aucun programme artificiel n’est nécessaire. Le plan distingue contribution séparée, complémentarité et éventuelle redondance.",
+          "result": "Sur ce jeu fabriqué, l’effet combiné dépasse la somme des effets séparés. Ce calcul décrit une interaction ; sa stabilité sur d’autres prises reste une question expérimentale.",
           "calculationTable": true
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "codeMode": "standalone",
+          "disclosure": true,
+          "caption": "Programme autonome : reconstituer les cent décisions fictives et leurs quatre configurations. Les six corrections de la combinaison sont choisies explicitement.",
+          "code": "import numpy as np\nrecording_ids = np.array([f\"R{i:02}\" for i in range(1, 21)])\ntruth = np.repeat(np.array([0] * 10 + [1] * 10), 5).reshape(20, 5)\npred_base = np.array([[0, 0, 0, 0, 1]] * 10 + [[1, 1, 1, 0, 0]] * 10)\npred_a = pred_base.copy()\npred_a[10:12, 3] = 1  # Deux erreurs corrigées : R11 et R12.\npred_b = pred_base.copy()\npred_b[0, 4] = 0     # Une erreur corrigée : R01.\npred_ab = pred_a.copy()\npred_ab[0, 4] = 0\npred_ab[12:15, 3] = 1  # Trois corrections propres à la combinaison.\nfor name, pred in [(\"Base\", pred_base), (\"Base+A\", pred_a), (\"Base+B\", pred_b), (\"Base+A+B\", pred_ab)]:\n    print(name, int((pred == truth).sum()), \"/\", truth.size)\ncm = np.zeros((2, 2), dtype=int)\nfor actual, predicted in zip(truth.flatten(), pred_base.flatten()):\n    cm[actual, predicted] += 1\nprint(\"confusion base\", cm.tolist())\nprint(\"interaction\", 76 - 72 - 71 + 70)\n",
+          "title": "Exécuter la miniature complète"
         },
         {
           "type": "paragraph",
@@ -1024,7 +1255,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Une ablation isole une contribution dans des conditions comparables. Je teste aussi les interactions, puis je rapporte les compromis et le budget de sélection."
+          "text": "Demandons quelle observation aurait changé si A n’avait aucun effet propre. Cette question détermine l’ablation utile, plutôt qu’un retrait de composant fait par habitude."
         }
       ],
       "takeaways": [
@@ -1086,11 +1317,12 @@
         "input": "Une comparaison agrégée correctement entre la base et une nouvelle version.",
         "action": "Construire des variantes où les composants modifiés sont identifiés.",
         "output": "Une attribution plus précise des gains et des compromis observés."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "ecoute-et-jugement-perceptif",
-      "title": "Faire entendre la différence sans suggérer la réponse",
+      "title": "Écoute : séparer qualité, contrôle et préférence",
       "summary": "Séparer qualité, conformité et préférence dans un essai d’écoute comparable.",
       "questionIds": [
         "eval-014",
@@ -1155,7 +1387,7 @@
               "text": "Enregistrons pour chaque note l’auditeur, l’extrait, le système et le critère. La même personne juge plusieurs versions du même cas : ces mesures restent liées."
             }
           ],
-          "result": "Ce tableau de calcul raisonné formalise les comparaisons ; aucun programme artificiel n’est nécessaire. Les jugements répondent à une tâche définie et gardent leur structure pour l’analyse.",
+          "result": "Chaque jugement conserve auditeur, extrait, système et critère. Nous pouvons alors lire un désaccord entre contrôle et qualité, sans le cacher derrière une préférence unique.",
           "calculationTable": true
         },
         {
@@ -1190,7 +1422,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Je sépare qualité sonore, conformité au contrôle et préférence. Je maîtrise la présentation et je choisis un protocole adapté à la référence disponible."
+          "text": "La même frappe peut réussir la commande et rater le rendu sonore. Présentons ces deux jugements avant de demander si l’adaptation aide réellement la composition."
         }
       ],
       "takeaways": [
@@ -1250,11 +1482,12 @@
         "input": "Des variantes dont nous avons isolé les composants modifiés.",
         "action": "Faire juger les mêmes cas avec des critères clairs et une présentation contrôlée.",
         "output": "Des observations perceptives qui conservent leurs associations auditeur/extrait."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "fad-et-limites-des-proxies",
-      "title": "Ce que voit une distance audio, et ce qu’elle laisse passer",
+      "title": "FAD : comprendre une distance et ses limites",
       "summary": "Utiliser la FAD comme une mesure située, avec un contrôle complémentaire.",
       "questionIds": [
         "eval-015",
@@ -1302,6 +1535,16 @@
           "text": "À une dimension, notre référence a une moyenne 2 et une variance 1. La base et l’adaptation ont aussi une variance 1. Le terme de dispersion s’annule donc. La base de moyenne 0 donne (0−2)² = 4. L’adaptation de moyenne 1 donne (1−2)² = 1. Ce rapprochement global ne vérifie pas notre accent à trois secondes."
         },
         {
+          "type": "first-example",
+          "title": "Calculer le cas gaussien à une dimension",
+          "introduction": "Les moyennes et variances sont choisies à la main. Ce programme ne calcule pas des embeddings depuis des fichiers audio.",
+          "language": "python",
+          "codeMode": "standalone",
+          "code": "from math import sqrt\nmu_ref, var_ref = 2.0, 1.0\nmu, var = 1.0, 1.0\ndistance = (mu - mu_ref)**2 + var + var_ref - 2 * sqrt(var * var_ref)\nprint(distance)",
+          "output": "1.0",
+          "explanation": "Les variances égales annulent le terme de dispersion. Il reste le carré de l’écart entre les moyennes : (1−2)²=1."
+        },
+        {
           "type": "walkthrough",
           "title": "Comprendre une distance de distributions en une dimension",
           "goal": "Tableau de calcul raisonné, sans code à exécuter. Voir pourquoi rapprocher des statistiques ne vérifie pas chaque consigne.",
@@ -1327,7 +1570,7 @@
               "text": "Ce calcul ne vérifie pas si notre accent tombe à trois secondes ni si chaque attaque est nette. Les critères locaux et l’écoute restent nécessaires même lorsque la distance globale diminue."
             }
           ],
-          "result": "Ce tableau de calcul raisonné formalise les comparaisons ; aucun programme artificiel n’est nécessaire. Une meilleure proximité de distributions est un résultat défini, pas une garantie universelle de qualité.",
+          "result": "Le calcul rapproche les centres dans cette représentation. Il ne teste ni le calendrier des attaques ni la qualité de chaque son.",
           "calculationTable": true
         },
         {
@@ -1342,7 +1585,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : La FAD compare des distributions de descriptions, selon un extracteur et un protocole fixés. Elle complète des critères locaux et l’écoute, sans garantir le respect de chaque commande."
+          "text": "Gardons la moyenne 1 et remplaçons sa variance 1 par 4 : la distance devient 2. Une moyenne identique ne suffit donc pas à retrouver le même résumé de distribution."
         }
       ],
       "takeaways": [
@@ -1406,12 +1649,13 @@
         "input": "Des écoutes séparant respect de l’accent et qualité acoustique.",
         "action": "Comparer les statistiques de descriptions audio avec une extraction fixée.",
         "output": "Une mesure de proximité de distributions qui complète l’écoute sans la remplacer."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "variabilite-et-incertitude",
-      "title": "Le gain tient-il quand on recommence ?",
-      "summary": "Respecter les groupes et les paires pour examiner l’incertitude du résultat.",
+      "title": "Bootstrap apparié : rééchantillonner les prises",
+      "summary": "Tirer les mêmes prises pour deux méthodes et suivre l’effet des doublons sur leur différence.",
       "questionIds": [
         "eval-018",
         "eval-021",
@@ -1425,7 +1669,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Le graphique fictif donne A : 79, 81, 83 % et B : 77, 82, 87 %, soit des moyennes de 81 et 82 %. Il représente un critère de réussite sur des répétitions, pas une évolution dans le temps. Ces trois essais montrent de la variation ; ils ne démontrent seuls ni supériorité générale ni égalité des méthodes."
+          "text": "Reprenons les vingt prises du jeu de calcul. La base réussit 70 fenêtres sur 100 ; A+B en réussit 76. L’écart moyen vaut six points. Nous allons faire varier les prises retenues, en gardant les mêmes poids et les mêmes décisions : ce n’est pas une répétition d’entraînement."
         },
         {
           "type": "visual",
@@ -1457,7 +1701,107 @@
         },
         {
           "type": "paragraph",
-          "text": "Dans notre tableau, vingt prises fournissent chacune cent extraits. Cela produit 2 000 lignes, sans créer 2 000 sources indépendantes. Un tirage peut reprendre R3 deux fois et oublier R7. Nous évaluons les deux méthodes sur exactement ce même tirage de prises."
+          "text": "Chaque prise contient cinq fenêtres liées. Pour ce calcul, l’unité tirée est la prise entière. Une prise tirée deux fois compte deux fois, pour la base comme pour A+B. Les cent fenêtres ne deviennent pas cent sources indépendantes."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Le même score par prise, dans les deux méthodes",
+          "columns": [
+            "Prises",
+            "Nombre",
+            "Base",
+            "A+B"
+          ],
+          "rows": [
+            [
+              "R01",
+              "1",
+              "4/5",
+              "5/5"
+            ],
+            [
+              "R02–R10",
+              "9",
+              "4/5",
+              "4/5"
+            ],
+            [
+              "R11–R15",
+              "5",
+              "3/5",
+              "4/5"
+            ],
+            [
+              "R16–R20",
+              "5",
+              "3/5",
+              "3/5"
+            ]
+          ],
+          "caption": "Chaque occurrence d’une prise conserve ses cinq fenêtres et les deux versions. Ce tableau se retrouve dans la première page du protocole."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Début du premier tirage exécuté, graine 0",
+          "columns": [
+            "Position du tirage",
+            "Prise reprise",
+            "Score base",
+            "Score A+B"
+          ],
+          "rows": [
+            [
+              "1",
+              "R18",
+              "3/5",
+              "3/5"
+            ],
+            [
+              "2",
+              "R13",
+              "3/5",
+              "4/5"
+            ],
+            [
+              "3",
+              "R11",
+              "3/5",
+              "4/5"
+            ],
+            [
+              "4",
+              "R06",
+              "4/5",
+              "4/5"
+            ],
+            [
+              "5",
+              "R07",
+              "4/5",
+              "4/5"
+            ],
+            [
+              "6",
+              "R01",
+              "4/5",
+              "5/5"
+            ],
+            [
+              "7",
+              "R02",
+              "4/5",
+              "4/5"
+            ],
+            [
+              "8",
+              "R01 à nouveau",
+              "4/5",
+              "5/5"
+            ]
+          ],
+          "caption": "Le tirage continue jusqu’à vingt positions. R01 compte ici deux fois ; nous gardons ces deux occurrences pour chacune des méthodes."
         },
         {
           "type": "walkthrough",
@@ -1468,8 +1812,8 @@
           "steps": [
             {
               "title": "identifier les unités",
-              "text": "Vingt enregistrements indépendants contiennent chacun cent extraits liés. Ils fournissent 2 000 lignes mais pas 2 000 sources indépendantes.",
-              "state": "Unité visée : enregistrement.",
+              "text": "Vingt prises contiennent chacune cinq fenêtres. La comparaison conserve les vingt scores par prise au lieu de traiter cent fenêtres comme cent sources indépendantes.",
+              "state": "Unité : prise ; cinq fenêtres par prise ; deux méthodes appariées.",
               "lines": [
                 1
               ]
@@ -1481,7 +1825,14 @@
                 1,
                 2
               ],
-              "state": "Tirage avec remise des vingt sources."
+              "state": "Les mêmes vingt positions tirées sont utilisées dans les deux méthodes.",
+              "details": [
+                {
+                  "code": "replace=True",
+                  "explanation": "La remise rend chaque prise disponible au tirage suivant. Nous devons conserver les doublons du tableau sampled, plutôt que le convertir en ensemble.",
+                  "state": "Vingt positions tirées peuvent contenir moins de vingt identifiants distincts."
+                }
+              ]
             },
             {
               "title": "Conserver la comparaison",
@@ -1490,7 +1841,8 @@
                 3,
                 4,
                 5
-              ]
+              ],
+              "state": "Premier tirage complet : base=0,66 ; A+B=0,77 ; différence=0,11."
             },
             {
               "title": "former une distribution",
@@ -1498,57 +1850,30 @@
               "lines": [
                 1,
                 5
-              ]
+              ],
+              "state": "2 000 nouveaux tirages, graine 0 : quantiles 0,02 et 0,10. Ce sont les résultats du jeu fabriqué."
             }
           ],
-          "result": "Le bootstrap conserve les groupes et l’appariement au lieu d’inventer des observations indépendantes."
+          "result": "Le bootstrap conserve les groupes et l’appariement au lieu d’inventer des observations indépendantes.",
+          "codeMode": "excerpt",
+          "requires": [
+            "numpy est importé sous np ; rng est un générateur NumPy.",
+            "recording_ids est la liste des vingt prises du tableau. base et adapted associent un score à chaque prise.",
+            "score_on_groups moyenne les prises tirées en gardant leurs doublons ; les mêmes prises sont utilisées pour les deux méthodes."
+          ]
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "codeMode": "standalone",
+          "disclosure": true,
+          "caption": "Programme autonome : les vingt prises fictives du protocole, comparées avec les mêmes tirages. Les scores sont fabriqués, pas mesurés sur un modèle.",
+          "code": "import numpy as np\nrecording_ids = np.array([f\"R{i:02}\" for i in range(1, 21)])\ntruth = np.repeat(np.array([0] * 10 + [1] * 10), 5).reshape(20, 5)\npred_base = np.array([[0, 0, 0, 0, 1]] * 10 + [[1, 1, 1, 0, 0]] * 10)\npred_a = pred_base.copy()\npred_a[10:12, 3] = 1  # Deux erreurs corrigées : R11 et R12.\npred_b = pred_base.copy()\npred_b[0, 4] = 0     # Une erreur corrigée : R01.\npred_ab = pred_a.copy()\npred_ab[0, 4] = 0\npred_ab[12:15, 3] = 1  # Trois corrections propres à la combinaison.\nbase = {id: float(score) for id, score in zip(recording_ids, (pred_base == truth).mean(axis=1))}\nadapted = {id: float(score) for id, score in zip(recording_ids, (pred_ab == truth).mean(axis=1))}\ndef score_on_groups(scores, sampled):\n    return float(np.mean([scores[id] for id in sampled]))\nrng = np.random.default_rng(0)\nsampled = rng.choice(recording_ids, size=len(recording_ids), replace=True)\nscore_base = score_on_groups(base, sampled)\nscore_adapted = score_on_groups(adapted, sampled)\ndifference = score_adapted - score_base\nprint(\"premier tirage\", sampled.tolist())\nprint(\"scores appariés\", round(score_base, 3), round(score_adapted, 3), round(difference, 3))\ndifferences = []\nfor _ in range(2000):\n    draw = rng.choice(recording_ids, size=len(recording_ids), replace=True)\n    differences.append(score_on_groups(adapted, draw) - score_on_groups(base, draw))\nlow, high = np.quantile(differences, [0.025, 0.975])\nprint(\"moyennes du jeu\", round(np.mean(list(base.values())), 3), round(np.mean(list(adapted.values())), 3))\nprint(\"intervalle percentile\", round(float(low), 3), round(float(high), 3))\n",
+          "title": "Exécuter la miniature complète"
         },
         {
           "type": "paragraph",
           "text": "Le rééchantillonnage avec remise (bootstrap) tire de nouveau les unités observées, puis recalcule une statistique. Pour l’incertitude liée aux prises, tirons les prises entières avec toutes leurs fenêtres. Une prise peut apparaître plusieurs fois ; sa multiplicité est conservée. Les fonctions illustratives du code doivent réellement respecter ces groupes et répétitions."
-        },
-        {
-          "type": "plot",
-          "title": "Un petit écart moyen, des répétitions variables",
-          "xLabel": "Identifiant de répétition",
-          "yLabel": "Accuracy en %",
-          "series": [
-            {
-              "name": "Base A, moyenne 81",
-              "points": [
-                [
-                  1,
-                  79
-                ],
-                [
-                  2,
-                  81
-                ],
-                [
-                  3,
-                  83
-                ]
-              ]
-            },
-            {
-              "name": "Version B, moyenne 82",
-              "points": [
-                [
-                  1,
-                  77
-                ],
-                [
-                  2,
-                  82
-                ],
-                [
-                  3,
-                  87
-                ]
-              ]
-            }
-          ],
-          "caption": "Exemple fictif exact : les répétitions ne sont pas des instants successifs. Le tracé montre la variation, pas un intervalle de confiance."
         },
         {
           "type": "callout",
@@ -1564,7 +1889,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Je distingue les variations de l’entraînement de l’incertitude liée aux données. Les comparaisons conservent groupes et appariements, avec une ampleur d’effet discutée pour l’usage."
+          "text": "Dans ce jeu fabriqué, les corrections favorisent déjà A+B par construction. Le bootstrap montre l’effet du choix des prises ; il ne transforme pas ces décisions inventées en preuve de supériorité musicale."
         }
       ],
       "takeaways": [
@@ -1580,7 +1905,7 @@
       ],
       "context": {
         "recall": "Nous savons quelle propriété chaque mesure observe et ce qu’elle omet.",
-        "problem": "Une petite différence moyenne peut être du même ordre que la variation entre essais.",
+        "problem": "Le jeu de calcul donne six points d’écart ; que devient cet écart si certaines prises sont reprises et d’autres absentes ?",
         "why": "Le bon nombre d’unités est celui des sources de variation, pas forcément celui des lignes.",
         "connection": "Nous vérifions la solidité du gain avant de choisir l’adaptation.",
         "next": "Il restera à préciser les domaines et les budgets auxquels cette conclusion s’applique."
@@ -1628,13 +1953,14 @@
       ],
       "progression": {
         "input": "Des scores et des jugements comparant les mêmes versions sur des cas identifiés.",
-        "action": "Faire varier les essais pertinents et rééchantillonner les bonnes unités en conservant les paires.",
+        "action": "Tirer des prises entières avec remise et recalculer les deux scores sur le même tirage.",
         "output": "Une estimation de la précision du gain, distincte de son intérêt musical."
-      }
+      },
+      "level": "advanced"
     },
     {
       "id": "generalisation-et-compte-rendu",
-      "title": "Choisir une version, puis dire où la conclusion tient",
+      "title": "Généralisation : du résultat au compte rendu",
       "summary": "Relier critères, variabilité, domaines et budget dans un compte rendu utile.",
       "questionIds": [
         "eval-006",
@@ -1654,7 +1980,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Notre exemple réussit huit prises studio sur dix, mais quatre prises téléphone sur dix. Montrons ces deux observations avec leurs petits effectifs et leur incertitude. Une moyenne globale cacherait ce contraste. Définissons domaines et sous-groupes avant l’analyse, sans retenir ensuite uniquement ceux qui favorisent l’adaptation."
+          "text": "Changeons de jeu pour isoler un décalage de domaine. Dans ce second exemple fictif, huit prises studio sur dix réussissent, contre quatre prises téléphone sur dix. Ce ne sont pas les vingt prises R du protocole précédent. Une moyenne globale cacherait ce contraste et ses petits effectifs."
         },
         {
           "type": "visual",
@@ -1690,30 +2016,31 @@
         },
         {
           "type": "walkthrough",
-          "title": "Évaluer la procédure de sélection, puis la raconter",
-          "goal": "Tableau de calcul raisonné, sans code à exécuter. Décrire la sélection et ses résultats réservés avant de décider quelle version utiliser en répétition.",
+          "title": "Rapporter une expérience simple avant d’élargir l’usage",
+          "goal": "Tableau de raisonnement : relier une conclusion aux données réellement réservées, sans code à exécuter.",
           "language": "python",
           "steps": [
             {
-              "title": "réserver un niveau externe",
-              "text": "Dans un exemple à cinq plis externes, chaque étape garde un pli à l’écart. Les quatre autres servent au développement, avec les groupes requis par l’usage.",
-              "state": "Le pli externe ne guide aucun réglage."
+              "title": "Fixer la version",
+              "text": "La validation choisit la configuration et l’époque avant la mesure finale. Nous conservons les essais, y compris ceux qui ont été défavorables.",
+              "state": "Choix fixé, puis test indépendant."
             },
             {
-              "title": "Sélectionner à l’intérieur",
-              "text": "Une validation interne choisit les hyperparamètres sur ces quatre plis seulement. La configuration choisie est réentraînée sans consulter l’évaluation externe.",
-              "state": "Sélection interne puis entraînement."
+              "title": "Rapporter les résultats utiles",
+              "text": "Sur les vingt prises fictives, la base réussit 70 fenêtres et A+B 76. Présentons aussi les prises concernées et les jugements d’écoute prévus.",
+              "state": "Gain du jeu de calcul : six points, sans résultat audio réel."
             },
             {
-              "title": "mesurer la procédure",
-              "text": "On évalue sur le pli externe et recommence pour les cinq plis. La moyenne externe décrit la procédure de sélection, pas le seul meilleur essai interne."
+              "title": "Décrire les domaines",
+              "text": "Le cas studio/téléphone de cette page est une autre expérience illustrative. Il rappelle qu’un résultat sur un domaine ne démontre pas celui d’un autre.",
+              "state": "Préciser domaine, effectifs et critère."
             },
             {
-              "title": "Décrire les limites et le coût",
-              "text": "Rapportons domaines testés, effectifs, graines, critères et budget de recherche, entraînement et inférence. Une latence trop grande peut rendre un gain peu utile pour une interaction musicale."
+              "title": "Choisir la prochaine expérience",
+              "text": "Nous pouvons réserver des prises d’un autre microphone et comparer le même protocole. Les limites orientent la suite sans annuler les observations déjà définies."
             }
           ],
-          "result": "Ce tableau de calcul raisonné formalise les comparaisons ; aucun programme artificiel n’est nécessaire. Le compte rendu relie choix, données réservées et coût au lieu d’afficher uniquement le meilleur nombre.",
+          "result": "La conclusion concerne une version fixée, des données et un protocole. Les plis imbriqués restent un approfondissement lorsque nous devons évaluer une procédure de sélection.",
           "calculationTable": true
         },
         {
@@ -1738,7 +2065,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : Ma conclusion suit les domaines, les unités et les budgets réellement testés. Je sépare sélection et évaluation, puis je transforme chaque limite en prochaine expérience ciblée."
+          "text": "Un compte rendu utile permet de savoir ce qui a changé, sur quels cas, et à quel coût. Sa limite la plus concrète peut devenir le début de l’expérience suivante."
         }
       ],
       "takeaways": [
@@ -1805,7 +2132,8 @@
         "input": "Une comparaison accompagnée de ses limites et sources d’incertitude.",
         "action": "Séparer les domaines, décrire la sélection et mesurer les coûts utiles.",
         "output": "Une décision documentée et une prochaine expérience ciblée."
-      }
+      },
+      "level": "practice"
     }
   ],
   "edition": 2,
@@ -1902,42 +2230,42 @@
     "goal": "Produire un compte rendu qui relie l’amélioration recherchée aux données réservées, aux critères, à la variabilité et au budget réellement évalués.",
     "concepts": [
       {
-        "name": "Hypothèse et baseline",
+        "name": "Protocole : une hypothèse, une référence et une décision",
         "explanation": "Une question testable et une solution de référence donnent un sens à la comparaison.",
         "chapterId": "question-de-recherche-et-baseline"
       },
       {
-        "name": "Environnement et traces",
+        "name": "GNU/Linux : relier un résultat à son exécution",
         "explanation": "L’interpréteur, les paquets, la configuration et les journaux permettent de retrouver ce qui a tourné.",
         "chapterId": "environnement-linux-et-traces"
       },
       {
-        "name": "Unités indépendantes et split",
+        "name": "Séparation des données : prises, fenêtres et fuites",
         "explanation": "Les sources réellement nouvelles décident quels exemples doivent rester ensemble dans les données réservées.",
         "chapterId": "splits-et-fuites"
       },
       {
-        "name": "Métrique et dénominateur",
+        "name": "Matrice de confusion : précision, rappel et seuil",
         "explanation": "Un score répond à une question précise selon les erreurs et les effectifs qu’il compte.",
         "chapterId": "metriques-et-seuils"
       },
       {
-        "name": "Ablation",
+        "name": "Ablations : contributions séparées et interaction",
         "explanation": "Changer un composant à la fois aide à comprendre l’origine d’un écart.",
         "chapterId": "baselines-et-ablations"
       },
       {
-        "name": "Critère perceptif",
+        "name": "Écoute : séparer qualité, contrôle et préférence",
         "explanation": "Une tâche d’écoute explicite sépare qualité acoustique, conformité et préférence.",
         "chapterId": "ecoute-et-jugement-perceptif"
       },
       {
-        "name": "Incertitude",
+        "name": "Bootstrap apparié : rééchantillonner les prises",
         "explanation": "Répétitions et rééchantillonnage explorent ce qui pourrait varier si l’expérience était recommencée.",
         "chapterId": "variabilite-et-incertitude"
       },
       {
-        "name": "Portée du résultat",
+        "name": "Généralisation : du résultat au compte rendu",
         "explanation": "Le domaine, les choix de sélection et le budget limitent les usages auxquels la conclusion s’applique.",
         "chapterId": "generalisation-et-compte-rendu"
       }

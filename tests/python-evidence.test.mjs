@@ -3,35 +3,34 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {readCourses} from '../scripts/validate-courses.mjs';
-const digest=code=>createHash('sha256').update(code).digest('hex');
+const read=name=>readFile(new URL(`../scripts/verify/${name}.json`,import.meta.url),'utf8').then(JSON.parse);
+const reports=await Promise.all(['audit-pytorch-core-results','audit-pytorch-advanced-results','audit-python-signal-ml-results','audit-generation-research-oral-results'].map(read));
+const core=reports[0];
 
-test('les vingt chapitres PyTorch possèdent des preuves CPU liées au code affiché',async()=>{
-  const course=(await readCourses()).find(course=>course.themeId==='pytorch');
-  const [existing,added]=await Promise.all(['pytorch-existing-results','pytorch-additions-results'].map(async name=>JSON.parse(await readFile(new URL(`../scripts/verify/${name}.json`,import.meta.url),'utf8'))));
-  assert.equal(existing.device,'cpu');assert.equal(added.device,'cpu');
-  const proofs=new Set([...existing.records.map(record=>record.sha256),...Object.values(added.examples).map(example=>example.codeSha256)]);
-  assert.equal(course.chapters.length,20);
-  for(const chapter of course.chapters){
-    const blocks=chapter.blocks.filter(block=>block.code&&(block.language??'python')==='python');
-    assert.ok(blocks.length,chapter.id);
-    for(const block of blocks)assert.ok(proofs.has(digest(block.code)),`Code sans preuve à jour : ${chapter.id}`);
+test('chaque programme Python affiché correspond à une exécution CPU de son chapitre',async()=>{
+  const proofs=[];
+  for(const report of reports){
+    assert.equal(report.device,'cpu');
+    for(const entry of report.examples??report.cases)proofs.push({chapterId:entry.chapterId??(entry.id??entry.name).split('/')[0],sha:entry.sha256??entry.codeSha256??entry.sourceSha256});
   }
+  let blocks=0;
+  for(const course of await readCourses())for(const chapter of course.chapters)for(const block of chapter.blocks){
+    if(!block.code||(block.language??'python')!=='python')continue;
+    blocks++;
+    const hash=createHash('sha256').update(block.code).digest('hex');
+    assert.ok(proofs.some(proof=>proof.chapterId===chapter.id&&proof.sha===hash),`Sans preuve courante : ${course.themeId}/${chapter.id}`);
+    assert.ok(['standalone','excerpt'].includes(block.codeMode));
+    if(block.codeMode==='excerpt')assert.ok(block.requires?.length);
+  }
+  assert.ok(blocks>0);
 });
-test('la rétropropagation demandée garde ses deux poids et ses gradients exécutés',async()=>{
-  const report=JSON.parse(await readFile(new URL('../scripts/verify/pytorch-additions-results.json',import.meta.url),'utf8'));
-  const output=report.examples['retropropagation-a-la-main'].stdout;
-  assert.ok(output.includes('6.0 -6.0 36.0'));
-  assert.ok(output.includes('-12.0 12.0'));
-  assert.ok(output.includes('24.0 -72.0'));
-});
-test('la boucle complète présente un seul programme et sa sortie réellement capturée',async()=>{
-  const course=(await readCourses()).find(course=>course.themeId==='pytorch');
-  const chapter=course.chapters.find(ch=>ch.id==='boucle-entrainement-complete');
-  assert.ok(chapter);
-  const programs=chapter.blocks.filter(block=>block.code?.includes('DataLoader')&&block.code.includes('Adam'));
-  assert.equal(programs.length,1);
-  const code=programs[0].code;
-  for(const symbol of ['manual_seed','collate_fn','CrossEntropyLoss','no_grad','torch.save','torch.load'])assert.ok(code.includes(symbol),symbol);
-  const report=JSON.parse(await readFile(new URL('../scripts/verify/pytorch-additions-results.json',import.meta.url),'utf8'));
-  assert.ok(report.examples['boucle-entrainement-complete'].stdout.includes('Rechargement identique : True'));
+test('la passe arrière reproduit le calcul manuel et la première boucle apprend les trois exemples',()=>{
+  const back=core.examples.find(entry=>entry.id==='retropropagation-a-la-main');
+  assert.equal(back.values.h.values,6);assert.equal(back.values.y.values,-6);assert.equal(back.values.perte.values,36);
+  const gradients=back.stdout.trim().split('\n').at(-1).split(' ').slice(-2).map(Number);
+  assert.deepEqual(gradients,[24,-72]);
+  const loop=core.examples.find(entry=>entry.id==='premiere-boucle-minimale');
+  assert.deepEqual(loop.values.predictions.values,[0,1,0]);
+  assert.ok(loop.values.perte_finale.values<.23);
+  assert.equal(loop.values.scores_finaux.shape[0],3);
 });

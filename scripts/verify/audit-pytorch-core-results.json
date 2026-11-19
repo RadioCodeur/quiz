@@ -1,0 +1,1378 @@
+{
+  "python": "3.11.9",
+  "torch": "2.10.0+cpu",
+  "device": "cpu",
+  "examples": [
+    {
+      "id": "pytorch-en-une-page",
+      "sha256": "48a3daac82ad7bf69eb06a48245b735a26be9ef88e3049be4ce74a0c95dbb46a",
+      "stdout": "(3, 2)\n",
+      "seconds": 0.000495,
+      "values": {
+        "mesures": {
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        }
+      }
+    },
+    {
+      "id": "tenseur-forme-type-device",
+      "sha256": "7a65a851d94eca291467f394489a96a164a4d61183b27cdc95a526dabbf7255e",
+      "stdout": "tableau [[0.10000000149011612, 1.5], [0.20000000298023224, 4.5], [0.15000000596046448, 2.5]] forme (3, 2)\nligne [0.10000000149011612, 1.5] forme (2,)\ncase 1.5 forme ()\ntypes torch.float32 torch.int64 long=int64 True\nfinies [[True, True], [True, True], [True, True]] forme (3, 2)\ntout True forme ()\ncontrole True Python bool device cpu\n",
+      "seconds": 0.000886,
+      "values": {
+        "X": {
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "cibles": {
+          "values": [
+            0,
+            1,
+            0
+          ],
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false
+        },
+        "premier": {
+          "values": [
+            0.10000000149011612,
+            1.5
+          ],
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "valeur": {
+          "values": 1.5,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "finies": {
+          "values": [
+            [
+              true,
+              true
+            ],
+            [
+              true,
+              true
+            ],
+            [
+              true,
+              true
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.bool",
+          "requires_grad": false
+        },
+        "toutes_finies": {
+          "values": true,
+          "shape": [],
+          "dtype": "torch.bool",
+          "requires_grad": false
+        }
+      }
+    },
+    {
+      "id": "du-pipeline-au-modele",
+      "sha256": "934f5843109a9d1df703fdffe8a748cbb34a3c07ccad1048e38748cf50c6e070",
+      "stdout": "scores [[1.5, -1.5], [4.5, -4.5], [2.5, -2.5]] forme (3, 2)\npredictions [0, 0, 0] forme (3,)\naccords [True, False, True]\napres modification [0, 1, 0]\noriginal [[1.5, -1.5], [4.5, -4.5], [2.5, -2.5]]\n",
+      "seconds": 0.000406,
+      "values": {
+        "scores": {
+          "values": [
+            [
+              1.5,
+              -1.5
+            ],
+            [
+              4.5,
+              -4.5
+            ],
+            [
+              2.5,
+              -2.5
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "cibles": {
+          "values": [
+            0,
+            1,
+            0
+          ],
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false
+        },
+        "predictions": {
+          "values": [
+            0,
+            0,
+            0
+          ],
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false
+        },
+        "accords": {
+          "values": [
+            true,
+            false,
+            true
+          ],
+          "shape": [
+            3
+          ],
+          "dtype": "torch.bool",
+          "requires_grad": false
+        },
+        "scores_modifies": {
+          "values": [
+            [
+              1.5,
+              -1.5
+            ],
+            [
+              4.5,
+              5.0
+            ],
+            [
+              2.5,
+              -2.5
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        }
+      }
+    },
+    {
+      "id": "construire-un-module",
+      "sha256": "4accec4fdf25961727116888710387210ec8f93f8a9c546a05edaca0e32e511c",
+      "stdout": "poids [[0.0, 1.0], [0.0, -1.0]] forme (2, 2)\nproduits voix A [0.0, 1.5] somme 1.5\nscores [[1.5, -1.5], [4.5, -4.5], [2.5, -2.5]] forme (3, 2)\nparametres [('linear.weight', (2, 2)), ('linear.bias', (2,))]\n",
+      "seconds": 0.001342,
+      "values": {
+        "X": {
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "cibles": {
+          "values": [
+            0,
+            1,
+            0
+          ],
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false
+        },
+        "scores": {
+          "values": [
+            [
+              1.5,
+              -1.5
+            ],
+            [
+              4.5,
+              -4.5
+            ],
+            [
+              2.5,
+              -2.5
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        },
+        "produits": {
+          "values": [
+            0.0,
+            1.5
+          ],
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        },
+        "score_manuel": {
+          "values": 1.5,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        }
+      }
+    },
+    {
+      "id": "construire-un-module/relu",
+      "sha256": "59e506808f8706f18036d42f16696ae29fa23b8ef18c2de7acf03f819fc31268",
+      "stdout": "entree [-2.0, 0.0, 3.0] sortie [0.0, 0.0, 3.0]\n",
+      "seconds": 0.000173,
+      "values": {
+        "x": {
+          "values": [
+            -2.0,
+            0.0,
+            3.0
+          ],
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "y": {
+          "values": [
+            0.0,
+            0.0,
+            3.0
+          ],
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        }
+      }
+    },
+    {
+      "id": "choisir-la-perte",
+      "sha256": "09dc65d970db42608955a5650cbdc7f11769692b14246e9f856b6c7bbf6c3645",
+      "stdout": "probabilites [[0.952574, 0.047426], [0.999877, 0.000123], [0.993307, 0.006693]]\npertes [0.048587, 9.000123, 0.006715] forme (3,)\nmoyenne 3.018476 forme ()\nperte B corrigee 0.474077\n",
+      "seconds": 0.001001,
+      "values": {
+        "X": {
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "cibles": {
+          "values": [
+            0,
+            1,
+            0
+          ],
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false
+        },
+        "scores": {
+          "values": [
+            [
+              1.5,
+              -1.5
+            ],
+            [
+              4.5,
+              -4.5
+            ],
+            [
+              2.5,
+              -2.5
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        },
+        "pertes": {
+          "values": [
+            0.04858732968568802,
+            9.000123023986816,
+            0.006715348921716213
+          ],
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        },
+        "perte": {
+          "values": 3.0184755325317383,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        },
+        "probabilites": {
+          "values": [
+            [
+              0.9525741338729858,
+              0.04742587357759476
+            ],
+            [
+              0.9998766183853149,
+              0.00012339458044152707
+            ],
+            [
+              0.9933071732521057,
+              0.006692850962281227
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        },
+        "nouveaux_scores": {
+          "values": [
+            [
+              1.5,
+              -1.5
+            ],
+            [
+              4.5,
+              5.0
+            ],
+            [
+              2.5,
+              -2.5
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        }
+      }
+    },
+    {
+      "id": "pertes-multi-etiquettes",
+      "sha256": "f3a6cde34d27b95f896c6b14aefeabc5cc71a755593fb2be29586917e2620bf0",
+      "stdout": "presences [[1.0, 1.0]] type torch.float32\nprobabilites [[0.5, 0.5]]\npertes [[0.693147, 0.693147]]\nmoyenne 0.693147\n",
+      "seconds": 0.000757,
+      "values": {
+        "scores": {
+          "values": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "presences": {
+          "values": [
+            [
+              1.0,
+              1.0
+            ]
+          ],
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "par_etiquette": {
+          "values": [
+            [
+              0.6931471824645996,
+              0.6931471824645996
+            ]
+          ],
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        }
+      }
+    },
+    {
+      "id": "autograd-et-derivees",
+      "sha256": "9cdf22abcd2055537b9336464f2a05edc8a8bcd4384ec93c32e1e416054dbad2",
+      "stdout": "poids 0.0 perte 4.0 gradient -4.0\npetite variation 3.9601 pente approchee -3.99\npremier gradient 3.0\ngradient cumule 7.0\n",
+      "seconds": 0.002081,
+      "values": {
+        "w": {
+          "values": 0.0,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        },
+        "perte": {
+          "values": 4.0,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        },
+        "u": {
+          "values": 1.0,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        }
+      }
+    },
+    {
+      "id": "retropropagation-a-la-main",
+      "sha256": "92531acaba402cde43fa8d7750af91ef9cfb4d422d2774269b29bd7316be7edf",
+      "stdout": "h, y, perte 6.0 -6.0 36.0\ngradients intermediaires -12.0 12.0\ngradients poids 24.0 -72.0\n",
+      "seconds": 0.000898,
+      "values": {
+        "x": {
+          "values": 2.0,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "w1": {
+          "values": 3.0,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        },
+        "w2": {
+          "values": -1.0,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        },
+        "h": {
+          "values": 6.0,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        },
+        "y": {
+          "values": -6.0,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        },
+        "perte": {
+          "values": 36.0,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        }
+      }
+    },
+    {
+      "id": "une-iteration-entrainement",
+      "sha256": "b1a442e9ddac553405c84fbd356277281c73f94339505ac0c7ae27ef7f253574",
+      "stdout": "avant 0.0 4.0 gradient -4.0\napres 0.4 2.56\ngrand pas 4.4 perte 5.76\n",
+      "seconds": 2.242668,
+      "values": {
+        "w": {
+          "values": 0.4000000059604645,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        },
+        "perte": {
+          "values": 4.0,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        },
+        "nouvelle_perte": {
+          "values": 2.56000018119812,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        }
+      }
+    },
+    {
+      "id": "premiere-boucle-minimale",
+      "sha256": "a3f50f32dd878507409c8b93e1b132fec8561311a5a2fded2738c2516e6d7bee",
+      "stdout": "epoque 0 perte avant pas 3.018476\nepoque 50 perte avant pas 0.514087\nepoque 200 perte avant pas 0.226087\ndecisions finales [0, 1, 0]\ncibles [0, 1, 0] perte finale 0.225241\n",
+      "seconds": 0.050551,
+      "values": {
+        "X": {
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "cibles": {
+          "values": [
+            0,
+            1,
+            0
+          ],
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false
+        },
+        "scores": {
+          "values": [
+            [
+              1.039505958557129,
+              -1.039506196975708
+            ],
+            [
+              -0.6757900714874268,
+              0.675789475440979
+            ],
+            [
+              0.4691281318664551,
+              -0.4691286087036133
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        },
+        "perte": {
+          "values": 0.2260865569114685,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": true
+        },
+        "scores_finaux": {
+          "values": [
+            [
+              1.0430032014846802,
+              -1.0430035591125488
+            ],
+            [
+              -0.6777912378311157,
+              0.677790641784668
+            ],
+            [
+              0.47079944610595703,
+              -0.4707998037338257
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "predictions": {
+          "values": [
+            0,
+            1,
+            0
+          ],
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false
+        },
+        "perte_finale": {
+          "values": 0.22524137794971466,
+          "shape": [],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        }
+      }
+    },
+    {
+      "id": "entrainer-ou-evaluer",
+      "sha256": "74ea23d9915589a80fcb20061f6543e28de9bfbc47004175d9cabd80b26d3ca8",
+      "stdout": "train True grad_actifs True prediction [[4.0]] suivi True\ntrain True grad_actifs False prediction [[4.0]] suivi False\ntrain False grad_actifs True prediction [[2.0]] suivi True\ntrain False grad_actifs False prediction [[2.0]] suivi False\ninference [[2.0]]\n",
+      "seconds": 0.012068,
+      "values": {
+        "x": {
+          "values": [
+            [
+              2.0,
+              2.0
+            ]
+          ],
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "prediction": {
+          "values": [
+            [
+              2.0
+            ]
+          ],
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "inference": {
+          "values": [
+            [
+              2.0
+            ]
+          ],
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        }
+      }
+    },
+    {
+      "id": "organiser-les-axes",
+      "sha256": "96349c89dd86fe0c8f04d8cdcda61b0b54928093f5ac5fe0f63b841b31edc725",
+      "stdout": "original [[1, 2, 3], [4, 5, 6]] forme (2, 3)\nreshape [[1, 2], [3, 4], [5, 6]] forme (3, 2)\ntranspose [[1, 4], [2, 5], [3, 6]] forme (3, 2)\naxes exemple (2, 3, 4) vers (2, 4, 3)\ncase conservee 23 23\n",
+      "seconds": 0.000602,
+      "values": {
+        "X": {
+          "values": [
+            [
+              1,
+              2,
+              3
+            ],
+            [
+              4,
+              5,
+              6
+            ]
+          ],
+          "shape": [
+            2,
+            3
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false
+        },
+        "redecoupe": {
+          "values": [
+            [
+              1,
+              2
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              5,
+              6
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false
+        },
+        "transpose": {
+          "values": [
+            [
+              1,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              6
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false
+        },
+        "mel": {
+          "values": [
+            [
+              [
+                0,
+                1,
+                2,
+                3
+              ],
+              [
+                4,
+                5,
+                6,
+                7
+              ],
+              [
+                8,
+                9,
+                10,
+                11
+              ]
+            ],
+            [
+              [
+                12,
+                13,
+                14,
+                15
+              ],
+              [
+                16,
+                17,
+                18,
+                19
+              ],
+              [
+                20,
+                21,
+                22,
+                23
+              ]
+            ]
+          ],
+          "shape": [
+            2,
+            3,
+            4
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false
+        },
+        "mel_permute": {
+          "values": [
+            [
+              [
+                0,
+                4,
+                8
+              ],
+              [
+                1,
+                5,
+                9
+              ],
+              [
+                2,
+                6,
+                10
+              ],
+              [
+                3,
+                7,
+                11
+              ]
+            ],
+            [
+              [
+                12,
+                16,
+                20
+              ],
+              [
+                13,
+                17,
+                21
+              ],
+              [
+                14,
+                18,
+                22
+              ],
+              [
+                15,
+                19,
+                23
+              ]
+            ]
+          ],
+          "shape": [
+            2,
+            4,
+            3
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false
+        }
+      }
+    },
+    {
+      "id": "ajouter-retirer-un-axe",
+      "sha256": "5f94b3af40a0f20d62a40e1db835aeaee8a7127289ee488c4b9c702033bf3679",
+      "stdout": "signal [[1.0, 2.0, 3.0]] (1, 3)\ncanal [[[1.0, 2.0, 3.0]]] (1, 1, 3)\nsqueeze(1) [[1.0, 2.0, 3.0]] (1, 3)\nsqueeze() [1.0, 2.0, 3.0] (3,)\nNone equivalent True\n",
+      "seconds": 0.000396,
+      "values": {
+        "signal": {
+          "values": [
+            [
+              1.0,
+              2.0,
+              3.0
+            ]
+          ],
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "avec_canal": {
+          "values": [
+            [
+              [
+                1.0,
+                2.0,
+                3.0
+              ]
+            ]
+          ],
+          "shape": [
+            1,
+            1,
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "retour": {
+          "values": [
+            [
+              1.0,
+              2.0,
+              3.0
+            ]
+          ],
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "tout_retire": {
+          "values": [
+            1.0,
+            2.0,
+            3.0
+          ],
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        }
+      }
+    },
+    {
+      "id": "concatener-ou-empiler",
+      "sha256": "4f343b07c45ea29ae70645975e169f9fbc2d2d1e9aa83e00f8c60f5adfb689b4",
+      "stdout": "cat [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]] (2, 3)\nstack [[[1.0, 2.0, 3.0]], [[4.0, 5.0, 6.0]]] (2, 1, 3)\nsource [[1.0, 2.0, 3.0]] [[4.0, 5.0, 6.0]]\n",
+      "seconds": 0.000382,
+      "values": {
+        "a": {
+          "values": [
+            [
+              1.0,
+              2.0,
+              3.0
+            ]
+          ],
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "b": {
+          "values": [
+            [
+              4.0,
+              5.0,
+              6.0
+            ]
+          ],
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "nouveaux_extraits": {
+          "values": [
+            [
+              1.0,
+              2.0,
+              3.0
+            ],
+            [
+              4.0,
+              5.0,
+              6.0
+            ]
+          ],
+          "shape": [
+            2,
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "nouveau_groupe": {
+          "values": [
+            [
+              [
+                1.0,
+                2.0,
+                3.0
+              ]
+            ],
+            [
+              [
+                4.0,
+                5.0,
+                6.0
+              ]
+            ]
+          ],
+          "shape": [
+            2,
+            1,
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        }
+      }
+    },
+    {
+      "id": "selection-diffusion-reduction",
+      "sha256": "67386c480590af26651fd602bb07f6794f035b853297980186b517b62ae70d25",
+      "stdout": "dim0 [3.0, 4.0] (2,)\ndim1 [1.5, 3.5, 5.5] (3,)\nkeepdim [[3.0, 4.0]] (1, 2)\nclasse par extrait [0, 0, 0]\nextrait par classe [1, 0]\n",
+      "seconds": 0.000384,
+      "values": {
+        "X": {
+          "values": [
+            [
+              1.0,
+              2.0
+            ],
+            [
+              3.0,
+              4.0
+            ],
+            [
+              5.0,
+              6.0
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "par_mesure": {
+          "values": [
+            3.0,
+            4.0
+          ],
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "par_extrait": {
+          "values": [
+            1.5,
+            3.5,
+            5.5
+          ],
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "reference": {
+          "values": [
+            [
+              3.0,
+              4.0
+            ]
+          ],
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "scores": {
+          "values": [
+            [
+              1.5,
+              -1.5
+            ],
+            [
+              4.5,
+              -4.5
+            ],
+            [
+              2.5,
+              -2.5
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        }
+      }
+    },
+    {
+      "id": "broadcasting-pas-a-pas",
+      "sha256": "0838bc59c01e3f88e9f0007e1e386b1bc17397b22cf647966a54f751aa2c47a0",
+      "stdout": "reference [[3.0, 4.0]] (1, 2)\nalignee [[3.0, 4.0], [3.0, 4.0], [3.0, 4.0]] (3, 2)\ncentres [[-2.0, -2.0], [0.0, 0.0], [2.0, 2.0]] (3, 2)\nsources inchangees [[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]] [[3.0, 4.0]]\n",
+      "seconds": 0.000259,
+      "values": {
+        "X": {
+          "values": [
+            [
+              1.0,
+              2.0
+            ],
+            [
+              3.0,
+              4.0
+            ],
+            [
+              5.0,
+              6.0
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "reference": {
+          "values": [
+            [
+              3.0,
+              4.0
+            ]
+          ],
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "centres": {
+          "values": [
+            [
+              -2.0,
+              -2.0
+            ],
+            [
+              0.0,
+              0.0
+            ],
+            [
+              2.0,
+              2.0
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "reference_explicitement": {
+          "values": [
+            [
+              3.0,
+              4.0
+            ],
+            [
+              3.0,
+              4.0
+            ],
+            [
+              3.0,
+              4.0
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        }
+      }
+    },
+    {
+      "id": "filtrer-et-preserver-les-cibles",
+      "sha256": "79b97234a0d0e2aa4b9cda3b13a271a6341e50a32c8eb3d8503b645042c35bd0",
+      "stdout": "cretes [1.5, 4.5, 2.5] (3,)\nmasque [False, True, True] (3,)\nretenus [[0.20000000298023224, 4.5], [0.15000000596046448, 2.5]] (2, 2)\ncibles correspondantes [1, 0]\n",
+      "seconds": 0.000451,
+      "values": {
+        "X": {
+          "values": [
+            [
+              0.10000000149011612,
+              1.5
+            ],
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ],
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "cibles": {
+          "values": [
+            0,
+            1,
+            0
+          ],
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false
+        },
+        "cretes": {
+          "values": [
+            1.5,
+            4.5,
+            2.5
+          ],
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "masque": {
+          "values": [
+            false,
+            true,
+            true
+          ],
+          "shape": [
+            3
+          ],
+          "dtype": "torch.bool",
+          "requires_grad": false
+        },
+        "retenus": {
+          "values": [
+            [
+              0.20000000298023224,
+              4.5
+            ],
+            [
+              0.15000000596046448,
+              2.5
+            ]
+          ],
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        },
+        "cibles_retenues": {
+          "values": [
+            1,
+            0
+          ],
+          "shape": [
+            2
+          ],
+          "dtype": "torch.int64",
+          "requires_grad": false
+        }
+      }
+    },
+    {
+      "id": "modules-et-buffers",
+      "sha256": "866e5152579c0ffc9ad4e96457ad8a721552eddbc39101e4fa79ffe9f280e4d6",
+      "stdout": "sortie [[0.10000000149011612, 3.0]]\nparametres ['couches.0.weight']\nbuffers ['moyenne']\nsauvegarde ['moyenne', 'couches.0.weight']\n",
+      "seconds": 0.000764,
+      "values": {
+        "x": {
+          "values": [
+            [
+              0.20000000298023224,
+              4.5
+            ]
+          ],
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "requires_grad": false
+        }
+      }
+    }
+  ]
+}

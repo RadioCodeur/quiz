@@ -1,0 +1,2707 @@
+{
+  "python": "3.11.9",
+  "torch": "2.10.0+cpu",
+  "device": "cpu",
+  "threads": 1,
+  "examples": [
+    {
+      "themeId": "generation-controle",
+      "chapterId": "quantification-et-tokens",
+      "blockIndex": 3,
+      "variant": false,
+      "codeSha256": "4a59055e622275bfa91cef319f21c751e94b094ba53d697c0806dad5986ca2df",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "1 2.0",
+      "seconds": 0.000348,
+      "values": {
+        "value": 2.6,
+        "index": 1
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "quantification-et-tokens",
+      "blockIndex": 3,
+      "variant": true,
+      "codeSha256": "e406ec6895eed7048e6d6eaea306fb18800846040ad8d729f77543918267e67e",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "2 4.0",
+      "seconds": 0.000135,
+      "values": {
+        "value": 3.6,
+        "index": 2
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "codecs-neuronaux-rvq",
+      "blockIndex": 5,
+      "variant": false,
+      "codeSha256": "1652c6e6094d2501fe0cec8cbc56d0b319be683970622005e139730b85f54f9e",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "étage 1 : indices [2, 0]\n  résidu : [-0.1, 0.2]\nétage 2 : indices [1, 2]\n  résidu : [-0.1, -0.05]\nreconstruction : [1.0, -0.75]\nerreur quadratique moyenne : 0.006250",
+      "seconds": 0.002225,
+      "values": {
+        "z": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              0.8999999761581421
+            ],
+            [
+              -0.800000011920929
+            ]
+          ]
+        },
+        "residual": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              -0.10000002384185791
+            ],
+            [
+              -0.050000011920928955
+            ]
+          ]
+        },
+        "reconstruction": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              1.0
+            ],
+            [
+              -0.75
+            ]
+          ]
+        },
+        "stage": 2,
+        "book": {
+          "shape": [
+            3,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              -0.25
+            ],
+            [
+              0.0
+            ],
+            [
+              0.25
+            ]
+          ]
+        },
+        "distances": {
+          "shape": [
+            2,
+            3
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              0.022499993443489075,
+              0.010000004433095455,
+              0.12250001728534698
+            ],
+            [
+              0.20249998569488525,
+              0.03999999538064003,
+              0.002500001108273864
+            ]
+          ]
+        },
+        "indices": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.int64",
+          "values": [
+            1,
+            2
+          ]
+        },
+        "quantized": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              0.0
+            ],
+            [
+              0.25
+            ]
+          ]
+        },
+        "mse": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 0.006250002887099981
+        }
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "symbolique-midi-et-audio",
+      "blockIndex": 6,
+      "variant": false,
+      "codeSha256": "89ab118c1dde9dafb97a6f3fa6d30901925d2ece03e3acdda0e2cc0c5ff6ba8f",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "jetons : [6, 0, 4, 2, 7, 1, 5, 3]\nnote 60 : début 0.00 s ; durée 0.25 s ; vélocité 80\nnote 64 : début 0.25 s ; durée 0.50 s ; vélocité 100\ndurée totale : 0.75 s\nreprésentations : 8 jetons ; 12000 échantillons mono à 16000 Hz",
+      "seconds": 0.000428,
+      "values": {
+        "tokens": {
+          "shape": [
+            8
+          ],
+          "dtype": "torch.int64",
+          "values": [
+            6,
+            0,
+            4,
+            2,
+            7,
+            1,
+            5,
+            3
+          ]
+        },
+        "tempo": 120,
+        "ticks_per_beat": 480,
+        "sample_rate": 16000,
+        "seconds_per_tick": 0.0010416666666666667,
+        "ticks": 720,
+        "velocity": 100,
+        "token": 3,
+        "kind": "NOTE_OFF",
+        "value": 64,
+        "start": 0.25,
+        "note_velocity": 100,
+        "pitch": 64,
+        "duration": 0.5,
+        "duration_seconds": 0.75,
+        "sample_count": 12000
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "autoregression-et-causalite",
+      "blockIndex": 4,
+      "variant": false,
+      "codeSha256": "5be76b71312818353371436cedeabaebd2feb26a50d58388b53283a424ae532a",
+      "codeMode": "excerpt",
+      "scaffold": "import torch\ntorch.manual_seed(0)\nclass MiniCausalModel(torch.nn.Module):\n    \"\"\"Small randomly initialized causal model, not a trained audio generator.\"\"\"\n    def __init__(self):\n        super().__init__()\n        self.embedding = torch.nn.Embedding(10, 4)\n        self.layer = torch.nn.TransformerEncoderLayer(\n            d_model=4, nhead=2, dim_feedforward=8, dropout=0., batch_first=True)\n        self.head = torch.nn.Linear(4, 10)\n    def forward(self, tokens):\n        length = tokens.shape[1]\n        causal = torch.ones(length, length, dtype=torch.bool).triu(diagonal=1)\n        return self.head(self.layer(self.embedding(tokens), src_mask=causal))\nmodel = MiniCausalModel()\n",
+      "stdout": "",
+      "seconds": 0.004441,
+      "values": {
+        "tokens": {
+          "shape": [
+            1,
+            4
+          ],
+          "dtype": "torch.int64",
+          "values": [
+            [
+              0,
+              4,
+              7,
+              9
+            ]
+          ]
+        },
+        "inputs": {
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.int64",
+          "values": [
+            [
+              0,
+              4,
+              7
+            ]
+          ]
+        },
+        "targets": {
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.int64",
+          "values": [
+            [
+              4,
+              7,
+              9
+            ]
+          ]
+        },
+        "logits": {
+          "shape": [
+            1,
+            3,
+            10
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                -0.9260060787200928,
+                0.36308902502059937,
+                -0.47087326645851135,
+                0.11734817177057266,
+                1.0475577116012573,
+                -0.7699838280677795,
+                -0.06584513187408447,
+                0.1455463171005249,
+                -0.4253231883049011,
+                -0.028787806630134583
+              ],
+              [
+                -0.9223861694335938,
+                0.5252559185028076,
+                -0.5002955794334412,
+                0.13099801540374756,
+                0.8607890009880066,
+                -0.801557183265686,
+                -0.002164691686630249,
+                0.253545880317688,
+                -0.5734886527061462,
+                0.046355992555618286
+              ],
+              [
+                -0.9332331418991089,
+                -0.015589892864227295,
+                -0.37652403116226196,
+                0.1459391713142395,
+                1.158196210861206,
+                -0.8715373277664185,
+                -0.3105964660644531,
+                -0.051638633012771606,
+                -0.33770838379859924,
+                0.05584368109703064
+              ]
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "autoregression-et-causalite",
+      "blockIndex": 5,
+      "variant": false,
+      "codeSha256": "5146421a7602c70805a1cbd51f570b87e727e111021e4cc387e1745b1fe7b97f",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "entrées [[0, 4, 7]] [1, 3]\ncibles [[4, 7, 9]] [1, 3]\nlogits [1, 3, 10]",
+      "seconds": 0.002618,
+      "values": {
+        "tokens": {
+          "shape": [
+            1,
+            4
+          ],
+          "dtype": "torch.int64",
+          "values": [
+            [
+              0,
+              4,
+              7,
+              9
+            ]
+          ]
+        },
+        "inputs": {
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.int64",
+          "values": [
+            [
+              0,
+              4,
+              7
+            ]
+          ]
+        },
+        "targets": {
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.int64",
+          "values": [
+            [
+              4,
+              7,
+              9
+            ]
+          ]
+        },
+        "logits": {
+          "shape": [
+            1,
+            3,
+            10
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                -0.9260060787200928,
+                0.36308902502059937,
+                -0.47087326645851135,
+                0.11734817177057266,
+                1.0475577116012573,
+                -0.7699838280677795,
+                -0.06584513187408447,
+                0.1455463171005249,
+                -0.4253231883049011,
+                -0.028787806630134583
+              ],
+              [
+                -0.9223861694335938,
+                0.5252559185028076,
+                -0.5002955794334412,
+                0.13099801540374756,
+                0.8607890009880066,
+                -0.801557183265686,
+                -0.002164691686630249,
+                0.253545880317688,
+                -0.5734886527061462,
+                0.046355992555618286
+              ],
+              [
+                -0.9332331418991089,
+                -0.015589892864227295,
+                -0.37652403116226196,
+                0.1459391713142395,
+                1.158196210861206,
+                -0.8715373277664185,
+                -0.3105964660644531,
+                -0.051638633012771606,
+                -0.33770838379859924,
+                0.05584368109703064
+              ]
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "echantillonnage-contexte-et-cout",
+      "blockIndex": 3,
+      "variant": false,
+      "codeSha256": "2152f6ae80f2ae3251a5fd714c405dc0427973a8f7b5553c15a9fd102e781ef8",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "[0.11920291185379028, 0.8807970285415649]\n[0.01798621006309986, 0.9820137619972229]",
+      "seconds": 0.000258,
+      "values": {
+        "logits": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            0.0,
+            2.0
+          ]
+        },
+        "p1": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            0.11920291185379028,
+            0.8807970285415649
+          ]
+        },
+        "p2": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            0.01798621006309986,
+            0.9820137619972229
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "controle-multimodal-formes",
+      "blockIndex": 9,
+      "variant": false,
+      "codeSha256": "9019e66d13bcd56594fa133e0ece3f534d2f06265c5384ea0735c127a77bac7b",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "entrees {'audio': [1, 4, 4], 'texte': [1, 2, 4], 'reference': [1, 3, 4], 'MIDI': [1, 2, 4]}\nconditions [1, 7, 4]\ncroisee [1, 4, 4] poids [1, 2, 4, 7]\nconcat_positions [1, 11, 4] audio_retenu [1, 4, 4]\nindices_evenements [0, 3]\nconcat_caracteristiques [1, 4, 6] projection [1, 4, 4]\nFiLM [1, 4] [1, 1, 4] [1, 1, 4] [1, 4, 4]\nFiLM_manuel [1.0, 2.5]",
+      "seconds": 0.003276,
+      "values": {
+        "audio": {
+          "shape": [
+            1,
+            4,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                1.0,
+                3.0,
+                0.0,
+                0.0
+              ],
+              [
+                2.0,
+                4.0,
+                1.0,
+                0.0
+              ],
+              [
+                3.0,
+                5.0,
+                0.0,
+                1.0
+              ],
+              [
+                4.0,
+                6.0,
+                1.0,
+                1.0
+              ]
+            ]
+          ]
+        },
+        "texte": {
+          "shape": [
+            1,
+            2,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                1.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                1.0
+              ]
+            ]
+          ]
+        },
+        "reference": {
+          "shape": [
+            1,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                0.20000000298023224,
+                0.4000000059604645,
+                0.10000000149011612,
+                0.30000001192092896
+              ],
+              [
+                0.30000001192092896,
+                0.10000000149011612,
+                0.4000000059604645,
+                0.20000000298023224
+              ],
+              [
+                0.10000000149011612,
+                0.20000000298023224,
+                0.30000001192092896,
+                0.4000000059604645
+              ]
+            ]
+          ]
+        },
+        "evenements": {
+          "shape": [
+            1,
+            2,
+            3
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                0.0,
+                0.4724409580230713,
+                0.800000011920929
+              ],
+              [
+                1.5,
+                0.5039370059967041,
+                0.6000000238418579
+              ]
+            ]
+          ]
+        },
+        "midi": {
+          "shape": [
+            1,
+            2,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                -0.2633748948574066,
+                -0.5541244745254517,
+                -0.11704520881175995,
+                0.07820068299770355
+              ],
+              [
+                -0.25060975551605225,
+                -0.274795264005661,
+                -0.5885648727416992,
+                0.6877610683441162
+              ]
+            ]
+          ]
+        },
+        "conditions": {
+          "shape": [
+            1,
+            7,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                1.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                1.0
+              ],
+              [
+                0.20000000298023224,
+                0.4000000059604645,
+                0.10000000149011612,
+                0.30000001192092896
+              ],
+              [
+                0.30000001192092896,
+                0.10000000149011612,
+                0.4000000059604645,
+                0.20000000298023224
+              ],
+              [
+                0.10000000149011612,
+                0.20000000298023224,
+                0.30000001192092896,
+                0.4000000059604645
+              ],
+              [
+                -0.2633748948574066,
+                -0.5541244745254517,
+                -0.11704520881175995,
+                0.07820068299770355
+              ],
+              [
+                -0.25060975551605225,
+                -0.274795264005661,
+                -0.5885648727416992,
+                0.6877610683441162
+              ]
+            ]
+          ]
+        },
+        "croisee": {
+          "shape": [
+            1,
+            4,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                -0.06376689672470093,
+                -0.014215514063835144,
+                0.03410777449607849,
+                -0.06841634213924408
+              ],
+              [
+                -0.06054436042904854,
+                -0.0010740237776190042,
+                0.04884340986609459,
+                -0.052059486508369446
+              ],
+              [
+                -0.06379047781229019,
+                -0.0010944097302854061,
+                0.04740198329091072,
+                -0.05210842564702034
+              ],
+              [
+                -0.06133827567100525,
+                0.012210800312459469,
+                0.062369558960199356,
+                -0.0356421023607254
+              ]
+            ]
+          ]
+        },
+        "poids": {
+          "shape": [
+            1,
+            2,
+            4,
+            7
+          ],
+          "dtype": "torch.float32"
+        },
+        "suite": {
+          "shape": [
+            1,
+            11,
+            4
+          ],
+          "dtype": "torch.float32"
+        },
+        "suite_traitee": {
+          "shape": [
+            1,
+            11,
+            4
+          ],
+          "dtype": "torch.float32"
+        },
+        "_": {
+          "shape": [
+            1,
+            11,
+            11
+          ],
+          "dtype": "torch.float32"
+        },
+        "audio_apres_concat": {
+          "shape": [
+            1,
+            4,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                0.46321311593055725,
+                0.13071519136428833,
+                0.05766880512237549,
+                0.12036030739545822
+              ],
+              [
+                0.5077601671218872,
+                0.09365774691104889,
+                0.0759350135922432,
+                0.09822817891836166
+              ],
+              [
+                0.39017385244369507,
+                0.03293999284505844,
+                0.06717605888843536,
+                0.03064936399459839
+              ],
+              [
+                0.4477423429489136,
+                0.01989644765853882,
+                0.08378861099481583,
+                0.02767857164144516
+              ]
+            ]
+          ]
+        },
+        "indices": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.int64",
+          "values": [
+            0,
+            3
+          ]
+        },
+        "grille": {
+          "shape": [
+            1,
+            4,
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                1.0,
+                0.800000011920929
+              ],
+              [
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0
+              ],
+              [
+                1.0,
+                0.6000000238418579
+              ]
+            ]
+          ]
+        },
+        "caracteristiques": {
+          "shape": [
+            1,
+            4,
+            6
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                1.0,
+                3.0,
+                0.0,
+                0.0,
+                1.0,
+                0.800000011920929
+              ],
+              [
+                2.0,
+                4.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                3.0,
+                5.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                4.0,
+                6.0,
+                1.0,
+                1.0,
+                1.0,
+                0.6000000238418579
+              ]
+            ]
+          ]
+        },
+        "local": {
+          "shape": [
+            1,
+            4,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                -0.4000019133090973,
+                -1.4280707836151123,
+                -0.03512442111968994,
+                0.3154425024986267
+              ],
+              [
+                -0.7232425212860107,
+                -1.177208662033081,
+                0.8388420343399048,
+                -0.18110284209251404
+              ],
+              [
+                -1.0212774276733398,
+                -1.9152874946594238,
+                1.0365102291107178,
+                -0.5817806124687195
+              ],
+              [
+                -0.8011927604675293,
+                -2.8040919303894043,
+                0.7453625202178955,
+                -0.6682531833648682
+              ]
+            ]
+          ]
+        },
+        "globale": {
+          "shape": [
+            1,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ]
+          ]
+        },
+        "gamma": {
+          "shape": [
+            1,
+            1,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                -0.5338070392608643,
+                -0.6989916563034058,
+                -0.0029768645763397217,
+                -0.4273793399333954
+              ]
+            ]
+          ]
+        },
+        "beta": {
+          "shape": [
+            1,
+            1,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                0.3813866674900055,
+                0.21571505069732666,
+                0.004761010408401489,
+                -0.4934644103050232
+              ]
+            ]
+          ]
+        },
+        "module": {
+          "shape": [
+            1,
+            4,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                -0.15242037177085876,
+                -1.881259799003601,
+                0.004761010408401489,
+                -0.4934644103050232
+              ],
+              [
+                -0.6862274408340454,
+                -2.580251693725586,
+                0.0017841458320617676,
+                -0.4934644103050232
+              ],
+              [
+                -1.2200344800949097,
+                -3.2792434692382812,
+                0.004761010408401489,
+                -0.9208437204360962
+              ],
+              [
+                -1.753841519355774,
+                -3.9782347679138184,
+                0.0017841458320617676,
+                -0.9208437204360962
+              ]
+            ]
+          ]
+        },
+        "manuel": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            1.0,
+            2.5
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "vae-et-echantillonnage",
+      "blockIndex": 1,
+      "variant": false,
+      "codeSha256": "e10876527a1b23e97580e865dccbbcfc1801549e1a35bea27f73670688c25067",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "1.0",
+      "seconds": 6.3e-05,
+      "values": {
+        "mean": 2.0,
+        "variance": 4.0,
+        "noise": -0.5
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "vae-et-echantillonnage",
+      "blockIndex": 1,
+      "variant": true,
+      "codeSha256": "4b4dfb95de92d2d874dc2dee67e3be60c991664fa50c3c00674abc80a3f478c8",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "0.5",
+      "seconds": 5.6e-05,
+      "values": {
+        "mean": 2.0,
+        "variance": 9.0,
+        "noise": -0.5
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "vae-et-echantillonnage",
+      "blockIndex": 6,
+      "variant": false,
+      "codeSha256": "3ffa614f92560e60ace331d00d5af472824d97a2315d793eeb2bed8089fb4a81",
+      "codeMode": "excerpt",
+      "scaffold": "import torch\nmu = torch.tensor([[2.]])\nlogvar = torch.log(torch.tensor([[4.]]))\ndecoder = torch.nn.Identity()\n",
+      "stdout": "",
+      "seconds": 0.000911,
+      "values": {
+        "mu": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              2.0
+            ]
+          ]
+        },
+        "logvar": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              1.3862943649291992
+            ]
+          ]
+        },
+        "eps": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              -0.5
+            ]
+          ]
+        },
+        "std": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              2.0
+            ]
+          ]
+        },
+        "z": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              1.0
+            ]
+          ]
+        },
+        "x_hat": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "vae-et-echantillonnage",
+      "blockIndex": 7,
+      "variant": false,
+      "codeSha256": "a3503b0be7b36a4539cc4626cc03629575f0cb5fdb201fb3a52c58b3ce0f0409",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "mu [[2.0]] std [[2.0]] eps [[-0.5]]\nz [[1.0]] reconstruction identité [[1.0]]",
+      "seconds": 0.000266,
+      "values": {
+        "mu": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              2.0
+            ]
+          ]
+        },
+        "logvar": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              1.3862943649291992
+            ]
+          ]
+        },
+        "eps": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              -0.5
+            ]
+          ]
+        },
+        "std": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              2.0
+            ]
+          ]
+        },
+        "z": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              1.0
+            ]
+          ]
+        },
+        "x_hat": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "kl-et-latent-inutilise",
+      "blockIndex": 5,
+      "variant": false,
+      "codeSha256": "d8b56f5617a5832620afdfdc9863577330c21579f7c6ddefbbef2b7172321154",
+      "codeMode": "excerpt",
+      "scaffold": "import torch\nmu = torch.ones((2, 4))\nlogvar = torch.zeros((2, 4))\nreconstruction_loss = torch.tensor(.25)\nbeta = .1\n",
+      "stdout": "",
+      "seconds": 0.000253,
+      "values": {
+        "mu": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          ]
+        },
+        "logvar": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "reconstruction_loss": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 0.25
+        },
+        "beta": 0.1,
+        "kl_dim": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ],
+            [
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ]
+          ]
+        },
+        "kl_per_example": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            2.0,
+            2.0
+          ]
+        },
+        "kl": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 2.0
+        },
+        "loss": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 0.44999998807907104
+        }
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "kl-et-latent-inutilise",
+      "blockIndex": 6,
+      "variant": false,
+      "codeSha256": "d7308d792f6aecd2d7525e62fced438b6759abd24f072e6f1594760bf77e33e0",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "par dimension [[0.5, 0.5, 0.5, 0.5], [0.5, 0.5, 0.5, 0.5]]\npar exemple [2.0, 2.0]\nKL 2.0 perte 0.44999998807907104",
+      "seconds": 0.000243,
+      "values": {
+        "mu": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ],
+            [
+              1.0,
+              1.0,
+              1.0,
+              1.0
+            ]
+          ]
+        },
+        "logvar": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "reconstruction_loss": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 0.25
+        },
+        "beta": 0.1,
+        "kl_dim": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ],
+            [
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ]
+          ]
+        },
+        "kl_per_example": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            2.0,
+            2.0
+          ]
+        },
+        "kl": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 2.0
+        },
+        "loss": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 0.44999998807907104
+        }
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "diffusion-et-bruit",
+      "blockIndex": 3,
+      "variant": false,
+      "codeSha256": "3685cd7e04ce9447f4564db789d21b2fd8f11a5fd0fce9975d466e0aa4946c41",
+      "codeMode": "excerpt",
+      "scaffold": "import torch\nx0 = torch.tensor([1.])\nalpha_bar = torch.tensor(.64)\nt = torch.tensor([1])\ndef model(xt, t):\n    # A specified toy prediction, not a learned denoiser.\n    return torch.full_like(xt, -.8)\n",
+      "stdout": "",
+      "seconds": 0.000344,
+      "values": {
+        "x0": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            1.0
+          ]
+        },
+        "alpha_bar": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 0.6399999856948853
+        },
+        "t": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.int64",
+          "values": [
+            1
+          ]
+        },
+        "eps": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            -1.0
+          ]
+        },
+        "xt": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            0.19999998807907104
+          ]
+        },
+        "pred_eps": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            -0.800000011920929
+          ]
+        },
+        "loss": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 0.03999999538064003
+        }
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "diffusion-et-bruit",
+      "blockIndex": 4,
+      "variant": false,
+      "codeSha256": "e14c2fff321464631435c33588267695123a8065e0fa5adea3eb2ff28a720bb5",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "propre [1.0] bruit [-1.0] mélange [0.19999998807907104]\nprédiction [-0.800000011920929] perte 0.03999999538064003",
+      "seconds": 0.00033,
+      "values": {
+        "x0": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            1.0
+          ]
+        },
+        "alpha_bar": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 0.6399999856948853
+        },
+        "t": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.int64",
+          "values": [
+            1
+          ]
+        },
+        "eps": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            -1.0
+          ]
+        },
+        "xt": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            0.19999998807907104
+          ]
+        },
+        "pred_eps": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            -0.800000011920929
+          ]
+        },
+        "loss": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 0.03999999538064003
+        }
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "objectifs-diffusion-et-flow",
+      "blockIndex": 4,
+      "variant": false,
+      "codeSha256": "da719c4a13386126c5055e2a7afcf65e6bdc1ce52258df4da0b223c2436a296e",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "point -0.25 vitesse 3.0\nperte 0.25 pas exact -0.25",
+      "seconds": 0.000822,
+      "values": {
+        "z": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "values": -1.0
+        },
+        "x": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "values": 2.0
+        },
+        "t": 0.25,
+        "point": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "values": -0.25
+        },
+        "vitesse_cible": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "values": 3.0
+        },
+        "vitesse_predite": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "values": 2.5
+        },
+        "perte_flow": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "values": 0.25
+        },
+        "pas": 0.25,
+        "point_suivant": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "values": -0.25
+        }
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "guidance-et-zones-connues",
+      "blockIndex": 5,
+      "variant": false,
+      "codeSha256": "2d8dbbb75b1be3c8e7f2d4c955669c98f867b8c3270f16b60ddbb2da5c0b9419",
+      "codeMode": "excerpt",
+      "scaffold": "import torch\neps_u = torch.tensor([2.])\neps_c = torch.tensor([5.])\ns = 2.\nknown_mask = torch.tensor([True, True, False, False])\nobserved = torch.tensor([.1, .2, .3, .4])\ngenerated = torch.tensor([9., 8., 7., 6.])\n",
+      "stdout": "",
+      "seconds": 0.000326,
+      "values": {
+        "eps_u": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            2.0
+          ]
+        },
+        "eps_c": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            5.0
+          ]
+        },
+        "s": 2.0,
+        "known_mask": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.bool",
+          "values": [
+            true,
+            true,
+            false,
+            false
+          ]
+        },
+        "observed": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            0.10000000149011612,
+            0.20000000298023224,
+            0.30000001192092896,
+            0.4000000059604645
+          ]
+        },
+        "generated": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            9.0,
+            8.0,
+            7.0,
+            6.0
+          ]
+        },
+        "eps_guided": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            8.0
+          ]
+        },
+        "output": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            0.10000000149011612,
+            0.20000000298023224,
+            7.0,
+            6.0
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "guidance-et-zones-connues",
+      "blockIndex": 6,
+      "variant": false,
+      "codeSha256": "aa6b5099e52391102a197a45e26a890badbbd4ad334f028dc8dbec71c77ce1cd",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "bruit guidé [8.0]\nsortie [0.10000000149011612, 0.20000000298023224, 7.0, 6.0]\nobservé conservé [0.10000000149011612, 0.20000000298023224, 0.30000001192092896, 0.4000000059604645] proposé conservé [9.0, 8.0, 7.0, 6.0]",
+      "seconds": 0.000266,
+      "values": {
+        "eps_u": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            2.0
+          ]
+        },
+        "eps_c": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            5.0
+          ]
+        },
+        "s": 2.0,
+        "known_mask": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.bool",
+          "values": [
+            true,
+            true,
+            false,
+            false
+          ]
+        },
+        "observed": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            0.10000000149011612,
+            0.20000000298023224,
+            0.30000001192092896,
+            0.4000000059604645
+          ]
+        },
+        "generated": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            9.0,
+            8.0,
+            7.0,
+            6.0
+          ]
+        },
+        "eps_guided": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            8.0
+          ]
+        },
+        "output": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            0.10000000149011612,
+            0.20000000298023224,
+            7.0,
+            6.0
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "adaptation-lora-et-petit-corpus",
+      "blockIndex": 4,
+      "variant": false,
+      "codeSha256": "953a1ff47cf05237c8547637be7e89d22d0f0e62c5685ca4cd79210545fbc778",
+      "codeMode": "excerpt",
+      "scaffold": "import torch\ntorch.manual_seed(0)\nd_in, d_out, r = 4, 3, 1\nbase = torch.nn.Linear(d_in, d_out, bias=False)\nW0 = base.weight\nx = torch.tensor([1., 2., 3., 4.])\n",
+      "stdout": "",
+      "seconds": 0.004136,
+      "values": {
+        "d_in": 4,
+        "d_out": 3,
+        "r": 1,
+        "W0": {
+          "shape": [
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              -0.003743410110473633,
+              0.26822179555892944,
+              -0.4115225672721863,
+              -0.3679695129394531
+            ],
+            [
+              -0.19257718324661255,
+              0.13407868146896362,
+              -0.009906589984893799,
+              0.39644473791122437
+            ],
+            [
+              -0.04437202215194702,
+              0.1323062777519226,
+              -0.15110653638839722,
+              -0.09828269481658936
+            ]
+          ]
+        },
+        "x": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            1.0,
+            2.0,
+            3.0,
+            4.0
+          ]
+        },
+        "p": {
+          "shape": [
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              -0.003743410110473633,
+              0.26822179555892944,
+              -0.4115225672721863,
+              -0.3679695129394531
+            ],
+            [
+              -0.19257718324661255,
+              0.13407868146896362,
+              -0.009906589984893799,
+              0.39644473791122437
+            ],
+            [
+              -0.04437202215194702,
+              0.1323062777519226,
+              -0.15110653638839722,
+              -0.09828269481658936
+            ]
+          ]
+        },
+        "B": {
+          "shape": [
+            3,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              0.0
+            ],
+            [
+              0.0
+            ],
+            [
+              0.0
+            ]
+          ]
+        },
+        "A": {
+          "shape": [
+            1,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              0.40334683656692505,
+              0.8380263447761536,
+              -0.7192575931549072,
+              -0.40334352850914
+            ]
+          ]
+        },
+        "base_sortie": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            -2.173745632171631,
+            1.6316393613815308,
+            -0.6262098550796509
+          ]
+        },
+        "petite_activation": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            -1.6917473077774048
+          ]
+        },
+        "correction": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "h": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            -2.173745632171631,
+            1.6316393613815308,
+            -0.6262098550796509
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "adaptation-lora-et-petit-corpus",
+      "blockIndex": 5,
+      "variant": false,
+      "codeSha256": "49dce002c768938d1b3c3e2e7403cc6aca038d4b74e64bcec03e554aa4034d51",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "activation [1] correction [0.0, 0.0, 0.0]\nsortie initiale identique True\ngradient base None gradient A nul True\ngradient B non nul True",
+      "seconds": 0.00312,
+      "values": {
+        "d_in": 4,
+        "d_out": 3,
+        "r": 1,
+        "W0": {
+          "shape": [
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              -0.003743410110473633,
+              0.26822179555892944,
+              -0.4115225672721863,
+              -0.3679695129394531
+            ],
+            [
+              -0.19257718324661255,
+              0.13407868146896362,
+              -0.009906589984893799,
+              0.39644473791122437
+            ],
+            [
+              -0.04437202215194702,
+              0.1323062777519226,
+              -0.15110653638839722,
+              -0.09828269481658936
+            ]
+          ]
+        },
+        "x": {
+          "shape": [
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            1.0,
+            2.0,
+            3.0,
+            4.0
+          ]
+        },
+        "p": {
+          "shape": [
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              -0.003743410110473633,
+              0.26822179555892944,
+              -0.4115225672721863,
+              -0.3679695129394531
+            ],
+            [
+              -0.19257718324661255,
+              0.13407868146896362,
+              -0.009906589984893799,
+              0.39644473791122437
+            ],
+            [
+              -0.04437202215194702,
+              0.1323062777519226,
+              -0.15110653638839722,
+              -0.09828269481658936
+            ]
+          ]
+        },
+        "B": {
+          "shape": [
+            3,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              0.0
+            ],
+            [
+              0.0
+            ],
+            [
+              0.0
+            ]
+          ]
+        },
+        "A": {
+          "shape": [
+            1,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              0.40334683656692505,
+              0.8380263447761536,
+              -0.7192575931549072,
+              -0.40334352850914
+            ]
+          ]
+        },
+        "base_sortie": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            -2.173745632171631,
+            1.6316393613815308,
+            -0.6262098550796509
+          ]
+        },
+        "petite_activation": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            -1.6917473077774048
+          ]
+        },
+        "correction": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "h": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            -2.173745632171631,
+            1.6316393613815308,
+            -0.6262098550796509
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "generation-controle",
+      "chapterId": "efficacite-petit-budget",
+      "blockIndex": 9,
+      "variant": false,
+      "codeSha256": "b92c499c9a4fbb09003c8ba058dac5b8e93668aac72104598b4f5116f35dedd9",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "À la main : 0.400 -> 0.333\nParamètres : projection=4096, adapter=1024, fraction=0.25\nFloat32 : MSE=0.00000000 ; poids=16384 octets\n8 bits : poids logiques=4096 octets, MSE=0.00003770\n3 bits : poids logiques=1536 octets, MSE=0.06974661\n256 échantillons à 48 kHz : 5.333 ms",
+      "seconds": 0.004942,
+      "values": {
+        "mini": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "values": 0.4
+        },
+        "mini_q": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "values": 0.3333333333333333
+        },
+        "d": 64,
+        "rang": 8,
+        "total": 4096,
+        "ajout": 1024,
+        "poids": {
+          "shape": [
+            64,
+            64
+          ],
+          "dtype": "torch.float32"
+        },
+        "entrees": {
+          "shape": [
+            256,
+            64
+          ],
+          "dtype": "torch.float32"
+        },
+        "reference": {
+          "shape": [
+            256,
+            64
+          ],
+          "dtype": "torch.float32"
+        },
+        "mse_reference": 0.0,
+        "bits": 3,
+        "maximum": 3,
+        "echelle": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 0.11436136811971664
+        },
+        "entiers": {
+          "shape": [
+            64,
+            64
+          ],
+          "dtype": "torch.float32"
+        },
+        "reconstruits": {
+          "shape": [
+            64,
+            64
+          ],
+          "dtype": "torch.float32"
+        },
+        "approximation": {
+          "shape": [
+            256,
+            64
+          ],
+          "dtype": "torch.float32"
+        },
+        "mse": 0.06974661350250244,
+        "octets": 1536,
+        "echeance_ms": 5.333333333333333
+      }
+    },
+    {
+      "themeId": "evaluation-recherche",
+      "chapterId": "splits-et-fuites",
+      "blockIndex": 6,
+      "variant": false,
+      "codeSha256": "1f1166bca00a47f503379ab26d45a636a2be36d3efb8ff7668cc38f54796c588",
+      "codeMode": "excerpt",
+      "scaffold": "import numpy as np\nrecording_ids = [\"D01\", \"D02\", \"D03\", \"D04\", \"D05\", \"D06\"]\ndef split_recording_ids(ids):\n    assert len(set(ids)) == len(ids)\n    return ids[:3], ids[3:5], ids[5:]\nclass Windows:\n    def __init__(self, ids):\n        self.recording_ids = [id for id in ids for _ in range(2)]\n        self.features = np.array([[float(id[1:]), float(j)] for id in ids for j in range(2)])\ndef make_windows(ids):\n    return Windows(ids)\nclass Scaler:\n    def fit(self, features):\n        self.mean_ = features.mean(axis=0)\n        self.scale_ = np.maximum(features.std(axis=0), 1e-8)\n        return self\n    def transform(self, features):\n        return (features - self.mean_) / self.scale_\nscaler = Scaler()\n",
+      "stdout": "",
+      "seconds": 0.000617,
+      "values": {
+        "valid_scaled": [
+          [
+            2.449489742783178,
+            -1.0
+          ],
+          [
+            2.449489742783178,
+            1.0
+          ],
+          [
+            3.6742346141747673,
+            -1.0
+          ],
+          [
+            3.6742346141747673,
+            1.0
+          ]
+        ]
+      }
+    },
+    {
+      "themeId": "evaluation-recherche",
+      "chapterId": "splits-et-fuites",
+      "blockIndex": 7,
+      "variant": false,
+      "codeSha256": "c6a2601c4996246f7f09cf2bbbe2645b540d234e105b9883b86237554fce56d3",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "prises ['D01', 'D02', 'D03'] ['D04', 'D05'] ['D06']\nsources train ['D01', 'D01', 'D02', 'D02', 'D03', 'D03']\nmoyenne train [2.0, 0.5]\nvalidation transformée [[2.449489742783178, -1.0], [2.449489742783178, 1.0], [3.6742346141747673, -1.0], [3.6742346141747673, 1.0]]",
+      "seconds": 0.000387,
+      "values": {
+        "valid_scaled": [
+          [
+            2.449489742783178,
+            -1.0
+          ],
+          [
+            2.449489742783178,
+            1.0
+          ],
+          [
+            3.6742346141747673,
+            -1.0
+          ],
+          [
+            3.6742346141747673,
+            1.0
+          ]
+        ]
+      }
+    },
+    {
+      "themeId": "evaluation-recherche",
+      "chapterId": "metriques-et-seuils",
+      "blockIndex": 6,
+      "variant": false,
+      "codeSha256": "511b23cceda96b6fcb5f3176d01fa69d76d55293bb916052d6c3f6b889a46d76",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "0.75 0.6 0.7",
+      "seconds": 9.2e-05,
+      "values": {
+        "tn": 40,
+        "fp": 10,
+        "fn": 20,
+        "tp": 30,
+        "precision": 0.75,
+        "recall": 0.6,
+        "rappel_classe_0": 0.8,
+        "balanced_accuracy": 0.7
+      }
+    },
+    {
+      "themeId": "evaluation-recherche",
+      "chapterId": "boucle-evaluation-et-surapprentissage",
+      "blockIndex": 3,
+      "variant": false,
+      "codeSha256": "503cc99c3967c775d04cd99ed83e84ef8f7be2f0765a9d8593776884b6178074",
+      "codeMode": "excerpt",
+      "scaffold": "import math\nimport torch\nmodel = torch.nn.Identity()\ncriterion = torch.nn.MSELoss(reduction=\"mean\")\nvalid_loader = [\n    (torch.zeros(8, 1, dtype=torch.float64), torch.ones(8, 1, dtype=torch.float64)),\n    (torch.zeros(2, 1, dtype=torch.float64), torch.full((2, 1), math.sqrt(3), dtype=torch.float64)),\n]\n",
+      "stdout": "",
+      "seconds": 0.000509,
+      "values": {
+        "loss_sum": 14.0,
+        "count": 10,
+        "x": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float64",
+          "values": [
+            [
+              0.0
+            ],
+            [
+              0.0
+            ]
+          ]
+        },
+        "y": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float64",
+          "values": [
+            [
+              1.7320508075688772
+            ],
+            [
+              1.7320508075688772
+            ]
+          ]
+        },
+        "loss": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "values": 2.9999999999999996
+        },
+        "mean_loss": 1.4
+      }
+    },
+    {
+      "themeId": "evaluation-recherche",
+      "chapterId": "boucle-evaluation-et-surapprentissage",
+      "blockIndex": 4,
+      "variant": false,
+      "codeSha256": "fe4538a923d0a0c7a6dc31ac833bf9df150c28288e4f832b4e17c199e08a32b0",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "somme 14.0 effectif 10 moyenne 1.4",
+      "seconds": 0.000391,
+      "values": {
+        "loss_sum": 14.0,
+        "count": 10,
+        "x": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float64",
+          "values": [
+            [
+              0.0
+            ],
+            [
+              0.0
+            ]
+          ]
+        },
+        "y": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "torch.float64",
+          "values": [
+            [
+              1.7320508075688772
+            ],
+            [
+              1.7320508075688772
+            ]
+          ]
+        },
+        "loss": {
+          "shape": [],
+          "dtype": "torch.float64",
+          "values": 2.9999999999999996
+        },
+        "mean_loss": 1.4
+      }
+    },
+    {
+      "themeId": "evaluation-recherche",
+      "chapterId": "baselines-et-ablations",
+      "blockIndex": 5,
+      "variant": false,
+      "codeSha256": "6900e83b03626157e7fbfd163b14cd1389176dd80883968984acdda6f30d7b10",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "Base 70 / 100\nBase+A 72 / 100\nBase+B 71 / 100\nBase+A+B 76 / 100\nconfusion base [[40, 10], [20, 30]]\ninteraction 3",
+      "seconds": 0.000394,
+      "values": {
+        "recording_ids": [
+          "R01",
+          "R02",
+          "R03",
+          "R04",
+          "R05",
+          "R06",
+          "R07",
+          "R08",
+          "R09",
+          "R10",
+          "R11",
+          "R12",
+          "R13",
+          "R14",
+          "R15",
+          "R16",
+          "R17",
+          "R18",
+          "R19",
+          "R20"
+        ],
+        "truth": {
+          "shape": [
+            20,
+            5
+          ]
+        },
+        "pred_base": {
+          "shape": [
+            20,
+            5
+          ]
+        },
+        "pred_a": {
+          "shape": [
+            20,
+            5
+          ]
+        },
+        "pred_b": {
+          "shape": [
+            20,
+            5
+          ]
+        },
+        "pred_ab": {
+          "shape": [
+            20,
+            5
+          ]
+        },
+        "name": "Base+A+B",
+        "pred": {
+          "shape": [
+            20,
+            5
+          ]
+        },
+        "cm": [
+          [
+            40,
+            10
+          ],
+          [
+            20,
+            30
+          ]
+        ]
+      }
+    },
+    {
+      "themeId": "evaluation-recherche",
+      "chapterId": "fad-et-limites-des-proxies",
+      "blockIndex": 5,
+      "variant": false,
+      "codeSha256": "2137ff609d0ade72da1b9ae8ddd7948b4eb9145b0d4e81066bf337380c6def32",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "1.0",
+      "seconds": 7.5e-05,
+      "values": {
+        "mu_ref": 2.0,
+        "var_ref": 1.0,
+        "mu": 1.0,
+        "var": 1.0,
+        "distance": 1.0
+      }
+    },
+    {
+      "themeId": "evaluation-recherche",
+      "chapterId": "variabilite-et-incertitude",
+      "blockIndex": 6,
+      "variant": false,
+      "codeSha256": "b04ce7079880aeeb8766604c34576b6abf322cbf164631b46dc604c91d42f411",
+      "codeMode": "excerpt",
+      "scaffold": "import numpy as np\nrecording_ids = np.array([f\"R{i:02}\" for i in range(1, 21)])\ntruth = np.repeat(np.array([0] * 10 + [1] * 10), 5).reshape(20, 5)\npred_base = np.array([[0, 0, 0, 0, 1]] * 10 + [[1, 1, 1, 0, 0]] * 10)\npred_a = pred_base.copy()\npred_a[10:12, 3] = 1  # Deux erreurs corrigées : R11 et R12.\npred_b = pred_base.copy()\npred_b[0, 4] = 0     # Une erreur corrigée : R01.\npred_ab = pred_a.copy()\npred_ab[0, 4] = 0\npred_ab[12:15, 3] = 1  # Trois corrections propres à la combinaison.\nbase = {id: float(score) for id, score in zip(recording_ids, (pred_base == truth).mean(axis=1))}\nadapted = {id: float(score) for id, score in zip(recording_ids, (pred_ab == truth).mean(axis=1))}\ndef score_on_groups(scores, sampled):\n    return float(np.mean([scores[id] for id in sampled]))\nrng = np.random.default_rng(0)\n",
+      "stdout": "",
+      "seconds": 0.000617,
+      "values": {
+        "recording_ids": [
+          "R01",
+          "R02",
+          "R03",
+          "R04",
+          "R05",
+          "R06",
+          "R07",
+          "R08",
+          "R09",
+          "R10",
+          "R11",
+          "R12",
+          "R13",
+          "R14",
+          "R15",
+          "R16",
+          "R17",
+          "R18",
+          "R19",
+          "R20"
+        ],
+        "truth": {
+          "shape": [
+            20,
+            5
+          ]
+        },
+        "pred_base": {
+          "shape": [
+            20,
+            5
+          ]
+        },
+        "pred_a": {
+          "shape": [
+            20,
+            5
+          ]
+        },
+        "pred_b": {
+          "shape": [
+            20,
+            5
+          ]
+        },
+        "pred_ab": {
+          "shape": [
+            20,
+            5
+          ]
+        },
+        "sampled": [
+          "R18",
+          "R13",
+          "R11",
+          "R06",
+          "R07",
+          "R01",
+          "R02",
+          "R01",
+          "R04",
+          "R17",
+          "R13",
+          "R19",
+          "R11",
+          "R13",
+          "R20",
+          "R15",
+          "R13",
+          "R11",
+          "R12",
+          "R19"
+        ],
+        "score_base": 0.6599999999999999,
+        "score_adapted": 0.7700000000000001,
+        "difference": 0.11000000000000021
+      }
+    },
+    {
+      "themeId": "evaluation-recherche",
+      "chapterId": "variabilite-et-incertitude",
+      "blockIndex": 7,
+      "variant": false,
+      "codeSha256": "018ecccb9461ecb4def498410e45361ccf2cb15765af1c8c865f8476e2760662",
+      "codeMode": "standalone",
+      "scaffold": "",
+      "stdout": "premier tirage ['R18', 'R13', 'R11', 'R06', 'R07', 'R01', 'R02', 'R01', 'R04', 'R17', 'R13', 'R19', 'R11', 'R13', 'R20', 'R15', 'R13', 'R11', 'R12', 'R19']\nscores appariés 0.66 0.77 0.11\nmoyennes du jeu 0.7 0.76\nintervalle percentile 0.02 0.1",
+      "seconds": 0.082845,
+      "values": {
+        "recording_ids": [
+          "R01",
+          "R02",
+          "R03",
+          "R04",
+          "R05",
+          "R06",
+          "R07",
+          "R08",
+          "R09",
+          "R10",
+          "R11",
+          "R12",
+          "R13",
+          "R14",
+          "R15",
+          "R16",
+          "R17",
+          "R18",
+          "R19",
+          "R20"
+        ],
+        "truth": {
+          "shape": [
+            20,
+            5
+          ]
+        },
+        "pred_base": {
+          "shape": [
+            20,
+            5
+          ]
+        },
+        "pred_a": {
+          "shape": [
+            20,
+            5
+          ]
+        },
+        "pred_b": {
+          "shape": [
+            20,
+            5
+          ]
+        },
+        "pred_ab": {
+          "shape": [
+            20,
+            5
+          ]
+        },
+        "sampled": [
+          "R18",
+          "R13",
+          "R11",
+          "R06",
+          "R07",
+          "R01",
+          "R02",
+          "R01",
+          "R04",
+          "R17",
+          "R13",
+          "R19",
+          "R11",
+          "R13",
+          "R20",
+          "R15",
+          "R13",
+          "R11",
+          "R12",
+          "R19"
+        ],
+        "score_base": 0.6599999999999999,
+        "score_adapted": 0.7700000000000001,
+        "difference": 0.11000000000000021,
+        "_": 1999,
+        "draw": [
+          "R19",
+          "R20",
+          "R02",
+          "R10",
+          "R12",
+          "R14",
+          "R08",
+          "R09",
+          "R05",
+          "R17",
+          "R10",
+          "R15",
+          "R16",
+          "R04",
+          "R04",
+          "R17",
+          "R04",
+          "R07",
+          "R17",
+          "R16"
+        ],
+        "low": 0.020000000000000018,
+        "high": 0.1000000000000002
+      }
+    }
+  ],
+  "numericalChecks": {
+    "rvqMse": 0.006250002887099981,
+    "vaeLatent": 1.0,
+    "diffusionInput": 0.19999998807907104,
+    "diffusionLoss": 0.03999999538064003,
+    "maskedVariation": [
+      0.10000000149011612,
+      0.20000000298023224,
+      0.30000001192092896,
+      6.0
+    ],
+    "flowLongerStep": 0.5,
+    "classificationCounts": [
+      [
+        40,
+        10
+      ],
+      [
+        20,
+        30
+      ]
+    ],
+    "ablationScores": [
+      70,
+      72,
+      71,
+      76
+    ],
+    "bootstrapPercentile": [
+      0.020000000000000018,
+      0.1000000000000002
+    ],
+    "firstBootstrapDraw": [
+      "R18",
+      "R13",
+      "R11",
+      "R06",
+      "R07",
+      "R01",
+      "R02",
+      "R01",
+      "R04",
+      "R17",
+      "R13",
+      "R19",
+      "R11",
+      "R13",
+      "R20",
+      "R15",
+      "R13",
+      "R11",
+      "R12",
+      "R19"
+    ],
+    "fadVarianceVariation": 2.0
+  },
+  "limits": [
+    "No neural audio model is pretrained or benchmarked here.",
+    "Identity decoders and fixed predictions are labelled pedagogical fixtures.",
+    "The evaluation decisions are fabricated; bootstrap intervals do not establish real musical superiority."
+  ],
+  "editorialChecks": {
+    "chapters": 55,
+    "protectedIdsQuestionsSources": true,
+    "oralScaffolds": 26,
+    "walkthroughLineGroupsChecked": 29,
+    "requiredObjectsBeforeExcerpts": true,
+    "automaticOralEndings": 0,
+    "brokenInternalLinks": 0,
+    "browserCheck": "Not run by this content subtask; parent owns UI verification."
+  }
+}

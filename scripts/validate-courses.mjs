@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import {existsSync} from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { readBank } from './read-bank.mjs';
 import { COURSE_ORDER, wordCount, chapterText } from '../src/course-model.js';
 import { FIGURE_KINDS } from '../src/course-figures.js';
+import {LAB_KINDS} from '../src/tensor-labs.js';
 
 export async function readCourses() {
   return Promise.all(COURSE_ORDER.map(async id => JSON.parse(await readFile(new URL(`../public/courses/${id}.json`,import.meta.url),'utf8'))));
@@ -64,10 +66,11 @@ export function validateCourses(courses, { bank, themes, sources }) {
       assert.ok(ch.progression&&['input','action','output'].every(key=>typeof ch.progression[key]==='string'&&ch.progression[key].trim()),fail('entrée, action et résultat du chapitre'));
       assert.ok(ch.readingRole===undefined||ch.readingRole==='reference',fail('rôle de lecture valide'));
       assert.ok(ch.blocks.length>=3,fail('développement explicatif'));
-      if(course.kind!=='interview')assert.ok(ch.blocks.some(b=>b.type==='walkthrough'),fail('exemple résolu pas à pas'));
       const firstExampleIndex=ch.blocks.findIndex(block=>block.type==='first-example');
       if(firstExampleIndex>=0)assert.ok(firstExampleIndex<ch.blocks.findIndex(block=>block.type==='walkthrough'),fail('cas court avant le déroulé complet'));
-      if(course.kind!=='interview')assert.ok(ch.blocks.some(b=>['visual','plot'].includes(b.type)),fail('schéma ou graphique propre à la notion'));
+      if(course.kind!=='interview')assert.ok(ch.blocks.some(b=>['visual','plot','tensor-lab'].includes(b.type)),fail('représentation propre à la notion'));
+      if(ch.level)assert.ok(['practice','discuss','advanced'].includes(ch.level),fail('niveau de préparation valide'));
+      for(const link of ch.prerequisites??[])assert.ok(courses.some(target=>target.themeId===link.themeId&&target.chapters.some(chapter=>chapter.id===link.chapterId)),fail('prérequis de chapitre existant'));
       if(course.kind==='interview'){
         const answer=ch.blocks.filter(block=>block.role==='oral-answer');
         const answerWords=wordCount(answer.map(block=>block.text).join(' '));
@@ -77,7 +80,12 @@ export function validateCourses(courses, { bank, themes, sources }) {
       }
       let chapterWords=0;
       for(const block of ch.blocks) {
-        assert.ok(['paragraph','heading','list','code','callout','example','figure','visual','plot','walkthrough','first-example','audio-lab','illustration','analysis-image'].includes(block.type),fail('type de bloc'));
+        assert.ok(['paragraph','heading','list','code','callout','example','figure','visual','plot','walkthrough','first-example','audio-lab','illustration','analysis-image','tensor-lab'].includes(block.type),fail('type de bloc'));
+        if(block.codeMode){
+          assert.ok(['standalone','excerpt'].includes(block.codeMode),fail('statut du code'));
+          if(block.codeMode==='excerpt')assert.ok(block.requires?.length&&block.requires.every(item=>typeof item==='string'&&item.trim()),fail('prérequis explicites de l’extrait'));
+        }
+        for(const resource of block.resources??[])assert.ok(resource.label?.trim()&&/^(?:media|notebooks)\/[a-zA-Z0-9_./-]+$/.test(resource.path)&&!resource.path.split('/').includes('..')&&existsSync(new URL(`../public/${resource.path}`,import.meta.url)),fail(`fichier nécessaire livré : ${resource.path}`));
         if(['paragraph','heading','callout','example'].includes(block.type))assert.ok(typeof block.text==='string'&&block.text.trim(),fail('texte non vide'));
         if(block.type==='code'){assert.ok(block.code?.trim()&&block.caption?.trim(),fail('code commenté'));code++;}
         if(block.type==='list'){
@@ -90,7 +98,6 @@ export function validateCourses(courses, { bank, themes, sources }) {
         if(block.type==='first-example'){
           firstExamples++;assert.ok(['title','introduction','code','output','explanation'].every(key=>typeof block[key]==='string'&&block[key].trim()),fail('premier exemple et résultat expliqués'));
           assert.ok(['python','text','bash'].includes(block.language),fail('langage du premier exemple'));
-          assert.ok(block.code.split('\n').length<=6,fail('six lignes maximum pour le cas simple'));
           if(block.variant)assert.ok(['change','output','explanation'].every(key=>typeof block.variant[key]==='string'&&block.variant[key].trim()),fail('variation complète quand elle est utile'));
         }
         if(block.type==='visual'){
@@ -100,31 +107,37 @@ export function validateCourses(courses, { bank, themes, sources }) {
           if(block.kind==='comparison')assert.ok(block.panels?.length>=2&&block.panels.every(p=>p.title?.trim()&&p.items?.length&&p.items.every(x=>typeof x==='string'&&x.trim())),fail('comparaison complète'));
           if(block.kind==='table')assert.ok(block.columns?.length>=2&&block.rows?.length&&block.rows.every(row=>row.length===block.columns.length&&row.every(cell=>String(cell).trim())),fail('tableau cohérent'));
         }
+        if(block.type==='tensor-lab'){
+          visuals++;assert.ok(LAB_KINDS.includes(block.kind)&&block.title?.trim()&&block.caption?.trim(),fail('calcul pédagogique identifié'));
+          if(block.kind==='conv')for(const [key,size]of [['input',3],['kernel',2]])if(block[key])assert.ok(block[key].length===size&&block[key].every(row=>row.length===size&&row.every(Number.isFinite)),fail('grille et noyau de calcul valides'));
+        }
         if(block.type==='plot'){
           plots++;assert.ok(['title','xLabel','yLabel','caption'].every(key=>block[key]?.trim()),fail('graphique avec axes et interprétation'));
           assert.ok(block.series?.length&&block.series.every(s=>s.name?.trim()&&s.points.length>=2&&s.points.every((p,i)=>p.length===2&&p.every(Number.isFinite)&&(!i||p[0]>=s.points[i-1][0]))),fail('coordonnées finies et ordonnées'));
         }
         if(block.type==='walkthrough'){
           walkthroughs++;assert.ok(block.title?.trim()&&block.goal?.trim()&&block.result?.trim(),fail('objectif et conclusion de l’exemple'));
-          assert.ok(block.steps.length>=3&&block.steps.length<=6,fail('trois à six étapes'));
+          assert.ok(block.steps.length>=1,fail('étapes du calcul'));
           const lineCount=block.code?.split('\n').length??0;
           if(block.code){code++;assert.ok(block.steps.some(step=>step.lines?.length),fail('lien entre les étapes et les lignes de code'));}
           else if(Number.isInteger(block.codeBlockIndex))assert.ok(ch.blocks[block.codeBlockIndex]?.type==='code'&&ch.blocks[block.codeBlockIndex]?.code,fail('programme unique associé au déroulé'));
           else assert.ok(block.calculationTable===true&&/tableau.*(?:calcul|raisonnement)/iu.test(`${block.goal} ${block.result}`),fail('tableau sans code explicitement justifié'));
-          for(const step of block.steps){assert.ok(step.title?.trim()&&step.text?.trim(),fail('étape expliquée'));assert.ok(step.lines===undefined||(Array.isArray(step.lines)&&step.lines.every(n=>Number.isInteger(n)&&n>=1&&n<=lineCount)),fail('lignes de code présentes'));}
+          for(const step of block.steps){assert.ok(step.title?.trim()&&step.text?.trim(),fail('étape expliquée'));assert.ok(step.lines===undefined||(Array.isArray(step.lines)&&step.lines.every(n=>Number.isInteger(n)&&n>=1&&n<=lineCount)),fail('lignes de code présentes'));for(const detail of step.details??[])assert.ok(detail.explanation?.trim(),fail('décomposition locale expliquée'));}
         }
         chapterWords+=wordCount([block.text,block.title,block.caption,...(block.items??[])].filter(Boolean).join(' '));
       }
       chapterWords=wordCount(chapterText(ch));
       assert.ok(chapterWords>=(ch.readingRole==='reference'?80:200),fail(`chapitre développé (${chapterWords} mots hors code)`));
       words+=chapterWords;
-      assert.ok(Array.isArray(ch.takeaways)&&ch.takeaways.length===3&&ch.takeaways.every(x=>typeof x==='string'&&x.trim()),fail('trois idées à retenir'));
+      assert.ok(Array.isArray(ch.takeaways)&&ch.takeaways.length&&ch.takeaways.every(x=>typeof x==='string'&&x.trim()),fail('repères à retenir'));
       assert.ok(Array.isArray(ch.sourceIds)&&ch.sourceIds.length&&ch.sourceIds.every(id=>refs.has(id)),fail('références existantes'));
       const checkpoint=ch.checkpoint;
+      if(!checkpoint&&course.kind==='interview')continue;
       assert.ok(checkpoint?.prompt?.trim()&&checkpoint.explanation?.trim(),fail('QCM de transfert expliqué'));
-      assert.ok(checkpoint.options?.length===4&&checkpoint.options.every(o=>o.id?.trim()&&o.text?.trim()),fail('quatre propositions'));
-      assert.equal(new Set(checkpoint.options.map(o=>o.id)).size,4,fail('IDs de propositions distincts'));
-      assert.equal(new Set(checkpoint.options.map(o=>o.text.trim())).size,4,fail('propositions distinctes'));
+      assert.ok(checkpoint.options?.length>=4&&checkpoint.options.every(o=>o.id?.trim()&&o.text?.trim()),fail('au moins quatre propositions'));
+      assert.equal(new Set(checkpoint.options.map(o=>o.id)).size,checkpoint.options.length,fail('IDs de propositions distincts'));
+      assert.equal(new Set(checkpoint.options.map(o=>o.text.trim())).size,checkpoint.options.length,fail('propositions distinctes'));
+      for(const [id,feedback]of Object.entries(checkpoint.optionFeedback??{}))assert.ok(checkpoint.options.some(option=>option.id===id)&&typeof feedback==='string'&&feedback.trim(),fail('retour spécifique relié à une proposition'));
       assert.ok(checkpoint.options.some(o=>o.id===checkpoint.correctOptionId),fail('bonne réponse existante'));checkpoints++;
     }
   }

@@ -3,49 +3,29 @@
   "device": "cpu",
   "commands": [
     {
-      "script": "pytorch-existing.py",
+      "script": "audit-pytorch-core.py",
       "arguments": [],
       "exitCode": 0,
-      "seconds": 5.527
+      "seconds": 5.992
     },
     {
-      "script": "pytorch-additions.py",
+      "script": "audit-pytorch-advanced.py",
       "arguments": [],
       "exitCode": 0,
-      "seconds": 7.711
+      "seconds": 6.317
     },
     {
-      "script": "b-attention-control.py",
+      "script": "audit-python-signal-ml.py",
       "arguments": [],
       "exitCode": 0,
-      "seconds": 3.167
+      "seconds": 12.15
     },
     {
-      "script": "b-codecs-symbolic.py",
+      "script": "audit-generation-research-oral.py",
       "arguments": [],
       "exitCode": 0,
-      "seconds": 3.042
-    },
-    {
-      "script": "b-diffusion-efficiency.py",
-      "arguments": [],
-      "exitCode": 0,
-      "seconds": 3.132
-    },
-    {
-      "script": "existing-corpus.py",
-      "arguments": [
-        "--strict"
-      ],
-      "exitCode": 0,
-      "seconds": 13.275
-    },
-    {
-      "script": "notebooks.py",
-      "arguments": [],
-      "exitCode": 0,
-      "seconds": 143.862
+      "seconds": 3.534
     }
   ],
-  "notebooksReexecuted": true
+  "notebooksReexecuted": false
 }

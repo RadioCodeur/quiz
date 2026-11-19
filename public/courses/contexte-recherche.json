@@ -48,7 +48,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Imaginons une compositrice qui possède ses propres frappes métalliques. Elle veut produire des variantes, puis modifier seulement leur attaque."
+          "text": "Pour préparer cet entretien, distinguons les compétences annoncées et les choix de méthodes. Une compositrice qui souhaite transformer ses propres frappes nous donne un cas concret pour les relier."
         },
         {
           "type": "paragraph",
@@ -57,6 +57,34 @@
         {
           "type": "paragraph",
           "text": "L’offre vise la génération audio contrôlable, la multimodalité et l’adaptation aux matériaux des compositeurs. Python, PyTorch, signal et GNU/Linux font partie des compétences demandées."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Ce qui est demandé, ce qui est un atout, ce qui est notre choix",
+          "columns": [
+            "Statut",
+            "Exemples",
+            "Préparation utile"
+          ],
+          "rows": [
+            [
+              "Compétences demandées",
+              "Python/PyTorch, signal audio, GNU/Linux, recherche et collaboration",
+              "Montrer un raisonnement et un programme explicables"
+            ],
+            [
+              "Atouts mentionnés",
+              "MIR et composition assistée par ordinateur",
+              "Relier une pratique réelle au sujet"
+            ],
+            [
+              "Pistes du cours",
+              "LoRA, CLAP, codec ou architecture particulière",
+              "Justifier un choix ; aucune famille précise n’est imposée"
+            ]
+          ],
+          "caption": "L’offre fixe un sujet et des compétences. Ce tableau distingue ses termes de nos propositions de préparation."
         },
         {
           "type": "paragraph",
@@ -171,7 +199,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : je relie chaque outil à un besoin de composition et à une comparaison vérifiable. Je distingue ce que je maîtrise de ce que je souhaite approfondir."
+          "text": "Choisissons maintenant une compétence à démontrer avec un projet réel. Préparons ses données, une décision de méthode, une erreur observée et ce que nous ferions autrement."
         }
       ],
       "takeaways": [
@@ -205,7 +233,8 @@
       "questionIds": [],
       "sourceIds": [
         "rev-ctx-ircam-offer"
-      ]
+      ],
+      "level": "discuss"
     },
     {
       "id": "outils-ircam-et-pratiques-musicales",
@@ -241,6 +270,10 @@
         {
           "type": "paragraph",
           "text": "Nous séparons trois besoins : apprendre une représentation, l’exécuter dans un environnement musical et organiser la composition."
+        },
+        {
+          "type": "paragraph",
+          "text": "Le but n’est pas d’installer tous ces outils avant l’entretien. Identifions d’abord le rôle qui manque au prototype : représentation, exécution interactive ou écriture musicale. Les noms deviennent ensuite des exemples à explorer selon ce besoin."
         },
         {
           "type": "visual",
@@ -365,7 +398,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : je distingue le modèle appris, son environnement d’exécution et les outils de composition. Je vérifie leur articulation dans un usage musical concret."
+          "text": "Pour expliquer une chaîne, attribuons à chaque outil une entrée, une sortie et une responsabilité. Une liste de logiciels ne montre pas encore comment ils servent un geste musical."
         }
       ],
       "takeaways": [
@@ -405,7 +438,8 @@
         "rev-ctx-ircam-openmusic",
         "rev-ctx-ircam-openmusic-manual",
         "rev-ctx-ircam-mir-ai4media"
-      ]
+      ],
+      "level": "discuss"
     },
     {
       "id": "postgenai-et-interaction",
@@ -457,6 +491,10 @@
         {
           "type": "paragraph",
           "text": "Ce sont des objectifs de recherche. Ils ne prouvent pas qu’un système résout déjà chaque difficulté musicale."
+        },
+        {
+          "type": "paragraph",
+          "text": "Notre piste pédagogique est une modification locale de l’attaque. Ce scénario illustre les objectifs vérifiés du projet ; il n’est ni une architecture imposée ni un résultat déjà obtenu. La méthode restera à choisir et à évaluer."
         },
         {
           "type": "visual",
@@ -547,7 +585,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : je comprends l’approche post-générative comme une reprise progressive du résultat par le musicien. Je veux évaluer cette interaction autant que la qualité sonore."
+          "text": "Une interaction utile doit permettre de demander, écouter et reprendre une modification. Pour notre exemple, conservons les zones protégées comme critère distinct du caractère de l’attaque modifiée."
         }
       ],
       "takeaways": [
@@ -582,7 +620,8 @@
       "sourceIds": [
         "rev-ctx-ircam-postgenai",
         "rev-ctx-ircam-offer"
-      ]
+      ],
+      "level": "discuss"
     },
     {
       "id": "huit-lectures-pour-discuter",
@@ -613,11 +652,15 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Une pile d’articles peut donner l’impression de travailler sans préparer une réponse. Nous lisons pour expliquer un mécanisme, sa limite et une question."
+          "text": "Nous n’avons pas besoin de réciter huit articles. Choisissons d’abord une question du projet, puis un article qui aide à l’examiner. Les autres textes servent de pistes, à ouvrir quand leur mécanisme devient utile."
         },
         {
           "type": "paragraph",
           "text": "Une contribution (contribution) est ce que l’article apporte à un problème précis. Une limite (limitation) indique où sa démonstration ne suffit plus."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour une première discussion, expliquons une représentation, un contrôle et une comparaison. Nous pourrons ensuite approfondir le codec, le Transformer ou l’objectif génératif concerné. Cette sélection est une stratégie de lecture, pas une liste exigée par l’IRCAM."
         },
         {
           "type": "visual",
@@ -854,7 +897,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : je peux présenter le problème, le mécanisme et une limite de mes lectures. Je les relie à une expérience possible sur le sujet."
+          "text": "Après une lecture, essayons de dessiner le calcul sans le texte. Si une entrée, une cible ou une comparaison manque, revenons à cette partie précise avant d’accumuler un autre article."
         }
       ],
       "takeaways": [
@@ -895,7 +938,8 @@
         "rev-ctx-paper-clap",
         "rev-ctx-paper-lora",
         "rev-ctx-paper-musictransformer"
-      ]
+      ],
+      "level": "advanced"
     }
   ],
   "references": [

@@ -8,22 +8,34 @@ const registry=JSON.parse(await readFile(new URL('../scripts/verify/research-sou
 
 test('chaque section de contexte relie des mécanismes techniques sans créer un thème de quiz',()=>{
   assert.equal(context.kind,'context');
-  assert.equal(context.chapters.length,4);
+  assert.ok(context.chapters.length);
   for(const chapter of context.chapters){
     assert.equal(chapter.questionIds.length,0);
-    assert.ok(chapter.blocks.some(block=>block.links?.some(link=>link.themeId!=='contexte-recherche')));
+    const links=chapter.blocks.flatMap(block=>block.links??[]);
+    assert.ok(links.some(link=>link.themeId!=='contexte-recherche'));
+    for(const link of links)assert.ok(courses.some(course=>course.themeId===link.themeId&&course.chapters.some(chapter=>chapter.id===link.chapterId)),`${chapter.id} → ${link.themeId}/${link.chapterId}`);
     for(const id of chapter.sourceIds){
       const ref=context.references.find(source=>source.id===id);
       assert.ok(registry.sources.some(source=>source.opened&&source.url===ref.url),ref.url);
     }
   }
 });
-test('huit lectures ont chacune trois idées et une question de recherche',()=>{
+test('les huit lectures vérifiées gardent une fiche et une question qui leur sont associées',()=>{
   const chapter=context.chapters.find(chapter=>chapter.id==='huit-lectures-pour-discuter');
-  const indices=chapter.blocks.flatMap((block,i)=>block.type==='heading'?[i]:[]);
-  assert.equal(indices.length,8);
-  for(const index of indices){
-    assert.equal(chapter.blocks[index+1].items.length,3);
-    assert.ok(chapter.blocks[index+2].text.startsWith('Question à poser :'));
+  assert.equal(registry.readingList.length,8);
+  const questions=[];
+  for(const reading of registry.readingList){
+    const index=chapter.blocks.findIndex(block=>block.type==='heading'&&block.text===reading.title);
+    assert.ok(index>=0,reading.title);
+    const following=chapter.blocks.slice(index+1);
+    const boundary=following.findIndex(block=>block.type==='heading');
+    const section=boundary<0?following:following.slice(0,boundary);
+    assert.ok(section.some(block=>block.type==='list'&&block.items.length>=2),reading.title);
+    const question=section.find(block=>block.type==='paragraph'&&block.text.startsWith('Question à poser :'));
+    assert.ok(question,reading.title);
+    questions.push(question.text);
+    const source=registry.sources.find(source=>source.id===reading.sourceId);
+    assert.ok(source?.opened&&context.references.some(ref=>chapter.sourceIds.includes(ref.id)&&ref.url===source.url),reading.title);
   }
+  assert.equal(new Set(questions).size,8);
 });

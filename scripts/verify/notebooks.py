@@ -22,6 +22,19 @@ def one(path):
     from nbclient import NotebookClient
     notebook=nbformat.read(path,as_version=4)
     nbformat.validate(notebook)
+    course=json.loads((ROOT/'public/courses/pytorch.json').read_text(encoding='utf-8'))
+    chapter=next(chapter for chapter in course['chapters'] if chapter['id']==notebook.metadata.quiz.chapterId)
+    cell_by_id={cell.id:cell for cell in notebook.cells}
+    programs=notebook.metadata.quiz.get('programs',[])
+    displayed=[(index,block)for index,block in enumerate(chapter['blocks'])if block.get('code')and block.get('language','python')=='python']
+    assert len(programs)==len(displayed),'Chaque programme du cours possède ses cellules progressives'
+    for program,(index,block)in zip(programs,displayed):
+        assert program['blockIndex']==index
+        reconstructed=''.join(cell_by_id[id].source for id in program['cellIds'])
+        assert reconstructed==block['code'],'Les cellules doivent conserver exactement le programme du cours'
+        assert hashlib.sha256(reconstructed.encode()).hexdigest()==program['sourceSha256']
+    exercise_cells=[cell for cell in notebook.cells if 'exercise'in cell.metadata.get('tags',[])]
+    assert len(exercise_cells)==2 and all(cell.cell_type=='code'for cell in exercise_cells),'Deux vrais espaces de pratique exécutables'
     source_hash=hashlib.sha256(json.dumps([cell.source for cell in notebook.cells],ensure_ascii=False).encode()).hexdigest()
     original_count=len(notebook.cells)
     solutions=notebook.metadata.get('quiz',{}).get('exerciseSolutions',[])
@@ -41,11 +54,17 @@ def one(path):
     for cell in executed.cells[original_count:]:
         solution_outputs.append([output.get('text','') for output in cell.get('outputs',[]) if output.output_type=='stream'])
     executed.cells=executed.cells[:original_count]
+    exercise_outputs=[]
+    for cell in executed.cells:
+        if 'exercise'in cell.metadata.get('tags',[]):
+            output=''.join(item.get('text','')for item in cell.outputs if item.output_type=='stream')
+            assert 'À compléter'in output and 'Contrôle réussi'not in output,'Un exercice vide ne doit pas annoncer une réussite'
+            exercise_outputs.append(output)
     executed.metadata.quiz.update(verifiedDevice='cpu',verifiedSeconds=round(elapsed,3),verifiedPython=platform.python_version())
     nbformat.validate(executed)
     nbformat.write(executed,path)
     notebook_hash=hashlib.sha256(json.dumps(json.loads(path.read_text('utf-8')),ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
-    record={'path':str(path.relative_to(ROOT)).replace('\\','/'),'sourceSha256':source_hash,'notebookSha256':notebook_hash,'elapsedSeconds':round(elapsed,3),'device':'cpu','codeCells':sum(cell.cell_type=='code' for cell in executed.cells),'exerciseSolutions':2,'solutionOutputs':solution_outputs}
+    record={'path':str(path.relative_to(ROOT)).replace('\\','/'),'sourceSha256':source_hash,'notebookSha256':notebook_hash,'elapsedSeconds':round(elapsed,3),'device':'cpu','codeCells':sum(cell.cell_type=='code' for cell in executed.cells),'exerciseSolutions':2,'solutionOutputs':solution_outputs,'exerciseDefaultOutputs':exercise_outputs,'programsVerified':len(programs),'exerciseCellsReady':2,'unfinishedExercisesReported':2}
     return record
 
 def main():
@@ -53,8 +72,12 @@ def main():
     if args.one:
         print(json.dumps(one(Path(args.one).resolve()),ensure_ascii=False));return
     os.environ['OMP_NUM_THREADS']='1';os.environ['MKL_NUM_THREADS']='1';os.environ['NUMBA_DISABLE_JIT']='1'
-    notebooks=sorted((ROOT/'public/notebooks').glob('*.ipynb'))
-    assert len(notebooks)==20,f'20 notebooks attendus, {len(notebooks)} trouvés'
+    course=json.loads((ROOT/'public/courses/pytorch.json').read_text(encoding='utf-8'))
+    paths=[chapter.get('notebook')for chapter in course['chapters']]
+    assert all(path==f'notebooks/{chapter["id"]}.ipynb'for path,chapter in zip(paths,course['chapters'])),'Tous les chapitres doivent posséder un notebook lié'
+    assert len(set(paths))==len(paths),'Un fichier distinct par chapitre'
+    notebooks=[ROOT/'public'/path for path in paths]
+    assert all(path.is_file()for path in notebooks),'Tous les notebooks liés sont présents'
     records=[]
     for path in notebooks:
         print('Exécution CPU : '+path.stem,flush=True)
@@ -64,7 +87,7 @@ def main():
         record=json.loads(result.stdout.strip().splitlines()[-1]);records.append(record)
         print(f"  terminé en {record['elapsedSeconds']} s",flush=True)
     from importlib.metadata import version
-    report={'python':platform.python_version(),'torch':version('torch'),'torchaudio':version('torchaudio'),'nbformat':version('nbformat'),'nbclient':version('nbclient'),'device':'cpu','limitSeconds':120,'notebooks':records}
+    report={'python':platform.python_version(),'torch':version('torch'),'torchaudio':version('torchaudio'),'nbformat':version('nbformat'),'nbclient':version('nbclient'),'device':'cpu','limitSeconds':120,'linkedChapters':len(paths),'notebooks':records}
     (ROOT/'scripts/verify/notebooks-results.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print(f'{len(records)} notebooks exécutés, solutions comprises.',flush=True)
 

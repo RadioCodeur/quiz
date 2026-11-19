@@ -16,7 +16,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--notebooks',action='store_true')
     args=parser.parse_args()
-    commands=[['pytorch-existing.py'],['pytorch-additions.py'],['b-attention-control.py'],['b-codecs-symbolic.py'],['b-diffusion-efficiency.py'],['existing-corpus.py','--strict']]
+    commands=[['audit-pytorch-core.py'],['audit-pytorch-advanced.py'],['audit-python-signal-ml.py'],['audit-generation-research-oral.py']]
     if args.notebooks:commands.append(['notebooks.py'])
     report={'python':platform.python_version(),'device':'cpu','commands':[],'notebooksReexecuted':args.notebooks}
     for command in commands:

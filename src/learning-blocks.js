@@ -8,10 +8,10 @@ export function renderLessonList(block) {
   return `<div class="lesson-list">${block.title?`<h3>${escape(block.title)}</h3>`:''}<ul>${block.items.map(item=>`<li>${escape(item)}</li>`).join('')}${links}</ul></div>`;
 }
 
-export function renderFirstExample(block) {
+export function renderFirstExample(block,base='./') {
   const isText=block.language==='text';
   const variant=block.variant?`<details class="first-example-variant"><summary>Changeons une seule chose</summary><p>${escape(block.variant.change)}</p><pre>${escape(block.variant.output)}</pre><p>${escape(block.variant.explanation)}</p></details>`:'';
-  return `<section class="first-example"><h3>${escape(block.title)}</h3><p class="first-example-intro">${escape(block.introduction)}</p><div class="first-example-input"><span>${isText?'La situation':block.language==='bash'?'La commande':'On écrit'}</span><pre><code>${escape(block.code)}</code></pre></div><div class="first-example-output"><span>${isText?'On obtient':'Résultat expliqué'}</span><pre>${escape(block.output)}</pre></div><p class="first-example-explanation">${escape(block.explanation)}</p>${variant}</section>`;
+  return `<section class="first-example"><h3>${escape(block.title)}</h3><p class="first-example-intro">${escape(block.introduction)}</p>${renderCodePreparation(block,base)}<div class="first-example-input"><span>${isText?'La situation':block.language==='bash'?'La commande':'On écrit'}</span><pre><code>${escape(block.code)}</code></pre></div><div class="first-example-output"><span>${isText?'On obtient':'Résultat expliqué'}</span><pre>${escape(block.output)}</pre></div><p class="first-example-explanation">${escape(block.explanation)}</p>${variant}</section>`;
 }
 
 export function renderVisual(block) {
@@ -62,23 +62,35 @@ export function renderPlot(block,serial) {
 function codeLines(block,step) {
   if(!block.code)return '';
   const active=new Set(step.lines??[]);
-  return block.code.split('\n').map((line,index)=>`<span class="walk-code-line ${active.has(index+1)?'is-active':''}" data-line="${index+1}"><span class="line-number" aria-hidden="true">${index+1}</span><span>${escape(line)||' '}</span></span>`).join('');
+  return block.code.split('\n').map((line,index)=>`<span class="walk-code-line ${active.has(index+1)?'is-active':''}" data-line="${index+1}"><span class="line-number" aria-hidden="true">${active.has(index+1)?'→ ':''}${index+1}</span><span>${escape(line)||' '}</span></span>`).join('');
 }
 
 function stepContent(step,index,total) {
-  return `<p class="walk-position">ÉTAPE ${index+1} / ${total}</p><h4>${escape(step.title)}</h4><p>${escape(step.text)}</p>${step.state?`<div class="walk-state"><span>Ce qu’on obtient à cette étape</span><pre>${escape(step.state)}</pre></div>`:''}`;
+  const details=step.details?.length?`<details class="line-details"><summary>Décomposer cette ligne</summary>${step.details.map(detail=>`<div>${detail.code?`<pre><code>${escape(detail.code)}</code></pre>`:''}<p>${escape(detail.explanation)}</p>${detail.state?`<pre>${escape(detail.state)}</pre>`:''}</div>`).join('')}</details>`:'';
+  return `<p class="walk-position">ÉTAPE ${index+1} / ${total}</p><h4>${escape(step.title)}</h4><p>${escape(step.text)}</p>${step.state?`<div class="walk-state"><span>Valeurs et formes à cette étape</span><pre>${escape(step.state)}</pre></div>`:''}${details}`;
 }
 
-export function renderWalkthrough(block,serial) {
+export function renderCodePreparation(block,base='./') {
+  const mode=block.codeMode==='excerpt'?'Extrait à lire':block.codeMode==='standalone'?'Programme autonome':'';
+  const required=block.requires?.length?`<ul>${block.requires.map(item=>`<li>${escape(item)}</li>`).join('')}</ul>`:'';
+  const resources=(block.resources??[]).map(resource=>{
+    if(!/^(?:media|notebooks)\/[a-zA-Z0-9_./-]+$/.test(resource.path)||resource.path.split('/').includes('..'))throw new Error('Ressource de code invalide');
+    return `<li><a href="${escape(base+resource.path)}" download>${escape(resource.label)} ↓</a></li>`;
+  }).join('');
+  return mode||required||resources?`<aside class="code-preparation">${mode?`<strong>${mode}</strong>`:''}${required}${resources?`<p>Fichiers nécessaires :</p><ul>${resources}</ul>`:''}</aside>`:'';
+}
+
+export function renderWalkthrough(block,serial,base='./') {
   const first=block.steps[0];
-  return `<section class="worked-example" data-walkthrough="${serial}"><header><p class="eyebrow">ON LE FAIT ENSEMBLE</p><h3>${escape(block.title)}</h3><p class="worked-goal">${escape(block.goal)}</p></header><div class="worked-layout ${block.code?'has-code':''}">${block.code?`<div class="walk-code"><div class="code-label">${escape(block.language??'python')} · LIGNES À SUIVRE</div><pre><code>${codeLines(block,first)}</code></pre><p class="walk-no-execution">Exemple expliqué à l’avance : aucun code n’est exécuté ici.</p></div>`:''}<div class="walk-explanation" aria-live="polite" aria-atomic="true">${stepContent(first,0,block.steps.length)}</div></div><nav class="walk-controls" aria-label="Étapes de ${escape(block.title)}"><button type="button" data-walk-prev disabled>← Étape précédente</button><button type="button" data-walk-next>Étape suivante →</button></nav><details class="all-walk-steps"><summary>Voir toutes les étapes à la suite</summary><ol>${block.steps.map(step=>`<li><h4>${escape(step.title)}</h4><p>${escape(step.text)}</p>${step.state?`<pre>${escape(step.state)}</pre>`:''}</li>`).join('')}</ol></details><p class="worked-result"><strong>Ce que cela nous apprend.</strong> ${escape(block.result)}</p></section>`;
+  return `<section class="worked-example" data-walkthrough="${serial}"><header><p class="eyebrow">ON LE FAIT ENSEMBLE</p><h3>${escape(block.title)}</h3><p class="worked-goal">${escape(block.goal)}</p></header>${renderCodePreparation(block,base)}<div class="worked-layout ${block.code?'has-code':''}">${block.code?`<div class="walk-code"><div class="code-label">${escape(block.language??'python')} · LIGNES À SUIVRE</div><pre tabindex="0" role="region" aria-label="Programme à parcourir"><code>${codeLines(block,first)}</code></pre><p class="walk-no-execution">Exemple expliqué à l’avance : aucun code n’est exécuté ici.</p></div>`:''}<div class="walk-explanation" aria-live="polite" aria-atomic="true">${stepContent(first,0,block.steps.length)}</div></div><nav class="walk-controls" aria-label="Étapes de ${escape(block.title)}"><button type="button" data-walk-prev disabled>← Étape précédente</button><button type="button" data-walk-next>Étape suivante →</button></nav><details class="all-walk-steps"><summary>Voir toutes les étapes à la suite</summary><ol>${block.steps.map((step,index)=>`<li>${stepContent(step,index,block.steps.length)}</li>`).join('')}</ol></details><p class="worked-result"><strong>Ce que cela nous apprend.</strong> ${escape(block.result)}</p></section>`;
 }
 
-export function attachWalkthroughs(root,blocks) {
+export function attachWalkthroughs(root,blocks,{state={},onChange=()=>{}}={}) {
   const walkthroughs=blocks.filter(block=>block.type==='walkthrough');
   root.querySelectorAll('[data-walkthrough]').forEach((section,index)=>{
     const block=walkthroughs[index];
-    let current=0;
+    const key=block.id??`walk-${index}`;
+    let current=Number.isInteger(state[key])?Math.max(0,Math.min(block.steps.length-1,state[key])):0;
     const previous=section.querySelector('[data-walk-prev]'),next=section.querySelector('[data-walk-next]');
     function update(delta){
       current=Math.max(0,Math.min(block.steps.length-1,current+delta));
@@ -86,25 +98,32 @@ export function attachWalkthroughs(root,blocks) {
       section.querySelector('.walk-explanation').innerHTML=stepContent(step,current,block.steps.length);
       if(block.code)section.querySelector('.walk-code code').innerHTML=codeLines(block,step);
       previous.disabled=current===0;next.disabled=current===block.steps.length-1;
-      section.dataset.step=String(current);
+      section.dataset.step=String(current);state[key]=current;onChange(key,current);
+      const viewport=section.querySelector('.walk-code pre'),line=section.querySelector('.walk-code-line.is-active');
+      if(viewport&&line){
+        const top=line.getBoundingClientRect().top-viewport.getBoundingClientRect().top+viewport.scrollTop;
+        if(top<viewport.scrollTop||top>viewport.scrollTop+viewport.clientHeight-35)viewport.scrollTop=Math.max(0,top-35);
+      }
     }
     previous.addEventListener('click',()=>update(-1));next.addEventListener('click',()=>update(1));
+    update(0);
   });
 }
 
-export function renderCheckpoint(checkpoint) {
-  return `<section class="lesson-checkpoint"><p class="eyebrow">FAIRE UN PETIT PAS SANS LE MODÈLE</p><h2>Est-ce que l’idée tient ?</h2><p class="checkpoint-intro">Essayez sur une situation un peu différente. Ce QCM est facultatif et ne compte pas dans votre session de quiz.</p><h3>${escape(checkpoint.prompt)}</h3><div class="checkpoint-options">${shuffle(checkpoint.options).map((option,index)=>`<button type="button" data-checkpoint-option="${escape(option.id)}"><span class="checkpoint-letter" aria-hidden="true">${String.fromCharCode(65+index)}</span><span>${escape(option.text)}</span></button>`).join('')}</div><div class="checkpoint-feedback" role="status" hidden></div><button type="button" class="checkpoint-reset" hidden>Réessayer ce repère</button></section>`;
+export function renderCheckpoint(checkpoint,order=[]) {
+  const ordered=order.length===checkpoint.options.length&&new Set(order).size===order.length&&order.every(id=>checkpoint.options.some(option=>option.id===id))?order.map(id=>checkpoint.options.find(option=>option.id===id)):shuffle(checkpoint.options);
+  return `<section class="lesson-checkpoint"><p class="eyebrow">ESSAYER SANS LE MODÈLE</p><h2>Que produit ce calcul ?</h2><p class="checkpoint-intro">Ce repère est facultatif et ne modifie pas votre score au quiz.</p><h3>${escape(checkpoint.prompt)}</h3><div class="checkpoint-options">${ordered.map((option,index)=>`<button type="button" data-checkpoint-option="${escape(option.id)}"><span class="checkpoint-letter" aria-hidden="true">${String.fromCharCode(65+index)}</span><span>${escape(option.text)}</span></button>`).join('')}</div><div class="checkpoint-feedback" role="status" hidden></div><button type="button" class="checkpoint-reset" hidden>Réessayer ce repère</button></section>`;
 }
 
-export function attachCheckpoint(root,checkpoint) {
+export function attachCheckpoint(root,checkpoint,{chosenId=null,onChange=()=>{}}={}) {
   const section=root.querySelector('.lesson-checkpoint');
   if(!section)return;
   const buttons=[...section.querySelectorAll('[data-checkpoint-option]')],feedback=section.querySelector('.checkpoint-feedback'),reset=section.querySelector('.checkpoint-reset');
   let locked=false;
-  for(const button of buttons)button.addEventListener('click',()=>{
+  function choose(chosen){
     if(locked)return;
+    if(!checkpoint.options.some(option=>option.id===chosen))return;
     locked=true;
-    const chosen=button.dataset.checkpointOption;
     for(const option of buttons){
       const id=option.dataset.checkpointOption;
       option.disabled=true;
@@ -112,12 +131,16 @@ export function attachCheckpoint(root,checkpoint) {
       else if(id===chosen){option.classList.add('is-wrong');option.insertAdjacentHTML('beforeend','<strong class="checkpoint-result-label">× Votre réponse</strong>');}
     }
     feedback.hidden=false;
-    feedback.innerHTML=`<strong>${chosen===checkpoint.correctOptionId?'✓ L’idée est là.':'↳ Regardons ce qui change.'}</strong><p>${escape(checkpoint.explanation)}</p>`;
+    const specific=checkpoint.optionFeedback?.[chosen]??checkpoint.options.find(option=>option.id===chosen)?.feedback;
+    feedback.innerHTML=`<strong>${chosen===checkpoint.correctOptionId?'✓ L’idée est là.':'↳ Regardons ce qui change.'}</strong>${specific?`<p class="specific-feedback">${escape(specific)}</p>`:''}<p>${escape(checkpoint.explanation)}</p>`;
     reset.hidden=false;
-  });
+    onChange(chosen);
+  }
+  for(const button of buttons)button.addEventListener('click',()=>choose(button.dataset.checkpointOption));
+  if(chosenId)choose(chosenId);
   reset.addEventListener('click',()=>{
     locked=false;
     for(const button of buttons){button.disabled=false;button.classList.remove('is-correct','is-wrong');button.querySelector('.checkpoint-result-label')?.remove();}
-    feedback.hidden=true;reset.hidden=true;buttons[0].focus();
+    feedback.hidden=true;reset.hidden=true;onChange(null);buttons[0].focus();
   });
 }

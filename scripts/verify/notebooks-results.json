@@ -6,346 +6,775 @@
   "nbclient": "0.11.0",
   "device": "cpu",
   "limitSeconds": 120,
+  "linkedChapters": 32,
   "notebooks": [
     {
-      "path": "public/notebooks/autograd-et-derivees.ipynb",
-      "sourceSha256": "462bc9fc4149f55b27905c9f8dd196c27ef956c09eca8d9f2d08d321a6fdc8b2",
-      "notebookSha256": "ac6fbf01ba1564da090f19e515f7ace4e28a028fabec1ec8a5a7a35d0ccee49a",
-      "elapsedSeconds": 6.249,
-      "device": "cpu",
-      "codeCells": 2,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "1.0 -4.0\n"
-        ],
-        [
-          "12.0\n"
-        ]
-      ]
-    },
-    {
-      "path": "public/notebooks/boucle-entrainement-complete.ipynb",
-      "sourceSha256": "64d9c1517d6c970d01f88875615332cf6f29327d7bc04d3d849668a59af8fcfa",
-      "notebookSha256": "c792cdfcc5d570004747b623c9a30d866be30e8205ea964b07b1c71c1f0bafa1",
-      "elapsedSeconds": 8.206,
-      "device": "cpu",
-      "codeCells": 3,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "formes du lot : (2, 3) (2,)\n"
-        ],
-        [
-          "perte moyenne par exemple : 0.32\n"
-        ]
-      ]
-    },
-    {
-      "path": "public/notebooks/choisir-la-perte.ipynb",
-      "sourceSha256": "10da02582ee6dd03e848cf49610c73ec8f0fb711f51f9e876947c904a1dea770",
-      "notebookSha256": "982ce303cfa18c8e45d45844ecfb023422e9e2edfd67ec45171dd3f7aaeab9dc",
-      "elapsedSeconds": 5.809,
-      "device": "cpu",
-      "codeCells": 2,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "0.31326165795326233\n"
-        ],
-        [
-          "0.6931471824645996\n"
-        ]
-      ]
-    },
-    {
-      "path": "public/notebooks/construire-un-module.ipynb",
-      "sourceSha256": "159afc809bc920ef440d423cde88aa846825b39766fe83a8022b899bc4481e7e",
-      "notebookSha256": "4d666b138b54f1424d16e83071feebf0fb01e15bbd1a52e27c8aa5dbc348fa20",
-      "elapsedSeconds": 5.915,
-      "device": "cpu",
-      "codeCells": 2,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "['reference', 'linear.weight']\n"
-        ],
-        [
-          "(4, 1)\n"
-        ]
-      ]
-    },
-    {
-      "path": "public/notebooks/conv-mel-autoencodeur.ipynb",
-      "sourceSha256": "9ce2b9428e85877007f2996b8a6de432b802e26ed9f96812fb21248b35f314d6",
-      "notebookSha256": "80a368785cdfe4a154d9fd2b46ee287f5de149c442a4fefa85f2e52f1ce626f6",
-      "elapsedSeconds": 8.153,
-      "device": "cpu",
-      "codeCells": 3,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "forme après convolution : (2, 4, 32, 48)\n"
-        ],
-        [
-          "MSE : 0.25\n"
-        ]
-      ]
-    },
-    {
-      "path": "public/notebooks/dataset-et-batches.ipynb",
-      "sourceSha256": "64bde30e7222343d3ddac099397a1b4c895b8ee24ee60fd40e971e7c22f46e6f",
-      "notebookSha256": "2f78d2a4950a822389e3435af85a53dcc1b455d5d741ac97a0e9b6248df40bf4",
-      "elapsedSeconds": 5.611,
-      "device": "cpu",
-      "codeCells": 2,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "2 (tensor([3., 4.]), 1)\n"
-        ],
-        [
-          "(2, 2, 1) [[True, True], [True, False]]\n"
-        ]
-      ]
-    },
-    {
-      "path": "public/notebooks/detacher-geler-journaliser.ipynb",
-      "sourceSha256": "cc5dd733878cd5d313bf562c411e183c6dc3eced368a80978518ff30c8b2b516",
-      "notebookSha256": "83cbaf6d879e276441ca366043d2af932878ead76adac49b9397a4a006aab17c",
-      "elapsedSeconds": 5.608,
-      "device": "cpu",
-      "codeCells": 2,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "1.0 float\n"
-        ],
-        [
-          "[True, True]\n"
-        ]
-      ]
-    },
-    {
-      "path": "public/notebooks/du-pipeline-au-modele.ipynb",
-      "sourceSha256": "cfd48704bfa3bf4dd29d2dcd9c2bd7acb79e13e1059c526ea0981da98ad9c7af",
-      "notebookSha256": "2477ca7cda1c7054ecb833c90f241d1e157fb8cbf7c2f7ccbeed7b0af06246f1",
-      "elapsedSeconds": 5.584,
-      "device": "cpu",
-      "codeCells": 2,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "[1, 0]\n"
-        ],
-        [
-          "2\n"
-        ]
-      ]
-    },
-    {
-      "path": "public/notebooks/entrainer-ou-evaluer.ipynb",
-      "sourceSha256": "737b52d5f58e48f627a1835e666f5f0d75ed80cb4bee18979bcc9b2b9a43a881",
-      "notebookSha256": "e6753ede11fac20544e0246027c583f6058da39677771afe6135290933e5b834",
-      "elapsedSeconds": 5.614,
-      "device": "cpu",
-      "codeCells": 2,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "[[2.0]] False\n"
-        ],
-        [
-          "True True\n"
-        ]
-      ]
-    },
-    {
-      "path": "public/notebooks/lire-erreurs-pytorch.ipynb",
-      "sourceSha256": "d71583270e75ed4a8bff7ebc5cc922c8a6b81b58d760f6fe7519dfbf982fbe8b",
-      "notebookSha256": "4c6d83fc8229bf4434efb86087c5d083248a14e32d1745306d60e07934d6c83d",
-      "elapsedSeconds": 7.718,
-      "device": "cpu",
-      "codeCells": 3,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "cibles : torch.int64 (2,)\n"
-        ],
-        [
-          "ordre après transposition : [0, 3, 1, 4, 2, 5]\n"
-        ]
-      ]
-    },
-    {
-      "path": "public/notebooks/moyennes-et-microbatches.ipynb",
-      "sourceSha256": "63610f4fedfdfe168eb746f4c7973713ed3ab8eb29322b6601203640caca155c",
-      "notebookSha256": "fdc574aad6fe859ac5f01169f2bbe30a60549022f42e0d291dc781df70eb9619",
-      "elapsedSeconds": 5.519,
-      "device": "cpu",
-      "codeCells": 2,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "2.0\n"
-        ],
-        [
-          "11.0\n"
-        ]
-      ]
-    },
-    {
-      "path": "public/notebooks/moyennes-masquees.ipynb",
-      "sourceSha256": "61b9407839ee2f16b53d668f3ca2c95d1d9a4ed14375051e3552ce2c6774ae16",
-      "notebookSha256": "7fbd9bf27773544b798b0873f6675071bf90ceab51aea64e39ec6aba398182e2",
-      "elapsedSeconds": 5.558,
-      "device": "cpu",
-      "codeCells": 2,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "[[2.0], [6.0]]\n"
-        ],
-        [
-          "14.0 3 4.666666507720947\n"
-        ]
-      ]
-    },
-    {
-      "path": "public/notebooks/optimiseurs-regularisation-pratique.ipynb",
-      "sourceSha256": "e98ce0f28bc99f0b1a4c0b4ab5eedb31d7f1b56ff6c36841f59460941a6df15f",
-      "notebookSha256": "ce7d084d92d205e55cf4d4c0c672d84e2318846c24fffa8124eb35087140a305",
-      "elapsedSeconds": 7.383,
-      "device": "cpu",
-      "codeCells": 3,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "poids après SGD : 0.800000011920929\n"
-        ],
-        [
-          "arrêt à l’époque : 4\n"
-        ]
-      ]
-    },
-    {
-      "path": "public/notebooks/organiser-les-axes.ipynb",
-      "sourceSha256": "1a2fe569566d83d84bb52efe01a1750fe85db7accfd5cdbd3105206df2163534",
-      "notebookSha256": "a6772f6055f2cda00e83c291b242fdf629715a2c3e55468894ff38fdd6aaa54d",
-      "elapsedSeconds": 5.515,
-      "device": "cpu",
-      "codeCells": 2,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "(2, 1, 64, 5)\n"
-        ],
-        [
-          "[[0, 3], [1, 4], [2, 5]]\n"
-        ]
-      ]
-    },
-    {
       "path": "public/notebooks/pytorch-en-une-page.ipynb",
-      "sourceSha256": "fbd566f19f92448f2d45918384ca2b2e8895d01eedacbd93980424301a07531e",
-      "notebookSha256": "ad54adf14f82fb4e7078ba0d567d4c277ec9f80a888214169a608f4ad3887980",
-      "elapsedSeconds": 5.63,
+      "sourceSha256": "19f7cdf98f30d6796663f7b9d1b330f40f23b4e21d93d924dfbd0a9a0165888c",
+      "notebookSha256": "83d94bda62b8a1931e6e8411e28ed2a6a9bc96b39ad8aa66052a96c44c56adc9",
+      "elapsedSeconds": 7.27,
       "device": "cpu",
-      "codeCells": 3,
+      "codeCells": 9,
       "exerciseSolutions": 2,
       "solutionOutputs": [
         [
-          "gradient : 36.0\n"
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
         ],
         [
-          "poids avant et après : 2.0 1.600000023841858\n"
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
         ]
-      ]
-    },
-    {
-      "path": "public/notebooks/retropropagation-a-la-main.ipynb",
-      "sourceSha256": "4dbfccb35869b5719a2964b702032444e495ddeaa401856db82494d09be89cb1",
-      "notebookSha256": "4e6509e7dcdd62cec953cee33b6b657580b330276a4da67f8c567db0c98ffde9",
-      "elapsedSeconds": 5.615,
-      "device": "cpu",
-      "codeCells": 3,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "gradients manuels : 24.0 -72.0\n"
-        ],
-        [
-          "gradients pour la cible -2 : 16.0 -48.0\n"
-        ]
-      ]
-    },
-    {
-      "path": "public/notebooks/sauvegarder-et-reprendre.ipynb",
-      "sourceSha256": "599be466396761fa4a0195c2da53ed38df9e71580b169c6eb72bfb355e27e2a8",
-      "notebookSha256": "b5473d56ed7c68b9923bb2ae6a20741de9da27df483cc2a5039e2709e2f734c9",
-      "elapsedSeconds": 8.048,
-      "device": "cpu",
-      "codeCells": 2,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "True\n"
-        ],
-        [
-          "2 1\n"
-        ]
-      ]
-    },
-    {
-      "path": "public/notebooks/selection-diffusion-reduction.ipynb",
-      "sourceSha256": "439a869f0b2e01426e2a2aaa38c5156ee5172ff288dcc53983a89bc40e9a5824",
-      "notebookSha256": "d51056435856034f7c53901cc2d37fedf83aeebba56913ad28a7cc13ab34ab31",
-      "elapsedSeconds": 5.869,
-      "device": "cpu",
-      "codeCells": 2,
-      "exerciseSolutions": 2,
-      "solutionOutputs": [
-        [
-          "[[2.0, 5.0]] [[-1.0, -2.0], [1.0, 2.0]]\n"
-        ],
-        [
-          "[[0.20000000298023224, 0.800000011920929], [0.4000000059604645, 0.6000000238418579]] [1, 1]\n"
-        ]
-      ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
     },
     {
       "path": "public/notebooks/tenseur-forme-type-device.ipynb",
-      "sourceSha256": "d5f361fccda4b84381ebdd4e76cc515807b070ca62c3e02cc20ffe3e1c2c5191",
-      "notebookSha256": "90938aac22af8891fa12e1a61fd89c03941526ca12ab2bbe6916948488e32b30",
-      "elapsedSeconds": 5.981,
+      "sourceSha256": "e2f92df3e35af75f515e0e97f9174251f15234524e8ad6ea7c2e57a017ae5110",
+      "notebookSha256": "d8d49a55a48e08d7377e248e8cd39e3dbf6e0f6e216374c24ec458b8b5080eac",
+      "elapsedSeconds": 6.824,
       "device": "cpu",
-      "codeCells": 2,
+      "codeCells": 16,
       "exerciseSolutions": 2,
       "solutionOutputs": [
         [
-          "(4, 3) torch.float32\n"
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
         ],
         [
-          "torch.int64 cpu\n"
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
         ]
-      ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/du-pipeline-au-modele.ipynb",
+      "sourceSha256": "40420cd79ebfebc7fda6c76e45bb70115376e8b2ffcb874b93cc6e22defda8b9",
+      "notebookSha256": "8fd0cec15fdc980e30b48eb10f339f08f507dec415b59950e6a5ef9251d8dd8a",
+      "elapsedSeconds": 6.386,
+      "device": "cpu",
+      "codeCells": 18,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/construire-un-module.ipynb",
+      "sourceSha256": "23f6cfe510c45a23bc18ed4d15621431f8b83c118662028f6eb4aa836465e9c1",
+      "notebookSha256": "a98654c760093dfa9524a7b2bb3b8f5be5d95dbc2c6f5f93d7a6b3725deb71fe",
+      "elapsedSeconds": 6.476,
+      "device": "cpu",
+      "codeCells": 20,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 2,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/choisir-la-perte.ipynb",
+      "sourceSha256": "60e8ec842fc99ae625679cfabc4bcff4581f0582a26dfe573a156cbb22b053db",
+      "notebookSha256": "d94a00ff28fa8471c78f14219f408d2fdd57077cc84ffc33501c9eaa5ffdeef3",
+      "elapsedSeconds": 6.339,
+      "device": "cpu",
+      "codeCells": 20,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/autograd-et-derivees.ipynb",
+      "sourceSha256": "5aad9ee818d53d998929201218d71a00d27202f2dd96786e0b1120fb15fd342c",
+      "notebookSha256": "43d03bf89ac8cc952c69b7f5acf4b9db2c8ed93f67df475fc26ce3f8107adb3f",
+      "elapsedSeconds": 6.353,
+      "device": "cpu",
+      "codeCells": 22,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/retropropagation-a-la-main.ipynb",
+      "sourceSha256": "4acbeedd647456e647de2213cb6c4985588503fe9def382883feae622fb87dee",
+      "notebookSha256": "dcf7fd677c6be222d345df53beb7060edbe60c766c091dd459d5c8fde78688af",
+      "elapsedSeconds": 6.602,
+      "device": "cpu",
+      "codeCells": 18,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
     },
     {
       "path": "public/notebooks/une-iteration-entrainement.ipynb",
-      "sourceSha256": "1e2f4a165d55e06f82114187e057356cddf617620a6f24a8dcded3276abb8baa",
-      "notebookSha256": "a218d2088f165e011fd14ca97e3b0252bc7438adcf10a3326d48ffb3400b0db6",
-      "elapsedSeconds": 8.36,
+      "sourceSha256": "069ae0235d4c9cd9f457ecc6f1b6ff9531fbd295feb530398df53be392296463",
+      "notebookSha256": "5ce83bb72073c56c3555df9116fa5070a2301a891c9c9bffc2e09c7f1faff71b",
+      "elapsedSeconds": 11.872,
       "device": "cpu",
-      "codeCells": 2,
+      "codeCells": 24,
       "exerciseSolutions": 2,
       "solutionOutputs": [
         [
-          "1.7000000476837158\n"
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
         ],
         [
-          "1.2799999713897705\n"
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
         ]
-      ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/premiere-boucle-minimale.ipynb",
+      "sourceSha256": "4529ef5d87f073a502a65a37931883b8e184aea7d44cb042e4d73c8d313be14c",
+      "notebookSha256": "8d16511cddb425ad1ae809200ba93f49fcd75c45af1ecd68cbd2afca3d854b87",
+      "elapsedSeconds": 6.69,
+      "device": "cpu",
+      "codeCells": 16,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/entrainer-ou-evaluer.ipynb",
+      "sourceSha256": "e33d01bd19282d0a3825a6fa314f5d91b4dbb88ffafff8a1accecae168bf291f",
+      "notebookSha256": "ee61d197003559962af4dc904711a4d03770530e4104dd589b724d414130b8b0",
+      "elapsedSeconds": 6.36,
+      "device": "cpu",
+      "codeCells": 14,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/dataset-et-batches.ipynb",
+      "sourceSha256": "068c530a0d38bdd601a43cca483b105c360db13f99391fa3ff1de5e42a9de076",
+      "notebookSha256": "2c060b1b29929ad3fc3910a032eb715bea3b0f8519607f9acf1fc0055a8b55b0",
+      "elapsedSeconds": 6.711,
+      "device": "cpu",
+      "codeCells": 22,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/selection-diffusion-reduction.ipynb",
+      "sourceSha256": "aed8b00c588de7ca581a1190e64934b97228c938ae00f592de8f049910bb19b4",
+      "notebookSha256": "2ba734c3f32e30f34ce43c2ff7605cdd20a38a0a6786b916d5793cce4a000465",
+      "elapsedSeconds": 6.359,
+      "device": "cpu",
+      "codeCells": 18,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/broadcasting-pas-a-pas.ipynb",
+      "sourceSha256": "06c03816938af48b05ad4f237eb6556caac68e3e84ec6886b000a5e37f89d2b6",
+      "notebookSha256": "ebd427a807da92bae8452d8689cf0d3736cfb088036764e201c4469b41008428",
+      "elapsedSeconds": 6.417,
+      "device": "cpu",
+      "codeCells": 13,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/filtrer-et-preserver-les-cibles.ipynb",
+      "sourceSha256": "68c8d8fb59b126ef066db89dd1ebd37689ea13d2662a5488b97350d22e8bf9ef",
+      "notebookSha256": "05f3742a3de66471a568aa4ce820b442c42cc25cc177a836391bd396c856c234",
+      "elapsedSeconds": 6.28,
+      "device": "cpu",
+      "codeCells": 17,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/organiser-les-axes.ipynb",
+      "sourceSha256": "89c742d3af6301991ec7f72858e21e024d9daec31d8a4d8a68f973f11db17a03",
+      "notebookSha256": "ce268fd595cacaff086f3755719abd5ec33b039853d33e298cd2959b9de85e24",
+      "elapsedSeconds": 6.383,
+      "device": "cpu",
+      "codeCells": 16,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/ajouter-retirer-un-axe.ipynb",
+      "sourceSha256": "aaa7ef79341386304d89436378282e31054030f43df07488ebf25200597379a3",
+      "notebookSha256": "f96f8abd04fb4db92a88903f35847b44d343b584bafbed694b6d97284fec4604",
+      "elapsedSeconds": 6.182,
+      "device": "cpu",
+      "codeCells": 16,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/concatener-ou-empiler.ipynb",
+      "sourceSha256": "dfb6913e3d7687323f8057b6720fd77e3592d08e1d2ca4fd8e73eba8978eff92",
+      "notebookSha256": "6b72ceb0984aa14e6e5631d922dc12cf0a2a6e50de4e95eb3f89572c4ad70dec",
+      "elapsedSeconds": 6.387,
+      "device": "cpu",
+      "codeCells": 13,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/padding-et-collate.ipynb",
+      "sourceSha256": "53c6b0453d9a832defc1337d146b04b5efbc901fed9fbf25b2ffbfd76cd61d29",
+      "notebookSha256": "e622352832bb9b8451961c50ef8ee4514ddb58539dec626396d64b07d6d81754",
+      "elapsedSeconds": 6.33,
+      "device": "cpu",
+      "codeCells": 15,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/moyennes-masquees.ipynb",
+      "sourceSha256": "192138ac06404d993eb4409732dc9b0ee2f163754304fec33c5f582351cd6a43",
+      "notebookSha256": "47af5ad0307c44c3d0af2de9f0a3baffa74192b04f0d710ca36d6e8fdbe9e42e",
+      "elapsedSeconds": 6.45,
+      "device": "cpu",
+      "codeCells": 25,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/optimiseurs-regularisation-pratique.ipynb",
+      "sourceSha256": "610cdebaab7a003889154cc298196120eab37ba9c0c91bae2c7d8650497b5189",
+      "notebookSha256": "e44c08af17aeb3232785af31b7954fa5945ae34b1b7c0b97be124c01182304d8",
+      "elapsedSeconds": 10.53,
+      "device": "cpu",
+      "codeCells": 18,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 2,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/sauvegarder-et-reprendre.ipynb",
+      "sourceSha256": "9aa97547184bf1812b0df74ab4cbae0e061986d4cdec89dbb5a6b47aa91e4885",
+      "notebookSha256": "b5564014bb30ef55799f2748dab35d96b6dcf7f058ba830be7fb2c2df6a6793c",
+      "elapsedSeconds": 11.81,
+      "device": "cpu",
+      "codeCells": 36,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 2,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/detacher-geler-journaliser.ipynb",
+      "sourceSha256": "816bec3d256ed96327a6927924b6f539a13f4231913a51c7e7e77c07104fef5a",
+      "notebookSha256": "f01b52b8984fbfa5c62d51d76f8f203dd4ba3aeb1cc641a27cf040ac88f25d8b",
+      "elapsedSeconds": 7.534,
+      "device": "cpu",
+      "codeCells": 32,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 2,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/convolution-a-la-main.ipynb",
+      "sourceSha256": "b896d90fe5951992c228d3477deac4584bf7e598a0a7626a57368fe5248f0472",
+      "notebookSha256": "4ba76213f7db43339ad49387b678b89e02a2ebcaea86f761aa3efd19ab9949c9",
+      "elapsedSeconds": 6.588,
+      "device": "cpu",
+      "codeCells": 21,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/preparer-mel-pour-conv.ipynb",
+      "sourceSha256": "759d94d9d910307f2d2ddf605ec6eeec422417673d168c8530b2ad8995a2ef49",
+      "notebookSha256": "7c171b6eee7da04f2b079645c1594df3fe34850d6c145751b7a6276875be4aa2",
+      "elapsedSeconds": 6.587,
+      "device": "cpu",
+      "codeCells": 27,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/conv-mel-autoencodeur.ipynb",
+      "sourceSha256": "77a8e59b19c47b4890a6d59b0e15fe31d25f1148a41819673c2cac563462d2f0",
+      "notebookSha256": "62eacd2cfd962a96c3306907f226d00137f1567a2e7eb1a73b85126e6f50b9c0",
+      "elapsedSeconds": 10.666,
+      "device": "cpu",
+      "codeCells": 35,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/boucle-entrainement-complete.ipynb",
+      "sourceSha256": "c8820ba86ac825544601b31dbf40e756ab4d22372805aa78e807243084e7f9de",
+      "notebookSha256": "5a446b506086392c80c9ae5c80c6b8e104ffd63b5d38640f1eda789fe0dd625e",
+      "elapsedSeconds": 9.718,
+      "device": "cpu",
+      "codeCells": 35,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 2,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/pertes-multi-etiquettes.ipynb",
+      "sourceSha256": "a66e2a33fde4dcfe9a0d0775c8009903727f96823c6416ce282a5d3b87289de9",
+      "notebookSha256": "91579f71a151e414fc9998adc2daf27f1464116e76b15a39f2f3bc15a2132d41",
+      "elapsedSeconds": 6.609,
+      "device": "cpu",
+      "codeCells": 11,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/modules-et-buffers.ipynb",
+      "sourceSha256": "498d2edb0b5478f69b9dc68d6a34a6641e83680a5b2a19977cd9749d66f0deba",
+      "notebookSha256": "df61cee2840abb3c49e0463042f83dfdc15a241e135921ccb0f1558bfb8b4951",
+      "elapsedSeconds": 6.388,
+      "device": "cpu",
+      "codeCells": 12,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/moyennes-et-microbatches.ipynb",
+      "sourceSha256": "303108130e30699097fcfb67c6c6478cf12ff1b47172a4134fe7b9230e818dcf",
+      "notebookSha256": "a8fd86aac4a8d12e984bfbd9dc18ef98153e46e0b91fd5fd64dc84701ea4d47c",
+      "elapsedSeconds": 10.783,
+      "device": "cpu",
+      "codeCells": 35,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 2,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/scheduler-et-arret-anticipe.ipynb",
+      "sourceSha256": "3b133d51f1d2affea2150d5dcf1c4cb23c3d3c4161dff4621a1b6c34a507084c",
+      "notebookSha256": "fad7a26417f283db57a28a0ae1b7a18f101b5a21a33d9a145651539c437b2e65",
+      "elapsedSeconds": 8.862,
+      "device": "cpu",
+      "codeCells": 13,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/cuda-amp-memoire.ipynb",
+      "sourceSha256": "ba260d24318bc6b4c1f7aaa3cb787445214deb7cda1e7484c62e134a1e91d5fc",
+      "notebookSha256": "f2e5a602fe50c361f636b764888f0835a05dbe7f30cd04b7f6270e533ca68f0b",
+      "elapsedSeconds": 10.214,
+      "device": "cpu",
+      "codeCells": 24,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
+    },
+    {
+      "path": "public/notebooks/lire-erreurs-pytorch.ipynb",
+      "sourceSha256": "926b26d9c1b3b1f81f1c12319c9e1658a83ba8585d1be7e94f525b56743da450",
+      "notebookSha256": "0a9f75b71b62c26c3a2426cae9d374e9ff8ee31c2f23f8ee8c74430c9e7b9301",
+      "elapsedSeconds": 7.252,
+      "device": "cpu",
+      "codeCells": 23,
+      "exerciseSolutions": 2,
+      "solutionOutputs": [
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ],
+        [
+          "Contrôle réussi pour la réponse fournie. Expliquez maintenant pourquoi.\n"
+        ]
+      ],
+      "exerciseDefaultOutputs": [
+        "À compléter : cet exercice n’est pas encore réalisé.\n",
+        "À compléter : cet exercice n’est pas encore réalisé.\n"
+      ],
+      "programsVerified": 1,
+      "exerciseCellsReady": 2,
+      "unfinishedExercisesReported": 2
     }
   ]
 }

@@ -19,7 +19,7 @@
   "chapters": [
     {
       "id": "representation-et-reconstruction",
-      "title": "Garder le caractère d’une frappe avant d’en inventer une autre",
+      "title": "Autoencodeur : représenter puis reconstruire un son",
       "summary": "Écouter la reconstruction pour savoir ce que notre représentation conserve déjà.",
       "questionIds": [
         "gen-001",
@@ -30,7 +30,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "La percussionniste fait écouter une caisse claire : un début très bref, puis une résonance. Elle veut des variantes de ce caractère, pas seulement un bruit de même volume. Avant d’entraîner quoi que ce soit à inventer, faisons un aller-retour sur cet enregistrement. Si la reconstruction émousse déjà le début, le problème existe avant la génération."
+          "text": "Notre question est précise : la représentation conserve-t-elle l’attaque et la résonance d’une caisse claire ? Nous comparons d’abord le même enregistrement à sa reconstruction. Nous discuterons ensuite seulement la production de nouvelles variantes."
         },
         {
           "type": "paragraph",
@@ -39,6 +39,10 @@
         {
           "type": "paragraph",
           "text": "Quand cette description est interne à un réseau, nous parlons de représentation latente (latent representation). Un autoencodeur (autoencoder) apprend encodeur et décodeur ensemble pour reconstruire les exemples."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour reconstruire, l’entrée est un son connu et la cible est ce même son. Pour générer, un autre modèle doit proposer une description nouvelle. Le décodeur transforme cette description en onde ; il ne choisit pas seul quelles variantes inventer."
         },
         {
           "type": "visual",
@@ -125,7 +129,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : « Je teste d’abord la reconstruction avec les vrais codes. Cela permet de distinguer une limite du codec d’une erreur ajoutée par le générateur. »"
+          "text": "Pour diagnostiquer une attaque émoussée, gardons le décodeur et l’extrait fixes. Comparons original, vrais codes et codes proposés : chaque trajet ajoute une difficulté identifiable."
         }
       ],
       "takeaways": [
@@ -185,11 +189,12 @@
         "input": "Des enregistrements de percussion dont les attaques font l’identité.",
         "action": "Comparer l’original et sa reconstruction avec le même taux et le même niveau d’écoute.",
         "output": "Un point de contrôle qui sépare les défauts du codec de ceux du futur générateur."
-      }
+      },
+      "level": "discuss"
     },
     {
       "id": "quantification-et-tokens",
-      "title": "Donner un vocabulaire à notre générateur",
+      "title": "Quantification : passer d’une valeur à un indice de code",
       "summary": "Passer d’une description continue à des indices, sans confondre cadence et vocabulaire.",
       "questionIds": [
         "gen-014",
@@ -202,18 +207,51 @@
           "text": "Notre représentation contient des nombres réels. Pour utiliser une prédiction parmi un ensemble fini de choix, donnons au modèle un dictionnaire partagé avec le décodeur. Chaque entrée représente un motif local dans l’espace des descriptions. Le modèle prédira le numéro d’une entrée plutôt que ses composantes une à une. Voyons le choix le plus proche sur trois valeurs avant de revenir aux vecteurs du codec."
         },
         {
+          "type": "paragraph",
+          "text": "Les trois références et la valeur 2,6 sont choisies à la main. Chaque ligne du tableau compare cette même valeur à une entrée. Nous transmettrons une position dans le dictionnaire, pas la distance."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Comparer les candidats avant de choisir",
+          "columns": [
+            "Indice",
+            "Référence",
+            "Distance à 2,6"
+          ],
+          "rows": [
+            [
+              "0",
+              "0,0",
+              "2,6"
+            ],
+            [
+              "1",
+              "2,0",
+              "0,6"
+            ],
+            [
+              "2",
+              "4,0",
+              "1,4"
+            ]
+          ],
+          "caption": "Le minimum vaut 0,6, à l’indice 1. Le dictionnaire ne change pas quand nous choisissons son entrée."
+        },
+        {
           "type": "first-example",
           "title": "Transmettre la position du nombre le plus proche",
           "introduction": "Le destinataire connaît le même dictionnaire. Un seul indice lui indique quelle valeur utiliser.",
-          "code": "dictionary = [0.0, 2.0, 4.0]\nvalue = 2.6\nindex = min(range(len(dictionary)), key=lambda i: abs(value - dictionary[i]))\nprint(index, dictionary[index])",
+          "code": "dictionary = [0.0, 2.0, 4.0]\nvalue = 2.6\ndistances = [abs(value - reference) for reference in dictionary]\nindex = distances.index(min(distances))\nprint(index, dictionary[index])",
           "language": "python",
           "output": "1 2.0",
-          "explanation": "2,0 est à une distance de 0,6 ; 4,0 est à une distance de 1,4. L’indice 1 est choisi et 2,0 est reconstruit.",
+          "explanation": "La compréhension construit [2.6, 0.6, 1.4]. min donne la plus petite distance ; index retrouve sa position. dictionary[index] lit la référence 2,0.",
           "variant": {
             "change": "Remplacer seulement value = 2.6 par value = 3.6.",
             "output": "2 4.0",
             "explanation": "4,0 devient la référence la plus proche, à distance 0,4. L’indice transmis change, mais le dictionnaire reste identique."
-          }
+          },
+          "codeMode": "standalone"
         },
         {
           "type": "paragraph",
@@ -305,7 +343,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : « Un jeton audio est un indice de dictionnaire, pas forcément une note. Je distingue durée, cadence, flux et vocabulaire avant de compter les décisions du générateur. »"
+          "text": "Essayons maintenant 3,6 en gardant le dictionnaire. Le choix devient l’indice 2 ; changer la valeur à décrire ne réentraîne pas les références."
         }
       ],
       "takeaways": [
@@ -367,11 +405,18 @@
         "input": "Une représentation qui permet de reconstruire les prises de percussion.",
         "action": "Remplacer ses vecteurs par des entrées de dictionnaires et compter les indices produits.",
         "output": "Des suites de codes dont la taille et les unités sont connues."
-      }
+      },
+      "level": "discuss",
+      "prerequisites": [
+        {
+          "themeId": "generation-controle",
+          "chapterId": "representation-et-reconstruction"
+        }
+      ]
     },
     {
       "id": "codecs-neuronaux-rvq",
-      "title": "Transporter un son par corrections successives : les codecs neuronaux",
+      "title": "Codec neuronal et RVQ : corriger le résidu par étages",
       "summary": "La quantification résiduelle décrit progressivement un son, puis un décodeur le reconstruit.",
       "context": {
         "recall": "Nous savons qu'un encodeur transforme une onde en description interne, appelée latent (latent representation).",
@@ -444,6 +489,44 @@
           "text": "Version simplifiée : isolons une seule coordonnée latente, valant 0,9. Le premier dictionnaire propose −1, 0 et 1 : nous choisissons 1. Il reste 0,9 − 1 = −0,1. Le second propose −0,25, 0 et 0,25 : nous choisissons 0. Pour −0,8, les choix sont −1 puis 0,25, donnant −0,75. Ce sont des coordonnées latentes, pas deux échantillons d'une percussion."
         },
         {
+          "type": "visual",
+          "kind": "table",
+          "title": "Axes et distances du premier étage",
+          "columns": [
+            "Objet",
+            "Forme",
+            "Valeurs ou rôle"
+          ],
+          "rows": [
+            [
+              "z",
+              "(2, 1)",
+              "Deux descriptions ; une coordonnée par description"
+            ],
+            [
+              "residual[:, None, :]",
+              "(2, 1, 1)",
+              "Un axe candidat encore de taille 1"
+            ],
+            [
+              "book[None, :, :]",
+              "(1, 3, 1)",
+              "Trois candidats, réutilisés pour chaque description"
+            ],
+            [
+              "distances",
+              "(2, 3)",
+              "[3,61 ; 0,81 ; 0,01] puis [0,04 ; 0,64 ; 3,24]"
+            ],
+            [
+              "indices",
+              "(2,)",
+              "[2 ; 0] : un choix par description"
+            ]
+          ],
+          "caption": "Les lignes gardent les descriptions ; les colonnes deviennent les candidats. Aucun de ces deux axes ne représente le temps du son."
+        },
+        {
           "type": "walkthrough",
           "title": "Voir chaque étage corriger le résidu",
           "goal": "Retrouver les choix manuels et mesurer l'erreur finale, sans entraîner de codec.",
@@ -451,55 +534,101 @@
           "code": "import torch\ntorch.set_num_threads(1)\n\n# Deux coordonnées latentes : ce ne sont pas des échantillons audio.\nz = torch.tensor([[0.9], [-0.8]])\ncodebooks = [torch.tensor([[-1.0], [0.0], [1.0]]),\n             torch.tensor([[-0.25], [0.0], [0.25]])]\nresidual = z.clone()\nreconstruction = torch.zeros_like(z)\ncodes = []\nfor stage, book in enumerate(codebooks, start=1):\n    # Chaque ligne compare un résidu à toutes les entrées du dictionnaire.\n    distances = (residual[:, None, :] - book[None, :, :]).square().sum(-1)\n    indices = distances.argmin(dim=1)\n    quantized = book[indices]\n    reconstruction += quantized\n    residual -= quantized\n    codes.append(indices)\n    print(f\"étage {stage} : indices {indices.tolist()}\")\n    print(\"  résidu :\", [round(v, 2) for v in residual.flatten().tolist()])\nmse = (z - reconstruction).square().mean()\nprint(\"reconstruction :\", [round(v, 2) for v in reconstruction.flatten().tolist()])\nprint(f\"erreur quadratique moyenne : {mse.item():.6f}\")\n",
           "steps": [
             {
-              "title": "Déclarer les valeurs disponibles",
-              "text": "Chaque ligne de z représente une coordonnée à quantifier. Les dictionnaires sont fixés à la main. Aucun encodeur ni décodeur appris n'est entraîné ici.",
-              "state": "Entrées : [0,9 ; −0,8]. Deux dictionnaires indépendants.",
+              "title": "Déclarer deux descriptions et les dictionnaires",
+              "text": "Chaque ligne de z est une coordonnée latente choisie à la main. Les trois lignes de chaque dictionnaire sont les candidats disponibles.",
               "lines": [
-                4,
                 5,
                 6,
-                7,
+                7
+              ],
+              "state": "z : (2, 1). Dictionnaire : (3, 1)."
+            },
+            {
+              "title": "Préparer des états indépendants",
+              "text": "clone crée une copie pour le résidu. Modifier ce résidu ne doit pas changer z. La reconstruction commence à zéro.",
+              "lines": [
                 8,
                 9,
                 10
-              ]
+              ],
+              "state": "résidu = [[0,9], [−0,8]] ; reconstruction = [[0], [0]]."
             },
             {
-              "title": "Comparer les candidats",
-              "text": "La soustraction compare chaque résidu à chaque entrée. Nous additionnons les écarts au carré sur les coordonnées. argmin choisit l'indice de la plus petite distance.",
-              "state": "Premier étage : indices [2, 0], donc vecteurs [1 ; −1].",
+              "title": "Aligner descriptions et candidats",
+              "text": "None ajoute seulement un axe de taille un. La diffusion compare chaque description aux trois candidats, sans les apparier ligne par ligne.",
               "lines": [
                 11,
-                12,
-                13,
-                14,
-                15
+                13
+              ],
+              "state": "écarts : (2, 3, 1).",
+              "details": [
+                {
+                  "code": "residual[:, None, :]",
+                  "explanation": "Les deux-points gardent toutes les lignes et coordonnées. None insère l’axe des candidats entre elles.",
+                  "state": "(2, 1) → (2, 1, 1)"
+                }
               ]
             },
             {
-              "title": "Corriger ce qui manque",
-              "text": "Nous ajoutons les vecteurs choisis à la reconstruction. Nous les retirons du résidu. Le dictionnaire suivant reçoit ce nouveau résidu, pas les valeurs initiales.",
-              "state": "Résidu après le premier étage : [−0,1 ; 0,2].\nDeuxième étage : indices [1, 2].",
+              "title": "Réduire les coordonnées",
+              "text": "square met chaque écart au carré ; sum(-1) somme les coordonnées du vecteur. Il reste une distance par description et candidat.",
+              "lines": [
+                13
+              ],
+              "state": "distances : [[3,61, 0,81, 0,01], [0,04, 0,64, 3,24]]."
+            },
+            {
+              "title": "Lire une position, puis son vecteur",
+              "text": "argmin(dim=1) cherche le meilleur candidat dans chaque ligne. book[indices] récupère les vecteurs correspondants.",
+              "lines": [
+                14,
+                15
+              ],
+              "state": "indices [2, 0] → vecteurs [[1], [−1]].",
+              "details": [
+                {
+                  "code": "book[indices]",
+                  "explanation": "Chaque indice choisit une ligne du dictionnaire. Nous n’additionnons jamais un numéro de ligne à la reconstruction.",
+                  "state": "book[2] = [1] ; book[0] = [−1]"
+                }
+              ]
+            },
+            {
+              "title": "Mettre à jour les deux états",
+              "text": "+= ajoute la correction à la reconstruction. -= la retire du résidu : le deuxième étage reçoit donc ce qui manque encore.",
               "lines": [
                 16,
                 17,
-                18,
-                19,
-                20
-              ]
+                18
+              ],
+              "state": "résidu après l’étage 1 : [[−0,1], [0,2]]."
             },
             {
-              "title": "Lire le résultat exécuté",
-              "text": "La reconstruction additionne les deux corrections. L'erreur quadratique moyenne (mean squared error) vaut la moyenne des résidus finaux au carré. Elle mesure ici des coordonnées latentes.",
-              "state": "étage 1 : indices [2, 0]\n  résidu : [-0.1, 0.2]\nétage 2 : indices [1, 2]\n  résidu : [-0.1, -0.05]\nreconstruction : [1.0, -0.75]\nerreur quadratique moyenne : 0.006250\n",
+              "title": "Recommencer avec le deuxième dictionnaire",
+              "text": "Pour −0,1, le candidat 0 est le plus proche. Pour 0,2, c’est 0,25. Nous ajoutons ces deux corrections, pas les indices eux-mêmes.",
+              "lines": [
+                11,
+                13,
+                14,
+                15,
+                16,
+                17
+              ],
+              "state": "reconstruction [[1], [−0,75]] ; résidu [[−0,1], [−0,05]]."
+            },
+            {
+              "title": "Mesurer les coordonnées reconstruites",
+              "text": "La moyenne des deux erreurs au carré vaut (0,01 + 0,0025)/2. Cette erreur décrit le latent miniature, pas une qualité perceptive.",
               "lines": [
                 21,
                 22,
                 23
-              ]
+              ],
+              "state": "MSE = 0,006250 ; z est inchangé."
             }
           ],
-          "result": "Nous obtenons [1 ; −0,75], avec un résidu [−0,1 ; −0,05]. L'erreur moyenne affichée vaut 0,006250. Ce calcul ne mesure aucune qualité audio."
+          "result": "Les deux étages rapprochent les descriptions de leurs reconstructions. Le second ne répète pas la première quantification : il travaille sur son résidu.",
+          "codeMode": "standalone"
         },
         {
           "type": "paragraph",
@@ -550,7 +679,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : un codec apprend à reconstruire le son depuis une représentation compacte. Avec la RVQ, chaque dictionnaire corrige le résidu précédent ; un générateur peut ensuite apprendre à proposer ces codes."
+          "text": "Si le deuxième étage quantifiait encore z, nous compterions deux approximations du même objet. Vérifions le résidu transmis avant d’augmenter le nombre de dictionnaires."
         }
       ],
       "takeaways": [
@@ -586,18 +715,25 @@
         "rev-b-codec-encodec",
         "rev-b-codec-dac",
         "rev-b-codec-rave"
+      ],
+      "level": "discuss",
+      "prerequisites": [
+        {
+          "themeId": "generation-controle",
+          "chapterId": "quantification-et-tokens"
+        }
       ]
     },
     {
       "id": "symbolique-midi-et-audio",
-      "title": "Écrire les gestes ou produire le son : symbolique, audio, ou les deux ?",
+      "title": "MIDI et audio : choisir ce que nous voulons modifier",
       "summary": "Le choix de représentation détermine ce que nous pouvons modifier et ce que le modèle doit apprendre.",
       "context": {
-        "recall": "Nous savons générer une suite de codes. Ces codes peuvent aussi représenter des gestes musicaux.",
+        "recall": "Nous savons décrire un son par des indices de codes. Des indices peuvent aussi désigner des événements musicaux.",
         "problem": "La compositrice veut changer les notes sans perdre le contrôle du résultat sonore.",
         "why": "Choisir les événements ou l'audio sépare les contraintes d'écriture et les contraintes de timbre.",
-        "connection": "Nous appliquons la prédiction du prochain jeton à une petite séquence musicale lisible.",
-        "next": "Cette distinction prépare un contrôle associant texte, référence audio et notes."
+        "connection": "Nous lisons d’abord une suite d’événements ; le prochain chapitre expliquera comment prédire sa continuation.",
+        "next": "L’autorégression apprendra à prédire le prochain élément d’une suite, qu’il décrive un geste ou un code audio."
       },
       "progression": {
         "input": "Deux notes décrites par leurs débuts, fins et intensités de jeu.",
@@ -666,6 +802,49 @@
           "text": "Le découpage en jetons (tokenization) transforme les événements en indices de vocabulaire. Ici, SHIFT avance l'horloge et VELOCITY règle les prochaines attaques. NOTE_ON et NOTE_OFF portent le numéro de note. Ces conventions sont inspirées de MIDI ; elles ne constituent pas un encodeur de fichier MIDI standard."
         },
         {
+          "type": "visual",
+          "kind": "table",
+          "title": "Suivre l’horloge des événements",
+          "columns": [
+            "Événement",
+            "Graduations cumulées",
+            "Effet"
+          ],
+          "rows": [
+            [
+              "VELOCITY 80",
+              "0",
+              "Règle l’attaque suivante"
+            ],
+            [
+              "NOTE_ON 60",
+              "0",
+              "Ouvre la note 60"
+            ],
+            [
+              "SHIFT 240",
+              "240",
+              "Avance à 0,25 s"
+            ],
+            [
+              "NOTE_OFF 60",
+              "240",
+              "Ferme la note 60 : durée 0,25 s"
+            ],
+            [
+              "NOTE_ON 64, après VELOCITY 100",
+              "240",
+              "Ouvre la note 64 à 0,25 s"
+            ],
+            [
+              "SHIFT 480 puis NOTE_OFF 64",
+              "720",
+              "Ferme à 0,75 s : durée 0,50 s"
+            ]
+          ],
+          "caption": "Le temps avance uniquement avec SHIFT. Changer la vélocité ne change pas la date de l’événement."
+        },
+        {
           "type": "walkthrough",
           "title": "Passer des jetons aux notes jouables",
           "goal": "Retrouver les deux durées et voir quelles informations restent à fournir pour obtenir un son.",
@@ -686,6 +865,13 @@
                 10,
                 11,
                 12
+              ],
+              "details": [
+                {
+                  "code": "vocabulary.index(event)",
+                  "explanation": "Cette liste est notre convention, choisie à la main. index renvoie la première position du couple événement-valeur.",
+                  "state": "(\"VELOCITY\", 80) → indice 6 ; (\"NOTE_ON\", 60) → indice 0"
+                }
               ]
             },
             {
@@ -717,6 +903,13 @@
                 27,
                 28,
                 29
+              ],
+              "details": [
+                {
+                  "code": "active.pop(value)",
+                  "explanation": "Le dictionnaire garde le début et la vélocité d’une note ouverte. pop les récupère et supprime cette note des notes encore actives.",
+                  "state": "NOTE_OFF 60 récupère (0, 80), puis 60 disparaît de active."
+                }
               ]
             },
             {
@@ -731,10 +924,18 @@
                 34,
                 35,
                 36
+              ],
+              "details": [
+                {
+                  "code": "tokens.numel()",
+                  "explanation": "Le nombre d’éléments vaut huit. Nous comptons des commandes, pas des échantillons de pression.",
+                  "state": "8 jetons ; une durée de 0,75 s."
+                }
               ]
             }
           ],
-          "result": "La chronologie des notes est reconstruite. Ces comptes décrivent des représentations différentes, sans mesurer leurs coûts. Aucun rendu sonore n'est calculé."
+          "result": "La chronologie des notes est reconstruite. Ces comptes décrivent des représentations différentes, sans mesurer leurs coûts. Aucun rendu sonore n'est calculé.",
+          "codeMode": "standalone"
         },
         {
           "type": "paragraph",
@@ -806,7 +1007,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : je choisis le symbolique pour éditer les gestes musicaux, et l'audio pour travailler le son lui-même. Je peux combiner les deux, en séparant génération des notes et rendu sonore."
+          "text": "Remplacer seulement la note 64 par 67 changerait la hauteur commandée, pas l’horloge des SHIFT. Changer l’instrument de rendu agirait encore sur un autre objet : le timbre."
         }
       ],
       "takeaways": [
@@ -842,11 +1043,18 @@
         "rev-b-codec-midi",
         "rev-b-codec-musictransformer",
         "rev-b-codec-musictransformer-demo"
+      ],
+      "level": "discuss",
+      "prerequisites": [
+        {
+          "themeId": "generation-controle",
+          "chapterId": "quantification-et-tokens"
+        }
       ]
     },
     {
       "id": "autoregression-et-causalite",
-      "title": "Continuer une percussion sans regarder la réponse",
+      "title": "Autorégression : décaler les cibles et respecter le passé",
       "summary": "Construire les cibles suivantes et vérifier l’information réellement disponible.",
       "questionIds": [
         "gen-003",
@@ -908,7 +1116,14 @@
               "lines": [
                 2
               ],
-              "state": "inputs : (1, 3)."
+              "state": "inputs : (1, 3).",
+              "details": [
+                {
+                  "code": "tokens[:, :-1]",
+                  "explanation": "Le premier deux-points conserve toutes les séquences. :-1 conserve leurs positions sauf la dernière. La nouvelle variable lit la même suite, sans la modifier.",
+                  "state": "[[0,4,7,9]] → [[0,4,7]], forme (1,3)"
+                }
+              ]
             },
             {
               "title": "Préparer les réponses",
@@ -916,7 +1131,14 @@
               "lines": [
                 3
               ],
-              "state": "targets : (1, 3)."
+              "state": "targets : (1, 3).",
+              "details": [
+                {
+                  "code": "tokens[:, 1:]",
+                  "explanation": "Nous gardons les mêmes lignes, mais commençons une position plus loin. La première entrée 0 est ainsi associée à la cible 4.",
+                  "state": "[[4,7,9]], forme (1,3)"
+                }
+              ]
             },
             {
               "title": "limiter le regard",
@@ -924,10 +1146,25 @@
               "lines": [
                 4,
                 5
-              ]
+              ],
+              "state": "Un logit par candidat : forme (1,3,10) dans l’annexe. Les poids y sont aléatoires ; seule la causalité est vérifiée."
             }
           ],
-          "result": "Le modèle apprend une cible suivante à partir du préfixe autorisé."
+          "result": "Le modèle apprend une cible suivante à partir du préfixe autorisé.",
+          "codeMode": "excerpt",
+          "requires": [
+            "torch est importé.",
+            "model accepte des indices de forme (B,T), applique un masque causal et renvoie des logits (B,T,V). L’annexe construit une miniature non entraînée avec V=10."
+          ]
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "codeMode": "standalone",
+          "disclosure": true,
+          "caption": "Programme autonome : une miniature causale non entraînée. Les sorties imprimées décrivent les données et les formes, pas une performance de génération.",
+          "code": "import torch\ntorch.manual_seed(0)\nclass MiniCausalModel(torch.nn.Module):\n    \"\"\"Small randomly initialized causal model, not a trained audio generator.\"\"\"\n    def __init__(self):\n        super().__init__()\n        self.embedding = torch.nn.Embedding(10, 4)\n        self.layer = torch.nn.TransformerEncoderLayer(\n            d_model=4, nhead=2, dim_feedforward=8, dropout=0., batch_first=True)\n        self.head = torch.nn.Linear(4, 10)\n    def forward(self, tokens):\n        length = tokens.shape[1]\n        causal = torch.ones(length, length, dtype=torch.bool).triu(diagonal=1)\n        return self.head(self.layer(self.embedding(tokens), src_mask=causal))\nmodel = MiniCausalModel()\ntokens = torch.tensor([[0, 4, 7, 9]])\ninputs = tokens[:, :-1]\ntargets = tokens[:, 1:]\n# Le modèle applique un masque causal.\nlogits = model(inputs)\nprint(\"entrées\", inputs.tolist(), list(inputs.shape))\nprint(\"cibles\", targets.tolist(), list(targets.shape))\nprint(\"logits\", list(logits.shape))",
+          "title": "Exécuter la miniature complète"
         },
         {
           "type": "paragraph",
@@ -949,7 +1186,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : « J’apprends à prédire chaque événement depuis son passé autorisé. Je vérifie ensemble le décalage des cibles et le masque, puis j’écoute les continuations produites. »"
+          "text": "Avant une génération, testons le contrat : modifier une entrée future doit laisser les logits antérieurs inchangés. Un programme qui tourne ne prouve pas cette propriété."
         }
       ],
       "takeaways": [
@@ -1009,11 +1246,18 @@
         "input": "Des prises transformées en suites de codes audio.",
         "action": "Décaler les cibles et interdire l’accès aux codes futurs pendant l’apprentissage.",
         "output": "Un contrat de prédiction identique à celui d’une continuation réelle."
-      }
+      },
+      "level": "discuss",
+      "prerequisites": [
+        {
+          "themeId": "generation-controle",
+          "chapterId": "quantification-et-tokens"
+        }
+      ]
     },
     {
       "id": "echantillonnage-contexte-et-cout",
-      "title": "Obtenir plusieurs variantes sans perdre le motif",
+      "title": "Température, contexte et coût de l’attention",
       "summary": "Séparer le hasard du tirage, la mémoire du contexte et leur coût.",
       "questionIds": [
         "gen-013",
@@ -1059,13 +1303,13 @@
           "title": "Transformer deux logits en probabilités",
           "goal": "Calculer l’effet de la température avant de juger le son.",
           "language": "python",
-          "code": "logits = torch.tensor([0.0, 2.0])\np1 = torch.softmax(logits / 1.0, dim=-1)\np2 = torch.softmax(logits / 0.5, dim=-1)",
+          "code": "import torch\nlogits = torch.tensor([0.0, 2.0])\np1 = torch.softmax(logits / 1.0, dim=-1)\np2 = torch.softmax(logits / 0.5, dim=-1)\nprint(p1.tolist())\nprint(p2.tolist())",
           "steps": [
             {
               "title": "distinguer score et probabilité",
               "text": "Les logits 0 et 2 sont des scores relatifs. Le softmax les exponentie puis divise chaque résultat par leur somme.",
               "lines": [
-                1
+                2
               ],
               "state": "Les probabilités totaliseront 1."
             },
@@ -1073,15 +1317,22 @@
               "title": "Calculer à température 1",
               "text": "Le deuxième token reçoit exp(2)/(1+exp(2)), soit environ 0,881. Le premier conserve environ 0,119.",
               "lines": [
-                2
+                3
               ],
-              "state": "[0,119 ; 0,881]."
+              "state": "[0,119 ; 0,881].",
+              "details": [
+                {
+                  "code": "dim=-1",
+                  "explanation": "Le tenseur n’a qu’un axe de deux candidats. -1 désigne ce dernier axe ; la normalisation porte donc sur ces deux scores.",
+                  "state": "Forme conservée : (2,). logits ne change pas."
+                }
+              ]
             },
             {
               "title": "Réduire la température",
               "text": "À température 0,5, les scores deviennent [0,4]. Le deuxième token atteint environ 0,982 : l’ordre reste identique, mais les alternatives sont moins fréquentes.",
               "lines": [
-                3
+                4
               ],
               "state": "[0,018 ; 0,982]."
             },
@@ -1089,12 +1340,13 @@
               "title": "revenir à l’intention",
               "text": "Écoute plusieurs tirages avec les mêmes conditions. Cette concentration n’ajoute aucune mémoire du motif entendu une minute auparavant.",
               "lines": [
-                2,
-                3
+                3,
+                4
               ]
             }
           ],
-          "result": "La température change la concentration, sans garantir une meilleure cohérence."
+          "result": "La température change la concentration, sans garantir une meilleure cohérence.",
+          "codeMode": "standalone"
         },
         {
           "type": "paragraph",
@@ -1180,7 +1432,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : « La température change le tirage ; le contexte change l’information disponible. Je les compare séparément, car réduire le hasard ne restaure pas un motif devenu inaccessible. »"
+          "text": "Pour tester la diversité, changeons la température à contexte fixe. Pour tester la mémoire, changeons le contexte à température fixe : les deux expériences répondent à des questions différentes."
         }
       ],
       "takeaways": [
@@ -1246,11 +1498,18 @@
         "input": "Un modèle qui attribue des scores aux codes suivants de notre boucle.",
         "action": "Choisir la concentration des tirages et examiner ce que l’attention peut consulter.",
         "output": "Des réglages de diversité et de contexte que l’on peut comparer séparément."
-      }
+      },
+      "level": "discuss",
+      "prerequisites": [
+        {
+          "themeId": "generation-controle",
+          "chapterId": "autoregression-et-causalite"
+        }
+      ]
     },
     {
       "id": "conditions-et-intention-musicale",
-      "title": "Demander un accent à trois secondes",
+      "title": "Conditionnement : aligner une commande musicale",
       "summary": "Transformer une intention précise en information alignée et vérifiable.",
       "questionIds": [
         "gen-005",
@@ -1292,6 +1551,34 @@
             }
           ],
           "caption": "Une condition précise reste utilisée par un modèle appris ; elle ne garantit pas sa fidélité absolue."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Le même accent avant et après un recadrage",
+          "columns": [
+            "Repère",
+            "Calcul",
+            "Position"
+          ],
+          "rows": [
+            [
+              "Origine initiale",
+              "3 s × 50 trames/s",
+              "150"
+            ],
+            [
+              "Début supprimé",
+              "1 s × 50 trames/s",
+              "50 positions"
+            ],
+            [
+              "Après recadrage",
+              "150 − 50",
+              "100, soit 2 s après la nouvelle origine"
+            ]
+          ],
+          "caption": "Le son et sa commande doivent subir le même changement d’origine. Les unités permettent de vérifier ce déplacement."
         },
         {
           "type": "walkthrough",
@@ -1337,7 +1624,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : « Je traduis chaque intention en information exploitable et en critère de vérification. Un accent demandé à trois secondes exige un alignement local, pas seulement un tempo moyen correct. »"
+          "text": "Si la sortie respecte le tempo moyen mais manque l’accent, relisons la commande locale. Le calendrier des événements ne se déduit pas d’une seule moyenne."
         }
       ],
       "takeaways": [
@@ -1401,11 +1688,18 @@
         "input": "Des variantes plausibles dont le rythme reste partiellement libre.",
         "action": "Décrire la texture globale et les événements locaux avec des conditions adaptées.",
         "output": "Un contrat de commande qui distingue ce qui est demandé et ce qui sera mesuré."
-      }
+      },
+      "level": "discuss",
+      "prerequisites": [
+        {
+          "themeId": "generation-controle",
+          "chapterId": "echantillonnage-contexte-et-cout"
+        }
+      ]
     },
     {
       "id": "controle-multimodal-formes",
-      "title": "Choisir comment les commandes entrent dans le modèle",
+      "title": "Texte, audio et MIDI : suivre les formes des conditions",
       "summary": "Texte, son de référence et notes n’apportent pas la même précision de contrôle.",
       "context": {
         "recall": "Nous avons distingué une texture globale et des événements alignés dans le temps.",
@@ -1539,6 +1833,13 @@
                 13,
                 14,
                 15
+              ],
+              "details": [
+                {
+                  "code": "nn.Linear(3, 4)(evenements)",
+                  "explanation": "La première parenthèse crée une projection de trois caractéristiques vers quatre. La seconde applique cet objet aux deux événements. Les poids sont aléatoires ici.",
+                  "state": "(1,2,3) → (1,2,4), sans modifier evenements."
+                }
               ]
             },
             {
@@ -1549,6 +1850,13 @@
                 17,
                 19,
                 20
+              ],
+              "details": [
+                {
+                  "code": "torch.cat((texte, reference, midi), dim=1)",
+                  "explanation": "L’axe 1 compte les positions. Nous ajoutons 2+3+2 positions ; leur largeur commune reste 4.",
+                  "state": "(1,7,4), pas (1,2,12)."
+                }
               ]
             },
             {
@@ -1572,6 +1880,13 @@
                 30,
                 31,
                 32
+              ],
+              "details": [
+                {
+                  "code": "grille[0, indices, 0] = 1.",
+                  "explanation": "0 choisit notre unique extrait ; indices vaut [0,3] ; la dernière coordonnée 0 désigne le début de note. Cette affectation modifie grille.",
+                  "state": "Débuts : [1,0,0,1] ; vélocités : [0.8,0,0,0.6]."
+                }
               ]
             },
             {
@@ -1584,10 +1899,18 @@
                 37,
                 38,
                 39
+              ],
+              "details": [
+                {
+                  "code": "gamma.unsqueeze(1)",
+                  "explanation": "Le résumé a la forme (1,4). Nous insérons un axe temporel de taille 1 pour appliquer les mêmes quatre coefficients aux quatre positions audio.",
+                  "state": "gamma et beta : (1,1,4) ; résultat : (1,4,4)."
+                }
               ]
             }
           ],
-          "result": "Chaque branche conserve une sortie audio (1, 4, 4), mais transmet les commandes différemment. Le choix dépend de la précision temporelle et du type d’information attendus."
+          "result": "Chaque branche conserve une sortie audio (1, 4, 4), mais transmet les commandes différemment. Le choix dépend de la précision temporelle et du type d’information attendus.",
+          "codeMode": "standalone"
         },
         {
           "type": "paragraph",
@@ -1607,7 +1930,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : je choisis le conditionnement selon l’information musicale à transmettre et sa précision temporelle. L’attention croisée consulte une mémoire, la concaténation réunit des tableaux et FiLM module les caractéristiques."
+          "text": "Nous pouvons maintenant prédire quel axe change avant de lancer une branche. Deux sorties de même forme ne prouvent toutefois ni le même contrôle ni la même qualité musicale."
         }
       ],
       "takeaways": [
@@ -1645,11 +1968,18 @@
         "rev-b-attn-film",
         "rev-b-attn-midi",
         "rev-b-attn-multihead"
+      ],
+      "level": "advanced",
+      "prerequisites": [
+        {
+          "themeId": "generation-controle",
+          "chapterId": "conditions-et-intention-musicale"
+        }
       ]
     },
     {
       "id": "vae-et-echantillonnage",
-      "title": "Une autre piste : varier autour d’une représentation continue",
+      "title": "VAE : calculer un latent par reparamétrisation",
       "summary": "Comprendre ce qu’un VAE tire au hasard, avant de parler de son objectif.",
       "questionIds": [
         "gen-002",
@@ -1673,7 +2003,8 @@
             "change": "Remplacer seulement variance = 4.0 par variance = 9.0.",
             "output": "0.5",
             "explanation": "L’écart-type devient 3. Avec le même bruit et le même centre, le code vaut 2 + 3 × (−0,5) = 0,5 : la dispersion seule a changé."
-          }
+          },
+          "codeMode": "standalone"
         },
         {
           "type": "paragraph",
@@ -1704,6 +2035,39 @@
           "caption": "Le prior ne décrit pas un morceau précis ; la distribution encodée dépend de l’observation."
         },
         {
+          "type": "visual",
+          "kind": "table",
+          "title": "Valeurs utilisées dans les quatre lignes",
+          "columns": [
+            "Objet",
+            "Valeur",
+            "Sens"
+          ],
+          "rows": [
+            [
+              "mu",
+              "[[2]]",
+              "Centre d’une distribution, une entrée et une coordonnée"
+            ],
+            [
+              "logvar",
+              "[[ln(4)]]",
+              "Logarithme d’une variance choisie égale à 4"
+            ],
+            [
+              "eps",
+              "[[-0,5]]",
+              "Valeur de bruit fixée à la main"
+            ],
+            [
+              "decoder",
+              "Identity dans l’annexe",
+              "Retourne le latent pour inspecter le calcul, sans produire un son"
+            ]
+          ],
+          "caption": "Ce tableau complète l’extrait avant sa lecture. Un vrai encodeur fournirait mu et logvar depuis les données."
+        },
+        {
           "type": "walkthrough",
           "title": "Fabriquer un latent gaussien",
           "goal": "Suivre le code d’une frappe jusqu’au décodeur et comprendre comment son encodeur reçoit un gradient.",
@@ -1732,7 +2096,14 @@
               "lines": [
                 2
               ],
-              "state": "std = 2."
+              "state": "std = 2.",
+              "details": [
+                {
+                  "code": "torch.exp(0.5 * logvar)",
+                  "explanation": "exp est appliquée à chaque case. Puisque logvar=ln(variance), exp(logvar/2) donne la racine de la variance.",
+                  "state": "exp(ln(4)/2)=2 ; forme (1,1)."
+                }
+              ]
             },
             {
               "title": "calculer et décoder",
@@ -1741,10 +2112,31 @@
                 3,
                 4
               ],
-              "state": "Le code illustratif vaut 1 ; sa moyenne reste 2."
+              "state": "Le code illustratif vaut 1 ; sa moyenne reste 2.",
+              "details": [
+                {
+                  "code": "z = mu + std * eps",
+                  "explanation": "Nous créons z ; les tenseurs mu, std et eps ne sont pas remplacés. Le décodeur reçoit cette nouvelle valeur, pas la moyenne seule.",
+                  "state": "z=[[1]] ; mu=[[2]] reste inchangé."
+                }
+              ]
             }
           ],
-          "result": "Ce bruit fixé sépare visiblement le bruit des paramètres appris. Pour de vrais tirages, randn_like(mu) fournit un bruit normal standard."
+          "result": "Ce bruit fixé sépare visiblement le bruit des paramètres appris. Pour de vrais tirages, randn_like(mu) fournit un bruit normal standard.",
+          "codeMode": "excerpt",
+          "requires": [
+            "torch est importé ; mu et logvar ont la même forme (B,D). Pour le calcul manuel : mu=[[2]], logvar=ln([[4]]).",
+            "decoder transforme z en reconstruction. Dans l’annexe, Identity renvoie z tel quel : aucun son n’est synthétisé."
+          ]
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "codeMode": "standalone",
+          "disclosure": true,
+          "caption": "Programme autonome : moyenne 2, variance 4 et décodeur Identity. Il expose le calcul latent ; il ne reconstruit pas un son réel.",
+          "code": "import torch\nmu = torch.tensor([[2.]])\nlogvar = torch.log(torch.tensor([[4.]]))\ndecoder = torch.nn.Identity()\neps = torch.full_like(mu, -0.5)  # Bruit fixé pour la miniature ; randn_like pour un vrai tirage.\nstd = torch.exp(0.5 * logvar)\nz = mu + std * eps\nx_hat = decoder(z)\nprint(\"mu\", mu.tolist(), \"std\", std.tolist(), \"eps\", eps.tolist())\nprint(\"z\", z.tolist(), \"reconstruction identité\", x_hat.tolist())",
+          "title": "Exécuter la miniature complète"
         },
         {
           "type": "paragraph",
@@ -1762,7 +2154,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : « Le VAE encode une distribution, puis sépare ses paramètres du bruit pour laisser passer les gradients. Je distingue le code de reconstruction du code tiré dans le prior pour créer. »"
+          "text": "Gardons le bruit −0,5 et passons la variance de 4 à 9 : le latent devient 0,5. Ce changement mesure la dispersion, sans déplacer le centre 2."
         }
       ],
       "takeaways": [
@@ -1825,11 +2217,18 @@
         "input": "Un besoin de variantes de timbre, au-delà de la continuation de codes.",
         "action": "Décrire une distribution de représentations et séparer ses paramètres du bruit tiré.",
         "output": "La distinction entre reconstruire une prise et créer depuis un prior."
-      }
+      },
+      "level": "discuss",
+      "prerequisites": [
+        {
+          "themeId": "generation-controle",
+          "chapterId": "representation-et-reconstruction"
+        }
+      ]
     },
     {
       "id": "kl-et-latent-inutilise",
-      "title": "Vérifier que le latent sert encore à varier la frappe",
+      "title": "KL : lire les axes et vérifier l’utilisation du latent",
       "summary": "Lire la KL, ses axes et le compromis entre organisation et reconstruction.",
       "questionIds": [
         "gen-029",
@@ -1877,6 +2276,44 @@
           "text": "Face à une normale standard, chaque dimension gaussienne contribue 0,5 × (mu² + variance − 1 − logvariance). Le tableau kl_dim a les axes (B,D). Pour obtenir une KL moyenne par exemple, nous sommons D puis moyennons B. Quatre contributions de 0,5 donnent alors 2 par exemple. Moyenner toutes les cases donnerait 0,5. Cette opération de regroupement est une réduction (reduction)."
         },
         {
+          "type": "visual",
+          "kind": "table",
+          "title": "Une réduction lisible avant beta",
+          "columns": [
+            "Objet",
+            "Valeurs",
+            "Forme"
+          ],
+          "rows": [
+            [
+              "mu",
+              "Deux lignes [1,1,1,1]",
+              "(2,4)"
+            ],
+            [
+              "logvar",
+              "Deux lignes [0,0,0,0]",
+              "(2,4)"
+            ],
+            [
+              "kl_dim",
+              "Deux lignes [0,5 ; 0,5 ; 0,5 ; 0,5]",
+              "(2,4)"
+            ],
+            [
+              "kl_per_example",
+              "[2 ; 2]",
+              "(2,)"
+            ],
+            [
+              "kl",
+              "2",
+              "Scalaire"
+            ]
+          ],
+          "caption": "Les valeurs sont choisies pour lire les axes. Les coordonnées latentes et les exemples n’ont pas le même rôle dans la réduction."
+        },
+        {
           "type": "walkthrough",
           "title": "Ne pas perdre un facteur D dans la loss",
           "goal": "Vérifier la grandeur numérique avant de modifier beta.",
@@ -1897,7 +2334,14 @@
               "lines": [
                 2
               ],
-              "state": "[2, 2]."
+              "state": "[2, 2].",
+              "details": [
+                {
+                  "code": "kl_dim.sum(dim=1)",
+                  "explanation": "L’axe 1 contient les quatre coordonnées d’un même exemple. La somme retire cet axe, mais conserve les deux exemples.",
+                  "state": "[0.5+0.5+0.5+0.5, 0.5+0.5+0.5+0.5] = [2,2]."
+                }
+              ]
             },
             {
               "title": "calculer la moyenne",
@@ -1912,10 +2356,31 @@
               "text": "Garder beta identique après un changement de réduction change la pression relative sur le latent. La reconstruction doit aussi avoir une unité annoncée.",
               "lines": [
                 4
+              ],
+              "details": [
+                {
+                  "code": "reconstruction_loss + beta * kl",
+                  "explanation": "L’annexe fixe reconstruction_loss=0,25 et beta=0,1 pour voir la contribution. Ce n’est pas une recommandation universelle de beta.",
+                  "state": "0,25 + 0,1 × 2 = 0,45."
+                }
               ]
             }
           ],
-          "result": "Avant de régler beta pour nos frappes, nous savons quelle quantité chaque coefficient multiplie."
+          "result": "Avant de régler beta pour nos frappes, nous savons quelle quantité chaque coefficient multiplie.",
+          "codeMode": "excerpt",
+          "requires": [
+            "torch est importé ; mu et logvar ont la forme (2,4). Le calcul prend mu=1 et logvar=0 dans chaque case.",
+            "reconstruction_loss=0.25 et beta=0.1 sont des scalaires pédagogiques."
+          ]
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "codeMode": "standalone",
+          "disclosure": true,
+          "caption": "Programme autonome : deux exemples et quatre coordonnées identiques. Les valeurs sont fixées pour isoler les deux réductions.",
+          "code": "import torch\nmu = torch.ones((2, 4))\nlogvar = torch.zeros((2, 4))\nreconstruction_loss = torch.tensor(.25)\nbeta = .1\nkl_dim = -0.5 * (1 + logvar - mu.square() - logvar.exp())\nkl_per_example = kl_dim.sum(dim=1)\nkl = kl_per_example.mean()\nloss = reconstruction_loss + beta * kl\nprint(\"par dimension\", kl_dim.tolist())\nprint(\"par exemple\", kl_per_example.tolist())\nprint(\"KL\", kl.item(), \"perte\", loss.item())",
+          "title": "Exécuter la miniature complète"
         },
         {
           "type": "callout",
@@ -1935,7 +2400,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : « Je lis la KL avec ses axes et son poids dans la perte. Puis je vérifie que le latent modifie vraiment les sons, au-delà d’un score de reconstruction. »"
+          "text": "Avant de changer beta, gardons la définition de chaque réduction. Comparons ensuite les sons reconstruits et l’effet d’un échange des latents, pas seulement la valeur totale."
         }
       ],
       "takeaways": [
@@ -1995,11 +2460,18 @@
         "input": "Un VAE qui reconstruit depuis q(z|x) et doit créer depuis p(z).",
         "action": "Examiner la pénalité KL, sa réduction et l’utilisation effective du latent.",
         "output": "Un objectif chiffré interprétable et un diagnostic de latent ignoré."
-      }
+      },
+      "level": "discuss",
+      "prerequisites": [
+        {
+          "themeId": "generation-controle",
+          "chapterId": "vae-et-echantillonnage"
+        }
+      ]
     },
     {
       "id": "diffusion-et-bruit",
-      "title": "Apprendre à retrouver une frappe à travers le bruit",
+      "title": "Diffusion DDPM : fabriquer l’entrée et la cible de bruit",
       "summary": "Construire une cible de débruitage connue et comprendre ce qu’elle apprend.",
       "questionIds": [
         "gen-004",
@@ -2057,25 +2529,53 @@
               "lines": [
                 2
               ],
-              "state": "xt = 0,2."
+              "state": "xt = 0,2.",
+              "details": [
+                {
+                  "code": "alpha_bar.sqrt() * x0",
+                  "explanation": "sqrt agit sur le coefficient, pas sur le son. Le premier terme vaut 0,8 ; le second vaut −0,6. Leur somme crée xt.",
+                  "state": "xt=[0.2] ; x0=[1] n’est pas modifié."
+                }
+              ]
             },
             {
               "title": "Fournir le niveau",
               "text": "Le réseau reçoit t, car une même observation peut venir de mélanges différents. Ce niveau n’est pas l’instant musical du son.",
               "lines": [
                 3
+              ],
+              "details": [
+                {
+                  "code": "model(xt, t)",
+                  "explanation": "Le contrat prévoit une réponse de même forme que xt. L’annexe choisit une fonction qui répond −0,8 : elle illustre une prédiction, pas un modèle appris.",
+                  "state": "Entrée [0.2], niveau [1] → réponse pédagogique [−0.8]."
+                }
               ]
             },
             {
               "title": "mesurer l’erreur",
-              "text": "S’il prédit −0,8, l’erreur quadratique vaut (−0,8 − (−1))² = 0,04. La cible est eps ; une autre paramétrisation demanderait d’autres conversions.",
+              "text": "Nous soustrayons la cible −1 à la prédiction −0,8. L’écart 0,2 est mis au carré ; avec une seule case, sa moyenne reste 0,04.",
               "lines": [
                 4
               ],
               "state": "Erreur de cette composante : 0,04."
             }
           ],
-          "result": "La corruption fournit une cible connue avant toute génération complète. Le bruit est fixé ici pour reproduire la miniature ; un vrai entraînement renouvelle les tirages."
+          "result": "La corruption fournit une cible connue avant toute génération complète. Le bruit est fixé ici pour reproduire la miniature ; un vrai entraînement renouvelle les tirages.",
+          "codeMode": "excerpt",
+          "requires": [
+            "torch est importé ; x0=[1], alpha_bar=0.64 et t=[1] sont fixés pour la miniature.",
+            "model(xt,t) renvoie une prédiction de même forme que xt. L’annexe renvoie −0.8 pour isoler le calcul de perte, sans réseau entraîné."
+          ]
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "codeMode": "standalone",
+          "disclosure": true,
+          "caption": "Programme autonome : le prédicteur répond toujours −0,8. Cette fonction permet de tester une perte, sans apprentissage ni échantillonneur audio.",
+          "code": "import torch\nx0 = torch.tensor([1.])\nalpha_bar = torch.tensor(.64)\nt = torch.tensor([1])\ndef model(xt, t):\n    # A specified toy prediction, not a learned denoiser.\n    return torch.full_like(xt, -.8)\neps = torch.full_like(x0, -1.)  # Bruit fixé pour le calcul manuel ; randn_like pour un vrai tirage.\nxt = alpha_bar.sqrt() * x0 + (1 - alpha_bar).sqrt() * eps\npred_eps = model(xt, t)\nloss = torch.nn.functional.mse_loss(pred_eps, eps)\nprint(\"propre\", x0.tolist(), \"bruit\", eps.tolist(), \"mélange\", xt.tolist())\nprint(\"prédiction\", pred_eps.tolist(), \"perte\", loss.item())",
+          "title": "Exécuter la miniature complète"
         },
         {
           "type": "paragraph",
@@ -2097,7 +2597,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : « Je construis une entrée bruitée avec une cible connue, puis j’apprends le débruiteur. La génération est une autre procédure, qui réutilise ce réseau sur plusieurs étapes. »"
+          "text": "Si le réseau prédit exactement le bruit connu, cette perte devient nulle. Cela vérifie la supervision d’un mélange ; il reste à définir les étapes qui généreront un son."
         }
       ],
       "takeaways": [
@@ -2157,12 +2657,19 @@
         "input": "Les mêmes prises propres et un besoin de distribution sonore riche.",
         "action": "Corrompre une prise à un niveau connu, puis prédire le bruit ajouté.",
         "output": "Une tâche supervisée de débruitage et son lien avec la génération itérative."
-      }
+      },
+      "level": "discuss",
+      "prerequisites": [
+        {
+          "themeId": "generation-controle",
+          "chapterId": "vae-et-echantillonnage"
+        }
+      ]
     },
     {
       "id": "objectifs-diffusion-et-flow",
-      "title": "Quelle cible apprendre pour retirer le bruit ?",
-      "summary": "Comparer les cibles de bruit et de vitesse avant de discuter la génération.",
+      "title": "Flow matching : apprendre puis intégrer une vitesse",
+      "summary": "Construire une vitesse cible, puis distinguer son apprentissage du parcours numérique de génération.",
       "questionIds": [],
       "sourceIds": [
         "rev-b-efficient-ddpm",
@@ -2171,174 +2678,161 @@
         "rev-b-efficient-latent"
       ],
       "context": {
-        "recall": "Nous savons mélanger une représentation de percussion avec du bruit.",
-        "problem": "Le réseau ne peut apprendre sans connaître la réponse attendue pour chaque mélange.",
-        "why": "Définir cette cible permet de lire une perte et de comprendre ce qu’elle mesure.",
-        "connection": "Nous allons comparer deux façons de construire une tâche supervisée à partir de sons non annotés.",
-        "next": "Nous pourrons ensuite choisir comment transmettre une intention musicale au réseau."
+        "recall": "Nous savons construire une cible de bruit dans le DDPM précédent.",
+        "problem": "Une autre méthode apprend une vitesse : de quel chemin vient cette cible ?",
+        "why": "Lire le chemin et ses unités permet de distinguer la régression d’une cible et la génération numérique.",
+        "connection": "Nous gardons une seule coordonnée et changeons explicitement l’objectif appris.",
+        "next": "Nous examinerons ensuite comment renforcer une commande et préserver des régions connues."
       },
       "progression": {
-        "input": "Une représentation propre et un bruit que nous avons nous-mêmes tiré.",
-        "action": "Construire une observation intermédiaire et la quantité que le réseau doit prédire.",
-        "output": "Deux objectifs explicables, sans confondre entraînement et génération."
+        "input": "Un départ bruité et une arrivée connus pendant l’apprentissage.",
+        "action": "Calculer un point, sa vitesse cible et un pas d’intégration sur une ligne droite.",
+        "output": "Un objectif de vitesse explicable, distinct d’une procédure complète de génération."
       },
       "notions": [
         {
-          "name": "Prédiction du bruit (noise prediction)",
-          "explanation": "Le réseau estime le bruit ajouté, connu pendant l’entraînement."
-        },
-        {
-          "name": "Guidance sans classifieur (classifier-free guidance)",
-          "explanation": "Une combinaison de prédictions avec et sans condition règle la force du conditionnement."
-        },
-        {
           "name": "Appariement de flux (flow matching)",
-          "explanation": "Le réseau apprend un champ de vitesses qui transporte une distribution vers une autre."
+          "explanation": "L’apprentissage d’un champ de vitesses associé à des chemins entre distributions."
         },
         {
-          "name": "Diffusion latente (latent diffusion)",
-          "explanation": "La diffusion travaille sur les représentations d’un autoencodeur, plutôt que directement sur le signal."
+          "name": "Vitesse cible (target velocity)",
+          "explanation": "La dérivée du chemin choisi ; sur notre ligne droite, elle vaut arrivée moins départ."
+        },
+        {
+          "name": "Pas d’Euler (Euler step)",
+          "explanation": "Une approximation qui avance le point courant en ajoutant un pas de temps multiplié par une vitesse."
         }
       ],
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Notre percussionniste voudrait une nouvelle résonance, avec le caractère de ses instruments. Imaginons une photo progressivement brouillée : pour apprendre à la nettoyer, nous conservons le brouillage ajouté. Le même principe s’applique à une représentation sonore."
+          "text": "Nous avons appris à prédire un bruit. Changeons maintenant de cible, en gardant une seule coordonnée pour suivre les valeurs. L’appariement de flux (flow matching) apprend ici une vitesse qui mène du bruit vers une donnée."
         },
         {
           "type": "paragraph",
-          "text": "Un modèle probabiliste de diffusion débruitante (Denoising Diffusion Probabilistic Model, DDPM) apprend ici la prédiction du bruit (noise prediction). Pendant l’entraînement, nous connaissons la représentation propre x0 et le bruit ε. Nous tirons aussi un instant t."
-        },
-        {
-          "type": "paragraph",
-          "text": "Le mélange est xt=√ᾱt×x0+√(1−ᾱt)×ε. Le coefficient ᾱt fixe la part cumulée du signal conservée. Nous demandons au réseau de retrouver ε depuis xt, t et une éventuelle condition musicale."
+          "text": "Version simplifiée : le départ z vaut −1 et l’arrivée x vaut 2. Ces nombres sont choisis à la main, sans encodeur audio. Le chemin droit s’écrit point(t)=(1−t)z+t×x. Son temps t va de 0 au départ à 1 à l’arrivée."
         },
         {
           "type": "visual",
           "kind": "table",
-          "title": "Un seul nombre pour voir la cible",
+          "title": "Les états du même chemin droit",
           "columns": [
-            "Étape",
-            "Calcul manuel",
-            "Interprétation"
+            "Temps t",
+            "Point",
+            "Vitesse cible"
           ],
           "rows": [
             [
-              "Donnée et bruit",
-              "x0=2 ; ε=−1",
-              "Une coordonnée de représentation, pas un extrait audio."
+              "0",
+              "−1",
+              "3"
             ],
             [
-              "Mélange",
-              "ᾱt=0,64 ; xt=0,8×2+0,6×(−1)=1",
-              "Le réseau reçoit 1, pas le son propre 2."
+              "0,25",
+              "−0,25",
+              "3"
             ],
             [
-              "Prédiction",
-              "ε prédit=−0,5",
-              "La réponse attendue reste −1."
+              "0,50",
+              "0,50",
+              "3"
             ],
             [
-              "Erreur",
-              "(−0,5−(−1))²=0,25",
-              "Nous comparons deux bruits, sans comparer directement deux sons."
+              "1",
+              "2",
+              "3"
             ]
           ],
-          "caption": "Ces nombres viennent du programme ci-dessous. Les coefficients fixés permettent de vérifier chaque opération à la main."
+          "caption": "La vitesse x−z vaut 3 sur tout ce chemin pédagogique. Un champ appris sur plusieurs exemples ne connaît pas leur arrivée à la génération."
         },
         {
           "type": "paragraph",
-          "text": "L’erreur quadratique moyenne (mean squared error, MSE) moyenne ces écarts au carré sur un lot. Les exemples changent de bruit et d’instant pendant l’apprentissage. À la génération, nous partons du bruit et effectuons plusieurs étapes inverses. Ce programme montre l’objectif, sans implémenter cet échantillonneur."
-        },
-        {
-          "type": "paragraph",
-          "text": "La guidance sans classifieur (classifier-free guidance, CFG) combine deux prédictions du même réseau : avec et sans condition. Pour apprendre les deux, nous retirons aléatoirement la condition sur certains exemples. Aucun classifieur séparé n’est nécessaire."
-        },
-        {
-          "type": "paragraph",
-          "text": "Fixons notre convention : εguidé=εsans+s×(εavec−εsans). Avec εsans=−0,2, εavec=−0,5 et s=3, nous obtenons −1,1. Ici, s=1 garde la prédiction conditionnelle. Augmenter s accentue sa direction ; cela ne garantit ni fidélité musicale ni diversité."
-        },
-        {
-          "type": "paragraph",
-          "text": "L’appariement de flux (flow matching) choisit une autre cible : une vitesse. Version simplifiée : relions un bruit z à une donnée x par une ligne droite. Au temps t, xt=(1−t)z+t×x et la vitesse cible vaut x−z."
-        },
-        {
-          "type": "paragraph",
-          "text": "Avec z=−1, x=2 et t=0,25, le point vaut −0,25 et la vitesse cible vaut 3. Une vitesse prédite de 2,5 donne une MSE de 0,25. Ce chemin élémentaire ne décrit pas tous les chemins possibles du flow matching."
+          "text": "Au temps 0,25, le point vaut 0,75×(−1)+0,25×2=−0,25. Le réseau reçoit ce point et le temps ; sa cible est 2−(−1)=3. Une prédiction 2,5 donne une erreur au carré de 0,25."
         },
         {
           "type": "walkthrough",
-          "title": "Les deux cibles, dans le même programme",
-          "goal": "Retrouver les nombres du tableau et comprendre ce qui change entre les objectifs.",
+          "title": "Du point intermédiaire au prochain point",
+          "goal": "Calculer une cible de vitesse puis un pas numérique, sur les mêmes nombres.",
+          "language": "python",
+          "codeMode": "standalone",
+          "code": "import torch\nz = torch.tensor(-1., dtype=torch.float64)  # Départ choisi à la main.\nx = torch.tensor(2., dtype=torch.float64)   # Arrivée choisie à la main.\nt = 0.25\npoint = (1 - t) * z + t * x\nvitesse_cible = x - z\nvitesse_predite = torch.tensor(2.5, dtype=torch.float64)\nperte_flow = (vitesse_predite - vitesse_cible).square()\npas = 0.25\npoint_suivant = z + pas * vitesse_cible\nprint(\"point\", point.item(), \"vitesse\", vitesse_cible.item())\nprint(\"perte\", perte_flow.item(), \"pas exact\", point_suivant.item())",
           "steps": [
             {
-              "title": "Prédire le bruit connu",
-              "text": "Le mélange DDPM conserve une partie du signal. Sa cible est le bruit injecté, indépendamment de la valeur du mélange.",
-              "state": "DDPM : xt=1.00, cible=-1.00, MSE=0.25",
+              "title": "Définir les deux bouts du chemin",
+              "text": "z et x sont des scalaires flottants. Nous les gardons distincts du temps t, qui règle une position entre eux.",
               "lines": [
-                4,
-                5,
+                2,
+                3,
+                4
+              ],
+              "state": "z=−1 ; x=2 ; t=0,25."
+            },
+            {
+              "title": "Former le point observé",
+              "text": "Le coefficient 1−t pèse le départ ; t pèse l’arrivée. Le calcul ne remplace ni z ni x.",
+              "lines": [
+                5
+              ],
+              "state": "point=−0,25, scalaire."
+            },
+            {
+              "title": "Construire la cible et l’erreur",
+              "text": "La vitesse cible est arrivée moins départ. La prédiction 2,5 est fixée pour lire l’erreur ; aucun réseau n’est entraîné ici.",
+              "lines": [
                 6,
                 7,
-                8,
+                8
+              ],
+              "state": "vitesse=3 ; perte=(2,5−3)²=0,25."
+            },
+            {
+              "title": "Faire un pas depuis le départ",
+              "text": "Un pas d’Euler ajoute durée×vitesse. Nous utilisons la vitesse cible exacte, connue seulement pour ce petit chemin.",
+              "lines": [
                 9,
                 10
-              ]
-            },
-            {
-              "title": "Combiner deux prédictions",
-              "text": "La guidance réutilise les réponses conditionnelle et non conditionnelle. Le coefficient suit la convention écrite juste avant.",
-              "state": "CFG : bruit guidé=-1.10",
-              "lines": [
-                12,
-                13,
-                14,
-                15,
-                16
-              ]
-            },
-            {
-              "title": "Apprendre une vitesse",
-              "text": "Le chemin linéaire définit le point intermédiaire et sa dérivée. Le réseau doit prédire cette dérivée, pas le bruit du premier objectif.",
-              "state": "Flow : point=-0.25, vitesse=3.00, MSE=0.25",
-              "lines": [
-                18,
-                19,
-                20,
-                21,
-                22,
-                23,
-                24
-              ]
-            },
-            {
-              "title": "Distinguer apprendre et intégrer",
-              "text": "Un pas d’Euler ajoute la vitesse multipliée par la durée du pas. Nous utilisons ici la cible exacte, connue uniquement dans cet exemple.",
-              "state": "Euler depuis z : -0.25",
-              "lines": [
-                26,
-                27,
-                28
-              ]
+              ],
+              "state": "−1 + 0,25×3 = −0,25."
             }
           ],
-          "result": "Sorties CPU réellement capturées dans scripts/verify/b-diffusion-efficiency-results.json. Les deux pertes identiques comparent des tâches différentes.",
-          "code": "import torch\ntorch.set_num_threads(1)\n# Une coordonnée pédagogique, pas un enregistrement audio.\nx0 = torch.tensor(2., dtype=torch.float64)\nbruit = torch.tensor(-1., dtype=torch.float64)\nalpha_bar = torch.tensor(0.64, dtype=torch.float64)\nxt = alpha_bar.sqrt() * x0 + (1 - alpha_bar).sqrt() * bruit\nbruit_predit = torch.tensor(-0.5, dtype=torch.float64)\nperte_ddpm = (bruit_predit - bruit).square()\nprint(f\"DDPM : xt={xt.item():.2f}, cible={bruit.item():.2f}, MSE={perte_ddpm.item():.2f}\")\n# Convention : s=0 sans condition ; s=1 avec condition.\nsans_condition = torch.tensor(-0.2, dtype=torch.float64)\navec_condition = bruit_predit\ns = 3.\nguide = sans_condition + s * (avec_condition - sans_condition)\nprint(f\"CFG : bruit guidé={guide.item():.2f}\")\n# Flow matching simplifié : t=0 au bruit, t=1 à la donnée.\nz = bruit\nt = 0.25\npoint = (1 - t) * z + t * x0\nvitesse_cible = x0 - z\nvitesse_predite = torch.tensor(2.5, dtype=torch.float64)\nperte_flow = (vitesse_predite - vitesse_cible).square()\nprint(f\"Flow : point={point.item():.2f}, vitesse={vitesse_cible.item():.2f}, MSE={perte_flow.item():.2f}\")\n# Un pas d'Euler avec la vitesse cible, connue seulement dans ce jouet.\npas = 0.25\npoint_suivant = z + pas * vitesse_cible\nprint(f\"Euler depuis z : {point_suivant.item():.2f}\")",
-          "language": "python"
+          "result": "Apprendre la vitesse et avancer avec une vitesse sont deux opérations distinctes. Le dernier pas utilise une cible connue pour vérifier le calcul."
         },
         {
           "type": "paragraph",
-          "text": "Pendant une vraie génération par flux, un solveur numérique (numerical solver) avance avec les vitesses prédites. La méthode d’Euler (Euler method) est son approximation élémentaire. Apprendre sans simuler toute la trajectoire ne signifie donc pas générer sans étapes."
+          "text": "Pendant une vraie génération, nous n’avons plus l’arrivée x. Un réseau prédit la vitesse depuis le point courant, le temps et les conditions. Un solveur numérique avance ensuite et rappelle le réseau. Un pas n’est donc pas toute la génération."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Comparer après avoir compris les deux objectifs",
+          "columns": [
+            "Famille étudiée",
+            "Cible du réseau à l’apprentissage",
+            "Procédure pour produire"
+          ],
+          "rows": [
+            [
+              "DDPM précédent",
+              "Le bruit ajouté à une donnée connue",
+              "Échantillonneur cohérent avec cette paramétrisation"
+            ],
+            [
+              "Flux simplifié ici",
+              "La vitesse d’un chemin bruit→donnée",
+              "Intégration du champ de vitesses appris"
+            ]
+          ],
+          "caption": "Deux MSE de 0,25 ne comparent pas la même grandeur. La qualité sonore demande ensuite une évaluation commune."
         },
         {
           "type": "paragraph",
-          "text": "La diffusion latente (latent diffusion) applique ce raisonnement dans la représentation comprimée d’un autoencodeur. Un décodeur transforme ensuite le latent généré en son. Le codec peut déjà perdre des détails : aucun objectif génératif ne garantit leur restitution."
+          "text": "Le travail peut porter sur une onde ou sur un latent. En diffusion latente, un décodeur reconstruit le son après la génération du latent. Les détails déjà perdus par cette représentation restent une limite du trajet."
         },
         {
           "type": "callout",
           "tone": "pitfall",
-          "label": "Un piège : comparer seulement les pertes",
-          "text": "Une MSE de bruit et une MSE de vitesse n’ont pas la même cible. Leur valeur ne classe pas la qualité sonore. Comparons aussi écoute, respect du contrôle, diversité et coût. Le t simplifié du flux va du bruit vers la donnée ; la corruption DDPM suit l’autre direction."
+          "label": "Ne pas fournir l’arrivée pendant la génération",
+          "text": "L’arrivée x sert à construire une cible pendant l’apprentissage. La connaître au moment de produire une variation contournerait la tâche. Le programme utilise cette arrivée uniquement pour vérifier un chemin à la main."
         },
         {
           "type": "list",
@@ -2366,7 +2860,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : « Je précise d’abord la cible : bruit en DDPM, vitesse dans notre flux simplifié. Ensuite, j’évalue la génération sonore et le contrôle, au-delà de cette perte. »"
+          "text": "Gardons z=−1 et doublons seulement le pas de 0,25 à 0,50 : avec la même vitesse 3, le prochain point devient 0,50. Une mauvaise vitesse apprise changerait aussi ce trajet."
         }
       ],
       "takeaways": [
@@ -2396,11 +2890,18 @@
         ],
         "correctOptionId": "c",
         "explanation": "La valeur d’une perte dépend de la cible, de son échelle et des données. Elle ne remplace pas un protocole d’évaluation commun."
-      }
+      },
+      "level": "advanced",
+      "prerequisites": [
+        {
+          "themeId": "generation-controle",
+          "chapterId": "diffusion-et-bruit"
+        }
+      ]
     },
     {
       "id": "guidance-et-zones-connues",
-      "title": "Renforcer une commande et garder le début joué",
+      "title": "Guidance et masque : préférence ou conservation exacte",
       "summary": "Distinguer une préférence plus forte d’une conservation exacte des échantillons.",
       "questionIds": [
         "gen-031",
@@ -2446,6 +2947,49 @@
           "text": "La seconde demande est différente : conserver exactement le début enregistré. Un masque booléen (boolean mask) indique quelles positions sont connues. En sortie, where choisit observed dans cette zone et generated ailleurs. Le comblement (inpainting) peut aussi intégrer le connu à chaque niveau sous une corruption adaptée. Cette contrainte explicite apporte une garantie que la demande textuelle seule ne fournit pas."
         },
         {
+          "type": "visual",
+          "kind": "table",
+          "title": "Lire where position par position",
+          "columns": [
+            "Position",
+            "Connu ?",
+            "observed",
+            "generated",
+            "Valeur retenue"
+          ],
+          "rows": [
+            [
+              "0",
+              "True",
+              "0,1",
+              "9",
+              "0,1"
+            ],
+            [
+              "1",
+              "True",
+              "0,2",
+              "8",
+              "0,2"
+            ],
+            [
+              "2",
+              "False",
+              "0,3",
+              "7",
+              "7"
+            ],
+            [
+              "3",
+              "False",
+              "0,4",
+              "6",
+              "6"
+            ]
+          ],
+          "caption": "Les valeurs sont choisies à la main. True choisit observed ; False choisit generated. Les deux tableaux d’origine restent inchangés."
+        },
+        {
           "type": "walkthrough",
           "title": "Guider puis préserver les observations",
           "goal": "Distinguer une extrapolation de prédictions et une conservation exacte.",
@@ -2466,7 +3010,14 @@
               "lines": [
                 1
               ],
-              "state": "La convention est définie par cette formule."
+              "state": "La convention est définie par cette formule.",
+              "details": [
+                {
+                  "code": "eps_c - eps_u",
+                  "explanation": "Nous soustrayons les deux estimations : 5−2=3. s=2 multiplie cette différence, puis la branche sans condition ajoute 2.",
+                  "state": "2 + 2×3 = 8 ; ce n’est pas une amplitude audio."
+                }
+              ]
             },
             {
               "title": "réimposer le connu",
@@ -2474,7 +3025,14 @@
               "lines": [
                 2
               ],
-              "state": "Valeurs connues conservées exactement."
+              "state": "Valeurs connues conservées exactement.",
+              "details": [
+                {
+                  "code": "torch.where(known_mask, observed, generated)",
+                  "explanation": "where choisit une des deux valeurs à chaque position. Il crée output ; il ne modifie pas les entrées.",
+                  "state": "output = [0.1,0.2,7,6], forme (4,)."
+                }
+              ]
             },
             {
               "title": "Écouter la frontière",
@@ -2484,7 +3042,21 @@
               ]
             }
           ],
-          "result": "Un guidage fort et une zone imposée répondent à deux propriétés différentes."
+          "result": "Un guidage fort et une zone imposée répondent à deux propriétés différentes.",
+          "codeMode": "excerpt",
+          "requires": [
+            "torch est importé ; eps_u=[2], eps_c=[5] et s=2 sont fixés à la main.",
+            "known_mask=[True,True,False,False], observed=[0.1,0.2,0.3,0.4] et generated=[9,8,7,6] ont quatre positions alignées."
+          ]
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "codeMode": "standalone",
+          "disclosure": true,
+          "caption": "Programme autonome : prédictions, masque et deux tableaux fixés à la main. L’effet de where reste lisible à chaque position.",
+          "code": "import torch\neps_u = torch.tensor([2.])\neps_c = torch.tensor([5.])\ns = 2.\nknown_mask = torch.tensor([True, True, False, False])\nobserved = torch.tensor([.1, .2, .3, .4])\ngenerated = torch.tensor([9., 8., 7., 6.])\neps_guided = eps_u + s * (eps_c - eps_u)\noutput = torch.where(known_mask, observed, generated)\nprint(\"bruit guidé\", eps_guided.tolist())\nprint(\"sortie\", output.tolist())\nprint(\"observé conservé\", observed.tolist(), \"proposé conservé\", generated.tolist())",
+          "title": "Exécuter la miniature complète"
         },
         {
           "type": "paragraph",
@@ -2498,7 +3070,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : « La guidance renforce une préférence ; un masque peut imposer des valeurs connues. Je vérifie séparément le respect de la commande, la conservation et la continuité du raccord. »"
+          "text": "Si nous passons la troisième position du masque à True, elle reprend 0,3 au lieu de 7. La formule de guidance reste la même : le masque agit sur une autre exigence."
         }
       ],
       "takeaways": [
@@ -2558,11 +3130,18 @@
         "input": "Un débruiteur conditionné qui produit des variations de percussion.",
         "action": "Combiner ses prédictions avec et sans condition, puis imposer les régions connues.",
         "output": "Deux contrats distincts : suivre davantage la demande et conserver exactement le connu."
-      }
+      },
+      "level": "discuss",
+      "prerequisites": [
+        {
+          "themeId": "generation-controle",
+          "chapterId": "diffusion-et-bruit"
+        }
+      ]
     },
     {
       "id": "adaptation-lora-et-petit-corpus",
-      "title": "Retrouver le timbre du corpus sans tout réentraîner",
+      "title": "LoRA : suivre les deux facteurs d’une correction",
       "summary": "Comprendre ce que LoRA réduit, puis préparer une comparaison honnête.",
       "questionIds": [
         "gen-018",
@@ -2615,46 +3194,75 @@
           "caption": "W0 + B A peut rester de rang plein : seul le rang de la modification est contraint."
         },
         {
+          "type": "paragraph",
+          "text": "Le code suivant garde les dimensions symboliques d_in et d_out. L’annexe choisit 4 entrées, 3 sorties et r=1 pour lire chaque produit. Ce petit cas compte 12 poids de base et 7 poids adaptés. Le compte 1024×1024 présenté ensuite est un autre dimensionnement, annoncé comme tel."
+        },
+        {
           "type": "walkthrough",
           "title": "Compter les poids et suivre le premier gradient",
           "goal": "Dimensionner l’adaptation au timbre de la percussionniste et vérifier qu’elle peut démarrer.",
           "language": "python",
-          "code": "for p in base.parameters():\n    p.requires_grad_(False)\nB = torch.zeros(d_out, r, requires_grad=True)\nA = torch.randn(r, d_in, requires_grad=True)\nh = W0 @ x + B @ A @ x",
+          "code": "for p in base.parameters():\n    p.requires_grad_(False)\nB = torch.zeros(d_out, r, requires_grad=True)\nA = torch.randn(r, d_in, requires_grad=True)\nbase_sortie = W0 @ x\npetite_activation = A @ x\ncorrection = B @ petite_activation\nh = base_sortie + correction",
           "steps": [
             {
-              "title": "conserver la base",
-              "text": "Une matrice W0 de taille 1 024 × 1 024 possède 1 048 576 poids. Le gel (freezing) empêche de nouveaux gradients pour ses paramètres.",
+              "title": "Geler la base",
+              "text": "requires_grad_(False) modifie la propriété des poids existants. Leur calcul en avant reste utilisé.",
               "lines": [
                 1,
                 2
               ],
-              "state": "La base garde son forward et son stockage."
+              "state": "W0 ne recevra pas de nouveau gradient."
             },
             {
-              "title": "Compter la modification",
-              "text": "Avec r = 8, B contient 1 024 × 8 poids et A en contient 8 × 1 024. Le total est 16 384, soit 64 fois moins pour cette paire. Ici x est un vecteur de forme (d_in,).",
+              "title": "Créer une correction initialement nulle",
+              "text": "B vaut zéro et A est aléatoire. La paire peut apprendre, tout en commençant par une correction nulle.",
               "lines": [
                 3,
                 4
               ],
-              "state": "B A possède la même forme que W0."
+              "state": "B : (d_out,r) ; A : (r,d_in)."
             },
             {
-              "title": "démarrer sans changer la sortie",
-              "text": "B vaut zéro, donc B A vaut zéro au départ. Version simplifiée : le calcul ignore biais et facteur d’échelle pour isoler le mécanisme.",
+              "title": "Lire la réponse conservée",
+              "text": "W0 multiplie le vecteur x. Pour la miniature autonome, 4 caractéristiques deviennent 3 sorties.",
               "lines": [
                 5
-              ]
+              ],
+              "state": "(3,4) @ (4,) → (3,)."
             },
             {
-              "title": "Lire les deux trajets",
-              "text": "Le premier trajet conserve la réponse de la base. Le second ajoute la correction calculée avec A et B. Nous apprendrons les deux facteurs depuis la perte.",
+              "title": "Passer par le petit espace",
+              "text": "A réduit les 4 caractéristiques à r=1 dans l’annexe. B ramène ensuite cette activation aux 3 sorties.",
               "lines": [
-                5
-              ]
+                6,
+                7
+              ],
+              "state": "(1,4) @ (4,) → (1,), puis (3,1) @ (1,) → (3,)."
+            },
+            {
+              "title": "Additionner les deux trajets",
+              "text": "Au départ, correction est nulle. h égale donc base_sortie, mais les gradients futurs peuvent modifier B.",
+              "lines": [
+                8
+              ],
+              "state": "Même réponse initiale ; une branche entraînable supplémentaire."
             }
           ],
-          "result": "La mise à jour est petite et dispose d’une trajectoire de gradient capable de démarrer."
+          "result": "La mise à jour est petite et dispose d’une trajectoire de gradient capable de démarrer.",
+          "codeMode": "excerpt",
+          "requires": [
+            "torch est importé ; base est une couche linéaire sans biais, W0=base.weight, de forme (d_out,d_in).",
+            "x est un vecteur (d_in,). d_in, d_out et r sont des entiers ; l’annexe choisit 4, 3 et 1."
+          ]
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "codeMode": "standalone",
+          "disclosure": true,
+          "caption": "Programme autonome : 4 entrées, 3 sorties et un rang 1. Il vérifie la correction initiale et les gradients, sans corpus audio.",
+          "code": "import torch\ntorch.manual_seed(0)\nd_in, d_out, r = 4, 3, 1\nbase = torch.nn.Linear(d_in, d_out, bias=False)\nW0 = base.weight\nx = torch.tensor([1., 2., 3., 4.])\nfor p in base.parameters():\n    p.requires_grad_(False)\nB = torch.zeros(d_out, r, requires_grad=True)\nA = torch.randn(r, d_in, requires_grad=True)\nbase_sortie = W0 @ x\npetite_activation = A @ x\ncorrection = B @ petite_activation\nh = base_sortie + correction\nprint(\"activation\", list(petite_activation.shape), \"correction\", correction.tolist())\nprint(\"sortie initiale identique\", torch.equal(h, base_sortie))\nh.sum().backward()\nprint(\"gradient base\", W0.grad, \"gradient A nul\", bool((A.grad == 0).all()))\nprint(\"gradient B non nul\", bool((B.grad != 0).any()))",
+          "title": "Exécuter la miniature complète"
         },
         {
           "type": "paragraph",
@@ -2674,11 +3282,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Gardons la base non adaptée comme référence. Comparons les mêmes commandes et des prises réellement réservées : caractère du timbre, respect de l’accent, artefacts, diversité et coût. Des sorties très proches des prises d’apprentissage peuvent signaler une mémorisation. Moins de paramètres n’exclut pas ce risque. Nous allons maintenant examiner ce que notre budget réduit réellement."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : « LoRA apprend une correction de faible rang sur une base conservée. Je compte les paramètres adaptés, puis je mesure personnalisation, mémorisation et coût sur des exemples réservés. »"
+          "text": "Gardons la base non adaptée comme référence. Une comparaison sur des prises réservées doit vérifier fidélité, diversité et mémorisation. Une faible dimension adaptée réduit un compte de paramètres ; elle ne démontre pas ces qualités."
         }
       ],
       "takeaways": [
@@ -2739,11 +3343,18 @@
         "input": "Une base générative et les prises particulières de notre percussionniste.",
         "action": "Geler la base et apprendre une modification de faible rang sur des données réservées au développement.",
         "output": "Une adaptation dont le nombre de paramètres est compris et le bénéfice reste à évaluer."
-      }
+      },
+      "level": "discuss",
+      "prerequisites": [
+        {
+          "themeId": "generation-controle",
+          "chapterId": "conditions-et-intention-musicale"
+        }
+      ]
     },
     {
       "id": "efficacite-petit-budget",
-      "title": "Choisir ce que notre budget doit réellement économiser",
+      "title": "Budget de calcul : adaptation, précision et délai audio",
       "summary": "Séparer coût d’adaptation, stockage des poids et délai de production sonore.",
       "questionIds": [],
       "sourceIds": [
@@ -2786,7 +3397,7 @@
       "blocks": [
         {
           "type": "paragraph",
-          "text": "Notre instrument doit apprendre les matériaux d’une percussionniste, puis répondre pendant une répétition. Pensons à deux factures : préparer l’instrument et le faire jouer. Réduire la première ne paie pas automatiquement la seconde."
+          "text": "L’instrument doit apprendre les matériaux d’une percussionniste, puis répondre pendant la répétition. Nous distinguons le budget d’adaptation, le stockage des poids et le délai de production. Une économie sur l’un ne se transfère pas automatiquement aux autres."
         },
         {
           "type": "paragraph",
@@ -2898,6 +3509,18 @@
                 31,
                 32,
                 33
+              ],
+              "details": [
+                {
+                  "code": "(poids / echelle).round().clamp(-maximum, maximum)",
+                  "explanation": "La division exprime les poids en pas de grille. round choisit un entier proche ; clamp le garde dans la plage permise. Les poids de départ restent inchangés.",
+                  "state": "À trois bits, les entiers vont de −3 à 3 ; une combinaison est inutilisée."
+                },
+                {
+                  "code": "(approximation - reference).square().mean().item()",
+                  "explanation": "Nous calculons d’abord une différence par sortie, puis son carré, puis la moyenne. item convertit enfin le scalaire tenseur en nombre Python.",
+                  "state": "MSE sur 256×64 sorties synthétiques, pas sur des échantillons audio."
+                }
               ]
             },
             {
@@ -2910,9 +3533,10 @@
               ]
             }
           ],
-          "result": "Exécution CPU conservée dans scripts/verify/b-diffusion-efficiency-results.json. Les tailles sont calculées ; les erreurs numériques sont réellement obtenues.",
+          "result": "À entrées identiques, la grille de trois bits modifie davantage les sorties que celle de huit bits. Le stockage logique ne mesure ni le temps de calcul ni la qualité d’une percussion.",
           "code": "import torch\nfrom torch import nn\ntorch.manual_seed(17)\ntorch.set_num_threads(1)\n# Minuscule calcul manuel : 0.4 sur une grille de pas 1/3.\nmini = torch.tensor(0.4, dtype=torch.float64)\nmini_q = (mini * 3).round() / 3\nprint(f\"À la main : {mini.item():.3f} -> {mini_q.item():.3f}\")\n# Comptes hors biais : une projection 64 -> 64 et un goulot 64 -> 8 -> 64.\nd, rang = 64, 8\nprojection = nn.Linear(d, d, bias=False)\nadapter = nn.Sequential(nn.Linear(d, rang, bias=False), nn.ReLU(),\n                        nn.Linear(rang, d, bias=False))\ntotal = sum(p.numel() for p in projection.parameters())\najout = sum(p.numel() for p in adapter.parameters())\nprint(f\"Paramètres : projection={total}, adapter={ajout}, fraction={ajout / total:.2f}\")\n# Test synthétique : 256 vecteurs de 64 caractéristiques, sans audio.\npoids = torch.randn(d, d) * 0.1\nentrees = torch.randn(256, d)\nreference = entrees @ poids.T\nmse_reference = (reference - reference).square().mean().item()\nprint(f\"Float32 : MSE={mse_reference:.8f} ; poids={total * 4} octets\")\nmesures = []\nfor bits in (8, 3):\n    maximum = 2 ** (bits - 1) - 1\n    echelle = poids.abs().max() / maximum\n    entiers = (poids / echelle).round().clamp(-maximum, maximum)\n    reconstruits = entiers * echelle\n    approximation = entrees @ reconstruits.T\n    mse = (approximation - reference).square().mean().item()\n    octets = (total * bits + 7) // 8\n    mesures.append({\"bits\": bits, \"logicalWeightBytes\": octets, \"mse\": mse})\n    print(f\"{bits} bits : poids logiques={octets} octets, MSE={mse:.8f}\")\n# Une échéance analytique, pas une durée mesurée du réseau.\necheance_ms = 1000 * 256 / 48000\nprint(f\"256 échantillons à 48 kHz : {echeance_ms:.3f} ms\")",
-          "language": "python"
+          "language": "python",
+          "codeMode": "standalone"
         },
         {
           "type": "visual",
@@ -2977,7 +3601,7 @@
         },
         {
           "type": "paragraph",
-          "text": "À dire en entretien : « Je sépare adaptation, stockage et réactivité. Puis je mesure le coût réellement réduit et ce que nous perdons sur la tâche musicale. »"
+          "text": "Nous pouvons compter les poids et les bits avant d’exécuter un moteur spécialisé. Pour annoncer un gain d’usage, il faut ensuite mesurer ce moteur et écouter ce que l’approximation change."
         }
       ],
       "takeaways": [
@@ -3007,7 +3631,14 @@
         ],
         "correctOptionId": "b",
         "explanation": "Le compteur porte sur les poids entraînables ajoutés. Les poids de base et les calculs nécessaires restent présents."
-      }
+      },
+      "level": "advanced",
+      "prerequisites": [
+        {
+          "themeId": "generation-controle",
+          "chapterId": "adaptation-lora-et-petit-corpus"
+        }
+      ]
     }
   ],
   "edition": 2,
@@ -3197,42 +3828,42 @@
     "goal": "Choisir une chaîne de génération pour notre instrument de percussion, expliquer son hasard et son contrôle, puis identifier ce qu’une adaptation au petit corpus doit encore démontrer.",
     "concepts": [
       {
-        "name": "Garder le caractère d’une frappe avant d’en inventer une autre",
+        "name": "Autoencodeur : représenter puis reconstruire un son",
         "explanation": "Écouter la reconstruction pour savoir ce que notre représentation conserve déjà.",
         "chapterId": "representation-et-reconstruction"
       },
       {
-        "name": "Transporter un son par corrections successives : les codecs neuronaux",
+        "name": "Codec neuronal et RVQ : corriger le résidu par étages",
         "explanation": "La quantification résiduelle décrit progressivement un son, puis un décodeur le reconstruit.",
         "chapterId": "codecs-neuronaux-rvq"
       },
       {
-        "name": "Écrire les gestes ou produire le son : symbolique, audio, ou les deux ?",
+        "name": "MIDI et audio : choisir ce que nous voulons modifier",
         "explanation": "Le choix de représentation détermine ce que nous pouvons modifier et ce que le modèle doit apprendre.",
         "chapterId": "symbolique-midi-et-audio"
       },
       {
-        "name": "Continuer une percussion sans regarder la réponse",
+        "name": "Autorégression : décaler les cibles et respecter le passé",
         "explanation": "Construire les cibles suivantes et vérifier l’information réellement disponible.",
         "chapterId": "autoregression-et-causalite"
       },
       {
-        "name": "Choisir comment les commandes entrent dans le modèle",
+        "name": "Texte, audio et MIDI : suivre les formes des conditions",
         "explanation": "Texte, son de référence et notes n’apportent pas la même précision de contrôle.",
         "chapterId": "controle-multimodal-formes"
       },
       {
-        "name": "Une autre piste : varier autour d’une représentation continue",
+        "name": "VAE : calculer un latent par reparamétrisation",
         "explanation": "Comprendre ce qu’un VAE tire au hasard, avant de parler de son objectif.",
         "chapterId": "vae-et-echantillonnage"
       },
       {
-        "name": "Quelle cible apprendre pour retirer le bruit ?",
+        "name": "Flow matching : apprendre puis intégrer une vitesse",
         "explanation": "Comparer les cibles de bruit et de vitesse avant de discuter la génération.",
         "chapterId": "objectifs-diffusion-et-flow"
       },
       {
-        "name": "Choisir ce que notre budget doit réellement économiser",
+        "name": "Budget de calcul : adaptation, précision et délai audio",
         "explanation": "Séparer coût d’adaptation, stockage des poids et délai de production sonore.",
         "chapterId": "efficacite-petit-budget"
       }

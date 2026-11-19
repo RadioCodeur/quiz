@@ -1,0 +1,2458 @@
+{
+  "python": "3.11.9",
+  "torch": "2.10.0+cpu",
+  "numpy": "2.3.5",
+  "device": "cpu",
+  "cases": [
+    {
+      "themeId": "python-scientifique",
+      "chapterId": "tableaux-et-indexation",
+      "blockIndex": 1,
+      "role": "demonstration",
+      "sourceSha256": "39cec5150b7bdff5e3a80a1105b6f988d16884164db56f3c89d1d99612205215",
+      "stdout": "[-0.5, 0.5, -0.5, 0.5]\n[-1.0, 1.0]\n",
+      "seconds": 0.019743,
+      "values": {}
+    },
+    {
+      "themeId": "python-scientifique",
+      "chapterId": "tableaux-et-indexation",
+      "blockIndex": 4,
+      "role": "demonstration",
+      "sourceSha256": "62d547a0480d8104a671625f639e6b1932a0cc8dfc5070f7f026ba1b183942b9",
+      "stdout": "[-0.5, 0.5, -0.5, 0.5] (4,)\n[[-0.5, 0.5, -0.5, 0.5]] (1, 4)\n[[-0.5, 0.5], [0.0, 1.0]] (2, 2)\n",
+      "seconds": 0.005212,
+      "values": {
+        "S": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              -0.5,
+              0.5,
+              -0.5,
+              0.5
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "premier": {
+          "shape": [
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            -0.5,
+            0.5,
+            -0.5,
+            0.5
+          ]
+        },
+        "une_ligne": {
+          "shape": [
+            1,
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              -0.5,
+              0.5,
+              -0.5,
+              0.5
+            ]
+          ]
+        },
+        "fin": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "python-scientifique",
+      "chapterId": "tableaux-et-indexation",
+      "blockIndex": 6,
+      "role": "demonstration",
+      "sourceSha256": "e267c9fa9909a8134b7dea1c9e1d05d8e4bcd6ba8fd75d799855f4c54206b4a6",
+      "stdout": "[[2, 6], [14, 18], [26, 30], [38, 42]]\n(4, 2)\n",
+      "seconds": 0.002019,
+      "values": {
+        "X": {
+          "shape": [
+            4,
+            6,
+            2
+          ],
+          "dtype": "int64"
+        },
+        "Y": {
+          "shape": [
+            4,
+            2
+          ],
+          "dtype": "int64",
+          "values": [
+            [
+              2,
+              6
+            ],
+            [
+              14,
+              18
+            ],
+            [
+              26,
+              30
+            ],
+            [
+              38,
+              42
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "python-scientifique",
+      "chapterId": "references-et-copies",
+      "blockIndex": 2,
+      "role": "demonstration",
+      "sourceSha256": "c67526ea4f469caae272cc40828ee7c5c403fd7587231d4218d8d1a1bda428b7",
+      "stdout": "",
+      "seconds": 0.001639,
+      "values": {
+        "signal": {
+          "shape": [
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            -0.5,
+            0.5,
+            0.0,
+            0.5
+          ]
+        },
+        "vue": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            0.0,
+            0.5
+          ]
+        },
+        "copie": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            -0.5,
+            0.0
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "python-scientifique",
+      "chapterId": "reduire-les-bons-axes",
+      "blockIndex": 3,
+      "role": "demonstration",
+      "sourceSha256": "a55d8efa2b30ba9e8f709fe152e9ca1a6dddd545ccef90e5135e3a9a75e4a3b0",
+      "stdout": "[[0.25, 0.25, 0.25, 0.25], [0.0, 0.0, 0.0, 1.0]] [0.25, 0.25]\n[0.5, 0.5] [0.5, 1.0] [1.0, 2.0]\n[[0.5, 1.0], [0.5, 2.0]]\n",
+      "seconds": 0.001625,
+      "values": {
+        "S": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              -0.5,
+              0.5,
+              -0.5,
+              0.5
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "carres": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.25,
+              0.25,
+              0.25,
+              0.25
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "moyenne_carres": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            0.25,
+            0.25
+          ]
+        },
+        "rms": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            0.5,
+            0.5
+          ]
+        },
+        "absolues": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              0.5,
+              0.5,
+              0.5
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "pics": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            0.5,
+            1.0
+          ]
+        },
+        "cretes": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            1.0,
+            2.0
+          ]
+        },
+        "F": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.0
+            ],
+            [
+              0.5,
+              2.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "python-scientifique",
+      "chapterId": "broadcasting-et-algebre",
+      "blockIndex": 4,
+      "role": "demonstration",
+      "sourceSha256": "f32665b64fadcaeb863581f24557ad713a8e82b29e5a085309c701c18ea00921",
+      "stdout": "",
+      "seconds": 0.001371,
+      "values": {
+        "F": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.0
+            ],
+            [
+              0.5,
+              2.0
+            ]
+          ]
+        },
+        "W": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              2.0
+            ],
+            [
+              1.0
+            ]
+          ]
+        },
+        "contributions": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              1.0,
+              1.0
+            ],
+            [
+              1.0,
+              2.0
+            ]
+          ]
+        },
+        "scores": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              2.0
+            ],
+            [
+              3.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "python-scientifique",
+      "chapterId": "broadcasting-et-algebre",
+      "blockIndex": 6,
+      "role": "demonstration",
+      "sourceSha256": "0609c10423fa736e1fa6cdb4ec146814d53c7efd22c0e95d53a265fbaada8893",
+      "stdout": "(2, 1, 2) (1, 1, 2) (2, 1, 2)\n[[[0.0, 0.0]], [[0.0, 1.0]]] [[0.0], [1.0]]\n",
+      "seconds": 0.001564,
+      "values": {
+        "X": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.0
+            ],
+            [
+              0.5,
+              2.0
+            ]
+          ]
+        },
+        "Y": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.0
+            ]
+          ]
+        },
+        "X_paires": {
+          "shape": [
+            2,
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              [
+                0.5,
+                1.0
+              ]
+            ],
+            [
+              [
+                0.5,
+                2.0
+              ]
+            ]
+          ]
+        },
+        "Y_paires": {
+          "shape": [
+            1,
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              [
+                0.5,
+                1.0
+              ]
+            ]
+          ]
+        },
+        "ecarts": {
+          "shape": [
+            2,
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              [
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              [
+                0.0,
+                1.0
+              ]
+            ]
+          ]
+        },
+        "carres": {
+          "shape": [
+            2,
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              [
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              [
+                0.0,
+                1.0
+              ]
+            ]
+          ]
+        },
+        "dist2": {
+          "shape": [
+            2,
+            1
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0
+            ],
+            [
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "python-scientifique",
+      "chapterId": "standardiser-et-preserver-precision",
+      "blockIndex": 2,
+      "role": "demonstration",
+      "sourceSha256": "eb479239b54073b95ec6bfee78739e844058a30ffec5797716fc3e27f36a93b3",
+      "stdout": "",
+      "seconds": 0.001384,
+      "values": {
+        "F_train": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.0
+            ],
+            [
+              0.5,
+              2.0
+            ]
+          ]
+        },
+        "mu": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.5
+            ]
+          ]
+        },
+        "sigma": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0,
+              0.5
+            ]
+          ]
+        },
+        "den": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              1e-08,
+              0.5
+            ]
+          ]
+        },
+        "Z": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0,
+              -1.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "python-scientifique",
+      "chapterId": "fonctions-et-arguments",
+      "blockIndex": 2,
+      "role": "demonstration",
+      "sourceSha256": "e9c54ac32d23014fe2748e8536283e5de183da62d61499a62297f6b7fb845c52",
+      "stdout": "",
+      "seconds": 0.001304,
+      "values": {
+        "mu": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.5
+            ]
+          ]
+        },
+        "sigma": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0,
+              0.5
+            ]
+          ]
+        },
+        "z": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "python-scientifique",
+      "chapterId": "valeurs-par-defaut",
+      "blockIndex": 1,
+      "role": "demonstration",
+      "sourceSha256": "38e57a099a15c815c551c6495e37a1f970e1aba0051c736a9885d6da7dec5894",
+      "stdout": "['voix_a.wav']\n['voix_a.wav', 'perc_b.wav']\n",
+      "seconds": 0.001332,
+      "values": {}
+    },
+    {
+      "themeId": "python-scientifique",
+      "chapterId": "valeurs-par-defaut",
+      "blockIndex": 2,
+      "role": "demonstration",
+      "sourceSha256": "04f1671151b36b83e8dd6e156c95c40d7848771133929dc3cb9cd91d38902986",
+      "stdout": "",
+      "seconds": 0.001549,
+      "values": {}
+    },
+    {
+      "themeId": "python-scientifique",
+      "chapterId": "parcourir-et-filtrer",
+      "blockIndex": 1,
+      "role": "demonstration",
+      "sourceSha256": "f8d857f9cf20b8bdd99f017dae876ccc840fd5bb7d4b58a94403c4626eac33d0",
+      "stdout": "1 ('voix_a.wav', 0)\n2 ('voix_c.wav', 0)\n",
+      "seconds": 0.001534,
+      "values": {
+        "numero": 2
+      }
+    },
+    {
+      "themeId": "python-scientifique",
+      "chapterId": "lire-fonctions-objets",
+      "blockIndex": 2,
+      "role": "demonstration",
+      "sourceSha256": "78249cc6e73f7a87d05dc47ffd1db03461cc1b4d3597e359a567b59cf3d7ca00",
+      "stdout": "",
+      "seconds": 0.001418,
+      "values": {}
+    },
+    {
+      "themeId": "python-scientifique",
+      "chapterId": "assembler-pipeline-scientifique",
+      "blockIndex": 1,
+      "role": "demonstration",
+      "sourceSha256": "6b35758bc91292e9a2ecf044d73531cdfe18a47f29324240348dc4936ece6dfd",
+      "stdout": "",
+      "seconds": 0.001697,
+      "values": {
+        "S": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              -0.5,
+              0.5,
+              -0.5,
+              0.5
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "y": {
+          "shape": [
+            2
+          ],
+          "dtype": "int64",
+          "values": [
+            0,
+            1
+          ]
+        },
+        "rms": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            0.5,
+            0.5
+          ]
+        },
+        "cretes": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            1.0,
+            2.0
+          ]
+        },
+        "F": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.0
+            ],
+            [
+              0.5,
+              2.0
+            ]
+          ]
+        },
+        "mu": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.5,
+              1.5
+            ]
+          ]
+        },
+        "sigma": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0,
+              0.5
+            ]
+          ]
+        },
+        "X": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              0.0,
+              -1.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "python-scientifique",
+      "chapterId": "valeurs-noms-et-calculs",
+      "blockIndex": 1,
+      "role": "demonstration",
+      "sourceSha256": "4b394fa6d993b084a55598bb9bae3d6457e4d8dd436cb8e01e1417eaef61e7d4",
+      "stdout": "",
+      "seconds": 0.003868,
+      "values": {
+        "nombre": 16000,
+        "frequence": 16000,
+        "duree": 2.0,
+        "nouvelle_duree": 1.0
+      }
+    },
+    {
+      "themeId": "python-scientifique",
+      "chapterId": "listes-et-indices",
+      "blockIndex": 1,
+      "role": "demonstration",
+      "sourceSha256": "1972221a9591be9124f0caf2324788eba1ca2af9f2d0067381d4e84a5308f615",
+      "stdout": "",
+      "seconds": 0.003554,
+      "values": {
+        "premier": 10.0
+      }
+    },
+    {
+      "themeId": "audio-signal",
+      "chapterId": "echantillons-duree-canaux",
+      "blockIndex": 5,
+      "role": "demonstration",
+      "sourceSha256": "91375191bbce26623680bc36a8c3825e609e05996b929832d4bd29ae612f5cfe",
+      "stdout": "(64000,) 16000 4.0\n(8000,)\n",
+      "seconds": 0.032368,
+      "values": {
+        "source": {
+          "shape": [
+            237440
+          ],
+          "dtype": "float64"
+        },
+        "sr": 16000,
+        "y": {
+          "shape": [
+            64000
+          ],
+          "dtype": "float64"
+        },
+        "nb_echantillons": 64000,
+        "duree": 4.0,
+        "nb_demi_seconde": 8000,
+        "premiere_demi_seconde": {
+          "shape": [
+            8000
+          ],
+          "dtype": "float64"
+        }
+      }
+    },
+    {
+      "themeId": "audio-signal",
+      "chapterId": "nyquist-repliement-reechantillonnage",
+      "blockIndex": 5,
+      "role": "demonstration",
+      "sourceSha256": "33d342305867f791ec1e15e43dd3ea80498b13ff48facb162db546d97f3a408e",
+      "stdout": "(192000,) 48000 (64000,) 16000\n4.0 4.0\n",
+      "seconds": 1.326864,
+      "values": {
+        "x": {
+          "shape": [
+            192000
+          ],
+          "dtype": "float64"
+        },
+        "sr": 48000,
+        "y": {
+          "shape": [
+            64000
+          ],
+          "dtype": "float64"
+        },
+        "sr_y": 16000
+      }
+    },
+    {
+      "themeId": "audio-signal",
+      "chapterId": "amplitude-puissance-decibels",
+      "blockIndex": 16,
+      "role": "demonstration",
+      "sourceSha256": "525c9bdfcaaa81dee18ab5ad345b316febc7a11ef4d65ac2aae7a8340e3e43a3",
+      "stdout": "crête 0.8021240234375 carré moyen 0.014579350650475439 RMS 0.12074498188527522\ndBFS crête -1.9151695288248036 dBFS RMS -18.362618186240418 facteur dB 16.447448657415613\n",
+      "seconds": 0.015102,
+      "values": {
+        "x": {
+          "shape": [
+            192000
+          ],
+          "dtype": "float64"
+        },
+        "sr": 48000,
+        "peak": 0.8021240234375,
+        "mean_square": 0.014579350650475439,
+        "rms": 0.12074498188527522,
+        "peak_dbfs": -1.9151695288248036,
+        "rms_dbfs": -18.362618186240418,
+        "crest_db": 16.447448657415613
+      }
+    },
+    {
+      "themeId": "audio-signal",
+      "chapterId": "fourier-coefficients-frequences",
+      "blockIndex": 5,
+      "role": "demonstration",
+      "sourceSha256": "af56d35ebd97006a138998d358c97a21bc60cfaa1b14a195614c11c9e8a68030",
+      "stdout": "[0.0, 1000.0, 2000.0, 3000.0, 4000.0]\n[0.0, 0.0, 4.0, 0.0, 0.0]\n",
+      "seconds": 0.007864,
+      "values": {
+        "x": {
+          "shape": [
+            8
+          ],
+          "dtype": "float64",
+          "values": [
+            1.0,
+            0.0,
+            -1.0,
+            0.0,
+            1.0,
+            0.0,
+            -1.0,
+            0.0
+          ]
+        },
+        "sr": 8000,
+        "D": {
+          "shape": [
+            5
+          ],
+          "dtype": "complex128",
+          "values": [
+            {
+              "real": 0.0,
+              "imag": 0.0
+            },
+            {
+              "real": 0.0,
+              "imag": 0.0
+            },
+            {
+              "real": 4.0,
+              "imag": -0.0
+            },
+            {
+              "real": 0.0,
+              "imag": 0.0
+            },
+            {
+              "real": 0.0,
+              "imag": 0.0
+            }
+          ]
+        },
+        "f": {
+          "shape": [
+            5
+          ],
+          "dtype": "float64",
+          "values": [
+            0.0,
+            1000.0,
+            2000.0,
+            3000.0,
+            4000.0
+          ]
+        },
+        "modules": {
+          "shape": [
+            5
+          ],
+          "dtype": "float64",
+          "values": [
+            0.0,
+            0.0,
+            4.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "audio-signal",
+      "chapterId": "stft-fenetres-hop-trames",
+      "blockIndex": 6,
+      "role": "demonstration",
+      "sourceSha256": "67f1019f580a7d7c072081225634ecebe070dd6c1c6a42a280a4bed0cafc16dd",
+      "stdout": "(400,) (400,)\n(201, 98)\n",
+      "seconds": 2.347146,
+      "values": {
+        "complet": {
+          "shape": [
+            64000
+          ],
+          "dtype": "float64"
+        },
+        "sr": 16000,
+        "y": {
+          "shape": [
+            16000
+          ],
+          "dtype": "float64"
+        },
+        "longueur_fenetre": 400,
+        "hop": 160,
+        "portion_0": {
+          "shape": [
+            400
+          ],
+          "dtype": "float64"
+        },
+        "portion_1": {
+          "shape": [
+            400
+          ],
+          "dtype": "float64"
+        },
+        "D": {
+          "shape": [
+            201,
+            98
+          ],
+          "dtype": "complex128"
+        }
+      }
+    },
+    {
+      "themeId": "audio-signal",
+      "chapterId": "resolution-fuite-zero-padding",
+      "blockIndex": 4,
+      "role": "demonstration",
+      "sourceSha256": "68bddeee205aa84d97f3a2b6115a5d4ed5db936ab66a69e01c75d1af4768a500",
+      "stdout": "(512,) (2048,)\n(257,) (1025,) (1025,)\n",
+      "seconds": 0.01612,
+      "values": {
+        "y": {
+          "shape": [
+            64000
+          ],
+          "dtype": "float64"
+        },
+        "sr": 16000,
+        "short": {
+          "shape": [
+            512
+          ],
+          "dtype": "float64"
+        },
+        "spectrum_512": {
+          "shape": [
+            257
+          ],
+          "dtype": "complex128"
+        },
+        "spectrum_padded": {
+          "shape": [
+            1025
+          ],
+          "dtype": "complex128"
+        },
+        "long": {
+          "shape": [
+            2048
+          ],
+          "dtype": "float64"
+        },
+        "spectrum_long": {
+          "shape": [
+            1025
+          ],
+          "dtype": "complex128"
+        }
+      }
+    },
+    {
+      "themeId": "audio-signal",
+      "chapterId": "mel-representation-compressee",
+      "blockIndex": 6,
+      "role": "demonstration",
+      "sourceSha256": "541a8dd9f86a2655b6891492f0da9a1c62b445ab49856cdcd09c36e2fd587638",
+      "stdout": "(201, 98) (201, 98) (64, 201) (64, 98)\n-100.0 -35.476\n",
+      "seconds": 0.018887,
+      "values": {
+        "complet": {
+          "shape": [
+            64000
+          ],
+          "dtype": "float64"
+        },
+        "sr": 16000,
+        "y": {
+          "shape": [
+            16000
+          ],
+          "dtype": "float64"
+        },
+        "D": {
+          "shape": [
+            201,
+            98
+          ],
+          "dtype": "complex128"
+        },
+        "power_brute": {
+          "shape": [
+            201,
+            98
+          ],
+          "dtype": "float64"
+        },
+        "weights": {
+          "shape": [
+            64,
+            201
+          ],
+          "dtype": "float32"
+        },
+        "mel_brut": {
+          "shape": [
+            64,
+            98
+          ],
+          "dtype": "float64"
+        },
+        "fenetre": {
+          "shape": [
+            400
+          ],
+          "dtype": "float64"
+        },
+        "power": {
+          "shape": [
+            201,
+            98
+          ],
+          "dtype": "float64"
+        },
+        "mel": {
+          "shape": [
+            64,
+            98
+          ],
+          "dtype": "float64"
+        },
+        "mel_db": {
+          "shape": [
+            64,
+            98
+          ],
+          "dtype": "float64"
+        }
+      }
+    },
+    {
+      "themeId": "audio-signal",
+      "chapterId": "phase-canaux-annulations",
+      "blockIndex": 3,
+      "role": "demonstration",
+      "sourceSha256": "fc23b37318bfc6e15e9b70b8e8e9812ced767747ed7ea15ecc725e800584bba3",
+      "stdout": "",
+      "seconds": 0.002191,
+      "values": {
+        "left": {
+          "shape": [
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            1.0,
+            0.0,
+            -1.0,
+            0.0
+          ]
+        },
+        "right": {
+          "shape": [
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            -1.0,
+            -0.0,
+            1.0,
+            -0.0
+          ]
+        },
+        "stereo": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            [
+              1.0,
+              0.0,
+              -1.0,
+              0.0
+            ],
+            [
+              -1.0,
+              -0.0,
+              1.0,
+              -0.0
+            ]
+          ]
+        },
+        "mono": {
+          "shape": [
+            4
+          ],
+          "dtype": "float64",
+          "values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "audio-signal",
+      "chapterId": "reconstruction-streaming-limites",
+      "blockIndex": 4,
+      "role": "demonstration",
+      "sourceSha256": "453d33dcc7467664eb7740c279ec6ca297a52f8f4632accda650455bb53d4ed9",
+      "stdout": "(257, 501) (64000,) (64000,)\nSTFT complete : erreur max 3.3306690738754696e-16\nContexte futur 0.032\n",
+      "seconds": 0.340828,
+      "values": {
+        "y": {
+          "shape": [
+            64000
+          ],
+          "dtype": "float64"
+        },
+        "sr": 16000,
+        "n": 64000,
+        "D": {
+          "shape": [
+            257,
+            501
+          ],
+          "dtype": "complex128"
+        },
+        "y_hat": {
+          "shape": [
+            64000
+          ],
+          "dtype": "float64"
+        },
+        "erreur_complete": 3.3306690738754696e-16,
+        "y_estimated": {
+          "shape": [
+            64000
+          ],
+          "dtype": "float64"
+        },
+        "future_context_seconds": 0.032
+      }
+    },
+    {
+      "themeId": "audio-ml",
+      "chapterId": "tache-cibles-pertes",
+      "blockIndex": 7,
+      "role": "demonstration",
+      "sourceSha256": "acaae066128ca3f6441f67e658a9671a748bb29cb1b4c39797bf3d7d2723ccff",
+      "stdout": "[[0.5, 0.7500000596046448]] 0.4904146194458008\n",
+      "seconds": 0.003201,
+      "values": {
+        "logits": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              0.0,
+              1.0986123085021973
+            ]
+          ]
+        },
+        "target": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "probabilities": {
+          "shape": [
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              0.5,
+              0.7500000596046448
+            ]
+          ]
+        },
+        "loss": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 0.4904146194458008
+        }
+      }
+    },
+    {
+      "themeId": "audio-ml",
+      "chapterId": "pretraitement-entrees-coherentes",
+      "blockIndex": 5,
+      "role": "demonstration",
+      "sourceSha256": "aa00f005eac886cacfc2e5f5893464161dbceb99c3f57c926b2b7ca47b0c2438",
+      "stdout": "",
+      "seconds": 0.001917,
+      "values": {
+        "train": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            1.0,
+            3.0
+          ]
+        },
+        "mean": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 2.0
+        },
+        "std": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 1.0
+        },
+        "new_value": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 4.0
+        },
+        "scaled": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 2.0
+        }
+      }
+    },
+    {
+      "themeId": "audio-ml",
+      "chapterId": "durees-padding-masques",
+      "blockIndex": 5,
+      "role": "demonstration",
+      "sourceSha256": "715dcf1114da7de4600f5a92d85c9499a09ddcda0524b33fefab4116c569a7bb",
+      "stdout": "torch.Size([1, 4, 1]) [[6.0]] [[2.0]]\n[[1.5]] [[3.0]]\n",
+      "seconds": 0.001902,
+      "values": {
+        "x": {
+          "shape": [
+            1,
+            4,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                2.0
+              ],
+              [
+                4.0
+              ],
+              [
+                0.0
+              ],
+              [
+                0.0
+              ]
+            ]
+          ]
+        },
+        "valid": {
+          "shape": [
+            1,
+            4
+          ],
+          "dtype": "torch.bool",
+          "values": [
+            [
+              true,
+              true,
+              false,
+              false
+            ]
+          ]
+        },
+        "mask": {
+          "shape": [
+            1,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              1.0,
+              1.0,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "mask_features": {
+          "shape": [
+            1,
+            4,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                1.0
+              ],
+              [
+                1.0
+              ],
+              [
+                0.0
+              ],
+              [
+                0.0
+              ]
+            ]
+          ]
+        },
+        "naive": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              1.5
+            ]
+          ]
+        },
+        "contributions": {
+          "shape": [
+            1,
+            4,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                2.0
+              ],
+              [
+                4.0
+              ],
+              [
+                0.0
+              ],
+              [
+                0.0
+              ]
+            ]
+          ]
+        },
+        "somme": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              6.0
+            ]
+          ]
+        },
+        "compte": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              2.0
+            ]
+          ]
+        },
+        "pooled": {
+          "shape": [
+            1,
+            1
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              3.0
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "audio-ml",
+      "chapterId": "embeddings-transfert-domaines",
+      "blockIndex": 4,
+      "role": "demonstration",
+      "sourceSha256": "10dd60bf0a45922b64b7ebb71d5fae4f8fc104e7d3304f0831a3f2cc63740d23",
+      "stdout": "torch.Size([3, 4]) torch.Size([3, 512]) torch.Size([3, 2])\nencodeur conserve True tete modifiee True\n",
+      "seconds": 2.244693,
+      "values": {
+        "x": {
+          "shape": [
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              1.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.0,
+              1.0,
+              1.0,
+              0.0
+            ],
+            [
+              1.0,
+              1.0,
+              0.0,
+              0.0
+            ]
+          ]
+        },
+        "target": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0
+            ],
+            [
+              1.0,
+              1.0
+            ]
+          ]
+        },
+        "p": {
+          "shape": [
+            512
+          ],
+          "dtype": "torch.float32"
+        },
+        "head_before": {
+          "shape": [
+            2,
+            512
+          ],
+          "dtype": "torch.float32"
+        },
+        "embeddings": {
+          "shape": [
+            3,
+            512
+          ],
+          "dtype": "torch.float32"
+        },
+        "logits": {
+          "shape": [
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              -0.024041611701250076,
+              -0.23834307491779327
+            ],
+            [
+              0.21900644898414612,
+              0.12884731590747833
+            ],
+            [
+              -0.07946576178073883,
+              -0.06451170891523361
+            ]
+          ]
+        },
+        "loss": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 0.6975539326667786
+        },
+        "encoder_unchanged": true,
+        "head_changed": true
+      }
+    },
+    {
+      "themeId": "audio-ml",
+      "chapterId": "architectures-axes-contexte",
+      "blockIndex": 5,
+      "role": "demonstration",
+      "sourceSha256": "4c883ac50987454d12a93d7b7755786e17c0c8156b99f354c990754f630298d5",
+      "stdout": "",
+      "seconds": 0.051768,
+      "values": {
+        "x": {
+          "shape": [
+            8,
+            16000
+          ],
+          "dtype": "torch.float32"
+        },
+        "h": {
+          "shape": [
+            8,
+            16,
+            15996
+          ],
+          "dtype": "torch.float32"
+        },
+        "S": {
+          "shape": [
+            8,
+            64,
+            100
+          ],
+          "dtype": "torch.float32"
+        },
+        "z": {
+          "shape": [
+            8,
+            8,
+            62,
+            98
+          ],
+          "dtype": "torch.float32"
+        }
+      }
+    },
+    {
+      "themeId": "audio-ml",
+      "chapterId": "annotations-faibles-agregation",
+      "blockIndex": 3,
+      "role": "demonstration",
+      "sourceSha256": "bbeb2762a6cb1a198572dc7452821a974144995ba83602348f9e79418a1b00a5",
+      "stdout": "",
+      "seconds": 0.004908,
+      "values": {
+        "p": {
+          "shape": [
+            6
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            0.009999999776482582,
+            0.009999999776482582,
+            0.8999999761581421,
+            0.8999999761581421,
+            0.009999999776482582,
+            0.009999999776482582
+          ]
+        },
+        "mean_score": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 0.30666664242744446
+        },
+        "max_score": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 0.8999999761581421
+        }
+      }
+    },
+    {
+      "themeId": "audio-ml",
+      "chapterId": "augmentations-cibles-validation",
+      "blockIndex": 5,
+      "role": "demonstration",
+      "sourceSha256": "a1ae9f984dce63f71972f419e60a2bda2f68ed5b5d2a9189c81c7b2f79b9ecb7",
+      "stdout": "10.0 8.0 125.0\n1.0 1.0 62\n",
+      "seconds": 1.240128,
+      "values": {
+        "sr": 16000,
+        "t": {
+          "shape": [
+            160000
+          ],
+          "dtype": "float64"
+        },
+        "y": {
+          "shape": [
+            160000
+          ],
+          "dtype": "float64"
+        },
+        "fast": {
+          "shape": [
+            128000
+          ],
+          "dtype": "float64"
+        },
+        "new_bpm": 125.0,
+        "frequence_midi_60": 261.6255653005986,
+        "t_note": {
+          "shape": [
+            16000
+          ],
+          "dtype": "float64"
+        },
+        "note": {
+          "shape": [
+            16000
+          ],
+          "dtype": "float64"
+        },
+        "up": {
+          "shape": [
+            16000
+          ],
+          "dtype": "float64"
+        },
+        "new_midi": 62
+      }
+    },
+    {
+      "themeId": "audio-ml",
+      "chapterId": "masquage-mixup-representations",
+      "blockIndex": 6,
+      "role": "demonstration",
+      "sourceSha256": "839ea2e7e6b31bba0ae1bb7f223a2db05a8220b25c6fbfaf330b3c8d9e9c570c",
+      "stdout": "[[4.0, 5.0], [6.0, 7.0]]\n[0.25, 0.75]\n",
+      "seconds": 0.002859,
+      "values": {
+        "x_a": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              1.0,
+              2.0
+            ],
+            [
+              3.0,
+              4.0
+            ]
+          ]
+        },
+        "x_b": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              5.0,
+              6.0
+            ],
+            [
+              7.0,
+              8.0
+            ]
+          ]
+        },
+        "y_a": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            1.0,
+            0.0
+          ]
+        },
+        "y_b": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            0.0,
+            1.0
+          ]
+        },
+        "lam": 0.25,
+        "x_mix": {
+          "shape": [
+            2,
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              4.0,
+              5.0
+            ],
+            [
+              6.0,
+              7.0
+            ]
+          ]
+        },
+        "y_mix": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            0.25,
+            0.75
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "audio-ml",
+      "chapterId": "similarite-cosinus-et-contraste",
+      "blockIndex": 4,
+      "role": "demonstration",
+      "sourceSha256": "ec3bf0c559259f1b3000f18f36a79ec543605f5afbf8bc305d36448b54844f32",
+      "stdout": "0.6\n0.6\n",
+      "seconds": 0.001979,
+      "values": {
+        "a": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            1.0,
+            0.0
+          ]
+        },
+        "b": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            0.6,
+            0.8
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "audio-ml",
+      "chapterId": "similarite-cosinus-et-contraste",
+      "blockIndex": 4,
+      "role": "variant",
+      "sourceSha256": "96ff14de45a74df6ae0b6db342b3a9dfd20ef68efb2ece8c011bad5f597154e6",
+      "stdout": "1.2\n0.6\n",
+      "seconds": 0.001739,
+      "values": {
+        "a": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            1.0,
+            0.0
+          ]
+        },
+        "b": {
+          "shape": [
+            2
+          ],
+          "dtype": "float64",
+          "values": [
+            1.2,
+            1.6
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "audio-ml",
+      "chapterId": "similarites-contraste-attention",
+      "blockIndex": 3,
+      "role": "demonstration",
+      "sourceSha256": "8e93c362e8acb7fa6c6641751683860ac9c50361e33b25d34857529b00f67da3",
+      "stdout": "",
+      "seconds": 0.002953,
+      "values": {
+        "scores": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            1.0986123085021973,
+            0.0
+          ]
+        },
+        "values": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            2.0,
+            10.0
+          ]
+        },
+        "weights": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            0.7500000596046448,
+            0.25
+          ]
+        },
+        "summary": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 4.0
+        },
+        "valid": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.bool",
+          "values": [
+            true,
+            false
+          ]
+        },
+        "masked": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            1.0986123085021973,
+            "-inf"
+          ]
+        },
+        "summary_valid": {
+          "shape": [],
+          "dtype": "torch.float32",
+          "values": 2.0
+        }
+      }
+    },
+    {
+      "themeId": "audio-ml",
+      "chapterId": "similarites-contraste-attention",
+      "blockIndex": 6,
+      "role": "demonstration",
+      "sourceSha256": "db6081ad0d4d94d820a9c12466e2edf9d9738cacb0ffd805d7980b0741d9f159",
+      "stdout": "torch.Size([2, 3, 8]) torch.Size([2, 3, 3])\n[0.0, 0.0, 0.0]\n",
+      "seconds": 0.00872,
+      "values": {
+        "D": 8,
+        "x": {
+          "shape": [
+            2,
+            3,
+            8
+          ],
+          "dtype": "torch.float32"
+        },
+        "valid": {
+          "shape": [
+            2,
+            3
+          ],
+          "dtype": "torch.bool",
+          "values": [
+            [
+              true,
+              true,
+              false
+            ],
+            [
+              true,
+              true,
+              true
+            ]
+          ]
+        },
+        "y": {
+          "shape": [
+            2,
+            3,
+            8
+          ],
+          "dtype": "torch.float32"
+        },
+        "weights": {
+          "shape": [
+            2,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                0.5252629518508911,
+                0.4747370481491089,
+                0.0
+              ],
+              [
+                0.5376245975494385,
+                0.4623754024505615,
+                0.0
+              ],
+              [
+                0.5496307611465454,
+                0.4503692388534546,
+                0.0
+              ]
+            ],
+            [
+              [
+                0.42123427987098694,
+                0.31559908390045166,
+                0.2631666362285614
+              ],
+              [
+                0.4377264976501465,
+                0.30697911977767944,
+                0.2552943825721741
+              ],
+              [
+                0.4527965486049652,
+                0.29748332500457764,
+                0.24972012639045715
+              ]
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "themeId": "audio-ml",
+      "chapterId": "transformer-complet",
+      "blockIndex": 8,
+      "role": "demonstration",
+      "sourceSha256": "884af461565ecb8e59d455d765e0af3e8e4316d3ac10b9cea156aeed9a59f3bc",
+      "stdout": "position_zero [0.0, 1.0, 0.0, 1.0]\nentree_zero [1.0, 1.0, 1.0, 1.0]\nmoyenne_variance 2.0 1.0\nnormalisation [-0.999995, 0.999995]\ndimension_tete 2\nformes_couches [[1, 3, 4], [1, 3, 4]]\nforme_poids [1, 2, 3, 3]\nmasque [[0, 1, 1], [0, 0, 1], [0, 0, 0]]\necart_passe_causal 0.0\necart_passe_libre 0.204499\n",
+      "seconds": 0.009615,
+      "values": {
+        "tokens": {
+          "shape": [
+            1,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                1.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                1.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                1.0,
+                0.0,
+                1.0,
+                0.0
+              ]
+            ]
+          ]
+        },
+        "p": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            0.0,
+            1.0,
+            2.0
+          ]
+        },
+        "position": {
+          "shape": [
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              0.0,
+              1.0,
+              0.0,
+              1.0
+            ],
+            [
+              0.8414709568023682,
+              0.5403023362159729,
+              0.009999833069741726,
+              0.9999499917030334
+            ],
+            [
+              0.9092974066734314,
+              -0.416146844625473,
+              0.019998665899038315,
+              0.9998000264167786
+            ]
+          ]
+        },
+        "x": {
+          "shape": [
+            1,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              [
+                1.8414709568023682,
+                0.5403023362159729,
+                1.0099998712539673,
+                0.9999499917030334
+              ],
+              [
+                1.9092974662780762,
+                -0.416146844625473,
+                1.0199986696243286,
+                0.9998000264167786
+              ]
+            ]
+          ]
+        },
+        "mini": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            1.0,
+            3.0
+          ]
+        },
+        "normalise": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            -0.9999949932098389,
+            0.9999949932098389
+          ]
+        },
+        "masque": {
+          "shape": [
+            3,
+            3
+          ],
+          "dtype": "torch.bool",
+          "values": [
+            [
+              false,
+              true,
+              true
+            ],
+            [
+              false,
+              false,
+              true
+            ],
+            [
+              false,
+              false,
+              false
+            ]
+          ]
+        },
+        "sortie": {
+          "shape": [
+            1,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                0.5037751197814941,
+                0.7017374038696289,
+                0.6359087228775024,
+                1.164050817489624
+              ],
+              [
+                1.7025349140167236,
+                0.009454499930143356,
+                0.964293360710144,
+                1.7055538892745972
+              ],
+              [
+                1.9237747192382812,
+                -1.0912690162658691,
+                1.045729160308838,
+                1.794055700302124
+              ]
+            ]
+          ]
+        },
+        "poids": {
+          "shape": [
+            1,
+            2,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                [
+                  1.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.467512845993042,
+                  0.532487154006958,
+                  0.0
+                ],
+                [
+                  0.28989365696907043,
+                  0.3415413200855255,
+                  0.36856502294540405
+                ]
+              ],
+              [
+                [
+                  1.0,
+                  0.0,
+                  0.0
+                ],
+                [
+                  0.292481392621994,
+                  0.7075185775756836,
+                  0.0
+                ],
+                [
+                  0.19775891304016113,
+                  0.3975931406021118,
+                  0.40464794635772705
+                ]
+              ]
+            ]
+          ]
+        },
+        "modifie": {
+          "shape": [
+            1,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ],
+              [
+                1.8414709568023682,
+                0.5403023362159729,
+                1.0099998712539673,
+                0.9999499917030334
+              ],
+              [
+                11.909297943115234,
+                -8.416147232055664,
+                7.019998550415039,
+                -3.000200033187866
+              ]
+            ]
+          ]
+        },
+        "causal": {
+          "shape": [
+            1,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                0.5037751197814941,
+                0.7017374038696289,
+                0.6359087228775024,
+                1.164050817489624
+              ],
+              [
+                1.7025349140167236,
+                0.009454499930143356,
+                0.964293360710144,
+                1.7055538892745972
+              ],
+              [
+                12.062980651855469,
+                -8.720215797424316,
+                6.675471782684326,
+                -1.921000599861145
+              ]
+            ]
+          ]
+        },
+        "libre": {
+          "shape": [
+            1,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                1.2585736513137817,
+                0.22255617380142212,
+                1.1420230865478516,
+                1.7162914276123047
+              ],
+              [
+                2.0334105491638184,
+                0.007800966501235962,
+                1.0661866664886475,
+                1.949297308921814
+              ],
+              [
+                2.0495855808258057,
+                -0.955166220664978,
+                1.0796557664871216,
+                1.9270802736282349
+              ]
+            ]
+          ]
+        },
+        "libre_modifie": {
+          "shape": [
+            1,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "values": [
+            [
+              [
+                1.2396509647369385,
+                0.42705535888671875,
+                0.9381298422813416,
+                1.5625580549240112
+              ],
+              [
+                2.1096956729888916,
+                0.11029795557260513,
+                0.8712217807769775,
+                1.8134275674819946
+              ],
+              [
+                12.163302421569824,
+                -8.55550479888916,
+                6.7559990882873535,
+                -1.7738133668899536
+              ]
+            ]
+          ]
+        },
+        "ecart_causal": 0.0,
+        "ecart_libre": 0.20449918508529663
+      }
+    }
+  ],
+  "claims": "No pretrained model quality is measured. Standalone examples define every Python object; audio inputs are declared resources.",
+  "caseCount": 38
+}

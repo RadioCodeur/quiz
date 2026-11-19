@@ -17,7 +17,7 @@
   "chapters": [
     {
       "id": "echantillons-duree-canaux",
-      "title": "Partir de deux vrais sons et retrouver leurs secondes",
+      "title": "Échantillons, cadence et canaux : retrouver les secondes",
       "summary": "Comment relier les valeurs du fichier à ce que nous entendons, avant de lui appliquer une transformation ?",
       "questionIds": [
         "sig-001",
@@ -43,47 +43,73 @@
         },
         {
           "type": "paragraph",
-          "text": "Un échantillon (sample) est une mesure du signal à un instant. La fréquence d’échantillonnage (sample rate), notée sr, indique combien de mesures représentent une seconde, par canal. La source de parole est fournie à 16 kHz, celle de caisse claire à 22,05 kHz. Nos versions de référence sont interpolées à 48 kHz pour les manipuler à une cadence commune. Cette interpolation ajoute des positions calculées, pas des détails aigus absents des sources."
+          "text": "Un échantillon est une mesure du signal à un instant. La fréquence d’échantillonnage, notée sr, indique le nombre de mesures par seconde et par canal. Commençons par la source réelle de parole à sa cadence native de 16 kHz. Nous conservons seulement ses quatre premières secondes."
         },
         {
           "type": "paragraph",
-          "text": "Chaque référence contient 192 000 échantillons à 48 000 échantillons par seconde : 192000/48000 = 4 secondes. Pour découper la première demi-seconde, on conserve les 24 000 premières valeurs. Le dernier échantillon de ce morceau précède juste 0,5 seconde ; la durée représentée reste N/sr."
+          "text": "Ces quatre secondes contiennent 64 000 valeurs à 16 000 valeurs par seconde. Leur durée vaut 64000/16000=4. Pour conserver une demi-seconde, il faut 8 000 valeurs. L’atelier audible emploie une copie de référence à 48 kHz ; sa préparation sera expliquée au chapitre suivant."
+        },
+        {
+          "type": "paragraph",
+          "text": "Pour exécuter cet exemple, téléchargez voice-source.ogg avec le lien du programme. Placez-le à côté de votre script, puis lancez Python depuis ce dossier. Le chemin désigne un fichier local ; il ne télécharge rien automatiquement."
         },
         {
           "type": "walkthrough",
           "title": "Lire un vrai fichier avant de le transformer",
           "goal": "Vérifier cadence, canaux et durée sur la référence de parole.",
           "language": "python",
-          "code": "import soundfile as sf\ny, sr = sf.read(\"public/media/audio/voice-original.wav\")\nnb_echantillons = y.shape[0]\nduree = nb_echantillons / sr\npremiere_demi_seconde = y[:round(0.5 * sr)]",
+          "code": "import soundfile as sf\nsource, sr = sf.read(\"voice-source.ogg\")\ny = source[:4 * sr]\nnb_echantillons = y.shape[0]\nduree = nb_echantillons / sr\nnb_demi_seconde = round(0.5 * sr)\npremiere_demi_seconde = y[:nb_demi_seconde]\nprint(y.shape, sr, duree)\nprint(premiere_demi_seconde.shape)",
           "steps": [
             {
-              "title": "Lire la donnée et sa cadence",
-              "text": "Le chargeur renvoie le signal et la fréquence inscrite dans le fichier. Notre extrait est mono : y possède un seul axe, celui du temps.",
-              "state": "y.shape = (192000,), sr = 48000 Hz",
+              "title": "Lire la source à sa cadence native",
+              "text": "sf.read renvoie deux objets : les amplitudes et le nombre de mesures par seconde inscrit dans le fichier. La source est mono.",
+              "state": "sr=16000 Hz ; source possède un axe temporel.",
               "lines": [
                 1,
                 2
               ]
             },
             {
-              "title": "Convertir le compte en secondes",
-              "text": "Le nombre de mesures est divisé par le nombre de mesures par seconde. Aucune durée ne se déduit de la hauteur des pics.",
-              "state": "192000/48000 = 4 secondes",
+              "title": "Fixer la même portion parlée",
+              "text": "4*sr convertit quatre secondes en 64 000 positions. Le slice conserve les indices 0 à 63 999, sans modifier la source.",
+              "state": "y.shape=(64000,).",
               "lines": [
-                3,
-                4
+                3
               ]
             },
             {
-              "title": "Choisir une durée réelle",
-              "text": "Le découpage suit la cadence du fichier au lieu de supposer qu’un indice représente une seconde.",
-              "state": "24000 valeurs, soit 0,5 seconde",
+              "title": "Retrouver les secondes",
+              "text": "shape[0] lit la taille du premier axe. Le quotient 64000/16000 donne la durée ; ce n’est pas la dernière amplitude.",
+              "state": "duree=4.0 secondes.",
               "lines": [
+                4,
                 5
+              ]
+            },
+            {
+              "title": "Convertir une autre durée en indices",
+              "text": "round transforme la demande de 0,5 seconde en 8 000 positions. Le nouveau slice conserve les huit mille premières mesures.",
+              "state": "premiere_demi_seconde.shape=(8000,).",
+              "lines": [
+                6,
+                7,
+                8,
+                9
               ]
             }
           ],
-          "result": "Le fichier audible et les nombres partagent le même axe temporel. Nous pouvons annoncer exactement la portion étudiée."
+          "result": "Le fichier audible et les nombres partagent le même axe temporel. Nous pouvons annoncer exactement la portion étudiée.",
+          "codeMode": "standalone",
+          "resources": [
+            {
+              "label": "Télécharger voice-source.ogg",
+              "path": "media/audio/sources/voice-source.ogg"
+            }
+          ],
+          "requires": [
+            "Installer les bibliothèques indiquées dans les imports.",
+            "Placer voice-source.ogg dans le dossier depuis lequel le programme est lancé."
+          ]
         },
         {
           "type": "paragraph",
@@ -100,26 +126,26 @@
           ],
           "rows": [
             [
-              "Notre fichier mono à 48 kHz",
-              "(192000,)",
+              "Source de parole mono, portion du code",
+              "(64000,) à 16000 Hz",
               "4 secondes"
             ],
             [
-              "Deux canaux simultanés sur la même durée, si on les construisait",
-              "(192000, 2), convention soundfile",
+              "Référence interpolée du lecteur",
+              "(192000,) à 48000 Hz",
               "Toujours 4 secondes"
             ],
             [
-              "Une demi-seconde mono à 48 kHz",
-              "(24000,)",
+              "Demi-seconde de la source native",
+              "(8000,) à 16000 Hz",
               "0,5 seconde"
             ]
           ],
-          "caption": "Ajouter des canaux augmente le nombre de valeurs stockées, pas la durée. Les ateliers utilisent les fichiers mono annoncés."
+          "caption": "Le code démarre à la cadence native. Le lecteur conserve sa référence commune documentée ; les deux portions représentent les mêmes quatre secondes."
         },
         {
           "type": "callout",
-          "text": "Si nous gardions les 192 000 valeurs mais annoncions sr=16000 au lecteur, le son durerait douze secondes et jouerait plus grave. Changer l’étiquette de cadence ne convertit pas le signal. Au prochain chapitre, nous construirons réellement une autre suite de mesures pour conserver les mêmes quatre secondes.",
+          "text": "Changer seulement sr sans recalculer les valeurs change la vitesse de lecture. La référence à 48 kHz possède réellement davantage de valeurs interpolées. Cette préparation commune n’ajoute aucun aigu absent de la source à 16 kHz.",
           "tone": "pitfall",
           "label": "Changer l’étiquette de cadence ne convertit pas le signal"
         },
@@ -156,10 +182,6 @@
             }
           ],
           "caption": "Exemple calculé : x(t) = cos(2πt), observé aux quarts de seconde. Les segments relient les mesures et ne prétendent pas dessiner la vraie courbe continue."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : la durée dépend du nombre d’échantillons par canal et de leur cadence. Deux canaux simultanés ne doublent pas les secondes, et une interpolation ne recrée pas les aigus absents."
         }
       ],
       "takeaways": [
@@ -221,11 +243,12 @@
         "input": "Deux extraits mono de quatre secondes sont disponibles et leurs sources sont documentées.",
         "action": "Écouter, lire la forme et convertir les indices en secondes avec la cadence réelle.",
         "output": "Nous savons quelle portion de son chaque tableau représente."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "nyquist-repliement-reechantillonnage",
-      "title": "Mettre les fichiers à la même cadence sans changer les sons",
+      "title": "Nyquist et rééchantillonnage : changer la cadence, pas la vitesse",
       "summary": "Réduire la cadence vers 16 kHz conserve-t-il la durée, et quelle bande peut rester représentée ?",
       "questionIds": [
         "sig-002",
@@ -253,6 +276,10 @@
           "caption": "Une même oscillation est décrite différemment selon la densité des échantillons. Une cadence insuffisante peut la faire paraître plus lente."
         },
         {
+          "type": "paragraph",
+          "text": "Pour exécuter cet exemple, téléchargez voice-original.wav avec le lien du programme. Placez-le à côté de votre script, puis lancez Python depuis ce dossier. Le chemin désigne un fichier local ; il ne télécharge rien automatiquement."
+        },
+        {
           "type": "walkthrough",
           "title": "Quatre secondes, avec trois fois moins de mesures",
           "goal": "Contrôler la durée après un vrai rééchantillonnage.",
@@ -274,6 +301,13 @@
               "state": "64000 valeurs après le rapport 1/3",
               "lines": [
                 4
+              ],
+              "details": [
+                {
+                  "code": "resample_poly(x, up=1, down=3)",
+                  "explanation": "up et down définissent le rapport de cadence 1/3. Le filtre retire la bande qui se replierait avant la réduction des positions. x est seulement lu.",
+                  "state": "192000 valeurs à 48000 Hz → 64000 valeurs à 16000 Hz."
+                }
               ]
             },
             {
@@ -287,7 +321,18 @@
             }
           ],
           "result": "La cadence change, mais quatre secondes restent quatre secondes. Un écart audible éventuel relève du filtrage ou de la bande retirée, pas d’une vitesse volontairement modifiée.",
-          "code": "import soundfile as sf\nfrom scipy.signal import resample_poly\nx, sr = sf.read(\"public/media/audio/voice-original.wav\")\ny = resample_poly(x, up=1, down=3)\nsr_y = 16000\n# len(x)/sr == len(y)/sr_y == 4.0"
+          "code": "import soundfile as sf\nfrom scipy.signal import resample_poly\nx, sr = sf.read(\"voice-original.wav\")\ny = resample_poly(x, up=1, down=3)\nsr_y = 16000\n# len(x)/sr == len(y)/sr_y == 4.0\nprint(x.shape, sr, y.shape, sr_y)\nprint(len(x) / sr, len(y) / sr_y)",
+          "codeMode": "standalone",
+          "resources": [
+            {
+              "label": "Télécharger voice-original.wav",
+              "path": "media/audio/voice-original.wav"
+            }
+          ],
+          "requires": [
+            "Installer les bibliothèques indiquées dans les imports.",
+            "Placer voice-original.wav dans le dossier depuis lequel le programme est lancé."
+          ]
         },
         {
           "type": "analysis-image",
@@ -437,10 +482,6 @@
             }
           ],
           "caption": "Valeurs exactes de cos(2π·6000·n/8000) et cos(2π·2000·n/8000). Les deux séries coïncident : ces échantillons seuls ne permettent pas d’identifier la fréquence originale."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : réduire la cadence demande un filtrage adapté avant de retirer des mesures. Je contrôle la durée conservée et la bande supprimée, plutôt que de changer seulement une métadonnée."
         }
       ],
       "takeaways": [
@@ -500,11 +541,12 @@
         "input": "Les références sont à 48 kHz, obtenues depuis des sources à 16 et 22,05 kHz.",
         "action": "Rééchantillonner à 16 kHz avec filtrage et distinguer cette conversion d’un passe-bas sévère.",
         "output": "La durée est conservée ; nous savons quelle bande reste représentable."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "amplitude-puissance-decibels",
-      "title": "Comparer le niveau de la voix et de la percussion",
+      "title": "Crête, RMS et décibels : comparer deux enregistrements",
       "summary": "La caisse claire a-t-elle un pic plus haut ou un niveau soutenu plus fort ? Ce ne sont pas la même question.",
       "questionIds": [
         "sig-007",
@@ -608,16 +650,20 @@
           "text": "Les LUFS (loudness units relative to full scale) décrivent une sonie de programme relativement à la pleine échelle. Leur calcul emploie notamment une pondération fréquentielle et des règles d’intégration définies par ITU-R BS.1770. Ils servent à rendre la lecture de programmes cohérente quand une égalisation de RMS ne correspond pas assez au volume perçu. Ils ne donnent pas non plus le niveau acoustique dans votre casque. L’atelier affiche les mesures simples annoncées ; il ne rebaptise pas sa RMS en LUFS."
         },
         {
+          "type": "paragraph",
+          "text": "Pour exécuter cet exemple, téléchargez voice-original.wav avec le lien du programme. Placez-le à côté de votre script, puis lancez Python depuis ce dossier. Le chemin désigne un fichier local ; il ne télécharge rien automatiquement."
+        },
+        {
           "type": "walkthrough",
           "title": "Mesurer les quatre secondes réellement écoutées",
           "goal": "Calculer chaque grandeur après avoir défini son rôle, puis la relier au tableau de l’atelier.",
           "language": "python",
-          "code": "import soundfile as sf\nimport numpy as np\nx, sr = sf.read(\"public/media/audio/voice-original.wav\")\npeak = np.max(np.abs(x))\nmean_square = np.mean(x ** 2)\nrms = np.sqrt(mean_square)\npeak_dbfs = 20 * np.log10(max(peak, 1e-12))\nrms_dbfs = 20 * np.log10(max(rms, 1e-12))\ncrest_db = peak_dbfs - rms_dbfs",
+          "code": "import soundfile as sf\nimport numpy as np\nx, sr = sf.read(\"voice-original.wav\")\npeak = np.max(np.abs(x))\nmean_square = np.mean(x ** 2)\nrms = np.sqrt(mean_square)\npeak_dbfs = 20 * np.log10(max(peak, 1e-12))\nrms_dbfs = 20 * np.log10(max(rms, 1e-12))\ncrest_db = peak_dbfs - rms_dbfs\nprint(\"crête\", peak, \"carré moyen\", mean_square, \"RMS\", rms)\nprint(\"dBFS crête\", peak_dbfs, \"dBFS RMS\", rms_dbfs, \"facteur dB\", crest_db)",
           "steps": [
             {
-              "title": "Définir la portion",
-              "text": "x contient exactement le fichier joué, mono, sans ne sélectionner que les syllabes fortes. Les pauses participent à la mesure.",
-              "state": "Quatre secondes, sans normalisation propre à chaque fichier.",
+              "title": "Lire exactement la portion mesurée",
+              "text": "Le fichier est mono et dure quatre secondes. Toutes les valeurs, y compris les pauses, participent à la mesure.",
+              "state": "x.shape=(192000,), sr=48000 Hz.",
               "lines": [
                 1,
                 2,
@@ -625,34 +671,61 @@
               ]
             },
             {
-              "title": "Mesurer deux propriétés",
-              "text": "La crête cherche le plus grand module. Le carré moyen rassemble les valeurs ; sa racine revient à une amplitude.",
-              "state": "peak : amplitude ; mean_square : amplitude² ; rms : amplitude.",
+              "title": "Retenir la plus grande excursion",
+              "text": "abs construit les amplitudes absolues. max retient une seule valeur, la crête, sans modifier le signal.",
+              "state": "peak ≈ 0,802124.",
               "lines": [
-                4,
+                4
+              ],
+              "details": [
+                {
+                  "code": "np.max(np.abs(x))",
+                  "explanation": "Le calcul imbriqué s’effectue dans cet ordre : valeurs absolues, puis maximum de la portion.",
+                  "state": "Une amplitude scalaire, pas un niveau moyen."
+                }
+              ]
+            },
+            {
+              "title": "Moyenner les carrés puis prendre leur racine",
+              "text": "Le carré moyen résume x². Sa racine ramène le résultat à une amplitude comparable à la crête.",
+              "state": "mean_square ≈ 0,014579 ; rms ≈ 0,120745.",
+              "lines": [
                 5,
                 6
               ]
             },
             {
-              "title": "Rapporter les amplitudes à 1",
-              "text": "Les deux niveaux utilisent 20log10 car leurs entrées sont des amplitudes. Le plancher protège seulement le logarithme d’une valeur nulle.",
-              "state": "dBFS crête et RMS, référence amplitude 1.",
+              "title": "Définir les deux rapports logarithmiques",
+              "text": "La référence d’amplitude est 1. Le plancher empêche log10(0), sans changer ces deux valeurs positives.",
+              "state": "peak_dbfs ≈ −1,92 ; rms_dbfs ≈ −18,36.",
               "lines": [
                 7,
                 8
               ]
             },
             {
-              "title": "Mesurer le contraste des pics",
-              "text": "La différence des niveaux vaut 20log10(peak/RMS). Un facteur de crête plus grand signifie des pics plus hauts relativement au niveau global.",
-              "state": "crest_db = peak_dbfs − rms_dbfs.",
+              "title": "Lire le contraste des pics",
+              "text": "Soustraire les niveaux revient à exprimer le rapport peak/rms en décibels.",
+              "state": "crest_db ≈ 16,45 dB.",
               "lines": [
-                9
+                9,
+                10,
+                11
               ]
             }
           ],
-          "result": "Chaque sortie répond à une question : crête pour la marge, RMS pour le niveau global de cette portion, facteur de crête pour le contraste des attaques."
+          "result": "Chaque sortie répond à une question : crête pour la marge, RMS pour le niveau global de cette portion, facteur de crête pour le contraste des attaques.",
+          "codeMode": "standalone",
+          "resources": [
+            {
+              "label": "Télécharger voice-original.wav",
+              "path": "media/audio/voice-original.wav"
+            }
+          ],
+          "requires": [
+            "Installer les bibliothèques indiquées dans les imports.",
+            "Placer voice-original.wav dans le dossier depuis lequel le programme est lancé."
+          ]
         },
         {
           "type": "callout",
@@ -706,10 +779,6 @@
         {
           "type": "paragraph",
           "text": "Pour le classifieur, la finalité est de distinguer un indice sonore d’un gain accidentel. Surveiller les crêtes évite l’écrêtage ; comparer les RMS révèle un possible raccourci de niveau. Le facteur de crête conserve un contraste temporel que l’égalisation ne supprime pas. Normaliser peut aider si le gain est accidentel, mais gêner une tâche qui doit estimer ce niveau. Aucune de ces mesures ne suffit à reconnaître les classes : il reste à observer leurs fréquences."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : j’annonce la portion, la grandeur et la référence avant de comparer des niveaux. Crête, RMS et facteur de crête répondent à des questions différentes ; une égalité de RMS ne garantit pas une même sonie."
         }
       ],
       "takeaways": [
@@ -779,11 +848,12 @@
         "action": "Choisir une mesure par question, puis comparer les originaux et les variantes avec une référence fixe.",
         "output": "Distinguer marge avant écrêtage, niveau global et contraste des pics, sans confondre niveaux numériques et acoustique calibrée."
       },
-      "lengthJustification": "Ce chapitre conserve ensemble amplitude, carré moyen, RMS et références des décibels. Les écoutes et mesures de voix et de percussion relient ces grandeurs à une même décision pratique. Séparer les définitions des conversions et des conclusions interromprait la comparaison détaillée demandée par le lecteur."
+      "lengthJustification": "Ce chapitre conserve ensemble amplitude, carré moyen, RMS et références des décibels. Les écoutes et mesures de voix et de percussion relient ces grandeurs à une même décision pratique. Séparer les définitions des conversions et des conclusions interromprait la comparaison détaillée demandée par le lecteur.",
+      "level": "practice"
     },
     {
       "id": "fourier-coefficients-frequences",
-      "title": "Découvrir les fréquences cachées dans la courbe",
+      "title": "FFT : relier chaque coefficient à sa fréquence",
       "summary": "Deux extraits peuvent avoir la même RMS et pourtant sonner très différemment : comment décrire leur contenu fréquentiel ?",
       "questionIds": [
         "sig-013",
@@ -833,6 +903,18 @@
               "lines": [
                 4,
                 5
+              ],
+              "details": [
+                {
+                  "code": "np.fft.rfftfreq(len(x), d=1/sr)",
+                  "explanation": "len(x) donne les huit points de FFT. d est le délai entre deux mesures, soit 1/8000 seconde. La fonction retourne les fréquences, pas les coefficients.",
+                  "state": "f=[0,1000,2000,3000,4000] Hz."
+                },
+                {
+                  "code": "np.fft.rfft(x)",
+                  "explanation": "rfft calcule les coefficients complexes non redondants d’un signal réel. x est seulement lu.",
+                  "state": "D.shape=(5,)."
+                }
               ]
             },
             {
@@ -845,7 +927,8 @@
             }
           ],
           "result": "Ce cas construit est aligné sur la grille. Une vraie voix ou percussion répartit généralement ses composantes entre plusieurs bins.",
-          "code": "import numpy as np\nx = np.array([1., 0., -1., 0., 1., 0., -1., 0.])\nsr = 8000\nD = np.fft.rfft(x)\nf = np.fft.rfftfreq(len(x), d=1/sr)\nmodules = np.abs(D)  # [0, 0, 4, 0, 0], aux arrondis pres"
+          "code": "import numpy as np\nx = np.array([1., 0., -1., 0., 1., 0., -1., 0.])\nsr = 8000\nD = np.fft.rfft(x)\nf = np.fft.rfftfreq(len(x), d=1/sr)\nmodules = np.abs(D)  # [0, 0, 4, 0, 0], aux arrondis pres\nprint(f.tolist())\nprint(modules.tolist())",
+          "codeMode": "standalone"
         },
         {
           "type": "illustration",
@@ -938,10 +1021,6 @@
             }
           ],
           "caption": "Résultat analytique pour N = 8 et sr = 8000 Hz. Les traits entre bins servent à guider le regard ; seules les cinq positions indiquées sont les coefficients calculés."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : une FFT décrit des contributions sur une grille dont les fréquences dépendent de la cadence et de la taille d’analyse. Module et phase portent des informations différentes."
         }
       ],
       "takeaways": [
@@ -1002,11 +1081,12 @@
         "input": "Nous avons un signal mono à 16 kHz et savons interpréter son niveau, sans encore décrire son timbre.",
         "action": "Calculer une transformée de Fourier et associer chaque coefficient à sa fréquence et à son module.",
         "output": "Nous savons lire un spectre et distinguer indice de bin, fréquence, module et phase."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "stft-fenetres-hop-trames",
-      "title": "Voir les syllabes et les attaques de caisse claire",
+      "title": "STFT : déplacer une fenêtre et construire ses trames",
       "summary": "Comment conserver l’évolution du son au lieu de résumer ses quatre secondes par un seul spectre ?",
       "questionIds": [
         "sig-005",
@@ -1035,45 +1115,86 @@
           "text": "Fixons nos conventions : cadence 16 kHz, fenêtre de 400 valeurs, déplacement de 160 valeurs. La fenêtre observe 25 ms ; le déplacement, ou hop, vaut 10 ms. Les portions se recouvrent donc. Nous n’avons pas quatre cents instants indépendants résumés par une seule mesure, mais une description fréquentielle obtenue en pondérant ces quatre cents valeurs. Nous préciserons la pondération au chapitre suivant."
         },
         {
+          "type": "paragraph",
+          "text": "Pour exécuter cet exemple, téléchargez voice-resampled.wav avec le lien du programme. Placez-le à côté de votre script, puis lancez Python depuis ce dossier. Le chemin désigne un fichier local ; il ne télécharge rien automatiquement."
+        },
+        {
           "type": "walkthrough",
           "title": "Analyser la première seconde de notre parole réelle",
           "goal": "Construire et lire une matrice fréquentielle dont chaque axe est expliqué.",
           "language": "python",
           "steps": [
             {
-              "title": "Avant : définir la seconde",
-              "text": "Le signal mono contient 16000 valeurs à 16 kHz. Nous utilisons une fenêtre de 400 valeurs, soit 25 ms, et un hop de 160 valeurs, soit 10 ms.",
-              "state": "N = 16000 ; L = 400 ; H = 160",
+              "title": "Choisir une seconde réelle",
+              "text": "Le WAV préparé est à 16 kHz. Le slice :sr conserve ses 16 000 premières valeurs. complet reste intact.",
+              "state": "y.shape=(16000,).",
               "lines": [
                 3,
-                4,
-                6,
-                7
+                4
               ]
             },
             {
-              "title": "Placer les fenêtres complètes",
-              "text": "Sans ajout de zéros (padding), les débuts sont 0, 160, 320 et ainsi de suite. Chaque portion doit finir avant la longueur du signal ; une portion finale trop courte est exclue.",
-              "state": "Début de trame j = j × 160",
+              "title": "Séparer observation et déplacement",
+              "text": "Une portion contient 400 valeurs, soit 25 ms. Le prochain départ avance de 160 valeurs, soit 10 ms.",
+              "state": "L=400 ; H=160.",
               "lines": [
                 5,
-                6,
+                6
+              ]
+            },
+            {
+              "title": "Voir les deux premières portions",
+              "text": "La première utilise les indices 0 à 399. La suivante utilise 160 à 559. Elles partagent 240 mesures.",
+              "state": "portion_0 et portion_1 ont chacune (400,).",
+              "lines": [
                 7,
                 8
               ]
             },
             {
-              "title": "Après : calculer la forme",
-              "text": "Le nombre vaut 1 + floor((16000 - 400)/160) = 98. Une FFT réelle de 400 points donne 201 fréquences, donc D a la forme (201, 98).",
-              "state": "D : 201 bins × 98 trames",
+              "title": "Appliquer l’analyse locale",
+              "text": "stft pondère chaque portion par sa fenêtre de Hann, puis calcule une FFT. center=False n’ajoute pas de contexte aux bords.",
+              "state": "Une trame possède 400//2+1=201 coefficients complexes.",
               "lines": [
                 9,
                 10
+              ],
+              "details": [
+                {
+                  "code": "n_fft=400, win_length=400",
+                  "explanation": "Ici la taille de FFT égale la longueur observée. Les séparer sera l’objet du chapitre sur le zero-padding.",
+                  "state": "Pas de zéros supplémentaires dans la portion."
+                },
+                {
+                  "code": "hop_length=160, center=False",
+                  "explanation": "Le départ avance de 160 et seules les fenêtres complètes sont conservées.",
+                  "state": "Les départs vont de 0 à 15520."
+                }
+              ]
+            },
+            {
+              "title": "Ranger les trames en colonnes",
+              "text": "1+floor((16000−400)/160) vaut 98. L’axe 0 représente les bins fréquentiels ; l’axe 1 les trames.",
+              "state": "D.shape=(201,98).",
+              "lines": [
+                11,
+                12
               ]
             }
           ],
           "result": "La grille temporelle est espacée de 10 ms, mais chaque analyse regarde 25 ms de signal. Ces deux durées répondent à deux questions différentes.",
-          "code": "import librosa\nimport soundfile as sf\ncomplet, sr = sf.read(\"public/media/audio/voice-resampled.wav\")\ny = complet[:sr]  # premiere seconde a 16000 Hz\nD = librosa.stft(\n    y, n_fft=400, win_length=400,\n    hop_length=160, center=False\n)\n# D.shape == (201, 98)\n# 201 bins ; 98 fenetres completes"
+          "code": "import librosa\nimport soundfile as sf\ncomplet, sr = sf.read(\"voice-resampled.wav\")\ny = complet[:sr]\nlongueur_fenetre = 400\nhop = 160\nportion_0 = y[0:400]\nportion_1 = y[160:560]\nD = librosa.stft(y, n_fft=longueur_fenetre,\n                 win_length=longueur_fenetre, hop_length=hop, center=False)\nprint(portion_0.shape, portion_1.shape)\nprint(D.shape)",
+          "codeMode": "standalone",
+          "resources": [
+            {
+              "label": "Télécharger voice-resampled.wav",
+              "path": "media/audio/voice-resampled.wav"
+            }
+          ],
+          "requires": [
+            "Installer les bibliothèques indiquées dans les imports.",
+            "Placer voice-resampled.wav dans le dossier depuis lequel le programme est lancé."
+          ]
         },
         {
           "type": "analysis-image",
@@ -1133,10 +1254,6 @@
             ]
           ],
           "caption": "Exemple sans padding : 400 échantillons par portion et un déplacement de 160. Les mêmes échantillons contribuent à plusieurs trames."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : la STFT conserve l’évolution du contenu fréquentiel. La fenêtre règle la portion observée et le hop l’espacement des analyses ; je ne confonds pas ces deux durées."
         }
       ],
       "takeaways": [
@@ -1197,11 +1314,12 @@
         "input": "Nous savons calculer et lire une FFT sur une portion, mais notre extrait de parole et notre passage de caisse claire évoluent pendant leur durée.",
         "action": "Déplacer une fenêtre d’analyse, calculer une FFT à chaque position et ranger les résultats en colonnes.",
         "output": "Une STFT relie fréquences et instants ; nous savons justifier ses 201 lignes et ses 98 colonnes sur une seconde."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "resolution-fuite-zero-padding",
-      "title": "Choisir une fenêtre pour la question posée",
+      "title": "Fenêtre et FFT : durée observée ou grille plus dense ?",
       "summary": "Faut-il mieux situer l’attaque ou mieux séparer deux fréquences proches ? Les mêmes paramètres ne favorisent pas les deux.",
       "questionIds": [
         "sig-016",
@@ -1222,6 +1340,10 @@
           "text": "La taille de FFT n’est pas toujours la durée observée. Dans le code, short contient 512 mesures à 16 kHz, soit 32 ms. Demander une FFT de 2 048 points ajoute des zéros après ces mesures. La grille passe de 31,25 à 7,8125 Hz entre bins, sans observer une milliseconde supplémentaire. C’est le complément par des zéros (zero-padding). Il densifie la lecture du même spectre, sans garantir la séparation de deux composantes jusque-là confondues."
         },
         {
+          "type": "paragraph",
+          "text": "Pour exécuter cet exemple, téléchargez voice-resampled.wav avec le lien du programme. Placez-le à côté de votre script, puis lancez Python depuis ce dossier. Le chemin désigne un fichier local ; il ne télécharge rien automatiquement."
+        },
+        {
           "type": "walkthrough",
           "title": "Comparer deux réglages qui semblent tous deux plus grands",
           "goal": "Décider si l’on a ajouté des observations ou seulement des positions sur la grille.",
@@ -1232,9 +1354,9 @@
               "text": "À 16 kHz, 512 échantillons représentent 32 ms. Une FFT de 512 points espace ses bins de 31,25 Hz.",
               "state": "Observation : 32 ms ; grille : 31,25 Hz",
               "lines": [
-                2,
                 3,
-                4
+                4,
+                5
               ]
             },
             {
@@ -1242,7 +1364,14 @@
               "text": "Une FFT de 2048 points calculée sur les mêmes 512 valeurs observées espace les bins de 7,8125 Hz. Aucune information sonore des 96 ms suivantes n’a été acquise.",
               "state": "Observation : toujours 32 ms",
               "lines": [
-                5
+                6
+              ],
+              "details": [
+                {
+                  "code": "np.fft.rfft(short, n=2048)",
+                  "explanation": "n fixe le nombre de points du calcul. Comme short ne contient que 512 mesures, les 1536 positions restantes sont des zéros calculatoires.",
+                  "state": "1025 coefficients ; toujours 32 ms de son observé."
+                }
               ]
             },
             {
@@ -1250,14 +1379,26 @@
               "text": "Une vraie fenêtre de 2048 valeurs couvre 128 ms. Elle fournit une autre capacité de séparation, mais mélange davantage ce qui a changé pendant ce délai.",
               "state": "Observation : 128 ms",
               "lines": [
-                6,
                 7,
-                8
+                8,
+                9,
+                10
               ]
             }
           ],
           "result": "Pour isoler une attaque brève, le choix B peut dégrader la localisation. Le choix A densifie le dessin sans résoudre miraculeusement deux composantes proches.",
-          "code": "import numpy as np\n# y contient au moins 2048 echantillons reels, sr = 16000 Hz\nshort = y[:512]\nspectrum_512 = np.fft.rfft(short, n=512)\nspectrum_padded = np.fft.rfft(short, n=2048)\nlong = y[:2048]\nspectrum_long = np.fft.rfft(long, n=2048)\n# short : 32 ms observes ; long : 128 ms observes"
+          "code": "import numpy as np\nimport soundfile as sf\ny, sr = sf.read(\"voice-resampled.wav\")\nshort = y[:512]\nspectrum_512 = np.fft.rfft(short, n=512)\nspectrum_padded = np.fft.rfft(short, n=2048)\nlong = y[:2048]\nspectrum_long = np.fft.rfft(long, n=2048)\nprint(short.shape, long.shape)\nprint(spectrum_512.shape, spectrum_padded.shape, spectrum_long.shape)",
+          "codeMode": "standalone",
+          "resources": [
+            {
+              "label": "Télécharger voice-resampled.wav",
+              "path": "media/audio/voice-resampled.wav"
+            }
+          ],
+          "requires": [
+            "Installer les bibliothèques indiquées dans les imports.",
+            "Placer voice-resampled.wav dans le dossier depuis lequel le programme est lancé."
+          ]
         },
         {
           "type": "callout",
@@ -1310,10 +1451,6 @@
             }
           ],
           "caption": "La taille finale du tableau ne suffit pas à connaître la durée réellement observée."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : j’allonge la fenêtre pour observer davantage de son, avec un compromis temporel. Ajouter des zéros densifie la grille, mais ne fournit pas de nouvelles observations."
         }
       ],
       "takeaways": [
@@ -1375,11 +1512,12 @@
         "input": "Notre STFT utilise une fenêtre de 25 ms et un pas de 10 ms ; chaque colonne dépend d’une portion réelle du son.",
         "action": "Comparer durée observée, taille de FFT et hop, puis atténuer les effets des bords avec une fenêtre de Hann.",
         "output": "Nous pouvons expliquer ce que change chaque paramètre sans confondre grille plus dense et information nouvelle."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "mel-representation-compressee",
-      "title": "Alléger l’entrée avec des bandes mel",
+      "title": "Spectrogramme mel : des bins aux bandes pondérées",
       "summary": "Peut-on donner au modèle moins de valeurs sans effacer les différences utiles entre voix et percussion ?",
       "questionIds": [
         "sig-011",
@@ -1403,19 +1541,58 @@
           "text": "Reprenons la première seconde préparée à 16 kHz. D est complexe, de forme (201,98). Après module au carré, la puissance P garde cette forme. Un banc W de 64 filtres s’écrit (64,201), donc W @ P donne (64,98). Nous projetons les puissances, pas directement les coefficients complexes. Le temps n’a pas été rééchantillonné."
         },
         {
+          "type": "paragraph",
+          "text": "Pour exécuter cet exemple, téléchargez voice-resampled.wav avec le lien du programme. Placez-le à côté de votre script, puis lancez Python depuis ce dossier. Le chemin désigne un fichier local ; il ne télécharge rien automatiquement."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Une bande est une somme, pas une case choisie",
+          "columns": [
+            "Bin de la trame miniature",
+            "Puissance choisie à la main",
+            "Poids du filtre",
+            "Contribution"
+          ],
+          "rows": [
+            [
+              "0",
+              "2",
+              "0,25",
+              "0,5"
+            ],
+            [
+              "1",
+              "4",
+              "0,50",
+              "2"
+            ],
+            [
+              "2",
+              "2",
+              "0,25",
+              "0,5"
+            ],
+            [
+              "Somme de la bande",
+              "—",
+              "—",
+              "3"
+            ]
+          ],
+          "caption": "Cette trame à trois bins isole le produit pondéré. Le vrai code emploie 201 bins et 64 filtres documentés."
+        },
+        {
           "type": "walkthrough",
           "title": "Construire le mel de notre première seconde de parole",
           "goal": "Suivre la même donnée depuis les coefficients complexes jusqu’aux bandes puis aux décibels.",
           "language": "python",
           "steps": [
             {
-              "title": "Reprendre le son annoncé",
-              "text": "Nous lisons la variante réelle à 16 kHz puis sa première seconde. Cette démonstration conserve center=False pour compter 98 fenêtres complètes ; les images du laboratoire couvrent quatre secondes avec center=True et 401 trames. La fenêtre reste une Hann de 25 ms et le hop de 10 ms.",
-              "state": "D.shape=(201,98), coefficients complexes.",
+              "title": "Reprendre les axes de la STFT",
+              "text": "La première seconde donne 201 bins et 98 trames. abs(D) retire la phase ; le carré donne une puissance spectrale non normalisée.",
+              "state": "D et power_brute : (201,98).",
               "lines": [
-                1,
-                2,
-                3,
                 4,
                 5,
                 6,
@@ -1423,33 +1600,63 @@
               ]
             },
             {
-              "title": "Définir la grandeur projetée",
-              "text": "Nous divisons les coefficients par la somme des poids de Hann avant leur carré. Cette normalisation est celle des images du laboratoire ; les nombres ne sont ni des watts ni une densité spectrale de puissance.",
-              "state": "power.shape=(201,98), P = |D / somme(fenêtre)|².",
+              "title": "Construire les poids avant de projeter",
+              "text": "Chaque ligne de weights contient les 201 poids d’une bande. Les 64 bandes suivent ici la convention Slaney.",
+              "state": "weights : (64,201).",
               "lines": [
                 8
               ]
             },
             {
-              "title": "Regrouper avec un vrai banc",
-              "text": "Les 64 filtres Slaney normalisés en aire pondèrent les 201 bins jusqu’à 8 kHz. Le produit réalise une somme par bande et par trame ; l’ordre temporel ne change pas.",
-              "state": "weights.shape=(64,201) ; mel.shape=(64,98).",
+              "title": "Additionner les contributions par bande",
+              "text": "Le produit @ additionne sur les 201 bins. Il garde une somme par bande et par trame, exactement comme le filtre à trois nombres du tableau.",
+              "state": "mel_brut : (64,98).",
               "lines": [
-                9,
-                10
+                9
               ]
             },
             {
-              "title": "Compresser l’échelle de lecture",
-              "text": "power_to_db applique 10log10 avec une référence fixe de 1. amin=1e-10 donne un plancher fixe de −100 dB ; top_db=None empêche de déplacer ce plancher selon le maximum de l’extrait. Les images emploient aussi une échelle commune de −100 à 0 dB.",
-              "state": "mel_db.shape=(64,98) ; référence spectrale 1 et plancher −100 dB.",
+              "title": "Raccorder les valeurs à l’atelier",
+              "text": "Le mécanisme mel est déjà visible. Nous divisons maintenant la puissance par le carré de la somme de Hann pour retrouver l’échelle des images.",
+              "state": "power puis mel gardent les mêmes axes.",
               "lines": [
-                11
+                10,
+                11,
+                12,
+                13
+              ],
+              "details": [
+                {
+                  "code": "power_brute / fenetre.sum() ** 2",
+                  "explanation": "Cette convention de normalisation change l’échelle numérique, pas le regroupement des bins. Ce ne sont pas des watts.",
+                  "state": "La phase reste absente ; aucune onde n’est modifiée."
+                }
+              ]
+            },
+            {
+              "title": "Fixer la lecture logarithmique",
+              "text": "power_to_db utilise 10log10 car ses entrées sont des puissances. ref=1 fixe la référence ; amin et top_db fixent le plancher.",
+              "state": "mel_db : (64,98), plancher −100 dB.",
+              "lines": [
+                14,
+                15,
+                16
               ]
             }
           ],
           "result": "Le nombre de trames est inchangé : nous avons regroupé les fréquences puis comprimé les valeurs, sans transformer le fichier audible.",
-          "code": "import librosa\nimport numpy as np\nimport soundfile as sf\ncomplet, sr = sf.read(\"public/media/audio/voice-resampled.wav\")\ny = complet[:sr]\nfenetre = librosa.filters.get_window(\"hann\", 400, fftbins=True)\nD = librosa.stft(y, n_fft=400, hop_length=160, window=fenetre, center=False)\npower = np.abs(D / fenetre.sum()) ** 2\nweights = librosa.filters.mel(sr=sr, n_fft=400, n_mels=64, fmin=0, fmax=8000, htk=False, norm=\"slaney\")\nmel = weights @ power\nmel_db = librosa.power_to_db(mel, ref=1.0, amin=1e-10, top_db=None)"
+          "code": "import librosa\nimport numpy as np\nimport soundfile as sf\ncomplet, sr = sf.read(\"voice-resampled.wav\")\ny = complet[:sr]\nD = librosa.stft(y, n_fft=400, hop_length=160, center=False)\npower_brute = np.abs(D) ** 2\nweights = librosa.filters.mel(sr=sr, n_fft=400, n_mels=64, fmin=0, fmax=8000, htk=False, norm=\"slaney\")\nmel_brut = weights @ power_brute\n# Mise a l’echelle distincte, pour correspondre au laboratoire\nfenetre = librosa.filters.get_window(\"hann\", 400, fftbins=True)\npower = power_brute / fenetre.sum() ** 2\nmel = weights @ power\nmel_db = librosa.power_to_db(mel, ref=1.0, amin=1e-10, top_db=None)\nprint(D.shape, power.shape, weights.shape, mel.shape)\nprint(round(float(mel_db.min()), 3), round(float(mel_db.max()), 3))",
+          "codeMode": "standalone",
+          "resources": [
+            {
+              "label": "Télécharger voice-resampled.wav",
+              "path": "media/audio/voice-resampled.wav"
+            }
+          ],
+          "requires": [
+            "Installer les bibliothèques indiquées dans les imports.",
+            "Placer voice-resampled.wav dans le dossier depuis lequel le programme est lancé."
+          ]
         },
         {
           "type": "illustration",
@@ -1512,10 +1719,6 @@
           "type": "example",
           "title": "Outil réel : l’exemple Superflux de librosa",
           "text": "La documentation officielle de librosa présente aussi Superflux, une détection d’attaques sur une trompette à partir d’une représentation mel. La même famille d’outils peut servir à repérer des débuts de notes. Nos images viennent de la narration et de la caisse claire documentées : elles servent à inspecter une entrée de classification, sans annoncer de performance mesurée."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : le mel regroupe les puissances en bandes, sans changer le temps. Il peut simplifier une entrée de classification, mais perd des détails utiles à une reconstruction exacte."
         }
       ],
       "takeaways": [
@@ -1577,11 +1780,12 @@
         "input": "Nous disposons d’une STFT dont les fréquences, les instants et le compromis de fenêtre sont documentés.",
         "action": "Passer à la puissance, regrouper les fréquences par sommes pondérées, puis fixer une compression logarithmique.",
         "output": "Nous savons lire un log-mel, retrouver ses formes et nommer les détails et la phase qui ne sont plus disponibles."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "phase-canaux-annulations",
-      "title": "Vérifier ce que le passage en mono peut annuler",
+      "title": "Phase et polarité : ce que la moyenne mono peut annuler",
       "summary": "Deux canaux ou deux signaux de même module peuvent-ils quand même donner des résultats différents à l’écoute ?",
       "questionIds": [
         "sig-009",
@@ -1623,6 +1827,13 @@
               "state": "Mono : [0, 0, 0, 0]",
               "lines": [
                 5
+              ],
+              "details": [
+                {
+                  "code": "stereo.mean(axis=0)",
+                  "explanation": "L’axe 0 est celui des canaux. Les deux nombres de chaque instant sont additionnés, puis divisés par deux ; le temps reste présent.",
+                  "state": "mono.shape=(4,), sans modification de stereo."
+                }
               ]
             },
             {
@@ -1635,7 +1846,8 @@
             }
           ],
           "result": "Une réduction de deux canaux à un seul peut retirer une information physique. Ce n’est ni une concaténation temporelle, ni une opération automatiquement neutre.",
-          "code": "import numpy as np\nleft = np.array([1., 0., -1., 0.])\nright = -left\nstereo = np.stack([left, right])  # (canaux=2, temps=4)\nmono = stereo.mean(axis=0)  # [0., 0., 0., 0.]"
+          "code": "import numpy as np\nleft = np.array([1., 0., -1., 0.])\nright = -left\nstereo = np.stack([left, right])  # (canaux=2, temps=4)\nmono = stereo.mean(axis=0)  # [0., 0., 0., 0.]",
+          "codeMode": "standalone"
         },
         {
           "type": "callout",
@@ -1773,10 +1985,6 @@
             }
           ],
           "caption": "Points exacts d’un test construit. La moyenne est nulle à chaque indice, alors que chaque canal est non nul."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : le module spectral ne détermine pas toute la forme d’onde. Je vérifie la relation entre canaux avant une moyenne mono, car des contributions opposées peuvent s’annuler."
         }
       ],
       "takeaways": [
@@ -1806,7 +2014,7 @@
           },
           {
             "id": "b",
-            "text": "Prendre la valeur absolue du premier canal"
+            "text": "Conserver seulement le premier canal."
           },
           {
             "id": "c",
@@ -1814,7 +2022,7 @@
           },
           {
             "id": "d",
-            "text": "Augmenter seulement la taille de FFT"
+            "text": "Moyenner les valeurs absolues des deux canaux."
           }
         ],
         "correctOptionId": "c",
@@ -1838,11 +2046,12 @@
         "input": "Nous avons choisi de compacter la STFT ; son module ne conserve pas la phase et la réduction des canaux doit encore être contrôlée.",
         "action": "Comparer un signal à son opposé, puis calculer explicitement leur moyenne stéréo vers mono.",
         "output": "Nous savons pourquoi une représentation de module ne garantit pas la reconstruction, et pourquoi un mélange de canaux demande un contrôle."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "reconstruction-streaming-limites",
-      "title": "Réécouter pour vérifier, puis envisager le direct",
+      "title": "STFT inverse et streaming : information, bords et délai",
       "summary": "Comment savoir si notre préparation a perdu une information, si notre inversion est mal réglée ou si elle attend du futur ?",
       "questionIds": [
         "sig-023",
@@ -1864,45 +2073,83 @@
           "text": "Le code conserve d’abord D, donc module et phase, puis utilise une transformée inverse avec les mêmes conventions et une longueur demandée. Le centrage ajoute du contexte aux bords ; il faut lui donner le même sens dans les deux opérations. Sur une chaîne cohérente, les différences numériques devraient être contrôlables. Conserver la phase ne corrige pas des paramètres d’inversion incompatibles."
         },
         {
+          "type": "paragraph",
+          "text": "Pour exécuter cet exemple, téléchargez voice-resampled.wav avec le lien du programme. Placez-le à côté de votre script, puis lancez Python depuis ce dossier. Le chemin désigne un fichier local ; il ne télécharge rien automatiquement."
+        },
+        {
           "type": "walkthrough",
           "title": "Distinguer trois causes de mauvais résultat",
           "goal": "Diagnostiquer une reconstruction ou un délai sans tout attribuer au modèle.",
           "language": "python",
           "steps": [
             {
-              "title": "Avant : conserver une STFT complète",
-              "text": "Si les coefficients complexes sont intacts, on reprend fenêtre, hop et centrage de l’analyse. On vérifie aussi les bords et la longueur reconstruite.",
-              "state": "Information complexe disponible",
+              "title": "Garder les coefficients complexes",
+              "text": "La STFT retient module et phase. Nous conservons les réglages de fenêtre et de hop pour l’inverse.",
+              "state": "y : 64000 valeurs ; D : (257,501).",
               "lines": [
-                3,
                 4,
                 5,
-                6,
+                6
+              ]
+            },
+            {
+              "title": "Inverser avec les mêmes réglages",
+              "text": "istft réunit les portions recouvrantes. length=n demande le nombre d’échantillons de départ ; les valeurs de y restent inchangées.",
+              "state": "y_hat.shape=(64000,).",
+              "lines": [
                 7
               ]
             },
             {
-              "title": "Premier après : retirer la phase",
-              "text": "Si seul le module reste, Griffin-Lim doit estimer une phase. Son résultat peut être plausible sans retrouver l’original ; le problème est une information manquante.",
-              "state": "Reconstruction estimée, pas garantie exacte",
+              "title": "Contrôler ce premier résultat",
+              "text": "La soustraction compare les positions correspondantes. abs puis max retient le plus grand écart numérique.",
+              "state": "L’erreur max est inférieure à 1e-10 dans cette exécution.",
               "lines": [
-                8,
+                8
+              ],
+              "details": [
+                {
+                  "code": "np.max(np.abs(y - y_hat))",
+                  "explanation": "On produit les écarts, leurs modules, puis un maximum. Aucune moyenne ne peut cacher ici une grosse erreur localisée.",
+                  "state": "Un seul nombre d’erreur, pas une mesure perceptive."
+                }
+              ]
+            },
+            {
+              "title": "Ouvrir une expérience différente",
+              "text": "Griffin-Lim ne reçoit que le module. random_state=0 rend son initialisation reproductible ; il ne restitue pas la phase manquante par certitude.",
+              "state": "y_estimated a la bonne longueur, sans garantie d’identité.",
+              "lines": [
                 9,
                 10
               ]
             },
             {
-              "title": "Deuxième après : attendre du contexte",
-              "text": "Une fenêtre centrée de 1024 échantillons à 16 kHz s’étend approximativement 32 ms après son centre. Une analyse live doit attendre ce contexte, même avec un ordinateur rapide.",
-              "state": "Besoin futur ≈ 512 / 16000 = 32 ms",
+              "title": "Séparer enfin la question du délai",
+              "text": "Pour une fenêtre centrée de 1024 mesures, environ 512 mesures se trouvent après le centre. Elles doivent arriver avant ce calcul.",
+              "state": "512/16000 = 0,032 seconde.",
               "lines": [
                 11,
-                12
+                12,
+                13,
+                14,
+                15
               ]
             }
           ],
           "result": "Des paramètres incompatibles, une phase retirée et un besoin de futur sont trois problèmes différents, qui demandent trois réponses différentes.",
-          "code": "import librosa\nimport numpy as np\n# y : signal mono de longueur n ; analyse avec une fenetre Hann\nn = len(y)\nD = librosa.stft(y, n_fft=512, hop_length=128, center=True)\ny_hat = librosa.istft(D, n_fft=512, hop_length=128,\n                      window=\"hann\", center=True, length=n)\n# Cas distinct : seul le module est conserve\ny_estimated = librosa.griffinlim(np.abs(D), n_fft=512,\n    hop_length=128, window=\"hann\", center=True, length=n)\n# Cas distinct de streaming : fenetre centree de 1024 a 16 kHz\nfuture_context_seconds = (1024 // 2) / 16000  # 0.032 s"
+          "code": "import librosa\nimport numpy as np\nimport soundfile as sf\ny, sr = sf.read(\"voice-resampled.wav\")\nn = len(y)\nD = librosa.stft(y, n_fft=512, hop_length=128, center=True)\ny_hat = librosa.istft(D, n_fft=512, hop_length=128, window=\"hann\", center=True, length=n)\nerreur_complete = np.max(np.abs(y - y_hat))\n# Autre experience : estimer une phase absente\ny_estimated = librosa.griffinlim(np.abs(D), n_fft=512, hop_length=128, window=\"hann\", center=True, length=n, random_state=0)\n# Autre question : disponibilite d’une fenetre centree de 1024\nfuture_context_seconds = (1024 // 2) / sr\nprint(D.shape, y_hat.shape, y_estimated.shape)\nprint(\"STFT complete : erreur max\", erreur_complete)\nprint(\"Contexte futur\", future_context_seconds)",
+          "codeMode": "standalone",
+          "resources": [
+            {
+              "label": "Télécharger voice-resampled.wav",
+              "path": "media/audio/voice-resampled.wav"
+            }
+          ],
+          "requires": [
+            "Installer les bibliothèques indiquées dans les imports.",
+            "Placer voice-resampled.wav dans le dossier depuis lequel le programme est lancé."
+          ]
         },
         {
           "type": "callout",
@@ -1943,10 +2190,6 @@
             }
           ],
           "caption": "Un calcul rapide ne remplace ni une information perdue ni des échantillons futurs."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : je distingue l’information disponible, la compatibilité de l’inversion et l’attente de contexte futur. Une bonne reconstruction et une faible latence demandent des vérifications séparées."
         }
       ],
       "takeaways": [
@@ -2008,7 +2251,8 @@
         "input": "Nous savons qu’une STFT complexe conserve la phase, contrairement au module et au log-mel ; nous connaissons aussi les fenêtres et leur recouvrement.",
         "action": "Comparer reconstruction depuis la STFT complète, estimation depuis le module et disponibilité des échantillons en streaming.",
         "output": "Notre chaîne de préparation est vérifiable à l’écoute ; sa fidélité et son délai sont deux critères distincts."
-      }
+      },
+      "level": "practice"
     }
   ],
   "edition": 2,

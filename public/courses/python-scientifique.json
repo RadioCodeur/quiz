@@ -17,7 +17,7 @@
   "chapters": [
     {
       "id": "du-son-aux-donnees",
-      "title": "Notre mission : préparer des sons pour les classer",
+      "title": "Données, descripteurs et cibles : préparer le contrat",
       "summary": "Vous savez programmer. Nous allons apprendre à organiser et transformer des données numériques sans perdre leur sens.",
       "questionIds": [],
       "context": {
@@ -35,6 +35,10 @@
         {
           "type": "paragraph",
           "text": "Les variables, boucles, conditions, listes et fonctions sont supposées connues. Le saut qui nous intéresse est ailleurs. Un tableau possède des axes ; ses sélections peuvent partager la mémoire. Une moyenne peut aussi détruire l’information dont nous avions besoin. Les deux rappels Python en fin de sommaire sont facultatifs. Vous pouvez lire directement le parcours principal."
+        },
+        {
+          "type": "paragraph",
+          "text": "Nous utiliserons une valeur efficace (root mean square, RMS), qui résume les amplitudes à partir de leurs carrés. Le facteur de crête (crest factor) compare le maximum absolu au RMS. Pour pouvoir vérifier nos calculs à la main, nous utiliserons deux signaux miniatures : [-0.5, 0.5, -0.5, 0.5] et [0, 0, 0, 1]. Ce sont des jouets numériques, pas des enregistrements réalistes. Ils ont volontairement la même amplitude quadratique moyenne, mais des pics différents. Ce choix nous permettra de voir pourquoi un seul résumé ne suffit pas toujours."
         },
         {
           "type": "visual",
@@ -58,10 +62,6 @@
             ]
           ],
           "caption": "Les noms servent au suivi ; le modèle recevra les descripteurs, pas une réponse cachée dans le nom du fichier."
-        },
-        {
-          "type": "paragraph",
-          "text": "Nous utiliserons une valeur efficace (root mean square, RMS), qui résume les amplitudes à partir de leurs carrés. Le facteur de crête (crest factor) compare le maximum absolu au RMS. Pour pouvoir vérifier nos calculs à la main, nous utiliserons deux signaux miniatures : [-0.5, 0.5, -0.5, 0.5] et [0, 0, 0, 1]. Ce sont des jouets numériques, pas des enregistrements réalistes. Ils ont volontairement la même amplitude quadratique moyenne, mais des pics différents. Ce choix nous permettra de voir pourquoi un seul résumé ne suffit pas toujours."
         },
         {
           "type": "walkthrough",
@@ -108,10 +108,6 @@
           "text": "On suppose ici les fichiers déjà décodés et leurs signaux disponibles en mémoire. Les questions de fréquence d’échantillonnage, de stéréo et de durée commune seront traitées dans le module Signal. Pour ce premier module, nous isolons le travail numérique. Même une préparation parfaitement codée ne prouvera pas que nos deux descripteurs suffisent à distinguer des voix et des percussions réelles : il faudra le mesurer.",
           "tone": "pitfall",
           "label": "Une préparation correcte ne prouve pas que les descripteurs suffisent"
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : nous préparons une ligne de descripteurs par extrait, avec sa cible. Le contrat annonce les axes et les associations avant tout apprentissage."
         }
       ],
       "takeaways": [
@@ -123,27 +119,32 @@
         "course-py-carpentry-fundamentals"
       ],
       "checkpoint": {
-        "prompt": "Deux signaux contiennent chacun 8 valeurs. Le premier est à 4 valeurs/s, le second à 8 valeurs/s. Que peut-on conclure ?",
+        "prompt": "F contient les lignes voix_a, perc_b, voix_c et y vaut [0,1,0]. Nous réordonnons les lignes avec [1,2,0]. Quelle cible suit ce même ordre ?",
         "options": [
           {
             "id": "a",
-            "text": "Ils durent tous deux 8 secondes."
+            "text": "[0,1,0] : conserver y suffit."
           },
           {
             "id": "b",
-            "text": "Le premier dure 2 secondes et le second 1 seconde."
+            "text": "[1,0,0] : percussion, voix_c, voix_a."
           },
           {
             "id": "c",
-            "text": "Le premier dure 1 seconde et le second 2 secondes."
+            "text": "[1,2,0] : les nouveaux indices sont les classes."
           },
           {
             "id": "d",
-            "text": "Leur durée est obligatoirement identique."
+            "text": "[0,0,1] : trier les classes séparément."
           }
         ],
         "correctOptionId": "b",
-        "explanation": "La durée vaut nombre de valeurs divisé par valeurs par seconde. Un même effectif ne représente donc pas toujours la même durée."
+        "explanation": "L’ordre [1,2,0] place perc_b, voix_c puis voix_a. Les classes associées sont donc 1,0,0.",
+        "optionFeedback": {
+          "a": "Les lignes de F ont changé de place. Garder y tel quel associerait la première voix à la percussion.",
+          "c": "1,2,0 décrit des positions dans le corpus. Ce ne sont pas les classes voix/percussion.",
+          "d": "Les classes ne se trient pas indépendamment des fichiers auxquels elles appartiennent."
+        }
       },
       "notions": [
         {
@@ -163,11 +164,12 @@
         "input": "Un dossier contient des enregistrements de voix et de percussions, accompagnés de leur classe.",
         "action": "Préparer une ligne de nombres par extrait en conservant la réponse qui lui correspond.",
         "output": "Un tableau de caractéristiques et ses cibles, prêts à être transmis à un modèle."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "tableaux-et-indexation",
-      "title": "Un tableau pour calculer sur tous les échantillons",
+      "title": "Tableaux NumPy : formes, indices et slices",
       "summary": "Remplacer une boucle de calcul par une opération sur un tableau, puis nommer précisément ses axes.",
       "questionIds": [
         "py-008",
@@ -194,11 +196,41 @@
           "language": "python",
           "code": "import numpy as np\nsignal = [-0.5, 0.5]\nprint(signal * 2)\nprint((np.array(signal) * 2).tolist())",
           "output": "[-0.5, 0.5, -0.5, 0.5]\n[-1.0, 1.0]",
-          "explanation": "NumPy ne devine pas une intention acoustique : son opérateur * suit simplement une règle numérique élément par élément."
+          "explanation": "NumPy ne devine pas une intention acoustique : son opérateur * suit simplement une règle numérique élément par élément.",
+          "codeMode": "standalone"
         },
         {
           "type": "paragraph",
           "text": "Empilons maintenant nos deux extraits en lignes. La forme (shape) S.shape vaut (2, 4) : axe (axis) 0 pour les extraits, axe 1 pour les instants. Un axe n’a aucune signification acoustique intrinsèque ; c’est nous qui fixons cette convention. Dire seulement « une matrice 2 par 4 » laisse donc une ambiguïté que des noms d’axes lèvent immédiatement."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Lire S avant ses crochets",
+          "columns": [
+            "Extrait, axe 0",
+            "Instant 0",
+            "Instant 1",
+            "Instant 2",
+            "Instant 3"
+          ],
+          "rows": [
+            [
+              "0 · jouet voix",
+              "−0,5",
+              "0,5",
+              "−0,5",
+              "0,5"
+            ],
+            [
+              "1 · jouet percussion",
+              "0",
+              "0",
+              "0",
+              "1"
+            ]
+          ],
+          "caption": "Ce sont huit nombres choisis à la main. La case S[1,3] vaut 1 ; les axes sont extraits puis instants."
         },
         {
           "type": "walkthrough",
@@ -206,36 +238,71 @@
           "goal": "Savoir ce qui reste après chaque indice.",
           "steps": [
             {
-              "title": "Choisir ou conserver un axe",
-              "text": "S[0] choisit une position de l’axe des extraits et retire cet axe. S[0:1] garde une plage de longueur un ; l’axe reste présent.",
-              "state": "premier.shape=(4,) ; une_ligne.shape=(1,4).",
+              "title": "Créer les deux lignes",
+              "text": "La liste extérieure contient deux extraits. Chaque liste intérieure contient quatre instants. np.array copie ces nombres dans un tableau numérique.",
+              "state": "S.shape = (2,4).",
               "lines": [
-                2,
-                3,
+                1,
+                2
+              ]
+            },
+            {
+              "title": "Choisir une seule position",
+              "text": "S[0] choisit le premier extrait. Cet indice entier consomme l’axe 0 : il reste seulement le temps.",
+              "state": "[-0.5,0.5,-0.5,0.5], forme (4,).",
+              "lines": [
+                3
+              ]
+            },
+            {
+              "title": "Garder une plage de longueur un",
+              "text": "0:1 sélectionne la position 0 mais reste une plage. La borne 1 est exclue ; l’axe des extraits reste présent.",
+              "state": "[[-0.5,0.5,-0.5,0.5]], forme (1,4).",
+              "lines": [
                 4
               ]
             },
             {
-              "title": "Découper le temps",
-              "text": "Le premier : garde les deux extraits ; 2: conserve les positions 2 et 3 de chacun.",
-              "state": "fin.shape=(2,2) ; valeurs [[-.5,.5],[0.,1.]].",
+              "title": "Choisir les mêmes instants pour chaque extrait",
+              "text": "Dans S[:,2:], le premier : conserve toutes les lignes. 2: conserve les positions temporelles 2 et 3, jusqu’à la fin.",
+              "state": "[[-0.5,0.5],[0.0,1.0]], forme (2,2).",
               "lines": [
                 5
+              ],
+              "details": [
+                {
+                  "code": "S[:, 2:]",
+                  "explanation": "Deux sélections sont séparées par une virgule : extraits, puis instants. Aucune valeur de S n’est remplacée.",
+                  "state": "S garde (2,4)."
+                }
               ]
             },
             {
-              "title": "Passer à trois axes",
-              "text": "Exemple de forme indépendant : X représente 4 extraits, 6 instants, 2 canaux. 1:5:2 retient les instants 1 et 3 ; 0 choisit un canal.",
-              "state": "Y.shape=(4,2) : l’axe canal a disparu.",
+              "title": "Afficher sans changer les données",
+              "text": "tolist transforme les valeurs en listes Python pour l’affichage. shape reste un tuple qui nomme la taille de chaque axe.",
+              "state": "Le programme imprime les trois sélections et leurs formes.",
               "lines": [
                 6,
-                7
+                7,
+                8
               ]
             }
           ],
           "result": "Un indice entier retire un axe ; un slice conserve l’axe, même lorsqu’une seule position est retenue.",
-          "code": "import numpy as np\nS = np.array([[-.5, .5, -.5, .5], [0., 0., 0., 1.]])\npremier = S[0]\nune_ligne = S[0:1]\nfin = S[:, 2:]\nX = np.zeros((4, 6, 2))\nY = X[:, 1:5:2, 0]",
-          "language": "python"
+          "code": "import numpy as np\nS = np.array([[-.5, .5, -.5, .5], [0., 0., 0., 1.]])\npremier = S[0]\nune_ligne = S[0:1]\nfin = S[:, 2:]\nprint(premier.tolist(), premier.shape)\nprint(une_ligne.tolist(), une_ligne.shape)\nprint(fin.tolist(), fin.shape)",
+          "language": "python",
+          "codeMode": "standalone"
+        },
+        {
+          "type": "paragraph",
+          "text": "Une expérience distincte ajoute maintenant l’axe des canaux. X contient quatre extraits, six instants et deux canaux. Les entiers de 0 à 47 sont des repères de positions, pas des amplitudes audio."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "codeMode": "standalone",
+          "code": "import numpy as np\nX = np.arange(48).reshape(4, 6, 2)\nY = X[:, 1:5:2, 0]\nprint(Y.tolist())\nprint(Y.shape)",
+          "caption": "Le slice 1:5:2 visite les instants 1 et 3. Le canal 0 est choisi puis retiré des axes : Y vaut [[2,6],[14,18],[26,30],[38,42]], de forme (4,2). X reste inchangé."
         },
         {
           "type": "visual",
@@ -273,10 +340,6 @@
           "tone": "pitfall",
           "label": "Des tailles compatibles peuvent cacher des axes confondus",
           "text": "NumPy connaît la taille des axes, pas leur rôle acoustique. Nous nommons donc extraits, instants et canaux avant de lire une sélection."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : une opération NumPy traite des valeurs selon leurs axes. Je distingue les positions sélectionnées, la forme obtenue et le sens physique conservé."
         }
       ],
       "takeaways": [
@@ -331,11 +394,12 @@
         "input": "Les deux signaux miniatures sont disponibles sous forme de listes.",
         "action": "Multiplier leurs amplitudes et sélectionner une portion sans confondre temps, fichiers et canaux.",
         "output": "Un tableau dont chaque axe a un sens annoncé, et des sélections dont nous pouvons prévoir la forme."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "references-et-copies",
-      "title": "Garder un original quand on modifie un signal",
+      "title": "Alias, vues et copies NumPy",
       "summary": "Une copie de travail doit être indépendante au bon niveau, pas seulement porter un autre nom.",
       "questionIds": [
         "py-001",
@@ -363,27 +427,35 @@
           "goal": "Observer quelle modification remonte au signal source.",
           "steps": [
             {
-              "title": "Deux chemins vers les valeurs",
-              "text": "La vue partage les deux dernières valeurs de signal. .copy() alloue un stockage distinct, initialisé avec les mêmes valeurs.",
-              "state": "vue=[-.5,.5] ; copie=[-.5,.5].",
+              "title": "Créer la source",
+              "text": "Quatre valeurs choisies à la main permettent de suivre la mémoire. Aucun fichier audio n’est lu dans ce test.",
+              "state": "signal = [-0.5,0.5,-0.5,0.5].",
               "lines": [
-                2,
+                1,
+                2
+              ]
+            },
+            {
+              "title": "Obtenir deux accès aux mêmes valeurs initiales",
+              "text": "Le slice signal[2:] crée une vue des positions 2 et 3. Ajouter .copy() crée un stockage indépendant.",
+              "state": "vue et copie affichent [-0.5,0.5].",
+              "lines": [
                 3,
                 4
               ]
             },
             {
-              "title": "Modifier la vue",
-              "text": "La première position de vue correspond à signal[2]. Remplacer cette valeur touche au stockage partagé.",
-              "state": "signal=[-.5,.5,0.,.5].",
+              "title": "Modifier le stockage partagé",
+              "text": "vue[0] correspond à signal[2]. Remplacer cette case par zéro modifie aussi l’original.",
+              "state": "signal = [-0.5,0.5,0.0,0.5].",
               "lines": [
                 5
               ]
             },
             {
-              "title": "Modifier la copie",
-              "text": "Le dernier changement vise uniquement la copie. La dernière amplitude du signal reste .5.",
-              "state": "copie=[-.5,0.] ; signal=[-.5,.5,0.,.5].",
+              "title": "Modifier seulement la copie",
+              "text": "copie[1] correspond à une case du nouveau stockage. signal[3] reste égal à 0,5.",
+              "state": "copie = [-0.5,0.0] ; signal est inchangé à cette étape.",
               "lines": [
                 6
               ]
@@ -391,7 +463,8 @@
           ],
           "result": "Pour comparer une transformation à un original intact, nous demandons explicitement une copie.",
           "code": "import numpy as np\nsignal = np.array([-.5, .5, -.5, .5])\nvue = signal[2:]\ncopie = signal[2:].copy()\nvue[0] = 0.\ncopie[1] = 0.",
-          "language": "python"
+          "language": "python",
+          "codeMode": "standalone"
         },
         {
           "type": "visual",
@@ -435,10 +508,6 @@
         {
           "type": "paragraph",
           "text": "Dans la suite, nos calculs de résumé ne modifieront pas S. Les expressions comme S ** 2 construisent leurs résultats, et nous pourrons refaire une mesure sur les mêmes valeurs. Ce choix simplifie les vérifications : une différence de résultat proviendra du calcul choisi, pas d’un original modifié par une expérience précédente."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : un autre nom ou une vue peut encore partager les données d’origine. Pour préserver un original, je vérifie le niveau auquel la copie rend les valeurs indépendantes."
         }
       ],
       "takeaways": [
@@ -491,11 +560,12 @@
         "input": "S contient les deux signaux ; nous voulons essayer une transformation sur le premier.",
         "action": "Décider si le résultat de la sélection partage les données de S.",
         "output": "Une modification expérimentale qui préserve l’original, et une explication claire des cas de partage."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "reduire-les-bons-axes",
-      "title": "Mesurer chaque extrait, sans mélanger les fichiers",
+      "title": "Réductions NumPy : calculer RMS et crête par extrait",
       "summary": "Calculer un RMS par ligne et voir pourquoi la moyenne signée répond à une autre question.",
       "questionIds": [
         "py-009",
@@ -574,42 +644,63 @@
           "goal": "Suivre les valeurs et les formes des deux descripteurs.",
           "steps": [
             {
-              "title": "Réduire le temps",
-              "text": "axis=1 rassemble les quatre instants de chaque ligne. axis=0 aurait au contraire mélangé les deux extraits à chaque instant.",
-              "state": "rms.shape=(2,) ; rms=[.5,.5].",
+              "title": "Retirer l’annulation des signes",
+              "text": "Le carré agit case par case. −0,5 et 0,5 donnent tous deux 0,25. S n’est pas modifié.",
+              "state": "carres = [[0.25,0.25,0.25,0.25],[0,0,0,1]], forme (2,4).",
               "lines": [
                 2,
                 3
               ]
             },
             {
-              "title": "Regarder le pic",
-              "text": "np.abs retire le signe ; max retient la plus grande amplitude absolue de chaque extrait.",
-              "state": "pics=[.5,1.].",
+              "title": "Rassembler le temps de chaque ligne",
+              "text": "axis=1 demande de moyenner les quatre instants de chaque extrait. On obtient (1/4) et (1/4).",
+              "state": "moyenne_carres = [0.25,0.25], forme (2,).",
               "lines": [
                 4
               ]
             },
             {
-              "title": "Comparer pic et amplitude globale",
-              "text": "Ce rapport est le facteur de crête (crest factor). Il donne 1 pour la variation régulière et 2 pour le signal concentré sur un pic. np.maximum impose un dénominateur positif pour un éventuel silence.",
-              "state": "cretes=[1.,2.].",
+              "title": "Revenir à une amplitude",
+              "text": "sqrt prend la racine de chaque moyenne. Les deux RMS sont donc égaux, malgré des répartitions différentes.",
+              "state": "rms = [0.5,0.5], forme (2,).",
               "lines": [
                 5
               ]
             },
             {
-              "title": "Construire les observations",
-              "text": "column_stack place les deux résultats côte à côte. Chaque ligne garde son extrait.",
-              "state": "F=[[.5,1.],[.5,2.]] ; F.shape=(2,2).",
+              "title": "Regarder séparément les pics",
+              "text": "abs retire le signe avant le maximum. Le maximum porte encore sur le temps, donc axis=1.",
+              "state": "pics = [0.5,1.0].",
               "lines": [
-                6
+                6,
+                7
+              ]
+            },
+            {
+              "title": "Former un rapport",
+              "text": "Le dénominateur est le RMS de la même ligne. Le plancher 1e-8 protège un éventuel silence ; ici il ne change aucun nombre.",
+              "state": "cretes = [1.0,2.0].",
+              "lines": [
+                8
+              ]
+            },
+            {
+              "title": "Aligner les descripteurs en colonnes",
+              "text": "column_stack réunit des vecteurs de même longueur. La ligne 0 garde le premier extrait ; ses colonnes sont RMS puis crête/RMS.",
+              "state": "F = [[0.5,1.0],[0.5,2.0]], forme (2,2).",
+              "lines": [
+                9,
+                10,
+                11,
+                12
               ]
             }
           ],
           "result": "Le RMS seul rendait nos deux jouets identiques ; ajouter un descripteur de pic les distingue numériquement.",
-          "code": "import numpy as np\nS = np.array([[-.5, .5, -.5, .5], [0., 0., 0., 1.]])\nrms = np.sqrt((S ** 2).mean(axis=1))\npics = np.abs(S).max(axis=1)\ncretes = pics / np.maximum(rms, 1e-8)\nF = np.column_stack([rms, cretes])",
-          "language": "python"
+          "code": "import numpy as np\nS = np.array([[-.5, .5, -.5, .5], [0., 0., 0., 1.]])\ncarres = S ** 2\nmoyenne_carres = carres.mean(axis=1)\nrms = np.sqrt(moyenne_carres)\nabsolues = np.abs(S)\npics = absolues.max(axis=1)\ncretes = pics / np.maximum(rms, 1e-8)\nF = np.column_stack([rms, cretes])\nprint(carres.tolist(), moyenne_carres.tolist())\nprint(rms.tolist(), pics.tolist(), cretes.tolist())\nprint(F.tolist())",
+          "language": "python",
+          "codeMode": "standalone"
         },
         {
           "type": "paragraph",
@@ -666,10 +757,6 @@
           "text": "Pour réutiliser une moyenne dans une soustraction, sa forme compte aussi. S.mean(axis=1) vaut [0., .25], de forme (2,). Avec keepdims=True, la même moyenne a la forme (2, 1). Les valeurs n’ont pas changé ; l’axe du temps reste présent avec une seule position. Nous allons voir pourquoi cela permet de soustraire la bonne moyenne à chaque extrait.",
           "tone": "tip",
           "label": "Pour aller plus loin : garder un axe avec keepdims"
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : je choisis l’axe à réduire selon la question posée. Le RMS évite l’annulation des signes, mais ne conserve ni les pics ni toute l’organisation temporelle."
         }
       ],
       "takeaways": [
@@ -722,11 +809,12 @@
         "input": "S est de forme (2, 4) : deux extraits, quatre instants chacun.",
         "action": "Résumer le temps de chaque extrait tout en conservant deux résultats séparés.",
         "output": "Un RMS de forme (2,), puis un second descripteur capable de distinguer les deux jouets."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "broadcasting-et-algebre",
-      "title": "Appliquer une correction, puis comparer des observations",
+      "title": "Broadcasting et produit matriciel : suivre les contributions",
       "summary": "Deux usages des tableaux : diffuser une valeur sur plusieurs positions, ou additionner des produits pour former un score.",
       "questionIds": [
         "py-017",
@@ -779,31 +867,61 @@
           "label": "Pour aller plus loin : une forme correcte ne valide pas les axes"
         },
         {
+          "type": "visual",
+          "kind": "table",
+          "title": "La référence se réutilise dans chaque ligne",
+          "columns": [
+            "Ligne de F",
+            "Référence par colonne",
+            "Soustraction"
+          ],
+          "rows": [
+            [
+              "[0,5 ; 1]",
+              "[0,5 ; 1,5]",
+              "[0 ; −0,5]"
+            ],
+            [
+              "[0,5 ; 2]",
+              "[0,5 ; 1,5]",
+              "[0 ; 0,5]"
+            ]
+          ],
+          "caption": "Nous diffusons deux corrections de colonnes. Elles ne représentent pas deux extraits supplémentaires."
+        },
+        {
           "type": "walkthrough",
           "title": "Du tableau de caractéristiques à un score",
           "goal": "Distinguer une multiplication terme à terme d’une somme de contributions.",
           "steps": [
             {
-              "title": "Nommer les poids",
-              "text": "W donne un poids à chacun des deux descripteurs. Ces nombres sont choisis pour illustrer le calcul, pas appris ni validés.",
-              "state": "F : (2,2), W : (2,1).",
+              "title": "Lire les deux axes des poids",
+              "text": "F contient deux extraits et deux descripteurs. W contient deux lignes, une par descripteur, et une colonne de sortie. Les poids 2 et 1 sont choisis à la main.",
+              "state": "F : (2,2) ; W : (2,1).",
               "lines": [
                 2,
                 3
               ]
             },
             {
-              "title": "Garder chaque contribution",
-              "text": "W.T transpose les deux poids en une ligne. Le produit * multiplie chaque colonne par son poids, sans additionner.",
-              "state": "contributions=[[1.,1.],[1.,2.]].",
+              "title": "Transposer les poids",
+              "text": "W.T conserve les valeurs et échange les axes. Ses deux poids sont maintenant sur une ligne compatible avec chaque ligne de F.",
+              "state": "W.T = [[2.0,1.0]], forme (1,2).",
               "lines": [
                 4
+              ],
+              "details": [
+                {
+                  "code": "F * W.T",
+                  "explanation": "Le poids 2 multiplie la colonne RMS. Le poids 1 multiplie la colonne du facteur de crête. Les résultats restent séparés.",
+                  "state": "contributions = [[1.0,1.0],[1.0,2.0]]."
+                }
               ]
             },
             {
-              "title": "Additionner pour chaque sortie",
-              "text": "@ combine l’axe des deux descripteurs : .5×2+1×1=2 ; .5×2+2×1=3.",
-              "state": "scores=[[2.],[3.]], forme (2,1).",
+              "title": "Additionner les contributions avec @",
+              "text": "Le produit matriciel additionne sur les descripteurs : 0,5×2 + 1×1, puis 0,5×2 + 2×1.",
+              "state": "scores = [[2.0],[3.0]], forme (2,1).",
               "lines": [
                 5
               ]
@@ -811,17 +929,67 @@
           ],
           "result": "(N,D) @ (D,K) donne (N,K). * et @ répondent à des intentions différentes.",
           "code": "import numpy as np\nF = np.array([[.5, 1.], [.5, 2.]])\nW = np.array([[2.], [1.]])\ncontributions = F * W.T\nscores = F @ W",
-          "language": "python"
+          "language": "python",
+          "codeMode": "standalone"
         },
         {
           "type": "paragraph",
           "text": "Autre besoin concret : retrouver les sons les plus proches d’un extrait. La distance euclidienne au carré (squared Euclidean distance) additionne les carrés des écarts entre descripteurs. Si X contient N observations à D coordonnées et Y en contient M, nous voulons une distance pour chaque paire, donc un tableau (N, M)."
         },
         {
-          "type": "code",
+          "type": "walkthrough",
+          "title": "Comparer chaque observation à chaque référence",
+          "goal": "Cette seconde expérience construit des distances, pas des scores de classe. Nous ajoutons les axes manquants avant la soustraction.",
           "language": "python",
-          "code": "X = np.array([[.5, 1.], [.5, 2.]])\nY = np.array([[.5, 1.]])\necarts = X[:, None, :] - Y[None, :, :]\ndist2 = (ecarts ** 2).sum(axis=-1)",
-          "caption": "np est NumPy. None ajoute un axe de taille 1 : (2,1,2) face à (1,1,2), puis ecarts a la forme (2,1,2). La somme sur le dernier axe donne dist2=[[0.],[1.]], de forme (2,1) : une distance par paire."
+          "codeMode": "standalone",
+          "code": "import numpy as np\nX = np.array([[.5, 1.], [.5, 2.]])\nY = np.array([[.5, 1.]])\nX_paires = X[:, None, :]\nY_paires = Y[None, :, :]\necarts = X_paires - Y_paires\ncarres = ecarts ** 2\ndist2 = carres.sum(axis=-1)\nprint(X_paires.shape, Y_paires.shape, ecarts.shape)\nprint(ecarts.tolist(), dist2.tolist())",
+          "steps": [
+            {
+              "title": "Annoncer ce qui a changé",
+              "text": "X contient deux observations à deux coordonnées ; Y contient une seule référence. Nous cherchons donc deux distances, pas une décision voix/percussion.",
+              "state": "X : (N=2,D=2) ; Y : (M=1,D=2).",
+              "lines": [
+                2,
+                3
+              ]
+            },
+            {
+              "title": "Réserver une place aux références",
+              "text": "X[:,None,:] garde toutes les observations et toutes les coordonnées. None ajoute au milieu un axe de taille un.",
+              "state": "X_paires : (2,1,2), valeurs [[[0.5,1.0]],[[0.5,2.0]]].",
+              "lines": [
+                4
+              ]
+            },
+            {
+              "title": "Réserver une place aux observations",
+              "text": "Y[None,:,:] ajoute au début un axe de taille un. Sa référence pourra ainsi être comparée à chaque observation.",
+              "state": "Y_paires : (1,1,2), valeurs [[[0.5,1.0]]].",
+              "lines": [
+                5
+              ]
+            },
+            {
+              "title": "Comparer puis mettre au carré",
+              "text": "La diffusion aligne les coordonnées de chaque paire. Les écarts de notre référence à elle-même sont nuls ; la seconde observation diffère de 1.",
+              "state": "ecarts = [[[0,0]],[[0,1]]], forme (2,1,2).",
+              "lines": [
+                6,
+                7
+              ]
+            },
+            {
+              "title": "Réduire uniquement les coordonnées",
+              "text": "axis=-1 désigne le dernier axe, celui des deux coordonnées. La somme retire cet axe et conserve observation puis référence.",
+              "state": "dist2 = [[0.0],[1.0]], forme (2,1).",
+              "lines": [
+                8,
+                9,
+                10
+              ]
+            }
+          ],
+          "result": "None n’ajoute aucune mesure : il permet d’aligner les paires. Les tableaux X et Y ne sont pas modifiés."
         },
         {
           "type": "paragraph",
@@ -832,10 +1000,6 @@
           "text": "Cette écriture est commode, mais son tableau intermédiaire peut être volumineux. Sept sons face à cinq sons et trois coordonnées restent minuscules ; cent mille sons face à cent mille autres ne le sont plus. La vectorisation facilite le calcul, sans supprimer son coût. Avant de comparer nos descripteurs ou de les pondérer, une dernière difficulté apparaît : ils ne sont pas nécessairement sur la même échelle.",
           "tone": "pitfall",
           "label": "La vectorisation ne supprime pas le coût mémoire"
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : la diffusion réutilise des valeurs, tandis que le produit matriciel additionne des contributions. Je vérifie aussi le sens des axes et la taille des intermédiaires."
         }
       ],
       "takeaways": [
@@ -888,11 +1052,12 @@
         "input": "Les descripteurs F valent [[.5, 1.], [.5, 2.]] et les axes ont été nommés.",
         "action": "Appliquer des références par colonne, puis comprendre comment les valeurs deviennent un score ou une distance.",
         "output": "Des règles de forme qui expliquent le broadcasting, @ et les distances entre paires."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "standardiser-et-preserver-precision",
-      "title": "Fixer une échelle pour les futurs fichiers",
+      "title": "Standardisation : références fixes et précision numérique",
       "summary": "Apprendre une référence sur les données d’entraînement, puis la réutiliser sans regarder le test.",
       "questionIds": [
         "py-018",
@@ -920,35 +1085,57 @@
           "goal": "Vérifier les valeurs avant d’enfermer la formule dans une fonction.",
           "steps": [
             {
-              "title": "Calculer par colonne",
-              "text": "axis=0 rassemble les observations. Chaque descripteur reçoit sa propre référence, sous la forme (1,2).",
-              "state": "mu=[[.5,1.5]], sigma=[[0.,.5]].",
+              "title": "Fixer le tableau d’apprentissage",
+              "text": "Les deux lignes de F_train sont nos observations inventées ; les colonnes sont toujours RMS et facteur de crête.",
+              "state": "F_train = [[0.5,1.0],[0.5,2.0]].",
               "lines": [
-                2,
-                3,
+                2
+              ]
+            },
+            {
+              "title": "Calculer une moyenne par colonne",
+              "text": "axis=0 rassemble les deux extraits. keepdims=True garde cet axe réduit avec une seule position, pour faciliter la soustraction suivante.",
+              "state": "mu = [[0.5,1.5]], forme (1,2).",
+              "lines": [
+                3
+              ]
+            },
+            {
+              "title": "Calculer la dispersion des mêmes colonnes",
+              "text": "L’écart-type de population utilise ici deux écarts. La colonne RMS est constante ; la colonne crête varie de −0,5 à 0,5 autour de 1,5.",
+              "state": "sigma = [[0.0,0.5]], forme (1,2).",
+              "lines": [
                 4
               ]
             },
             {
-              "title": "Prévoir la colonne constante",
-              "text": "Le RMS vaut .5 pour les deux jouets : son écart-type est nul. maximum impose un plancher positif au dénominateur.",
-              "state": "den=[[1e-8,.5]].",
+              "title": "Protéger le cas constant",
+              "text": "maximum compare chaque écart-type au plancher 1e-8. Seule la première colonne reçoit ce plancher.",
+              "state": "den = [[1e-8,0.5]].",
               "lines": [
                 5
               ]
             },
             {
-              "title": "Soustraire puis diviser",
-              "text": "La première colonne est nulle après centrage. Les écarts -.5 et .5 de la seconde sont divisés par .5.",
-              "state": "Z=[[0.,-1.],[0.,1.]].",
+              "title": "Centrer puis changer l’échelle",
+              "text": "F_train−mu vaut [[0,−0,5],[0,0,5]]. La division par den transforme la seconde colonne en −1 et 1, sans modifier F_train.",
+              "state": "Z = [[0.0,-1.0],[0.0,1.0]].",
               "lines": [
                 6
+              ],
+              "details": [
+                {
+                  "code": "(F_train - mu) / den",
+                  "explanation": "mu et den possèdent une valeur par colonne. La diffusion applique ces mêmes références à chaque ligne.",
+                  "state": "Z.shape = (2,2)."
+                }
               ]
             }
           ],
           "result": "Le calcul est défini même pour notre colonne constante, mais elle ne distingue toujours pas les deux observations.",
           "code": "import numpy as np\nF_train = np.array([[.5, 1.], [.5, 2.]])\nmu = F_train.mean(axis=0, keepdims=True)\nsigma = F_train.std(axis=0, keepdims=True)\nden = np.maximum(sigma, 1e-8)\nZ = (F_train - mu) / den",
-          "language": "python"
+          "language": "python",
+          "codeMode": "standalone"
         },
         {
           "type": "visual",
@@ -989,10 +1176,6 @@
           "text": "Les nombres flottants (floating-point numbers) sont des approximations. Avec un tableau float32, une longue moyenne peut accumuler des arrondis : np.mean(x, dtype=np.float64) choisit une accumulation plus précise. Convertir seulement le résultat en float64 ne retrouve pas les petits termes déjà perdus. Nous choisissons donc le type avant le calcul concerné. Ce réglage de précision est distinct de la standardisation : l’un change la manière de calculer, l’autre transforme les données.",
           "tone": "tip",
           "label": "Pour aller plus loin : choisir la précision avant l’accumulation"
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : je fixe moyenne et écart-type sur l’entraînement, puis je réutilise ces références. Protéger une division ne remplace pas le contrôle des colonnes et des valeurs."
         }
       ],
       "takeaways": [
@@ -1021,11 +1204,16 @@
           },
           {
             "id": "d",
-            "text": "Supprimer nécessairement toute fuite du test."
+            "text": "Annuler les erreurs déjà présentes dans les valeurs d’entrée."
           }
         ],
         "correctOptionId": "b",
-        "explanation": "Le changement de type intervient après le calcul. Pour améliorer l’accumulation, il faut choisir son dtype au moment de la réduction."
+        "explanation": "Le changement de type intervient après le calcul. Pour améliorer l’accumulation, il faut choisir son dtype au moment de la réduction.",
+        "optionFeedback": {
+          "a": "La conversion conserve le résultat arrondi. Les termes perdus ne sont plus présents dans ce nombre.",
+          "c": "Le résultat ne garde pas une formule liée à ses anciennes entrées. Il faut relancer explicitement la réduction avec le dtype voulu.",
+          "d": "Une représentation plus précise du résultat ne corrige pas les approximations contenues dans les données d’entrée."
+        }
       },
       "notions": [
         {
@@ -1045,11 +1233,12 @@
         "input": "F possède deux descripteurs, qui n’ont ni la même unité ni la même dispersion.",
         "action": "Fixer une transformation commune et traiter les colonnes constantes sans produire de division par zéro.",
         "output": "Des statistiques enregistrées, réutilisables pour les nouveaux extraits, avec une précision de calcul choisie au bon moment."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "fonctions-et-arguments",
-      "title": "Une fonction dont on peut vérifier le contrat",
+      "title": "Fonctions : entrées, retour et effets sur les tableaux",
       "summary": "Isoler la transformation numérique pour la tester et la réutiliser, sans réapprendre ses références à chaque appel.",
       "questionIds": [
         "py-002"
@@ -1076,36 +1265,56 @@
           "goal": "Lire le contrat dans le code.",
           "steps": [
             {
-              "title": "Annoncer les attentes",
-              "text": "F doit avoir une colonne par descripteur, dans le même ordre que les références. Un tableau compatible en taille mais aux colonnes inversées serait scientifiquement faux.",
-              "state": "F : (N,2) ; mu et sigma : (1,2).",
+              "title": "Lire la signature",
+              "text": "F, mu et sigma sont des arguments fournis par l’appelant. Le calcul ne doit pas les réestimer sur le nouveau fichier.",
+              "state": "F : (N,2), mu et sigma : (1,2).",
               "lines": [
-                2,
-                3
+                2
               ]
             },
             {
-              "title": "Renvoyer un résultat",
-              "text": "La soustraction et la division construisent ici de nouveaux tableaux. return transmet le résultat ; le calcul ne remplace pas les valeurs de F.",
-              "state": "Les entrées restent inchangées.",
+              "title": "Décomposer le retour",
+              "text": "maximum choisit un dénominateur par colonne. La soustraction centre les valeurs, puis la division applique l’échelle.",
+              "state": "Les trois entrées restent inchangées.",
               "lines": [
                 3
+              ],
+              "details": [
+                {
+                  "code": "np.maximum(sigma, 1e-8)",
+                  "explanation": "Prendre le plus grand de chaque sigma et du plancher, sans remplacer sigma.",
+                  "state": "[[1e-8,0.5]] pour notre référence."
+                },
+                {
+                  "code": "return (F - mu) / np.maximum(sigma, 1e-8)",
+                  "explanation": "return transmet le nouveau tableau à l’appelant. Il ne sert pas à afficher le résultat.",
+                  "state": "Un nouveau tableau de la même forme que F."
+                }
               ]
             },
             {
-              "title": "Appliquer au cas connu",
-              "text": "Le nouveau fichier possède un RMS de .5 et un facteur de crête de 2. Nous utilisons toujours la référence précédente.",
-              "state": "z=[[0.,1.]].",
+              "title": "Réutiliser les références",
+              "text": "mu et sigma proviennent du cas d’apprentissage précédent. Le nouveau fichier fictif possède [RMS=0,5 ; facteur=2].",
+              "state": "Le calcul (2−1,5)/0,5 vaut 1.",
               "lines": [
                 5,
                 6,
+                7
+              ]
+            },
+            {
+              "title": "Récupérer le résultat",
+              "text": "L’appel associe z au tableau renvoyé. Si nous changions seulement la seconde valeur de l’entrée en 1,5, elle deviendrait zéro.",
+              "state": "z = [[0.0,1.0]].",
+              "lines": [
                 7
               ]
             }
           ],
           "result": "Une petite fonction devient utile parce que son rôle est étroit et vérifiable, pas parce qu’elle raccourcit une formule.",
           "code": "import numpy as np\ndef standardiser(F, mu, sigma):\n    return (F - mu) / np.maximum(sigma, 1e-8)\n\nmu = np.array([[.5, 1.5]])\nsigma = np.array([[0., .5]])\nz = standardiser(np.array([[.5, 2.]]), mu, sigma)",
-          "language": "python"
+          "language": "python",
+          "codeMode": "standalone"
         },
         {
           "type": "visual",
@@ -1140,10 +1349,6 @@
           "text": "Un effet de bord (side effect) modifie autre chose que le résultat renvoyé. Certaines fonctions modifient volontairement leurs entrées pour éviter une allocation. C’est un contrat possible, mais il faut le dire et le tester : un appel précédent pourrait autrement changer la comparaison suivante. Dans notre version lisible, nous privilégions un résultat distinct. Nous verrons plus loin comment conserver les références dans un objet lorsqu’il devient pénible de les transmettre partout.",
           "tone": "pitfall",
           "label": "Une modification des entrées doit appartenir au contrat"
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : une fonction de transformation applique des références déjà fixées. Son contrat précise les entrées, le résultat renvoyé et les effets éventuels sur les données fournies."
         }
       ],
       "takeaways": [
@@ -1176,7 +1381,12 @@
           }
         ],
         "correctOptionId": "d",
-        "explanation": "Afficher ne transmet pas le nombre comme valeur de retour. Sans return donnant une valeur, la fonction renvoie None."
+        "explanation": "Afficher ne transmet pas le nombre comme valeur de retour. Sans return donnant une valeur, la fonction renvoie None.",
+        "optionFeedback": {
+          "a": "4 apparaît dans la console, mais la fonction ne l’a pas renvoyé. Un return 4 serait nécessaire.",
+          "b": "print construit une représentation pour l’écran ; il ne fait pas de cette chaîne la valeur de retour.",
+          "c": "Aucune instruction ne construit cette liste. Sans return explicite, Python renvoie None."
+        }
       },
       "notions": [
         {
@@ -1192,11 +1402,12 @@
         "input": "mu et sigma ont été fixés sur l’entraînement ; un nouveau tableau F doit recevoir la même transformation.",
         "action": "Séparer le calcul des statistiques de leur application et éviter de modifier les entrées.",
         "output": "Une fonction à sorties explicites, utilisable sur plusieurs ensembles avec le même état."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "valeurs-par-defaut",
-      "title": "Quand deux appels partagent une liste sans le vouloir",
+      "title": "Arguments par défaut : comprendre le partage d’une liste",
       "summary": "Comprendre le moment où une valeur par défaut est créée, à partir d’un journal de préparation.",
       "questionIds": [
         "py-013"
@@ -1220,7 +1431,8 @@
           "code": "def signaler(nom, journal=[]):\n    journal.append(nom)\n    return journal\nprint(signaler(\"voix_a.wav\"))\nprint(signaler(\"perc_b.wav\"))",
           "language": "python",
           "output": "['voix_a.wav']\n['voix_a.wav', 'perc_b.wav']",
-          "explanation": "Le second appel n’a pas fourni de journal ; il retrouve celui que le premier a déjà modifié."
+          "explanation": "Le second appel n’a pas fourni de journal ; il retrouve celui que le premier a déjà modifié.",
+          "codeMode": "standalone"
         },
         {
           "type": "walkthrough",
@@ -1253,12 +1465,20 @@
                 5,
                 7,
                 8
+              ],
+              "details": [
+                {
+                  "code": "signaler(\"voix_a.wav\", journal=[])",
+                  "explanation": "Quand une liste est fournie, journal désigne exactement cette liste. Le test is None est faux et append modifie l’objet fourni.",
+                  "state": "Le partage est volontaire dans cet appel."
+                }
               ]
             }
           ],
           "result": "La correction porte sur le moment de création de la liste, pas sur la façon de l’afficher.",
           "code": "def signaler(nom, journal=None):\n    if journal is None:\n        journal = []\n    journal.append(nom)\n    return journal\n\na = signaler(\"voix_a.wav\")\nb = signaler(\"perc_b.wav\")",
-          "language": "python"
+          "language": "python",
+          "codeMode": "standalone"
         },
         {
           "type": "visual",
@@ -1292,10 +1512,6 @@
         {
           "type": "paragraph",
           "text": "Ce piège ne concerne pas seulement les journaux. Des listes d’exemples, dictionnaires de cache ou réglages mutables peuvent survivre de la même façon. À présent que nos fonctions sont isolées, nous pouvons les appliquer à toute la collection. Il reste à ne pas perdre l’association entre un résultat et sa cible."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : une valeur par défaut est créée lors de la définition. Pour créer une liste propre à chaque appel, je teste une sentinelle puis construis la liste dans la fonction."
         }
       ],
       "takeaways": [
@@ -1344,11 +1560,12 @@
         "input": "Chaque fichier peut produire un avertissement de préparation, par exemple une colonne constante.",
         "action": "Conserver les messages d’un traitement sans les mélanger à ceux d’un autre.",
         "output": "Un journal explicitement partagé si on le fournit, indépendant quand on le demande."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "parcourir-et-filtrer",
-      "title": "Filtrer un corpus sans décaler ses cibles",
+      "title": "zip et filtrage : conserver les couples extrait–cible",
       "summary": "Réutiliser les outils de parcours connus, avec les précautions propres aux données annotées.",
       "questionIds": [
         "py-004",
@@ -1375,7 +1592,7 @@
           "steps": [
             {
               "title": "Assembler avant de sélectionner",
-              "text": "strict=True provoque une erreur si les parcours ont des longueurs différentes, au lieu de tronquer silencieusement.",
+              "text": "zip associe les éléments de mêmes positions : nom, durée, cible. strict=True refuse des longueurs différentes ; list conserve les triplets obtenus.",
               "state": "Trois triplets cohérents.",
               "lines": [
                 1,
@@ -1390,6 +1607,13 @@
               "state": "gardes=[(\"voix_a.wav\",0),(\"voix_c.wav\",0)].",
               "lines": [
                 5
+              ],
+              "details": [
+                {
+                  "code": "gardes = [(nom, cible) for nom, d, cible in lignes if d >= 1.]",
+                  "explanation": "Chaque triplet est dépaqueté. Le test porte sur sa durée ; (nom,cible) est produit seulement si ce même triplet est conservé.",
+                  "state": "perc_b et sa cible 1 sont retirés ensemble."
+                }
               ]
             },
             {
@@ -1404,7 +1628,8 @@
           ],
           "result": "Le sous-ensemble reste correctement annoté ; il peut cependant avoir changé d’équilibre entre les classes.",
           "code": "noms = [\"voix_a.wav\", \"perc_b.wav\", \"voix_c.wav\"]\ndurees = [2.0, 0.2, 1.5]\ncibles = [0, 1, 0]\nlignes = list(zip(noms, durees, cibles, strict=True))\ngardes = [(nom, cible) for nom, d, cible in lignes if d >= 1.]\nfor numero, ligne in enumerate(gardes, start=1):\n    print(numero, ligne)",
-          "language": "python"
+          "language": "python",
+          "codeMode": "standalone"
         },
         {
           "type": "visual",
@@ -1443,10 +1668,6 @@
         {
           "type": "paragraph",
           "text": "Lors de plusieurs passages sur les données, cette différence devient concrète : une première passe de diagnostic peut avoir épuisé le flux destiné à l’entraînement. Lire à la demande ne signifie pas non plus qu’aucune mémoire n’est utilisée ; chaque élément produit et chaque étape peut conserver des données. Nous choisissons une liste lorsque nous voulons un résultat disponible et reparcourable, un générateur lorsque la production progressive répond à un besoin réel."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : je filtre ensemble le fichier et toutes ses informations associées. Je distingue aussi une collection réutilisable d’un générateur dont le parcours peut être épuisé."
         }
       ],
       "takeaways": [
@@ -1495,11 +1716,12 @@
         "input": "Nous avons des fichiers, leurs cibles et une règle qui exclut les extraits trop courts.",
         "action": "Appliquer la sélection aux couples entiers plutôt qu’à deux listes séparées.",
         "output": "Un ensemble cohérent, et une distinction entre collection réutilisable et parcours consommé."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "lire-fonctions-objets",
-      "title": "Conserver les métadonnées et les réglages",
+      "title": "Dictionnaires et instances : à qui appartient l’état ?",
       "summary": "Un dictionnaire décrit un extrait ; un objet peut conserver l’état d’un préparateur.",
       "questionIds": [
         "py-003",
@@ -1518,6 +1740,10 @@
           "text": "Un triplet (nom, durée, cible) convient pour un exemple, mais ses positions deviennent pénibles à suivre quand on ajoute la source ou la fréquence d’échantillonnage. Un dictionnaire (dictionary), collection de champs nommés, permet d’écrire meta[\"cible\"] plutôt que ligne[2]. Le gain principal est de rendre le sens visible. Il ne suffit pas qu’un nombre se trouve à la bonne position : il faut savoir ce qu’il représente."
         },
         {
+          "type": "paragraph",
+          "text": "Reglage() construit un objet, puis Python appelle sa méthode __init__. Pendant cet appel, self désigne ce nouvel objet. self.gain crée son attribut. Deux appels Reglage() créent donc deux objets avec deux attributs indépendants."
+        },
+        {
           "type": "walkthrough",
           "title": "Deux objets, deux réglages",
           "goal": "Comprendre un état d’instance avant d’en faire un préparateur complet.",
@@ -1532,6 +1758,13 @@
                 3,
                 5,
                 6
+              ],
+              "details": [
+                {
+                  "code": "self.gain = 1.",
+                  "explanation": "self n’est pas le nom de la classe : c’est l’instance en cours d’initialisation. a.gain et b.gain appartiendront à des objets distincts.",
+                  "state": "Après construction : a.gain=1 et b.gain=1."
+                }
               ]
             },
             {
@@ -1550,7 +1783,8 @@
           ],
           "result": "Une classe devient pertinente lorsqu’un état et les opérations qui l’utilisent forment un ensemble cohérent.",
           "code": "class Reglage:\n    def __init__(self):\n        self.gain = 1.\n\na = Reglage()\nb = Reglage()\na.gain = 0.5",
-          "language": "python"
+          "language": "python",
+          "codeMode": "standalone"
         },
         {
           "type": "callout",
@@ -1588,10 +1822,6 @@
         {
           "type": "paragraph",
           "text": "Nous avons maintenant deux sortes de données à conserver. Les métadonnées suivent le fichier ; les statistiques de préparation suivent la version du système. Sauvegarder le modèle sans ces statistiques reviendrait à changer l’échelle de ses entrées lors de la prochaine utilisation. Réunissons enfin les étapes en un seul chemin lisible."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : les métadonnées décrivent un extrait ; l’état d’un préparateur conserve ses références. Je traite explicitement les champs manquants et l’appartenance des réglages aux instances."
         }
       ],
       "takeaways": [
@@ -1640,11 +1870,12 @@
         "input": "Les lignes associent plusieurs informations et la transformation utilise des références fixées.",
         "action": "Rendre lisibles les champs et séparer les réglages de deux préparateurs.",
         "output": "Des absences de données traitées explicitement et un état attaché à la bonne instance."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "assembler-pipeline-scientifique",
-      "title": "Du fichier au modèle : vérifier toute la chaîne",
+      "title": "Pipeline NumPy : du signal aux caractéristiques",
       "summary": "Reprendre nos deux signaux et leur association aux cibles, avec une sortie que l’on peut expliquer.",
       "questionIds": [],
       "context": {
@@ -1681,6 +1912,18 @@
                 4,
                 5,
                 6
+              ],
+              "details": [
+                {
+                  "code": "np.sqrt((S ** 2).mean(axis=1))",
+                  "explanation": "Les opérations se lisent de l’intérieur vers l’extérieur : carrés (2,4), moyennes temporelles (2,), puis racines (2,).",
+                  "state": "RMS = [0.5,0.5]."
+                },
+                {
+                  "code": "np.abs(S).max(axis=1) / np.maximum(rms, 1e-8)",
+                  "explanation": "Le pic de chaque ligne est divisé par le RMS de cette même ligne. Le résultat garde une valeur par extrait.",
+                  "state": "Facteurs de crête = [1.0,2.0]."
+                }
               ]
             },
             {
@@ -1703,7 +1946,8 @@
           ],
           "result": "Nous avons une sortie contrôlable ; aucune règle de classement n’a encore été apprise.",
           "code": "import numpy as np\nS = np.array([[-.5, .5, -.5, .5], [0., 0., 0., 1.]])\ny = np.array([0, 1])\nrms = np.sqrt((S ** 2).mean(axis=1))\ncretes = np.abs(S).max(axis=1) / np.maximum(rms, 1e-8)\nF = np.column_stack([rms, cretes])\nmu = F.mean(axis=0, keepdims=True)\nsigma = F.std(axis=0, keepdims=True)\nX = (F - mu) / np.maximum(sigma, 1e-8)",
-          "language": "python"
+          "language": "python",
+          "codeMode": "standalone"
         },
         {
           "type": "visual",
@@ -1752,10 +1996,6 @@
         {
           "type": "paragraph",
           "text": "Le module Signal répondra justement à cette limite en examinant le temps et les fréquences. PyTorch montrera ensuite comment apprendre des poids plutôt que choisir W à la main. Nous pouvons maintenant expliquer la démarche : définir un exemple, annoncer les axes, justifier les mesures et conserver les cibles. Les statistiques viennent du train ; un cas calculable permet de contrôler le résultat. Chaque outil rencontré a servi à une de ces décisions."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : je peux expliquer chaque frontière entre le fichier et les caractéristiques données au modèle. Une chaîne correcte reste à évaluer, car ses descripteurs peuvent perdre une information indispensable."
         }
       ],
       "takeaways": [
@@ -1773,11 +2013,11 @@
         "options": [
           {
             "id": "a",
-            "text": "Un réseau plus profond garantit leur séparation."
+            "text": "Un modèle plus profond peut retrouver l’ordre temporel à partir du seul RMS."
           },
           {
             "id": "b",
-            "text": "La précision float64 recrée les signaux supprimés."
+            "text": "Augmenter le nombre d’époques garantit la séparation des deux classes."
           },
           {
             "id": "c",
@@ -1785,7 +2025,7 @@
           },
           {
             "id": "d",
-            "text": "Changer les noms des fichiers suffit."
+            "text": "Recalculer ce même RMS sur une copie indépendante ajoute l’information manquante."
           }
         ],
         "correctOptionId": "c",
@@ -1805,7 +2045,8 @@
         "input": "Nous savons calculer les descripteurs, fixer une standardisation et préserver les informations associées.",
         "action": "Assembler les étapes dans leur ordre d’utilisation et examiner ce que la représentation perd.",
         "output": "X de forme (N, 2), y de forme (N,), et une limite claire à tester avant de faire confiance au classifieur."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "valeurs-noms-et-calculs",
@@ -1858,7 +2099,8 @@
           ],
           "result": "Le nom duree désigne un résultat, pas une relation qui se recalcule automatiquement.",
           "code": "nombre = 32000\nfrequence = 16000\nduree = nombre / frequence\nnombre = 16000\nnouvelle_duree = nombre / frequence",
-          "language": "python"
+          "language": "python",
+          "codeMode": "standalone"
         },
         {
           "type": "visual",
@@ -1893,10 +2135,6 @@
           "tone": "pitfall",
           "label": "Une valeur mémorisée n’est pas une formule active",
           "text": "Changer le nombre d’échantillons ne relance pas une ancienne division. Nous devons demander explicitement un nouveau calcul."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : une affectation mémorise le résultat calculé à cet instant. Pour obtenir une durée correcte, je conserve les unités et recalcule après un changement d’entrée."
         }
       ],
       "takeaways": [
@@ -1945,7 +2183,8 @@
         "action": "Relire un cas minimal sans ajouter de nouvelle étape à la préparation.",
         "output": "Un repère disponible en complément du parcours principal."
       },
-      "readingRole": "reference"
+      "readingRole": "reference",
+      "level": "advanced"
     },
     {
       "id": "listes-et-indices",
@@ -1997,7 +2236,8 @@
           ],
           "result": "L’ordre des valeurs est conservé dans la plage choisie.",
           "code": "signal = [10., 20., 30., 40., 50.]\npremier = signal[0]\nmilieu = signal[1:4]\nun_sur_deux = signal[::2]",
-          "language": "python"
+          "language": "python",
+          "codeMode": "standalone"
         },
         {
           "type": "visual",
@@ -2032,10 +2272,6 @@
           "text": "Pour une liste, un slice crée une nouvelle liste extérieure. Pour un tableau NumPy numérique, une sélection simple peut au contraire être une vue partageant le stockage. C’est cette différence, détaillée dans le parcours principal, qui peut surprendre même lorsqu’on connaît déjà très bien les listes.",
           "tone": "pitfall",
           "label": "Une même notation peut avoir un autre effet mémoire dans NumPy"
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : une plage inclut le début et exclut la fin. Je distingue les positions retenues, les valeurs obtenues et le partage mémoire éventuel."
         }
       ],
       "takeaways": [
@@ -2085,7 +2321,8 @@
         "action": "Relire un cas minimal sans ajouter de nouvelle étape à la préparation.",
         "output": "Un repère disponible en complément du parcours principal."
       },
-      "readingRole": "reference"
+      "readingRole": "reference",
+      "level": "advanced"
     }
   ],
   "edition": 2,

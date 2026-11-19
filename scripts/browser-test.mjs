@@ -215,7 +215,7 @@ try {
       assert.equal(await page.locator('.worked-example').count(),chapter.blocks.filter(b=>b.type==='walkthrough').length);
       assert.equal(await page.locator('.concept-visual').count(),chapter.blocks.filter(b=>b.type==='visual').length);
       assert.equal(await page.locator('.data-plot').count(),chapter.blocks.filter(b=>b.type==='plot').length);
-      assert.equal(await page.locator('[data-checkpoint-option]').count(),4);
+      assert.equal(await page.locator('[data-checkpoint-option]').count(),chapter.checkpoint?.options.length??0);
     }
     const illustrated=courses.find(c=>c.themeId==='audio-signal');
     const chapter=illustrated.chapters.find(ch=>ch.blocks.some(b=>b.type==='figure'));
@@ -230,7 +230,7 @@ try {
     const example=page.locator('.worked-example').first();
     assert.equal(await example.locator('[data-walk-prev]').isDisabled(),true);
     for(let i=0;i<block.steps.length;i++){
-      assert.equal(await example.locator('.walk-position').innerText(),`ÉTAPE ${i+1} / ${block.steps.length}`);
+      assert.equal(await example.locator('.walk-explanation .walk-position').innerText(),`ÉTAPE ${i+1} / ${block.steps.length}`);
       assert.ok((await example.locator('.walk-explanation').innerText()).includes(block.steps[i].text));
       assert.deepEqual(await example.locator('.walk-code-line.is-active').evaluateAll(lines=>lines.map(line=>Number(line.dataset.line))),block.steps[i].lines??[]);
       if(i<block.steps.length-1)await example.locator('[data-walk-next]').click();
@@ -254,7 +254,7 @@ try {
     const before=await getSession();
     const wrong=q.options.find(option=>option.id!==q.correctOptionId).id;
     await page.locator(`[data-checkpoint-option="${wrong}"]`).click();
-    assert.equal(await page.locator('[data-checkpoint-option]:disabled').count(),4);
+    assert.equal(await page.locator('[data-checkpoint-option]:disabled').count(),q.options.length);
     assert.equal(await page.locator('.checkpoint-options .is-wrong').count(),1);
     assert.equal(await page.locator('.checkpoint-options .is-correct').count(),1);
     assert.ok((await page.locator('.checkpoint-feedback').innerText()).includes(q.explanation));
@@ -418,6 +418,88 @@ try {
     const target=chapter.blocks.find(b=>b.links?.length).links[0];
     await page.locator(`.lesson-list a[href="${courseHref(target.themeId,target.chapterId)}"]`).click();
     assert.equal(await page.locator('#lesson-title').innerText(),courses.find(c=>c.themeId===target.themeId).chapters.find(ch=>ch.id===target.chapterId).title);
+  });
+  await check('axes : valeurs, erreur ciblée et reprise des étapes après retour et rechargement',async()=>{
+    await page.goto(`${base}/cours.html?theme=pytorch#du-pipeline-au-modele`);
+    await page.locator('#lesson-title').waitFor();
+    const example=page.locator('.worked-example').first();
+    assert.equal(await page.evaluate(()=>Boolean(document.querySelector('.lesson-body .concept-visual').compareDocumentPosition(document.querySelector('.worked-example'))&Node.DOCUMENT_POSITION_FOLLOWING)),true);
+    await example.locator('[data-walk-next]').focus();await page.keyboard.press('Enter');
+    assert.equal(await example.getAttribute('data-step'),'1');
+    const course=courses.find(c=>c.themeId==='pytorch'),chapter=course.chapters.find(c=>c.id==='du-pipeline-au-modele');
+    const wrong=chapter.checkpoint.options.find(option=>option.id!==chapter.checkpoint.correctOptionId&&chapter.checkpoint.optionFeedback?.[option.id]);
+    assert.ok(wrong,'Un distracteur reçoit un retour propre à son erreur');
+    await page.locator(`[data-checkpoint-option="${wrong.id}"]`).click();
+    assert.equal(await page.locator('.specific-feedback').innerText(),chapter.checkpoint.optionFeedback[wrong.id]);
+    await page.locator('#mark-review').check();
+    const optionOrder=await page.locator('[data-checkpoint-option]').evaluateAll(elements=>elements.map(el=>el.dataset.checkpointOption));
+    await page.locator('[data-lab-control="axis"]').selectOption('0');
+    assert.ok((await page.locator('.lab-output').innerText()).includes('[1, 0]'));
+    await page.locator('.chapter-next').click();await page.goBack();
+    await page.waitForFunction(()=>document.querySelector('.worked-example')?.dataset.step==='1');
+    assert.equal(await page.locator('#mark-review').isChecked(),true);
+    assert.equal(await page.locator('.checkpoint-options .is-wrong').count(),1);
+    await page.reload();await page.locator('#lesson-title').waitFor();
+    assert.equal(await example.getAttribute('data-step'),'1');
+    assert.deepEqual(await page.locator('[data-checkpoint-option]').evaluateAll(elements=>elements.map(el=>el.dataset.checkpointOption)),optionOrder);
+    assert.equal(await page.locator('.checkpoint-options .is-wrong').count(),1);
+    await example.screenshot({path:'test-results/audit-scores-desktop.png'});
+  });
+  await check('retain_grad : décomposition locale et surlignage de la seule ligne concernée',async()=>{
+    await page.goto(`${base}/cours.html?theme=pytorch#retropropagation-a-la-main`);await page.locator('#lesson-title').waitFor();
+    const example=page.locator('.worked-example').first();
+    await example.locator('[data-walk-next]').click();await example.locator('[data-walk-next]').click();
+    assert.deepEqual(await example.locator('.walk-code-line.is-active').evaluateAll(lines=>lines.map(line=>Number(line.dataset.line))),[6]);
+    const detail=example.locator('.walk-explanation details').first();
+    await detail.locator('summary').focus();await page.keyboard.press('Enter');
+    assert.equal(await detail.evaluate(el=>el.open),true);
+    assert.ok((await detail.innerText()).includes('retain_grad'));
+  });
+  await check('Linear : modification au clavier et lecture à 200 % sans débordement',async()=>{
+    await page.goto(`${base}/cours.html?theme=pytorch#construire-un-module`);await page.locator('#lesson-title').waitFor();
+    const weight=page.locator('[data-lab-control="w0"]');
+    await weight.focus();await weight.fill('10');
+    assert.ok((await page.locator('.lab-output').innerText()).includes('2,5'));
+    // 200% page zoom on a 1440 CSS-pixel viewport gives a 720 CSS-pixel layout.
+    // Increasing the root font also checks reflow when only the text is enlarged.
+    await page.setViewportSize({width:720,height:550});
+    await page.evaluate(()=>document.documentElement.style.fontSize='200%');
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    await page.locator('.tensor-lab').screenshot({path:'test-results/audit-linear-large-text.png'});
+    await page.evaluate(()=>document.documentElement.style.fontSize='');
+    await page.setViewportSize({width:360,height:800});
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    await page.locator('.tensor-lab').screenshot({path:'test-results/audit-linear-mobile.png'});
+    await page.setViewportSize({width:1440,height:1000});
+  });
+  await check('position de lecture conservée lors des changements de présentation et du retour',async()=>{
+    await page.goto(`${base}/cours.html?theme=pytorch#construire-un-module`);await page.locator('#lesson-title').waitFor();
+    await page.locator('.tensor-lab').scrollIntoViewIfNeeded();
+    const anchor=await page.evaluateHandle(()=>[...document.querySelectorAll('.lesson-body p,.lesson-body h3,.walk-code-line,.lesson-body img')].find(el=>el.getBoundingClientRect().bottom>80&&el.getBoundingClientRect().width>0));
+    const before=await anchor.evaluate(el=>el.getBoundingClientRect().top);
+    // Keyboard activation avoids moving the document to an off-screen button.
+    await page.locator('#large-text').evaluate(el=>el.focus({preventScroll:true}));await page.keyboard.press('Enter');
+    await page.waitForTimeout(80);
+    assert.ok(Math.abs(await anchor.evaluate(el=>el.getBoundingClientRect().top)-before)<3,'Le même passage reste en place après Aa+');
+    await page.locator('#reading-mode').evaluate(el=>el.focus({preventScroll:true}));await page.keyboard.press('Enter');
+    await page.waitForTimeout(80);
+    assert.ok(Math.abs(await anchor.evaluate(el=>el.getBoundingClientRect().top)-before)<3,'Le même passage reste en place en mode lecture');
+    const saved=await page.evaluate(()=>scrollY);
+    await page.waitForTimeout(220);await page.reload();await page.locator('#lesson-title').waitFor();
+    await page.waitForTimeout(100);
+    assert.ok(Math.abs(await page.evaluate(()=>scrollY)-saved)<5,'Rechargement à la position enregistrée');
+    await page.locator('#reading-mode').evaluate(el=>el.focus({preventScroll:true}));await page.keyboard.press('Enter');
+    await page.locator('#large-text').evaluate(el=>el.focus({preventScroll:true}));await page.keyboard.press('Enter');
+    await anchor.dispose();
+  });
+  await check('entretien : indices progressifs sans révéler la réponse modèle',async()=>{
+    await page.goto(`${base}/cours.html?theme=entretien#oral-autograd`);await page.locator('.oral-scaffold').waitFor();
+    assert.equal(await page.locator('.oral-model').evaluate(el=>el.open),false);
+    assert.equal(await page.locator('.oral-scaffold details').count(),3);
+    for(const detail of await page.locator('.oral-scaffold details').all()){
+      await detail.locator('summary').click();assert.ok((await detail.innerText()).length>30);
+      assert.equal(await page.locator('.oral-model').evaluate(el=>el.open),false);
+    }
   });
   await check('notebook : Colab et téléchargement depuis le chapitre PyTorch',async()=>{
     await page.goto(`${base}/cours.html?theme=pytorch#retropropagation-a-la-main`);

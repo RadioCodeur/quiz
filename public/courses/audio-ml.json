@@ -20,7 +20,7 @@
   "chapters": [
     {
       "id": "tache-cibles-pertes",
-      "title": "Choisir la réponse avant de choisir le réseau",
+      "title": "Classification exclusive ou multi-étiquettes : choisir les cibles",
       "summary": "Que doit répondre notre outil si une voix et une percussion apparaissent dans le même fichier ?",
       "questionIds": [
         "aml-001",
@@ -53,11 +53,33 @@
           "text": "À la main, notre percussion seule reçoit la cible [0,1], dans l’ordre voix puis percussion. Les logits [0, log(3)] donnent environ [0,5 ; 0,75]. Les deux questions restent indépendantes dans leur formulation. Nous retrouvons exactement ce cas dans le code."
         },
         {
+          "type": "visual",
+          "kind": "table",
+          "title": "Une ligne et deux réponses simultanées",
+          "columns": [
+            "Exemple fictif",
+            "Logit voix",
+            "Logit percussion",
+            "Cible voix",
+            "Cible percussion"
+          ],
+          "rows": [
+            [
+              "Percussion seule",
+              "0",
+              "log(3) ≈ 1,099",
+              "0",
+              "1"
+            ]
+          ],
+          "caption": "Les colonnes suivent toujours voix puis percussion. Les cibles flottantes décrivent deux présences, pas un indice de classe exclusif."
+        },
+        {
           "type": "walkthrough",
           "title": "Une percussion seule, deux questions de présence",
           "goal": "Relier le sens des réponses à leur nombre et à leur fonction de perte.",
           "language": "python",
-          "code": "import torch\n# Un exemple, deux questions binaires : voix et percussion\nlogits = torch.tensor([[0., 1.0986123]], requires_grad=True)\ntarget = torch.tensor([[0., 1.]])\nprobabilities = torch.sigmoid(logits)  # environ [[0.5, 0.75]]\nloss = torch.nn.BCEWithLogitsLoss()(logits, target)",
+          "code": "import torch\n# Valeurs choisies a la main, un exemple et deux presences\nlogits = torch.tensor([[0., 1.0986123]], requires_grad=True)\ntarget = torch.tensor([[0., 1.]])\nprobabilities = torch.sigmoid(logits)\ncritere = torch.nn.BCEWithLogitsLoss()\nloss = critere(logits, target)\nprint(probabilities.tolist(), loss.item())",
           "steps": [
             {
               "title": "Avant : annoncer les questions",
@@ -82,15 +104,30 @@
               "text": "La perte reçoit les logits et les cibles flottantes. Un seuil permettra ensuite de décider ; choisir ce seuil ne remplace pas l’apprentissage des scores.",
               "state": "BCEWithLogitsLoss ; aucun argmax avant la perte",
               "lines": [
-                6
+                6,
+                7,
+                8
+              ],
+              "details": [
+                {
+                  "code": "critere = torch.nn.BCEWithLogitsLoss()",
+                  "explanation": "Cet appel construit l’objet qui contient la règle de perte. Il n’évalue pas encore nos deux tableaux.",
+                  "state": "critere est une fonction de coût prête à recevoir des données."
+                },
+                {
+                  "code": "loss = critere(logits, target)",
+                  "explanation": "Ce second appel utilise l’objet construit. La règle compare les logits aux deux cibles flottantes et retourne une perte scalaire.",
+                  "state": "logits et target restent inchangés."
+                }
               ]
             }
           ],
-          "result": "Une définition de tâche claire autorise deux événements simultanés. Un argmax aurait artificiellement supprimé cette possibilité."
+          "result": "Une définition de tâche claire autorise deux événements simultanés. Un argmax aurait artificiellement supprimé cette possibilité.",
+          "codeMode": "standalone"
         },
         {
           "type": "paragraph",
-          "text": "Le déroulé utilise les deux classes dans cet ordre : voix, percussion. Avec les logits [0, log(3)], les probabilités valent environ [0,5 ; 0,75]. La cible [0,1] décrit notre percussion seule. Ce calcul montre le contrat de la perte ; il ne démontre pas que le réseau sache reconnaître un son. Dans un vrai entraînement, ces nombres sont calculés depuis l’entrée et leurs paramètres sont ajustés pour réduire la perte."
+          "text": "Les nombres du programme sont choisis à la main. Ils isolent le contrat multi-étiquettes : deux présences peuvent être vraies ensemble. Ils ne proviennent ni d’un fichier analysé ni d’un réseau déjà entraîné."
         },
         {
           "type": "visual",
@@ -178,10 +215,6 @@
           "text": "Fixons aussi l’unité de réponse : une trame, un extrait court (crop) ou tout le fichier. Une présence quelque part ne signifie pas une présence à chaque instant. Les annotations faibles préciseront ce problème. Pendant l’apprentissage, la perte doit rester différentiable : ses variations doivent permettre de calculer les gradients. Un argmax transforme les scores en indices et coupe ce chemin utile. Gardons-le pour une décision appropriée après l’apprentissage.",
           "tone": "pitfall",
           "label": "Ne pas décider avant la perte"
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : Je définis d’abord si les classes sont exclusives ou simultanées. Ce choix détermine les cibles, les scores et la perte, avant toute décision par seuil."
         }
       ],
       "takeaways": [
@@ -215,15 +248,20 @@
           },
           {
             "id": "c",
-            "text": "La fréquence d’échantillonnage seule"
+            "text": "Deux classes exclusives avec une softmax, puis un argmax."
           },
           {
             "id": "d",
-            "text": "Une perte sur la durée du fichier"
+            "text": "Une probabilité de sirène, en définissant pluie comme son complément."
           }
         ],
         "correctOptionId": "b",
-        "explanation": "Deux questions de présence autorisent deux réponses positives. Un seul argmax imposerait une exclusivité absente de la tâche."
+        "explanation": "Deux questions de présence autorisent deux réponses positives. Un seul argmax imposerait une exclusivité absente de la tâche.",
+        "optionFeedback": {
+          "a": "Un seul argmax imposerait une seule classe. Il ferait perdre l’une des deux présences lorsque pluie et sirène sont simultanées.",
+          "c": "La softmax couple les deux classes avec une somme de un. Elle impose une exclusivité qui n’appartient pas à la tâche.",
+          "d": "La pluie et la sirène ne sont pas complémentaires. Elles peuvent être toutes deux présentes ou toutes deux absentes."
+        }
       },
       "notions": [
         {
@@ -247,11 +285,12 @@
         "input": "Le premier essai utilisait des extraits isolés, avec une classe exclusive voix ou percussion.",
         "action": "Élargir le cahier des charges à deux questions de présence et choisir des cibles et une perte cohérentes.",
         "output": "Nous distinguons classification exclusive et multi-étiquettes ; nous savons pourquoi leur sortie et leur perte diffèrent."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "pretraitement-entrees-coherentes",
-      "title": "Garder le même sens des valeurs, du train au nouveau fichier",
+      "title": "Prétraitement audio : conserver le contrat du modèle",
       "summary": "Comment éviter que le modèle reçoive un tableau de bonne forme, mais préparé d’une autre façon ?",
       "questionIds": [
         "aml-005",
@@ -296,6 +335,13 @@
                 3,
                 4,
                 5
+              ],
+              "details": [
+                {
+                  "code": "train.std(unbiased=False)",
+                  "explanation": "Nous divisons les deux écarts carrés par 2 : ((1−2)²+(3−2)²)/2=1. unbiased=False choisit cette convention de population.",
+                  "state": "La racine vaut 1 ; le tableau train n’est pas modifié."
+                }
               ]
             },
             {
@@ -318,11 +364,8 @@
               ]
             }
           ],
-          "result": "Les données réservées n’influencent pas les statistiques apprises. Reproduire le contrat d’un encodeur reste distinct d’inventer une nouvelle normalisation."
-        },
-        {
-          "type": "paragraph",
-          "text": "Le calcul ci-dessus n’emploie qu’une caractéristique : les valeurs d’entraînement 1 et 3 ont une moyenne de 2 et un écart-type de population de 1. La nouvelle valeur 4 devient donc 2. On ne recalcule pas ces statistiques avec 4 ; cette valeur doit être transformée selon le référentiel déjà appris. Pour le log-mel, on applique le même raisonnement par bande, selon les axes annoncés."
+          "result": "Les données réservées n’influencent pas les statistiques apprises. Reproduire le contrat d’un encodeur reste distinct d’inventer une nouvelle normalisation.",
+          "codeMode": "standalone"
         },
         {
           "type": "paragraph",
@@ -353,10 +396,6 @@
           "text": "Une fuite d’information (data leakage) apparaît si le test influence les réglages du système évalué. Estimer la moyenne sur ses fichiers suffit, même sans lire leurs étiquettes. Pour notre propre chaîne, les statistiques viennent de l’apprentissage. Un modèle préentraîné peut fournir d’autres statistiques fixes. Nous les conservons pour la référence de comparaison (baseline), sans les remplacer silencieusement.",
           "tone": "pitfall",
           "label": "Le test ne règle pas notre échelle"
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : Le modèle et sa préparation forment un même système. Je reproduis le contrat d’entrée et je fige les statistiques apprises avant de recevoir les données réservées."
         }
       ],
       "takeaways": [
@@ -419,11 +458,12 @@
         "input": "Nos cibles indiquent deux présences et le cours Signal fournit une préparation audio documentée.",
         "action": "Fixer cadence, représentation et normalisation, puis réutiliser exactement ces conventions sur les fichiers réservés.",
         "output": "Le modèle et son prétraitement forment un même système ; les données de test n’ajustent pas ses statistiques."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "durees-padding-masques",
-      "title": "Assembler des durées variables sans inventer du silence",
+      "title": "Padding : calculer une moyenne avec les positions réelles",
       "summary": "Comment traiter voix_01 et un fichier plus long ensemble, sans que les cases ajoutées influencent la décision ?",
       "questionIds": [
         "aml-009",
@@ -448,41 +488,106 @@
           "text": "À la main, [2,4] a pour moyenne 6/2 = 3. Le stockage [2,4,0,0] donnerait naïvement 6/4 = 1,5. Nous voulons conserver 3, car seules deux positions sont réelles. Le code utilise précisément ce tableau et son masque."
         },
         {
+          "type": "visual",
+          "kind": "table",
+          "title": "Les valeurs et le masque se lisent ensemble",
+          "columns": [
+            "Position temporelle",
+            "Valeur stockée",
+            "Observation réelle ?",
+            "Contribution"
+          ],
+          "rows": [
+            [
+              "0",
+              "2",
+              "True → 1",
+              "2"
+            ],
+            [
+              "1",
+              "4",
+              "True → 1",
+              "4"
+            ],
+            [
+              "2",
+              "0",
+              "False → 0 · ajoutée",
+              "0"
+            ],
+            [
+              "3",
+              "0",
+              "False → 0 · ajoutée",
+              "0"
+            ]
+          ],
+          "caption": "Un zéro réellement observé aurait True. C’est la longueur d’origine qui définit le masque, pas la valeur de la case."
+        },
+        {
           "type": "walkthrough",
           "title": "Une moyenne qui ne se laisse pas diluer",
           "goal": "Comparer le même contenu avant et après l’ajout de padding.",
           "language": "python",
-          "code": "import torch\nx = torch.tensor([[[2.], [4.], [0.], [0.]]])  # (B=1,T=4,D=1)\nvalid = torch.tensor([[True, True, False, False]])\nmask = valid.to(x.dtype)\nnaive = x.mean(dim=1)  # [[1.5]]\npooled = (x * mask[..., None]).sum(dim=1)\npooled = pooled / mask.sum(dim=1, keepdim=True)  # [[3.0]]",
+          "code": "import torch\nx = torch.tensor([[[2.], [4.], [0.], [0.]]])\nvalid = torch.tensor([[True, True, False, False]])\nmask = valid.to(x.dtype)\nmask_features = mask[..., None]\nnaive = x.mean(dim=1)\ncontributions = x * mask_features\nsomme = contributions.sum(dim=1)\ncompte = mask.sum(dim=1, keepdim=True)\npooled = somme / compte\nprint(mask_features.shape, somme.tolist(), compte.tolist())\nprint(naive.tolist(), pooled.tolist())",
           "steps": [
             {
-              "title": "Avant : lire deux valeurs réelles",
-              "text": "La séquence contient seulement [2, 4]. Son résumé moyen vaut 3. Nous choisissons ensuite une longueur calculée de quatre positions pour rejoindre un batch.",
-              "state": "Contenu réel : deux valeurs",
+              "title": "Lire les trois axes",
+              "text": "x contient un extrait, quatre positions de stockage et une caractéristique par position. valid ne porte pas l’axe des caractéristiques.",
+              "state": "x : (1,4,1) ; valid : (1,4).",
               "lines": [
                 2,
                 3
               ]
             },
             {
-              "title": "Ajouter des cases sans changer le contenu",
-              "text": "Le tableau devient [2, 4, 0, 0]. Sa moyenne ordinaire tombe à 1,5, parce qu’elle divise par quatre. Les deux zéros ne sont pourtant pas des mesures.",
-              "state": "Calcul naïf : 6 / 4 = 1,5",
+              "title": "Convertir les booléens en coefficients",
+              "text": "to(x.dtype) transforme True en 1 et False en 0 dans le type flottant de x. valid reste booléen.",
+              "state": "mask = [[1,1,0,0]], forme (1,4).",
               "lines": [
-                4,
+                4
+              ]
+            },
+            {
+              "title": "Aligner le masque sur les caractéristiques",
+              "text": "Les points ... conservent les axes existants. None ajoute à la fin un axe de taille un, compatible avec chaque caractéristique.",
+              "state": "mask_features : (1,4,1).",
+              "lines": [
                 5
               ]
             },
             {
-              "title": "Après : réduire avec le masque",
-              "text": "La somme valide reste 6 et le nombre de positions réelles reste 2. La moyenne masquée vaut donc 3, quelle que soit la quantité de padding ajoutée.",
-              "state": "Calcul valide : 6 / 2 = 3",
+              "title": "Repérer la moyenne qui répond mal",
+              "text": "mean(dim=1) rassemble les quatre positions stockées et donne 6/4=1,5. Ce calcul ignore leur provenance.",
+              "state": "naive = [[1.5]], forme (1,1).",
               "lines": [
-                6,
-                7
+                6
+              ]
+            },
+            {
+              "title": "Calculer séparément numérateur et dénominateur",
+              "text": "Les contributions masquées valent 2,4,0,0 ; leur somme vaut 6. La somme du masque compte deux observations. keepdim=True garde une colonne.",
+              "state": "somme=[[6]], compte=[[2]], deux formes (1,1).",
+              "lines": [
+                7,
+                8,
+                9
+              ]
+            },
+            {
+              "title": "Diviser par le compte réel",
+              "text": "La division utilise les deux observations, pas les quatre places. Changer la valeur d’une case masquée ne change pas le résultat.",
+              "state": "pooled=[[3.0]]. x reste inchangé.",
+              "lines": [
+                10,
+                11,
+                12
               ]
             }
           ],
-          "result": "Le masque conserve le sens de la moyenne. Chaque séquence doit avoir au moins une position valide pour que ce dénominateur soit non nul."
+          "result": "Le masque conserve le sens de la moyenne. Chaque séquence doit avoir au moins une position valide pour que ce dénominateur soit non nul.",
+          "codeMode": "standalone"
         },
         {
           "type": "paragraph",
@@ -579,13 +684,9 @@
         },
         {
           "type": "callout",
-          "text": "Le déroulé isole l’erreur sur une seule séquence : [2,4] devient [2,4,0,0]. La moyenne naïve tombe de 3 à 1,5, simplement parce qu’on a ajouté deux cases. La moyenne masquée conserve 6/2=3. Une séquence vide exige une politique distincte : filtrer l’exemple, le signaler ou définir un traitement ; diviser par zéro ne constitue pas une stratégie.",
+          "text": "Avant la division, contrôlons le compte réel. Une séquence vide ne possède aucune moyenne définie ici : il faut la filtrer, la signaler ou choisir une politique explicite. Le masque ne donne pas cette décision à notre place.",
           "tone": "pitfall",
           "label": "Une case ajoutée ne devient pas une observation"
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : Le remplissage rend les formes compatibles sans créer des observations. Je conserve les longueurs et je masque les cases ajoutées dans chaque calcul concerné."
         }
       ],
       "takeaways": [
@@ -645,11 +746,12 @@
         "input": "Nous savons calculer des caractéristiques comparables, mais chaque fichier peut produire un nombre différent de trames.",
         "action": "Compléter les séquences pour le stockage, conserver leurs longueurs et masquer les positions ajoutées dans les calculs.",
         "output": "Le batch reste rectangulaire sans que le padding modifie le sens d’une moyenne ou du contexte."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "embeddings-transfert-domaines",
-      "title": "Construire une première référence avec un encodeur gelé",
+      "title": "Transfert : geler un encodeur et apprendre une tête",
       "summary": "Avec peu de voix et de percussions annotées, devons-nous vraiment apprendre toutes les représentations depuis zéro ?",
       "questionIds": [
         "aml-003",
@@ -664,7 +766,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Une tête de décision (prediction head) transforme cette description en deux logits de présence. Notre exemple reçoit 512 caractéristiques par extrait et utilise une couche linéaire 512→2. Ce nombre décrit le contrat choisi ici. Chaque autre encodeur doit annoncer sa propre largeur de sortie."
+          "text": "Une tête de décision transforme la description en deux logits de présence. Pour vérifier le mécanisme, nous utiliserons un encodeur miniature 4→512 puis une tête 512→2. Les quatre coordonnées d’entrée sont fictives, sans unité acoustique ; 512 est la largeur choisie pour cette démonstration."
         },
         {
           "type": "paragraph",
@@ -672,51 +774,92 @@
         },
         {
           "type": "paragraph",
-          "text": "Notre cas miniature suit un seul extrait : l’encodeur fournit 512 nombres, puis la tête produit deux scores. Nous gardons la description fixe pendant l’ajustement de la tête. Cette séparation permet de vérifier quelle partie apprend, avant de modifier tout le réseau."
+          "text": "Le programme suivant est autonome, mais son encodeur est initialisé au hasard : il n’est pas préentraîné. Nous ne testons donc pas la qualité du transfert. Trois lignes fictives permettent uniquement de vérifier ce que le gel conserve et ce que la mise à jour modifie."
         },
         {
           "type": "walkthrough",
           "title": "Apprendre deux présences sur une description gelée",
           "goal": "Lire ce qui peut changer et ce qui reste fixe pendant une étape d’apprentissage.",
           "language": "python",
-          "code": "import torch\n# encoder et x suivent le contrat d’entree documente\n# encoder(x) : (B, 512) ; target : (B, 2), flottant, voix/percussion\nencoder.eval()\nfor p in encoder.parameters():\n    p.requires_grad_(False)\nhead = torch.nn.Linear(512, 2)\noptimizer = torch.optim.Adam(head.parameters(), lr=1e-3)\noptimizer.zero_grad()\nwith torch.no_grad():\n    embeddings = encoder(x)\nloss = torch.nn.BCEWithLogitsLoss()(head(embeddings), target)\nloss.backward()\noptimizer.step()",
+          "code": "import torch\ntorch.manual_seed(9)\ntorch.set_num_threads(1)\nencoder = torch.nn.Sequential(torch.nn.Linear(4, 512), torch.nn.Tanh())\nx = torch.tensor([[1., 0., 0., 1.], [0., 1., 1., 0.], [1., 1., 0., 0.]])\ntarget = torch.tensor([[1., 0.], [0., 1.], [1., 1.]])\nencoder.eval()\nfor p in encoder.parameters():\n    p.requires_grad_(False)\nhead = torch.nn.Linear(512, 2)\noptimizer = torch.optim.Adam(head.parameters(), lr=1e-3)\nencoder_before = [p.detach().clone() for p in encoder.parameters()]\nhead_before = head.weight.detach().clone()\noptimizer.zero_grad()\nwith torch.no_grad():\n    embeddings = encoder(x)\nlogits = head(embeddings)\ncritere = torch.nn.BCEWithLogitsLoss()\nloss = critere(logits, target)\nloss.backward()\noptimizer.step()\nencoder_unchanged = all(torch.equal(a, b) for a, b in zip(encoder_before, encoder.parameters()))\nhead_changed = not torch.equal(head_before, head.weight)\nprint(x.shape, embeddings.shape, logits.shape)\nprint(\"encodeur conserve\", encoder_unchanged, \"tete modifiee\", head_changed)",
           "steps": [
             {
-              "title": "Avant : donner un rôle à chaque partie",
-              "text": "L’encodeur extrait 512 caractéristiques par exemple. La tête neuve combine ces nombres en deux logits, voix et percussion, pour des cibles de présence. Elle ne connaît pas encore notre corpus.",
-              "state": "Encodeur préentraîné + tête nouvelle",
+              "title": "Construire le contrat miniature",
+              "text": "Les trois lignes de x portent quatre coordonnées fictives. target possède les deux présences attendues par ligne. La graine fixe l’initialisation aléatoire.",
+              "state": "x : (3,4) ; target : (3,2).",
               "lines": [
+                1,
                 2,
                 3,
-                7
-              ]
-            },
-            {
-              "title": "Définir les valeurs ajustables",
-              "text": "requires_grad_(False) retire le calcul des gradients des paramètres de l’encodeur. L’optimiseur ne reçoit que les paramètres de la tête. eval() fixe aussi le comportement de certains modules.",
-              "state": "Seule la tête est ajustable",
-              "lines": [
                 4,
                 5,
-                6,
-                8
+                6
               ]
             },
             {
-              "title": "Après : effectuer une étape",
-              "text": "Le passage avant calcule tout de même l’embedding. La perte et backward produisent les gradients de la tête, puis step effectue sa mise à jour.",
-              "state": "Description fixe, décision apprise",
+              "title": "Geler l’encodeur",
+              "text": "eval règle son comportement ; requires_grad_(False) retire les gradients de ses paramètres. Cela ne supprime pas son calcul avant.",
+              "state": "Les paramètres de l’encodeur ne seront pas appris.",
               "lines": [
-                9,
+                7,
+                8,
+                9
+              ]
+            },
+            {
+              "title": "Choisir seulement les paramètres de la tête",
+              "text": "La tête transforme 512 caractéristiques en deux logits. L’optimiseur reçoit head.parameters(), pas ceux de l’encodeur.",
+              "state": "head : 512→2, taux 0,001.",
+              "lines": [
                 10,
-                11,
+                11
+              ]
+            },
+            {
+              "title": "Garder des copies pour la comparaison",
+              "text": "detach retire le lien au graphe ; clone donne un stockage indépendant. Ces copies servent seulement à vérifier l’état avant/après.",
+              "state": "Copies de référence sans modification du modèle.",
+              "lines": [
                 12,
-                13,
-                14
+                13
+              ],
+              "details": [
+                {
+                  "code": "p.detach().clone()",
+                  "explanation": "Nous voulons comparer plus tard des valeurs anciennes. Une simple référence aux paramètres verrait leurs nouvelles valeurs après step.",
+                  "state": "Deux fonctions distinctes : détacher, puis copier."
+                }
+              ]
+            },
+            {
+              "title": "Calculer les descriptions puis les scores",
+              "text": "no_grad évite de mémoriser le calcul de l’encodeur. La tête utilise ensuite ses propres paramètres entraînables.",
+              "state": "embeddings : (3,512), logits : (3,2).",
+              "lines": [
+                14,
+                15,
+                16,
+                17
+              ]
+            },
+            {
+              "title": "Apprendre puis observer ce qui a changé",
+              "text": "La perte porte sur les deux présences. backward calcule les gradients de la tête et step la modifie. Les comparaisons finales contrôlent le gel.",
+              "state": "encodeur conserve True ; tete modifiee True.",
+              "lines": [
+                18,
+                19,
+                20,
+                21,
+                22,
+                23,
+                24,
+                25
               ]
             }
           ],
-          "result": "Nous disposons d’une baseline de transfert interprétable. Ses performances sur des données réservées diront si un ajustement plus large mérite d’être essayé."
+          "result": "Le test montre le mécanisme du gel, pas la qualité d’un encodeur. Une vraie référence préentraînée demande ensuite son chargement et son contrat publiés.",
+          "codeMode": "standalone"
         },
         {
           "type": "paragraph",
@@ -757,10 +900,6 @@
           "text": "La première expérience apprend seulement la tête avec nos deux cibles de présence. Nous comparerons ensuite une adaptation partielle de l’encodeur, avec le même découpage de données et les mêmes mesures. Si nous modifions aussi la préparation, la taille du corpus et les augmentations, nous ne saurons plus attribuer le gain à cette adaptation. La baseline sert précisément de point de comparaison interprétable.",
           "tone": "pitfall",
           "label": "Modifier une seule hypothèse à la fois"
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : Une description préentraînée et une petite tête fournissent une référence simple. Je teste ensuite le décalage de domaine avant de justifier une adaptation plus large."
         }
       ],
       "takeaways": [
@@ -798,11 +937,16 @@
           },
           {
             "id": "d",
-            "text": "Remplacer l’embedding par l’étiquette de test"
+            "text": "Donner directement la forme d’onde à la tête 512→2, sans calculer l’embedding."
           }
         ],
         "correctOptionId": "a",
-        "explanation": "Le gel empêche l’apprentissage de ces paramètres, mais l’encodeur doit encore produire la description de la nouvelle entrée. Sinon la tête n’a pas ses caractéristiques."
+        "explanation": "Le gel empêche l’apprentissage de ces paramètres, mais l’encodeur doit encore produire la description de la nouvelle entrée. Sinon la tête n’a pas ses caractéristiques.",
+        "optionFeedback": {
+          "b": "Réinitialiser détruirait la représentation que l’on souhaite réutiliser. Le gel conserve les poids existants.",
+          "c": "Le gel retire justement les gradients de ces paramètres. Le passage avant reste cependant nécessaire.",
+          "d": "La tête attend 512 caractéristiques par extrait, pas les échantillons temporels du fichier. L’encodeur construit cette entrée."
+        }
       },
       "notions": [
         {
@@ -826,11 +970,12 @@
         "input": "Les entrées ont un contrat fixe et leurs positions valides sont connues ; une boucle PyTorch peut déjà entraîner un modèle.",
         "action": "Réutiliser un encodeur préentraîné pour calculer des embeddings, puis apprendre seulement une petite tête de présence.",
         "output": "Nous avons une baseline simple à comparer, et savons ce que le gel économise sans supprimer le passage avant."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "architectures-axes-contexte",
-      "title": "Choisir ce que le modèle doit pouvoir observer",
+      "title": "Convolutions et contexte : nommer les axes de chaque couche",
       "summary": "Quel type de modèle peut lire une attaque brève, une texture ou un contexte plus éloigné ?",
       "questionIds": [
         "aml-017",
@@ -855,6 +1000,10 @@
           "text": "Calculons la taille avant de lancer le code. Sur l’onde, un filtre de largeur 5, sans remplissage et de pas 1, donne 16000−5+1 = 15996 positions. Sur le spectrogramme, le filtre 3×3 transforme 64×100 positions en 62×98. Les canaux de sortie sont choisis séparément."
         },
         {
+          "type": "paragraph",
+          "text": "Les tableaux du programme sont tirés au hasard pour vérifier les formes. x n’est pas un enregistrement et S n’est pas son spectrogramme. Nous changeons volontairement d’expérience : les deux chemins sont comparés comme interfaces de couches, sans résultat de reconnaissance."
+        },
+        {
           "type": "walkthrough",
           "title": "Suivre les axes dans deux petites convolutions",
           "goal": "Distinguer canaux de caractéristiques, fréquences et temps avant de changer une forme.",
@@ -868,6 +1017,13 @@
                 3,
                 4,
                 6
+              ],
+              "details": [
+                {
+                  "code": "x.unsqueeze(1)",
+                  "explanation": "L’axe ajouté est placé entre le lot et le temps. Aucune amplitude n’est répétée ou réordonnée ; seul l’axe canal de taille un apparaît.",
+                  "state": "(8,16000) → (8,1,16000), sans modifier x."
+                }
               ]
             },
             {
@@ -888,11 +1044,19 @@
                 9,
                 10,
                 11
+              ],
+              "details": [
+                {
+                  "code": "S.unsqueeze(1)",
+                  "explanation": "Les 64 bandes restent un axe fréquentiel. Le canal ajouté ne transforme pas ces bandes en microphones.",
+                  "state": "(8,64,100) → (8,1,64,100)."
+                }
               ]
             }
           ],
           "result": "La couche ne devine pas les noms d’axes. Le singleton ajouté place un canal mono, tandis que les bandes mel restent une dimension fréquentielle.",
-          "code": "import torch\n\n# Forme d'onde : B=8 extraits mono, T=16000 echantillons\nx = torch.randn(8, 16000)\nconv_wave = torch.nn.Conv1d(1, 16, kernel_size=5)\nh = conv_wave(x.unsqueeze(1))  # entree (8, 1, 16000)\n\n# Spectrogrammes : B=8, F=64 bandes, T=100 trames\nS = torch.randn(8, 64, 100)\nconv_spec = torch.nn.Conv2d(1, 8, kernel_size=3)\nz = conv_spec(S.unsqueeze(1))  # entree (8, 1, 64, 100)"
+          "code": "import torch\n\n# Forme d'onde : B=8 extraits mono, T=16000 echantillons\nx = torch.randn(8, 16000)\nconv_wave = torch.nn.Conv1d(1, 16, kernel_size=5)\nh = conv_wave(x.unsqueeze(1))  # entree (8, 1, 16000)\n\n# Spectrogrammes : B=8, F=64 bandes, T=100 trames\nS = torch.randn(8, 64, 100)\nconv_spec = torch.nn.Conv2d(1, 8, kernel_size=3)\nz = conv_spec(S.unsqueeze(1))  # entree (8, 1, 64, 100)",
+          "codeMode": "standalone"
         },
         {
           "type": "illustration",
@@ -936,10 +1100,6 @@
           "text": "Une remise en forme (reshape) peut faire accepter les dimensions tout en mélangeant leur sens. Une permutation d’axes (axis permutation) change leur ordre en conservant les associations utiles. Elle ne doit pas mélanger différents exemples. Déplacer un motif en fréquence diffère aussi d’un déplacement temporel. Une transposition peut changer la hauteur que notre tâche doit reconnaître.",
           "tone": "pitfall",
           "label": "Respecter le sens des axes"
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : Je choisis une architecture selon les relations utiles et leur contexte. Je nomme les axes avant les couches, puis je compare la modification à une référence commune."
         }
       ],
       "takeaways": [
@@ -1001,11 +1161,12 @@
         "input": "Une petite tête sur embeddings donne notre baseline ; ses erreurs peuvent révéler une information mal représentée.",
         "action": "Lire les axes attendus par les couches et relier leurs interactions aux motifs audio recherchés.",
         "output": "Nous distinguons canaux audio, cartes internes, fréquences et temps, et pouvons discuter CNN ou Transformer à partir du besoin."
-      }
+      },
+      "level": "discuss"
     },
     {
       "id": "annotations-faibles-agregation",
-      "title": "Apprendre avec une présence de fichier sans inventer ses instants",
+      "title": "Annotations faibles : agréger des scores sans inventer des instants",
       "summary": "Une percussion dure une seconde dans trente secondes de chant. Comment utiliser l’étiquette « percussion présente » ?",
       "questionIds": [
         "aml-012",
@@ -1061,7 +1222,8 @@
               ]
             }
           ],
-          "result": "Un résumé global ne révèle pas automatiquement des frontières temporelles. Nos six nombres sont un exemple inventé, pas une expérience de détection."
+          "result": "Un résumé global ne révèle pas automatiquement des frontières temporelles. Nos six nombres sont un exemple inventé, pas une expérience de détection.",
+          "codeMode": "standalone"
         },
         {
           "type": "paragraph",
@@ -1203,10 +1365,6 @@
           "text": "Pendant l’utilisation du modèle (inference), un système de durée fixe peut parcourir un long fichier par portions. Fixons leurs positions, leur recouvrement et l’agrégation avant le test. Essayer plusieurs règles jusqu’au meilleur résultat sur ce test l’utilise comme jeu de réglage. Nous perdons alors notre évaluation réservée.",
           "tone": "pitfall",
           "label": "L’agrégation se choisit avant le test"
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : Une étiquette de fichier ne donne pas la vérité de chaque portion. J’agrège les réponses au niveau annoté et j’évalue séparément toute localisation temporelle."
         }
       ],
       "takeaways": [
@@ -1239,7 +1397,7 @@
           },
           {
             "id": "c",
-            "text": "Le crop devient forcément stéréo"
+            "text": "Il faut donner une cible négative à tous les crops non datés."
           },
           {
             "id": "d",
@@ -1247,7 +1405,12 @@
           }
         ],
         "correctOptionId": "b",
-        "explanation": "La présence quelque part dans trente secondes ne garantit pas la présence dans toute portion de deux secondes. Une cible de crop exige une stratégie cohérente avec cette annotation faible."
+        "explanation": "La présence quelque part dans trente secondes ne garantit pas la présence dans toute portion de deux secondes. Une cible de crop exige une stratégie cohérente avec cette annotation faible.",
+        "optionFeedback": {
+          "a": "Une présence quelque part dans trente secondes ne garantit pas la présence dans la portion tirée.",
+          "c": "L’absence de date ne prouve pas l’absence de sirène dans le crop. Une stratégie cohérente avec la supervision faible est nécessaire.",
+          "d": "L’étiquette globale ne contient pas les dates. Découper le signal ne crée pas ces annotations."
+        }
       },
       "notions": [
         {
@@ -1267,11 +1430,12 @@
         "input": "Le modèle peut calculer des sorties locales, mais nos annotations indiquent parfois seulement les sons présents dans tout le fichier.",
         "action": "Distinguer cible globale et cible temporelle, puis agréger les scores au niveau où la vérité est connue.",
         "output": "Nous savons pourquoi un crop peut être négatif dans un fichier positif et comment comparer moyenne et maximum sans leur attribuer des frontières exactes."
-      }
+      },
+      "level": "discuss"
     },
     {
       "id": "augmentations-cibles-validation",
-      "title": "Faire varier le son tout en gardant une cible honnête",
+      "title": "Augmentations : transformer le son et sa cible",
       "summary": "Quelles variations peuvent rendre notre classifieur plus robuste, et lesquelles changent la réponse attendue ?",
       "questionIds": [
         "aml-006",
@@ -1299,44 +1463,60 @@
         },
         {
           "type": "paragraph",
-          "text": "Gardons deux tâches distinctes pour le calcul manuel. Accélérer le tempo donne 100×1,25 = 125 BPM et une durée 10/1,25 = 8 secondes. Transposer la note donne MIDI 60+2 = 62. Le code applique ces deux règles aux deux exemples concernés."
+          "text": "Nous ouvrons deux expériences synthétiques indépendantes. Une sinusoïde de dix secondes sert à vérifier une durée ; son étiquette de tempo 100 BPM est inventée, pas mesurée sur ce son. Une seconde sinusoïde représente la hauteur MIDI 60. Nous contrôlons ainsi la transformation de cibles sans prétendre analyser le tempo d’un enregistrement."
         },
         {
           "type": "walkthrough",
           "title": "Transformer l’entrée et sa vérité ensemble",
           "goal": "Suivre deux opérations distinctes et calculer les nouvelles cibles.",
           "language": "python",
-          "code": "import librosa\n# Deux exemples distincts ; y et note suivent leurs cadences documentees\nfast = librosa.effects.time_stretch(y, rate=1.25)\nnew_bpm = 100 * 1.25  # 125 BPM\n# Si y durait 10 s, fast dure environ 8 s\nup = librosa.effects.pitch_shift(note, sr=sr, n_steps=2)\nnew_midi = 60 + 2  # 62 ; duree preservee par cette operation",
+          "code": "import librosa\nimport numpy as np\nsr = 16000\nt = np.arange(sr * 10) / sr\ny = 0.3 * np.sin(2 * np.pi * 220 * t)\nfast = librosa.effects.time_stretch(y, rate=1.25)\nnew_bpm = 100 * 1.25\nfrequence_midi_60 = 440 * 2 ** ((60 - 69) / 12)\nt_note = np.arange(sr) / sr\nnote = 0.3 * np.sin(2 * np.pi * frequence_midi_60 * t_note)\nup = librosa.effects.pitch_shift(note, sr=sr, n_steps=2)\nnew_midi = 60 + 2\nprint(len(y) / sr, len(fast) / sr, new_bpm)\nprint(len(note) / sr, len(up) / sr, new_midi)",
           "steps": [
             {
-              "title": "Avant : donner deux cibles précises",
-              "text": "Le premier exemple dure dix secondes et possède un tempo annoté de 100 BPM. Le second est une note MIDI 60. Nous n’affirmons pas que ces cibles sont la même variable.",
-              "state": "Tempo et hauteur sont deux tâches distinctes",
+              "title": "Créer le signal test de durée",
+              "text": "arange construit 160 000 indices ; la division par sr les convertit en secondes. La sinusoïde à 220 Hz sert de contenu calculable.",
+              "state": "y dure 10 secondes. Son tempo 100 BPM est une étiquette fictive.",
               "lines": [
-                2
-              ]
-            },
-            {
-              "title": "Accélérer le temps",
-              "text": "Un time-stretch de facteur 1,25 vise une durée 10/1,25 = 8 secondes et un tempo 100×1,25 = 125 BPM, tout en préservant approximativement la hauteur.",
-              "state": "Après : 8 s et 125 BPM",
-              "lines": [
+                1,
+                2,
                 3,
                 4,
                 5
               ]
             },
             {
-              "title": "Transposer une note",
-              "text": "Une transposition de deux demi-tons vers l’aigu ajoute 2 à la hauteur MIDI. La cible devient 62 ; l’opération vise à conserver la durée, contrairement au simple changement de cadence de lecture.",
-              "state": "Après : MIDI 62",
+              "title": "Accélérer sans changer l’étiquette silencieusement",
+              "text": "rate=1.25 vise une durée divisée par 1,25. Pour une vraie tâche de tempo, sa cible doit au contraire être multipliée par 1,25.",
+              "state": "fast dure 8 secondes ; nouvelle cible 125 BPM.",
               "lines": [
                 6,
                 7
               ]
+            },
+            {
+              "title": "Construire une autre expérience de hauteur",
+              "text": "Nous générons une seconde de sinusoïde. La formule convertit MIDI 60 en fréquence ; MIDI 69 correspond à 440 Hz.",
+              "state": "La note initiale est MIDI 60, environ 261,63 Hz.",
+              "lines": [
+                8,
+                9,
+                10
+              ]
+            },
+            {
+              "title": "Transposer et mettre à jour cette autre cible",
+              "text": "n_steps=2 désigne deux demi-tons vers l’aigu dans la convention de douze demi-tons par octave. La durée visée reste une seconde.",
+              "state": "up dure 1 seconde ; nouvelle cible MIDI 62.",
+              "lines": [
+                11,
+                12,
+                13,
+                14
+              ]
             }
           ],
-          "result": "Une règle d’augmentation inclut la mise à jour de la cible. Conserver automatiquement les anciennes étiquettes serait faux pour ces tâches."
+          "result": "Une règle d’augmentation inclut la mise à jour de la cible. Conserver automatiquement les anciennes étiquettes serait faux pour ces tâches.",
+          "codeMode": "standalone"
         },
         {
           "type": "audio-lab",
@@ -1395,10 +1575,6 @@
           "text": "Ces exemples ne prescrivent pas systématiquement transposition et accélération à notre classifieur. Nommons la propriété prédite, examinons la transformation, puis définissons la cible correspondante. Conserver une catégorie ne garantit pas de conserver hauteur, durée ou niveau. Une cible ancienne devient trompeuse lorsque la propriété demandée a changé.",
           "tone": "pitfall",
           "label": "Transformer aussi la réponse attendue"
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : Une augmentation doit conserver la propriété prédite ou transformer sa cible de façon cohérente. J’écoute ses effets et je garde une validation fixe pour mesurer son intérêt."
         }
       ],
       "takeaways": [
@@ -1435,7 +1611,7 @@
           },
           {
             "id": "d",
-            "text": "0,8 BPM"
+            "text": "119,2 BPM"
           }
         ],
         "correctOptionId": "a",
@@ -1459,11 +1635,12 @@
         "input": "Le crop a montré qu’une transformation de l’entrée peut contredire une annotation globale.",
         "action": "Définir l’effet d’une augmentation sur la propriété prédite, puis conserver ou transformer la cible selon cet effet.",
         "output": "Nous pouvons proposer un gain ou un bruit pour la reconnaissance, et expliquer pourquoi hauteur et tempo demandent d’autres règles."
-      }
+      },
+      "level": "practice"
     },
     {
       "id": "masquage-mixup-representations",
-      "title": "Cacher une preuve partielle ou mélanger deux exemples",
+      "title": "Masquage et mixup : deux opérations sur les représentations",
       "summary": "Comment varier nos log-mel sans confondre une zone cachée et une nouvelle cible mélangée ?",
       "questionIds": [
         "aml-013",
@@ -1492,42 +1669,50 @@
           "text": "Calculons la cible avant le code. Avec 25 % de voix seule et 75 % de percussion seule, nous obtenons 0,25×[1,0]+0,75×[0,1] = [0,25 ; 0,75]. Le coefficient du premier exemple doit garder le même rôle dans l’entrée et dans la cible."
         },
         {
+          "type": "paragraph",
+          "text": "Le programme utilise deux cartes fictives de forme (2,2), selon bandes puis trames. Ce ne sont pas les log-mel des fichiers du laboratoire. Nous choisissons les quatre valeurs de chaque carte pour refaire chaque interpolation à la main."
+        },
+        {
           "type": "walkthrough",
           "title": "Construire un mixup sans inverser les coefficients",
           "goal": "Vérifier ensemble l’état de l’entrée et celui de sa cible.",
           "language": "python",
           "steps": [
             {
-              "title": "Avant : deux exemples compatibles",
-              "text": "Nous prenons deux entrées de même forme : une voix seule de cible [1,0] et une percussion seule de cible [0,1]. Le protocole mélange 25 % du premier et 75 % du second.",
-              "state": "lambda = 0,25",
+              "title": "Aligner les deux cartes",
+              "text": "Les axes bandes et trames ont la même forme. Les cibles suivent voix puis percussion, avec une présence par colonne.",
+              "state": "x_a et x_b : (2,2), y_a et y_b : (2,).",
               "lines": [
                 1,
                 2,
-                3
-              ]
-            },
-            {
-              "title": "Transformer avec la même règle",
-              "text": "On calcule 0,25×x_a + 0,75×x_b, puis 0,25×[1,0] + 0,75×[0,1]. Les poids des cibles suivent exactement les poids des entrées.",
-              "state": "Cible mélangée : [0,25, 0,75]",
-              "lines": [
+                3,
                 4,
-                5,
-                6
+                5
               ]
             },
             {
-              "title": "Après : interpréter la supervision",
-              "text": "La perte doit accepter ces cibles souples. Garder seulement la classe a ou inverser les coefficients ajouterait une incohérence. Le domaine de mélange, onde ou caractéristiques, doit aussi être annoncé.",
-              "state": "Interpolation définie, puis évaluée en validation",
+              "title": "Garder le rôle du premier coefficient",
+              "text": "lam vaut 0,25 pour le premier exemple et 1−lam vaut 0,75 pour le second. La première case devient 0,25×1+0,75×5=4.",
+              "state": "x_mix = [[4,5],[6,7]].",
               "lines": [
+                6,
                 7
+              ]
+            },
+            {
+              "title": "Utiliser exactement les mêmes poids pour les cibles",
+              "text": "Le poids voix devient 0,25 et le poids percussion 0,75. x_a, x_b et leurs cibles originales restent inchangés.",
+              "state": "y_mix = [0.25,0.75].",
+              "lines": [
+                8,
+                9,
+                10
               ]
             }
           ],
           "result": "Mixup régularise selon une hypothèse d’interpolation. Ce protocole ne garantit pas que toute combinaison de log-mel ressemble à un enregistrement acoustique naturel.",
-          "code": "# x_a et x_b : memes axes et meme forme, donnees alignees\n# y_a et y_b : presences flottantes voix/percussion, taille 2\nlam = 0.25\nx_mix = lam * x_a + (1 - lam) * x_b\ny_mix = lam * y_a + (1 - lam) * y_b\n# Si y_a = [1, 0] et y_b = [0, 1], y_mix = [0.25, 0.75].\n# La perte doit accepter des cibles souples coherentes avec la tache."
+          "code": "import torch\nx_a = torch.tensor([[1., 2.], [3., 4.]])\nx_b = torch.tensor([[5., 6.], [7., 8.]])\ny_a = torch.tensor([1., 0.])\ny_b = torch.tensor([0., 1.])\nlam = 0.25\nx_mix = lam * x_a + (1 - lam) * x_b\ny_mix = lam * y_a + (1 - lam) * y_b\nprint(x_mix.tolist())\nprint(y_mix.tolist())",
+          "codeMode": "standalone"
         },
         {
           "type": "analysis-image",
@@ -1633,10 +1818,6 @@
           "text": "La perte doit accepter la convention choisie. Mélanger des log-mel ne revient pas à mélanger les ondes : projection et logarithme changent le calcul. Une somme d’ondes dépend aussi des phases et alignements. Mixup est une hypothèse d’apprentissage à tester. Une matrice interpolée ne correspond pas nécessairement à un enregistrement naturel.",
           "tone": "pitfall",
           "label": "Une interpolation n’est pas un mélange acoustique garanti"
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : Le masquage retire des observations ; mixup interpole des entrées et leurs cibles. Je précise le domaine de transformation et je vérifie la cohérence de la supervision."
         }
       ],
       "takeaways": [
@@ -1698,21 +1879,53 @@
         "input": "Nous savons vérifier ce qu’une augmentation de l’onde fait à sa cible et conserver une validation fixe.",
         "action": "Comparer masquage de caractéristiques et mixup en suivant ensemble les données et les cibles.",
         "output": "Nous savons définir la valeur de masquage, limiter la preuve retirée et calculer une cible souple cohérente."
-      }
+      },
+      "level": "practice"
     },
     {
-      "id": "similarites-contraste-attention",
-      "title": "Comparer deux sons, puis réunir leur contexte",
-      "summary": "Un score de proximité, un poids d’attention et une présence prédite sont-ils la même chose ?",
+      "id": "similarite-cosinus-et-contraste",
+      "title": "Similarité cosinus et apprentissage contrastif",
+      "summary": "Comparer des descriptions sans prendre un score de proximité pour une probabilité de présence.",
       "questionIds": [
         "aml-025",
-        "aml-029",
-        "aml-030"
+        "aml-029"
       ],
       "blocks": [
         {
           "type": "paragraph",
           "text": "Nous pouvons aussi rechercher des sons proches de notre extrait ou d’une description. Le produit scalaire (dot product) additionne les produits des coordonnées correspondantes. La norme L2 (L2 norm) mesure la longueur d’un vecteur."
+        },
+        {
+          "type": "visual",
+          "kind": "table",
+          "title": "Suivre les coordonnées des deux descriptions",
+          "columns": [
+            "Coordonnée",
+            "a",
+            "b",
+            "Produit"
+          ],
+          "rows": [
+            [
+              "0",
+              "1",
+              "0,6",
+              "0,6"
+            ],
+            [
+              "1",
+              "0",
+              "0,8",
+              "0"
+            ],
+            [
+              "Somme",
+              "—",
+              "—",
+              "0,6"
+            ]
+          ],
+          "caption": "Deux descriptions fictives de longueur un permettent un calcul manuel. Elles ne proviennent pas d’un encodeur audio."
         },
         {
           "type": "paragraph",
@@ -1734,12 +1947,124 @@
             "change": "Remplacer seulement b par 2*b, sans changer sa direction.",
             "output": "1.2\n0.6",
             "explanation": "Le produit brut double ; le cosinus reste 0,6 parce que la norme de b double elle aussi."
-          }
+          },
+          "codeMode": "standalone"
         },
         {
           "type": "paragraph",
           "text": "L’apprentissage contrastif (contrastive learning) rapproche certaines paires et en distingue d’autres. CLAP apprend ainsi des descriptions audio et textuelles comparables. Nous pouvons confronter l’enregistrement à « une personne chante » et « une percussion joue ». Le résultat dépend des descriptions, du domaine source et du protocole. Une proximité ne garantit pas une compréhension musicale universelle."
         },
+        {
+          "type": "callout",
+          "text": "Un faux négatif contrastif (false negative) est une paire repoussée alors qu’elle partage une relation utile. Deux voix enregistrées séparément peuvent correspondre à la même description. Les traiter comme simplement incompatibles introduit cette difficulté. La composition du lot et la règle d’appariement participent donc au sens appris.",
+          "tone": "tip",
+          "label": "Pour aller plus loin : choisir les négatifs"
+        },
+        {
+          "type": "walkthrough",
+          "title": "Comparer un score brut et un cosinus",
+          "goal": "Lire le calcul de l’exemple précédent et prévoir l’effet d’un changement de longueur.",
+          "calculationTable": true,
+          "steps": [
+            {
+              "title": "Additionner les produits",
+              "text": "1×0,6+0×0,8 vaut 0,6. Le produit scalaire donne ce nombre sans le normaliser.",
+              "state": "a@b = 0,6."
+            },
+            {
+              "title": "Vérifier les deux longueurs",
+              "text": "La norme de a vaut 1. Celle de b vaut sqrt(0,6²+0,8²)=1.",
+              "state": "Le cosinus vaut 0,6/(1×1)=0,6."
+            },
+            {
+              "title": "Doubler seulement b",
+              "text": "Les coordonnées deviennent [1,2 ; 1,6]. Produit et norme doublent, donc leur rapport garde la même valeur.",
+              "state": "Produit brut 1,2 ; cosinus 0,6."
+            }
+          ],
+          "result": "Ce tableau de calcul raisonné explique la variante exécutable du premier exemple. Une différence de norme n’est pas une différence de direction."
+        },
+        {
+          "type": "callout",
+          "tone": "pitfall",
+          "label": "Une proximité n’est pas encore une décision de classe",
+          "text": "Un cosinus n’est pas automatiquement une probabilité. Sa pertinence dépend des paires apprises, du domaine et de la recherche visée. Nous comparons des descriptions avant de choisir un seuil ou un classement."
+        }
+      ],
+      "takeaways": [
+        "Le produit scalaire additionne les contributions de mêmes coordonnées.",
+        "Le cosinus retire l’effet de la longueur, pour des vecteurs non nuls.",
+        "La règle de paires contrastives donne un sens particulier aux proximités apprises."
+      ],
+      "sourceIds": [
+        "audio-clap",
+        "audio-attention",
+        "audio-ast"
+      ],
+      "context": {
+        "recall": "Nous avons des embeddings et des séquences masquées ; leur rôle dans une décision doit rester explicite.",
+        "problem": "Comparer des descriptions sans prendre un score de proximité pour une probabilité de présence.",
+        "why": "Nous pouvons lire les scores intermédiaires et les masques sans leur attribuer directement une probabilité de présence ou une explication causale.",
+        "connection": "Distinguer comparaison de vecteurs, apprentissage contrastif et combinaison de contenus par attention.",
+        "next": "Comparer deux descriptions ne suffit pas à réunir un contexte. L’attention choisit maintenant quel contenu agréger."
+      },
+      "checkpoint": {
+        "prompt": "a=[1,0] et b=[0,6 ; 0,8] ont une norme de 1. Nous remplaçons seulement b par 2b. Quelle paire de résultats obtient-on ?",
+        "options": [
+          {
+            "id": "a",
+            "text": "Produit scalaire 1,2 ; cosinus 0,6."
+          },
+          {
+            "id": "b",
+            "text": "Produit scalaire 1,2 ; cosinus 1,2."
+          },
+          {
+            "id": "c",
+            "text": "Produit scalaire 0,6 ; cosinus 1,2."
+          },
+          {
+            "id": "d",
+            "text": "Produit scalaire 0,6 ; cosinus 0,6."
+          }
+        ],
+        "correctOptionId": "a",
+        "explanation": "Le produit scalaire et la norme de b doublent. Le cosinus garde le même rapport.",
+        "optionFeedback": {
+          "b": "Le numérateur double, mais la norme de b au dénominateur double aussi.",
+          "c": "Le produit brut dépend de la longueur de b et double ici ; le cosinus conserve sa direction.",
+          "d": "Seul le cosinus reste identique. Le produit brut utilise les nouvelles coordonnées de 2b."
+        }
+      },
+      "notions": [
+        {
+          "name": "Produit scalaire (dot product)",
+          "explanation": "La somme des produits entre coordonnées correspondantes de deux vecteurs."
+        },
+        {
+          "name": "Similarité cosinus (cosine similarity)",
+          "explanation": "Le produit scalaire divisé par les longueurs des deux vecteurs ; il compare leur orientation."
+        },
+        {
+          "name": "Apprentissage contrastif",
+          "explanation": "Un apprentissage qui rapproche certaines paires de descriptions et en distingue d’autres, selon la règle d’appariement."
+        }
+      ],
+      "progression": {
+        "input": "Deux descriptions fictives à deux coordonnées.",
+        "action": "Calculer produit, normes et cosinus, puis examiner ce que l’apprentissage rapproche.",
+        "output": "Une similarité dont nous pouvons expliquer la valeur et la limite."
+      },
+      "level": "discuss"
+    },
+    {
+      "id": "similarites-contraste-attention",
+      "title": "Attention : des scores aux contenus pondérés",
+      "summary": "Un score de proximité, un poids d’attention et une présence prédite sont-ils la même chose ?",
+      "questionIds": [
+        "aml-030"
+      ],
+      "blocks": [
         {
           "type": "paragraph",
           "text": "L’attention (attention) répond à une autre question : quel contenu réunir ? Une requête (query) est comparée à des clés (keys)."
@@ -1776,6 +2101,18 @@
               "lines": [
                 5,
                 6
+              ],
+              "details": [
+                {
+                  "code": "torch.softmax(scores, dim=0)",
+                  "explanation": "Il n’y a qu’un axe : celui des deux positions. exp(log(3)) vaut 3 et exp(0) vaut 1. Les poids sont donc 3/4 et 1/4.",
+                  "state": "weights ≈ [0.75,0.25]."
+                },
+                {
+                  "code": "(weights * values).sum()",
+                  "explanation": "Le produit garde deux contributions : 1,5 et 2,5. sum les additionne. Les scores et les valeurs ne sont pas modifiés.",
+                  "state": "summary ≈ 4."
+                }
               ]
             },
             {
@@ -1786,10 +2123,18 @@
                 7,
                 8,
                 9
+              ],
+              "details": [
+                {
+                  "code": "scores.masked_fill(~valid, float(\"-inf\"))",
+                  "explanation": "~ inverse les booléens. La clé invalide reçoit −inf, dont l’exponentielle vaut zéro dans la softmax.",
+                  "state": "masked ≈ [1.099,-inf] ; poids [1,0]."
+                }
               ]
             }
           ],
-          "result": "Le masque modifie l’ensemble sur lequel la pondération est calculée. Une position ajoutée pour stocker un batch ne doit pas fournir un faux contexte."
+          "result": "Le masque modifie l’ensemble sur lequel la pondération est calculée. Une position ajoutée pour stocker un batch ne doit pas fournir un faux contexte.",
+          "codeMode": "standalone"
         },
         {
           "type": "visual",
@@ -1812,10 +2157,15 @@
           "caption": "Le mini-calcul emploie des contenus scalaires pour être lisible ; un modèle mélange généralement des vecteurs de caractéristiques."
         },
         {
+          "type": "paragraph",
+          "text": "Nous passons maintenant du calcul à deux contenus scalaires à une interface multi-têtes. x est fabriqué avec les entiers de 0 à 47, puis divisé par dix. Ces nombres servent à nommer les axes ; ils ne viennent pas d’un encodeur entraîné. valid=True conserve ici une position réelle."
+        },
+        {
           "type": "code",
           "language": "python",
-          "code": "import torch\n\n# x : (B, T, D), D divisible par 4, valeurs finies\n# valid : (B, T), booleen, au moins un True par sequence\nattn = torch.nn.MultiheadAttention(D, 4, batch_first=True)\ny, _ = attn(x, x, x, key_padding_mask=~valid)\n# Les cles de padding sont ignorees.\n# Les positions de requete paddees peuvent encore produire une sortie :\n# utiliser aussi valid lors du pooling ou de la perte ulterieure.",
-          "caption": "Le masque des clés ne dispense pas de gérer les positions invalides à chaque étape qui les utilise."
+          "code": "import torch\ntorch.manual_seed(5)\nD = 8\nx = torch.arange(48, dtype=torch.float32).reshape(2, 3, D) / 10\nvalid = torch.tensor([[True, True, False], [True, True, True]])\nattn = torch.nn.MultiheadAttention(D, 4, dropout=0., batch_first=True)\ny, weights = attn(x, x, x, key_padding_mask=~valid)\nprint(y.shape, weights.shape)\nprint(weights[0, :, 2].tolist())",
+          "caption": "Programme autonome de formes : x contient des caractéristiques fictives, selon (2 extraits, 3 positions, 8 caractéristiques). Les quatre têtes possèdent chacune deux coordonnées internes, après leurs projections apprises. Les poids de la troisième clé du premier extrait sont tous nuls ; les requêtes invalides restent à gérer ensuite.",
+          "codeMode": "standalone"
         },
         {
           "type": "callout",
@@ -1828,10 +2178,6 @@
           "text": "Une clé de remplissage doit être ignorée avant la softmax. Dans notre exemple, l’exclure donne le résumé 2. Le masque booléen key_padding_mask utilise True pour ignorer une clé. Notre convention valid=True désigne au contraire une observation : nous l’inversons. Les requêtes remplies peuvent néanmoins produire des sorties. Ignorons-les aussi dans le résumé global (pooling) ou dans la perte. Chaque séquence garde au moins une clé valide.",
           "tone": "pitfall",
           "label": "Une clé masquée ne supprime pas toutes les sorties"
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : Une similarité compare des descriptions, tandis que l’attention réunit des contenus. Je distingue scores, poids et résultat, puis je vérifie précisément la convention des masques."
         }
       ],
       "takeaways": [
@@ -1845,8 +2191,8 @@
         "audio-ast"
       ],
       "context": {
-        "recall": "Nous avons des embeddings et des séquences masquées ; leur rôle dans une décision doit rester explicite.",
-        "problem": "Un score de proximité, un poids d’attention et une présence prédite sont-ils la même chose ?",
+        "recall": "Nous savons comparer deux descriptions. Nous allons maintenant réunir le contenu de plusieurs positions.",
+        "problem": "Comment les compatibilités entre positions deviennent-elles une somme de contenus ?",
         "why": "Nous pouvons lire les scores intermédiaires et les masques sans leur attribuer directement une probabilité de présence ou une explication causale.",
         "connection": "Distinguer comparaison de vecteurs, apprentissage contrastif et combinaison de contenus par attention.",
         "next": "Nous savons pondérer les contenus. Nous allons maintenant ajouter position, normalisation et connexions pour assembler un Transformer complet."
@@ -1876,14 +2222,6 @@
       },
       "notions": [
         {
-          "name": "Produit scalaire (dot product)",
-          "explanation": "La somme des produits entre coordonnées correspondantes de deux vecteurs."
-        },
-        {
-          "name": "Similarité cosinus (cosine similarity)",
-          "explanation": "Le produit scalaire divisé par les longueurs des deux vecteurs ; il compare leur orientation."
-        },
-        {
           "name": "Attention (attention)",
           "explanation": "Un mécanisme qui calcule des poids pour réunir le contenu de plusieurs positions."
         },
@@ -1893,14 +2231,15 @@
         }
       ],
       "progression": {
-        "input": "Nous avons des embeddings et des séquences masquées ; leur rôle dans une décision doit rester explicite.",
-        "action": "Distinguer comparaison de vecteurs, apprentissage contrastif et combinaison de contenus par attention.",
-        "output": "Nous pouvons lire les scores intermédiaires et les masques sans leur attribuer directement une probabilité de présence ou une explication causale."
-      }
+        "input": "Deux compatibilités choisies à la main, puis deux valeurs de contenu.",
+        "action": "Transformer les scores en poids et les appliquer aux valeurs, avant de masquer une position.",
+        "output": "Une somme pondérée dont chaque contribution est visible."
+      },
+      "level": "practice"
     },
     {
       "id": "transformer-complet",
-      "title": "Assembler l’attention en Transformer",
+      "title": "Transformer : assembler position, attention et résidus",
       "summary": "Construire une suite de blocs qui écoute le contexte sans consulter le futur.",
       "context": {
         "recall": "Nous savons transformer des compatibilités en poids d’attention, puis réunir des contenus.",
@@ -2024,57 +2363,132 @@
           "code": "import torch\nfrom torch import nn\ntorch.manual_seed(4)\ntorch.set_num_threads(1)\n\n# Un extrait, trois positions, quatre caractéristiques fictives.\ntokens = torch.tensor([[[1., 0., 1., 0.]] * 3])\np = torch.arange(3, dtype=torch.float32)\nposition = torch.stack((p.sin(), p.cos(), (p / 100).sin(), (p / 100).cos()), dim=1)\nx = tokens + position.unsqueeze(0)\nmini = torch.tensor([1., 3.])\nnormalise = nn.LayerNorm(2)(mini)\n\nclass Bloc(nn.Module):\n    def __init__(self):\n        super().__init__()\n        self.norm1, self.norm2 = nn.LayerNorm(4), nn.LayerNorm(4)\n        self.attention = nn.MultiheadAttention(4, 2, dropout=0., batch_first=True)\n        self.reseau = nn.Sequential(nn.Linear(4, 8), nn.ReLU(), nn.Linear(8, 4))\n\n    def forward(self, h, masque):\n        z = self.norm1(h)  # Normaliser seulement les caractéristiques.\n        contexte, poids = self.attention(z, z, z, attn_mask=masque,\n                                         average_attn_weights=False)\n        h = h + contexte  # Connexion résiduelle : conserver un chemin direct.\n        return h + self.reseau(self.norm2(h)), poids\n\nblocs = nn.ModuleList([Bloc(), Bloc()]).eval()\n# True interdit une relation : chaque ligne ne consulte pas son futur.\nmasque = torch.triu(torch.ones(3, 3, dtype=torch.bool), diagonal=1)\n\ndef calcul(entree, masque):\n    h, formes = entree, []\n    for bloc in blocs:\n        h, poids = bloc(h, masque)\n        formes.append(list(h.shape))\n    return h, poids, formes\n\nwith torch.no_grad():\n    sortie, poids, formes = calcul(x, masque)\n    modifie = x.clone()\n    modifie[:, 2] += torch.tensor([10., -8., 6., -4.])\n    causal, _, _ = calcul(modifie, masque)\n    libre, _, _ = calcul(x, None)\n    libre_modifie, _, _ = calcul(modifie, None)\n    ecart_causal = (sortie[:, :2] - causal[:, :2]).abs().max().item()\n    ecart_libre = (libre[:, :2] - libre_modifie[:, :2]).abs().max().item()\n\nprint(\"position_zero\", position[0].tolist())\nprint(\"entree_zero\", x[0, 0].tolist())\nprint(\"moyenne_variance\", mini.mean().item(), mini.var(unbiased=False).item())\nprint(\"normalisation\", [round(v, 6) for v in normalise.tolist()])\nprint(\"dimension_tete\", 4 // 2)\nprint(\"formes_couches\", formes)\nprint(\"forme_poids\", list(poids.shape))\nprint(\"masque\", masque.int().tolist())\nprint(\"ecart_passe_causal\", round(ecart_causal, 6))\nprint(\"ecart_passe_libre\", round(ecart_libre, 6))\n",
           "steps": [
             {
-              "title": "Donner une place au contenu",
-              "text": "Les axes représentent un extrait, trois positions et quatre caractéristiques. L’adresse positionnelle est ajoutée avant les blocs.",
-              "state": "position_zero [0.0, 1.0, 0.0, 1.0]\nentree_zero [1.0, 1.0, 1.0, 1.0]",
+              "title": "Nommer les trois axes du contenu",
+              "text": "Le tableau contient un extrait, trois positions et quatre caractéristiques par position. Les trois contenus sont identiques ; seules les positions les distingueront.",
+              "state": "tokens : (1,3,4).",
               "lines": [
-                7,
-                8,
-                9,
-                10
+                7
               ]
             },
             {
-              "title": "Vérifier la normalisation miniature",
-              "text": "Les coefficients appris de LayerNorm commencent à un et zéro. L’epsilon explique l’écart minuscule avec [−1, 1].",
-              "state": "moyenne_variance 2.0 1.0\nnormalisation [-0.999995, 0.999995]",
+              "title": "Fabriquer puis ajouter les positions",
+              "text": "arange donne [0,1,2]. stack réunit quatre fonctions de ces indices en quatre colonnes. unsqueeze ajoute l’axe extrait manquant.",
+              "state": "position : (3,4) ; x : (1,3,4).",
+              "lines": [
+                8,
+                9,
+                10
+              ],
+              "details": [
+                {
+                  "code": "position.unsqueeze(0)",
+                  "explanation": "L’ajout du premier axe donne (1,3,4), compatible avec tokens. Les mêmes adresses seraient réutilisées pour plusieurs extraits.",
+                  "state": "À la position zéro : [0,1,0,1] ; x[0,0]=[1,1,1,1]."
+                }
+              ]
+            },
+            {
+              "title": "Isoler le calcul de LayerNorm",
+              "text": "Le petit vecteur [1,3] est une expérience indépendante à deux caractéristiques. Sa moyenne vaut 2, sa variance de population 1.",
+              "state": "normalisation ≈ [-0.999995,0.999995].",
               "lines": [
                 11,
                 12
               ]
             },
             {
-              "title": "Assembler les transformations",
-              "text": "Le bloc normalise, consulte le contexte, additionne, puis transforme localement. Les deux instances possèdent leurs propres poids.",
-              "state": "formes_couches [[1, 3, 4], [1, 3, 4]]",
+              "title": "Enregistrer les couches du bloc",
+              "text": "super initialise nn.Module. Les attributs norm1, norm2, attention et reseau enregistrent leurs paramètres. Les dimensions 4→8→4 conservent la largeur extérieure.",
+              "state": "Chaque position garde quatre caractéristiques en sortie.",
               "lines": [
                 14,
+                15,
+                16,
                 17,
                 18,
-                19,
+                19
+              ]
+            },
+            {
+              "title": "Lire une attention du bloc",
+              "text": "La normalisation porte sur les quatre caractéristiques de chaque position. Les trois arguments z donnent requêtes, clés et valeurs de la même séquence.",
+              "state": "contexte : (1,3,4) ; poids : (1,2,3,3).",
+              "lines": [
+                21,
                 22,
                 23,
+                24
+              ],
+              "details": [
+                {
+                  "code": "average_attn_weights=False",
+                  "explanation": "Garder les deux têtes séparées dans les poids : extrait, tête, requête, clé. Ce réglage ne change pas les axes de contexte.",
+                  "state": "Les poids restent inspectables par tête."
+                }
+              ]
+            },
+            {
+              "title": "Suivre les deux additions",
+              "text": "La première addition réunit h et contexte. La transformation locale est normalisée séparément, puis ajoutée à ce nouvel état.",
+              "state": "La forme reste (1,3,4) après chaque addition.",
+              "lines": [
                 25,
-                26,
+                26
+              ]
+            },
+            {
+              "title": "Construire deux blocs distincts",
+              "text": "Chaque appel Bloc() crée ses propres paramètres. ModuleList enregistre les deux modules ; la boucle les appliquera dans cet ordre.",
+              "state": "Deux blocs, pas deux noms pour les mêmes poids.",
+              "lines": [
                 28
               ]
             },
             {
-              "title": "Lire le masque et les poids",
-              "text": "Chaque ligne du masque correspond à une requête. True interdit une clé. Les poids ont les axes extrait, tête, requête et clé.",
-              "state": "forme_poids [1, 2, 3, 3]\nmasque [[0, 1, 1], [0, 0, 1], [0, 0, 0]]",
+              "title": "Lire le masque par requête",
+              "text": "ones crée une grille 3×3. triu avec diagonal=1 conserve seulement les cases strictement au-dessus de la diagonale. True interdit alors une clé future.",
+              "state": "[[0,1,1],[0,0,1],[0,0,0]].",
               "lines": [
                 30
+              ],
+              "details": [
+                {
+                  "code": "diagonal=1",
+                  "explanation": "La diagonale elle-même reste autorisée : une position peut consulter son propre contenu et le passé.",
+                  "state": "La première requête ne consulte que la première clé."
+                }
               ]
             },
             {
-              "title": "Perturber seulement la dernière position",
-              "text": "Avec le masque, les deux positions précédentes ne changent pas. Sans lui, elles utilisent le futur et changent.",
-              "state": "ecart_passe_causal 0.0\necart_passe_libre 0.204499",
+              "title": "Suivre la boucle de calcul",
+              "text": "Chaque bloc reçoit la sortie du précédent et le même masque. Les formes sont notées après chaque bloc.",
+              "state": "formes = [[1,3,4],[1,3,4]].",
               "lines": [
+                32,
+                33,
+                34,
+                35,
+                36,
+                37
+              ]
+            },
+            {
+              "title": "Changer seulement le futur",
+              "text": "clone donne un nouveau stockage. La modification touche uniquement la dernière position de cette copie. Les deux premières entrées restent identiques.",
+              "state": "x est inchangé ; modifie[:,2] est perturbé.",
+              "lines": [
+                39,
+                40,
                 41,
                 42,
-                43,
+                43
+              ]
+            },
+            {
+              "title": "Comparer avec et sans restriction",
+              "text": "Nous calculons la plus grande différence absolue sur les deux positions passées. Le masque doit rendre cet écart nul dans les deux blocs.",
+              "state": "écart causal 0 ; écart libre ≈ 0,204499.",
+              "lines": [
                 44,
                 45,
                 46,
@@ -2082,7 +2496,8 @@
               ]
             }
           ],
-          "result": "La causalité tient après les deux blocs : l’écart passé vaut 0. Sans masque, il vaut 0,204499 pour ces poids initialisés. Ce nombre n’est pas une performance."
+          "result": "La causalité tient après les deux blocs : l’écart passé vaut 0. Sans masque, il vaut 0,204499 pour ces poids initialisés. Ce nombre n’est pas une performance.",
+          "codeMode": "standalone"
         },
         {
           "type": "callout",
@@ -2095,10 +2510,6 @@
           "tone": "tip",
           "label": "Pour aller plus loin",
           "text": "Le Transformer original normalise après les additions résiduelles. Il associe aussi un encodeur et un décodeur. Une attention croisée relie alors les requêtes du décodeur à la mémoire de l’encodeur. Notre pile pré-normalisée expose seulement le cœur causal."
-        },
-        {
-          "type": "paragraph",
-          "text": "À dire en entretien : un Transformer combine position, attention multi-têtes et transformations locales, avec normalisation et connexions résiduelles. Pour générer une suite, chaque bloc doit empêcher les positions de consulter le futur."
         }
       ],
       "takeaways": [
@@ -2134,6 +2545,17 @@
         "rev-b-attn-transformer",
         "rev-b-attn-multihead",
         "rev-b-attn-layernorm"
+      ],
+      "level": "advanced",
+      "prerequisites": [
+        {
+          "themeId": "audio-ml",
+          "chapterId": "similarites-contraste-attention"
+        },
+        {
+          "themeId": "pytorch",
+          "chapterId": "construire-un-module"
+        }
       ]
     }
   ],
@@ -2165,6 +2587,7 @@
         "chapterIds": [
           "augmentations-cibles-validation",
           "masquage-mixup-representations",
+          "similarite-cosinus-et-contraste",
           "similarites-contraste-attention",
           "transformer-complet"
         ]

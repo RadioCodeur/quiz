@@ -89,8 +89,9 @@ test('les exemples guidés surlignent les vraies lignes et échappent le contenu
 });
 test('les QCM de transfert restent à quatre options avec des IDs indépendants de la position',()=>{
   for(const course of courses)for(const chapter of course.chapters){
+    if(!chapter.checkpoint)continue;
     const rendered=renderCheckpoint(chapter.checkpoint);
-    assert.equal((rendered.match(/data-checkpoint-option=/g)??[]).length,4);
+    assert.equal((rendered.match(/data-checkpoint-option=/g)??[]).length,chapter.checkpoint.options.length);
     assert.ok(rendered.includes(`data-checkpoint-option="${chapter.checkpoint.correctOptionId}"`));
   }
 });

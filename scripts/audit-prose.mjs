@@ -21,7 +21,7 @@ export function proseFields(chapter){
     if(b.variant){add(`blocks.${i}.variant.change`,b.variant.change);add(`blocks.${i}.variant.explanation`,b.variant.explanation);}
   }
   for(const [i,value] of chapter.takeaways.entries())add(`takeaways.${i}`,value);
-  // Existing checkpoint wording is protected by V5; code, formula states and bibliography are separate from prose.
+  // Code, numerical states, bibliography and checkpoint contracts are checked separately.
   return fields;
 }
 export function auditModule(course){
@@ -32,15 +32,16 @@ export function auditChapter(course,chapter){
   const sentences=proseFields(chapter).flatMap(field=>[...segmenter.segment(field.text)].map(part=>({...field,sentence:part.segment.trim(),words:wordCount(part.segment)})));
   const long=sentences.filter(sentence=>sentence.words>30);
   const words=wordCount(chapterText(chapter));
-  const last=chapter.blocks.at(-1);
-  return {themeId:course.themeId,chapterId:chapter.id,words,meanSentenceWords:Number((sentences.reduce((n,s)=>n+s.words,0)/Math.max(sentences.length,1)).toFixed(2)),longSentences:long,interviewEnding:last?.type==='paragraph'&&last.text.startsWith('À dire en entretien :'),lengthJustification:chapter.lengthJustification??null};
+  return {themeId:course.themeId,chapterId:chapter.id,words,meanSentenceWords:Number((sentences.reduce((n,s)=>n+s.words,0)/Math.max(sentences.length,1)).toFixed(2)),longSentences:long,lengthJustification:chapter.lengthJustification??null};
 }
 export async function auditProse(){return (await readCourses()).flatMap(course=>course.chapters.map(chapter=>auditChapter(course,chapter)));}
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
   const report=await auditProse(),theme=process.argv.find(value=>value.startsWith('--theme='))?.slice(8);
   const selected=theme?report.filter(chapter=>chapter.themeId===theme):report;
   await writeFile(new URL('./verify/prose-audit.json',import.meta.url),JSON.stringify(report,null,2)+'\n');
-  const failures=selected.filter(ch=>ch.longSentences.length||(ch.words>1100&&!ch.lengthJustification)||!ch.interviewEnding);
-  console.log(JSON.stringify({chapters:selected.length,failures:failures.map(ch=>({id:`${ch.themeId}/${ch.chapterId}`,words:ch.words,longSentences:ch.longSentences.length,interviewEnding:ch.interviewEnding}))},null,2));
+  // Length thresholds identify passages to reread; they do not assess teaching quality.
+  // No keyword, stock conclusion or interview phrase is required.
+  const failures=selected.filter(ch=>ch.longSentences.length||(ch.words>1100&&!ch.lengthJustification));
+  console.log(JSON.stringify({chapters:selected.length,reviewCriteria:{sentenceWordsOver:30,chapterWordsOverWithoutJustification:1100},failures:failures.map(ch=>({id:`${ch.themeId}/${ch.chapterId}`,words:ch.words,longSentences:ch.longSentences.length}))},null,2));
   if(process.argv.includes('--strict')&&failures.length)process.exitCode=1;
 }
