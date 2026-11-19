@@ -633,61 +633,71 @@
       "path": "public/notebooks/pytorch-en-une-page.ipynb",
       "target": "public/notebooks/tenseur-forme-type-device.ipynb",
       "codeCells": 0,
-      "sha256": "a3792d1bb2ad0fb79fd8be2ed8955d80966b2ad1d1cc2e14b10b14d772ff7b9b"
+      "sha256": "a28071a8a4fa7de75e490c670a60c75b8c1ddd170b55cc0d4e22922894c27c51",
+      "hashFormat": "canonical-json"
     },
     {
       "path": "public/notebooks/lire-erreurs-pytorch.ipynb",
       "target": "public/notebooks/tenseur-forme-type-device.ipynb",
       "codeCells": 0,
-      "sha256": "a3792d1bb2ad0fb79fd8be2ed8955d80966b2ad1d1cc2e14b10b14d772ff7b9b"
+      "sha256": "a28071a8a4fa7de75e490c670a60c75b8c1ddd170b55cc0d4e22922894c27c51",
+      "hashFormat": "canonical-json"
     },
     {
       "path": "public/notebooks/une-iteration-entrainement.ipynb",
       "target": "public/notebooks/autograd-et-derivees.ipynb",
       "codeCells": 0,
-      "sha256": "a942287378c2593e530c24071b9b4cb917e8c6841d142ea92d3127e73fca1021"
+      "sha256": "87a2eb4859a9f841baf8897d2b1e577b81ce3f0642275ed4bc911d4383c459b1",
+      "hashFormat": "canonical-json"
     },
     {
       "path": "public/notebooks/concatener-ou-empiler.ipynb",
       "target": "public/notebooks/dataset-et-batches.ipynb",
       "codeCells": 0,
-      "sha256": "2cf65d160b84afe77c7d56e4ac8dbdd4f8cb3069a897690f2f19791f3db6cb1d"
+      "sha256": "d99a2717790a4756f15b3eee2cd90611e06d1b4aa4c05433c95671c7757670bd",
+      "hashFormat": "canonical-json"
     },
     {
       "path": "public/notebooks/broadcasting-pas-a-pas.ipynb",
       "target": "public/notebooks/selection-diffusion-reduction.ipynb",
       "codeCells": 0,
-      "sha256": "fa52736f01e04f12274146be19966e20ffa1d841651c112e29ed2b4421aa65de"
+      "sha256": "da389bf5704ca1b38c874f05d9bdd5d19305683bb0e7c557f2a0e8cbb65a8c8c",
+      "hashFormat": "canonical-json"
     },
     {
       "path": "public/notebooks/filtrer-et-preserver-les-cibles.ipynb",
       "target": "public/notebooks/selection-diffusion-reduction.ipynb",
       "codeCells": 0,
-      "sha256": "fa52736f01e04f12274146be19966e20ffa1d841651c112e29ed2b4421aa65de"
+      "sha256": "da389bf5704ca1b38c874f05d9bdd5d19305683bb0e7c557f2a0e8cbb65a8c8c",
+      "hashFormat": "canonical-json"
     },
     {
       "path": "public/notebooks/ajouter-retirer-un-axe.ipynb",
       "target": "public/notebooks/organiser-les-axes.ipynb",
       "codeCells": 0,
-      "sha256": "a5994ece509f837a38a0fea705074b6b78f5313c25e4a86b96b1e0159afad89a"
+      "sha256": "ca17124a6993765b6dfe593f59a3291f3e67f39d2b0b07ac9812976f220d7d37",
+      "hashFormat": "canonical-json"
     },
     {
       "path": "public/notebooks/moyennes-masquees.ipynb",
       "target": "public/notebooks/padding-et-collate.ipynb",
       "codeCells": 0,
-      "sha256": "d63ec1db97142ebb2479eeff3a03814834e627ae2c7583fd1d695c707a9afc73"
+      "sha256": "80b497a55a9d5218d1ab06cd66418bcb7d58399c6432929ea05e73ff5e770b7b",
+      "hashFormat": "canonical-json"
     },
     {
       "path": "public/notebooks/sauvegarder-et-reprendre.ipynb",
       "target": "public/notebooks/boucle-entrainement-complete.ipynb",
       "codeCells": 0,
-      "sha256": "2fc8cc8dfca557932d77d044d9632a08ea1beb35e61ab4b04f93b1104fc59cad"
+      "sha256": "1db47ab8cf01ad7e840efef88f8b408550baed8be726db9151cbc08181d9da08",
+      "hashFormat": "canonical-json"
     },
     {
       "path": "public/notebooks/preparer-mel-pour-conv.ipynb",
       "target": "public/notebooks/conv-mel-autoencodeur.ipynb",
       "codeCells": 0,
-      "sha256": "fcbcbe6441623b3acc4f13ed94b216655d83111e8108a3c874b3ec29d143953c"
+      "sha256": "c465e62d33abd64632685cbf8c1c17299b0ec9244b10f0de78beeaa6109cd03f",
+      "hashFormat": "canonical-json"
     }
   ]
 }

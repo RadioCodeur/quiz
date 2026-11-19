@@ -103,7 +103,8 @@ def main():
         assert alias['metadata']['quiz']['notebookAlias']==target
         assert alias['cells']and all(cell['cell_type']=='markdown'for cell in alias['cells']),'Un ancien fichier ne conserve pas de code périmé'
         assert target in '\n'.join(cell['source']if isinstance(cell['source'],str)else''.join(cell['source'])for cell in alias['cells'])
-        aliases.append({'path':'public/'+previous,'target':'public/'+target,'codeCells':0,'sha256':hashlib.sha256(alias_path.read_bytes()).hexdigest()})
+        canonical=json.dumps(json.loads(alias_path.read_text('utf-8')),ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()
+        aliases.append({'path':'public/'+previous,'target':'public/'+target,'codeCells':0,'hashFormat':'canonical-json','sha256':hashlib.sha256(canonical).hexdigest()})
     records=[]
     for path in notebooks:
         print('Exécution CPU : '+path.stem,flush=True)

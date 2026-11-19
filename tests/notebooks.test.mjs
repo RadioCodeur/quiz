@@ -77,7 +77,10 @@ test('les dix anciens notebooks deviennent des renvois Markdown vers un fichier 
     assert.ok(proof);
     assert.equal(proof.target,`public/${target}`);
     assert.equal(proof.codeCells,0);
-    assert.equal(createHash('sha256').update(bytes).digest('hex'),proof.sha256);
+    assert.equal(proof.hashFormat,'canonical-json');
+    assert.equal(createHash('sha256').update(JSON.stringify(sorted(notebook))).digest('hex'),proof.sha256);
+    const windows=JSON.parse(bytes.toString('utf8').replace(/\r?\n/g,'\r\n'));
+    assert.equal(createHash('sha256').update(JSON.stringify(sorted(windows))).digest('hex'),proof.sha256,'Le contenu reste vérifié après un checkout avec des fins de ligne Windows');
     assert.ok(!report.notebooks.some(item=>item.path===`public/${previous}`),'Le renvoi ne possède pas de fausse preuve d’exécution');
   }
 });
