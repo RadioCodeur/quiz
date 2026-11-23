@@ -1,0 +1,474 @@
+/* Shared appearance control. Existing light-theme colors remain in their own files. */
+:root {
+  color-scheme: light;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 9px 12px;
+  border: 1px solid #cdd7c1;
+  border-radius: 8px;
+  background: #f7f8f2;
+  color: #245446;
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.theme-toggle:hover {
+  background: #e9eddf;
+}
+
+.theme-toggle > [aria-hidden="true"],
+.theme-toggle-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  color: #e1ebde;
+  background: #142019;
+  --green: #b5d49f;
+  --dark: #e1ebde;
+  --muted: #afbfaa;
+  --lime: #d2e5ae;
+  --border: #3d5142;
+  --paper: #1c2a21;
+  --theme-surface: #223328;
+  --theme-raised: #293d2d;
+  --theme-selected: #344c31;
+  --theme-accent: #b5d49f;
+  --theme-soft-text: #b9cfae;
+  --theme-success-bg: #263f2b;
+  --theme-success-ink: #c7e6b3;
+  --theme-success-border: #83ad69;
+  --theme-warning-bg: #413821;
+  --theme-warning-ink: #ead9ac;
+  --theme-warning-border: #9d8550;
+  --theme-error-bg: #442c26;
+  --theme-error-ink: #f0c3af;
+  --theme-error-border: #c58d73;
+}
+
+html[data-theme="dark"] ::selection {
+  background: #597a44;
+  color: #fff;
+}
+
+html[data-theme="dark"] :is(button, a, input, select, textarea, summary):focus-visible,
+html[data-theme="dark"] :is(.theme-card:focus-within, .learning-table-scroll:focus-visible) {
+  outline-color: #c0e599;
+}
+
+html[data-theme="dark"] .figure-scroll:focus-visible {
+  outline-color: #587c29;
+}
+
+html[data-theme="dark"] :is(.theme-toggle, .secondary) {
+  border-color: #667c59;
+  background: var(--theme-surface);
+  color: #d0e3be;
+}
+
+html[data-theme="dark"] :is(.theme-toggle:hover, .secondary:hover) {
+  background: var(--theme-raised);
+}
+
+html[data-theme="dark"] :is(.header-nav a:hover, .chapter-toc a:hover) {
+  background: var(--theme-raised);
+}
+
+html[data-theme="dark"] .header-nav a[aria-current="page"],
+html[data-theme="dark"] .chapter-toc a[aria-current],
+html[data-theme="dark"] .narrative-sidebar nav a[aria-current] {
+  background: var(--theme-selected);
+  color: #e0edcf;
+}
+
+html[data-theme="dark"] .narrative-sidebar nav a[aria-current] {
+  box-shadow: inset 3px 0 #b5d49f;
+}
+
+html[data-theme="dark"] :is(.primary, .skip-link) {
+  background: var(--theme-accent);
+  color: #1b2c1b;
+}
+
+html[data-theme="dark"] .primary:hover:not(:disabled) {
+  background: #c9e4b6;
+}
+
+/* These blocks use the original green token as a solid background. */
+html[data-theme="dark"] :is(.brand-mark, .session-card, .score-card, .reading-resume, .takeaway),
+html[data-theme="dark"] .journey-stages .is-current a {
+  background: #284a36;
+  border-color: #63805b;
+  color: #eef5e8;
+}
+
+html[data-theme="dark"] :is(.session-card .primary, .reading-resume .primary) {
+  background: var(--lime);
+  color: #213622;
+}
+
+html[data-theme="dark"] :is(.session-card .primary, .reading-resume .primary):hover:not(:disabled) {
+  background: #e1efc6;
+}
+
+html[data-theme="dark"] .brand-mark {
+  color: var(--lime);
+}
+
+html[data-theme="dark"] :is(.brand-dot, .hero h1 span, .courses-hero h1 span) {
+  color: #a9bf9b;
+}
+
+html[data-theme="dark"] .hero-art {
+  background: radial-gradient(ellipse, #344d2d 0%, #243526 36%, transparent 70%);
+}
+
+html[data-theme="dark"] .professor-hero::before {
+  background: radial-gradient(ellipse, #344d2d, transparent 69%);
+}
+
+html[data-theme="dark"] .wave i {
+  background: #b0cf98;
+}
+
+html[data-theme="dark"] :is(.hero-art > span, .site-footer) {
+  color: var(--muted);
+}
+
+html[data-theme="dark"] .theme-card {
+  background: var(--paper);
+}
+
+html[data-theme="dark"] :is(.theme-card:hover, .course-card:hover) {
+  border-color: #8ba67a;
+}
+
+html[data-theme="dark"] .theme-card.is-selected {
+  border-color: #8ba67a;
+  background: var(--theme-selected);
+}
+
+html[data-theme="dark"] :is(.theme-number, .theme-count, .header-nav a span, .bottom-note > span,
+  .course-index, .reading-method li::before, .toc-number, .narrative-sidebar .toc-number,
+  .error-index, .detail-plus, .line-number, .current-code-lines .current-line-number,
+  .flow-index, .flow-connector, .concept-flow > li::after, .journey-toggle) {
+  color: var(--theme-soft-text);
+}
+
+html[data-theme="dark"] :is(select, .glossary-search input, .glossary-search select,
+  .lab-controls input, .lab-controls select, .pitch-template textarea) {
+  background: #18271e;
+  border-color: #718668;
+  color: #e1ebde;
+}
+
+html[data-theme="dark"] select option {
+  background: #18271e;
+  color: #e1ebde;
+}
+
+html[data-theme="dark"] :is(input, textarea)::placeholder {
+  color: #a0b297;
+  opacity: 1;
+}
+
+html[data-theme="dark"] :is(input[type="checkbox"], input[type="range"], .lab-volume input) {
+  accent-color: #b5d49f;
+}
+
+html[data-theme="dark"] .notice {
+  background: var(--theme-warning-bg);
+  border-color: var(--theme-warning-border);
+  color: var(--theme-warning-ink);
+}
+
+html[data-theme="dark"] :is(.resume, .reading-method, .global-learning-goal, .course-journey,
+  .revision-path, .quick-chapter-note, .question-context, .lesson-callout, .real-example,
+  .next-connection, .concept-visual, .data-plot, .walk-explanation, .lesson-checkpoint,
+  .method-principles section, .module-introduction .module-goal, .chapter-notebook,
+  .oral-model, .oral-scaffold, .pitch-template, .code-preparation, .tensor-lab,
+  .course-illustration, .audio-lab, .lesson-quiz-link) {
+  background: var(--theme-surface);
+  border-color: var(--border);
+}
+
+html[data-theme="dark"] :is(.course-card, .lesson, .glossary-term, .worked-example,
+  .first-example, .revision-weeks > section, .global-learning-goal li a,
+  .journey-stages a, .concept-flow > li, .concept-comparison > section, .lab-clip,
+  .lab-measures dl > div, .current-code-lines, .narrative-module .story-fragment,
+  .narrative-module .optional-example) {
+  background: var(--paper);
+  border-color: var(--border);
+}
+
+html[data-theme="dark"] :is(.course-card:hover, .chapter-pagination a:hover) {
+  background: var(--theme-raised);
+}
+
+html[data-theme="dark"] .lesson-callout.pitfall {
+  background: var(--theme-warning-bg);
+  border-color: var(--theme-warning-border);
+  color: var(--theme-warning-ink);
+}
+
+html[data-theme="dark"] .lesson-callout.analogy {
+  background: #243a3a;
+  border-color: #537773;
+  color: #d5e7e4;
+}
+
+html[data-theme="dark"] .callout-symbol {
+  border-color: currentColor;
+  color: inherit;
+}
+
+html[data-theme="dark"] :is(.tag, .error-count, .lesson-level, .lesson-tools,
+  .lesson-tools button, .walk-controls button, .module-begin, .copy-course-code,
+  .chapter-pagination a, .glossary-search, .story-fragment figcaption,
+  .story-fragment .fragment-context) {
+  background: var(--theme-surface);
+  border-color: var(--border);
+  color: #d5e6c9;
+}
+
+html[data-theme="dark"] .lesson-tools button[aria-pressed="true"] {
+  background: var(--theme-selected);
+  border-color: #8ba67a;
+}
+
+html[data-theme="dark"] :is(.lesson-tools button:hover, .walk-controls button:hover:not(:disabled),
+  .module-begin:hover, .copy-course-code:hover) {
+  background: var(--theme-raised);
+}
+
+html[data-theme="dark"] :is(.course-reference, .session-divider, .course-honesty,
+  .lesson-tools, .lesson-summary, .lesson-figure figcaption, .revision-deliverable,
+  .image-reading, .media-credit, .lab-measures, .lab-protocol, .lab-observations,
+  .context-connection, .concept-visual > figcaption, .data-plot > figcaption,
+  .walk-state, .worked-result, .module-project, .introduced-notions,
+  .first-example-variant, .toc-reading-group, .reference-toc, .course-diagnostics,
+  .course-diagnostics details, .narrative-sidebar .course-introduction,
+  .line-details, .lab-controls, .lab-runtime, .chapter-context) {
+  border-color: var(--border);
+}
+
+html[data-theme="dark"] .session-divider {
+  background: #607957;
+}
+
+/* Replace muted green text that was tuned for the cream surfaces. */
+html[data-theme="dark"] :is(.sources, .lesson-summary, .real-example > .eyebrow,
+  .question-context > span, .revision-path > summary span, .quick-survey li p,
+  .quick-label, .audio-lab > header > .eyebrow, .media-credit, .lab-listening-note,
+  .lab-clip header p, .lab-clip figcaption, .lab-measures > summary,
+  .lab-protocol > summary, .lab-measures dt, .lab-enlarge,
+  .global-learning-goal > p:not(.eyebrow), .global-learning-goal li span,
+  .course-journey summary small, .journey-endpoints span, .journey-stages a > span,
+  .interview-scope, .chapter-context .eyebrow, .chapter-context dt, .context-connection,
+  .concept-flow p, .concept-visual > figcaption, .data-plot > figcaption,
+  .plot-values summary, .worked-example header .eyebrow, .worked-goal,
+  .walk-position, .walk-state > span, .all-walk-steps summary, .worked-result strong,
+  .lesson-checkpoint > .eyebrow, .checkpoint-reset, .learning-methodology,
+  .module-introduction > ol > li, .module-introduction li > a,
+  .module-introduction li > p, .module-project > summary, .introduced-notions strong,
+  .introduced-notions li > p, .introduced-notions > summary > span,
+  .first-example > .eyebrow, .first-example-input > span, .first-example-output > span,
+  .reference-label, .oral-model .oral-duration, .narrative-sidebar .sidebar-title small,
+  .reading-migration, .fragment-context, .notebook-environment, .lab-runtime) {
+  color: var(--theme-soft-text);
+}
+
+html[data-theme="dark"] :is(pre, .walk-code pre, .walk-state pre,
+  .all-walk-steps pre, .first-example-variant pre, .course-diagnostics pre) {
+  background: #142219;
+  border-color: var(--border);
+  color: #d9e9d1;
+}
+
+html[data-theme="dark"] .code-label {
+  background: #2c3f2e;
+  color: #c5d8b8;
+}
+
+html[data-theme="dark"] .first-example-output pre {
+  background: #36331f;
+  border-color: #786e43;
+  color: #e9dfb5;
+}
+
+html[data-theme="dark"] .walk-code-line.is-active {
+  background: var(--theme-selected);
+  border-left-color: #b5d49f;
+  color: #e6f2dc;
+}
+
+html[data-theme="dark"] .walk-code-line.is-active .line-number {
+  color: #d6eac8;
+}
+
+html[data-theme="dark"] :is(.learning-table-scroll, .learning-table-scroll th,
+  .learning-table-scroll td, .lab-output th, .lab-output td) {
+  border-color: #506447;
+}
+
+html[data-theme="dark"] :is(.learning-table-scroll table, .lab-output table) {
+  background: #1b2b20;
+  color: #e1ebde;
+}
+
+html[data-theme="dark"] :is(.learning-table-scroll thead, .lab-output th) {
+  background: #30432c;
+}
+
+html[data-theme="dark"] .learning-table-scroll tbody th {
+  color: #c7dfb8;
+}
+
+html[data-theme="dark"] .lab-output .tracked-cell {
+  background: #3a512c;
+  border-color: #c1de99;
+  color: #edf5e2;
+}
+
+html[data-theme="dark"] .lab-output .active-cell {
+  background: #4b3b20;
+  border-color: #e1b67d;
+  color: #f7e1ba;
+}
+
+html[data-theme="dark"] .lab-output .padding-cell {
+  background: repeating-linear-gradient(135deg, #2d3d2a, #2d3d2a 4px, #1b2b20 4px, #1b2b20 8px);
+}
+
+html[data-theme="dark"] progress {
+  background: #3a4b33;
+}
+
+html[data-theme="dark"] progress::-webkit-progress-bar {
+  background: #3a4b33;
+}
+
+html[data-theme="dark"] progress::-webkit-progress-value {
+  background: #a9ca81;
+}
+
+html[data-theme="dark"] progress::-moz-progress-bar {
+  background: #a9ca81;
+}
+
+html[data-theme="dark"] :is(.answer, .checkpoint-options button) {
+  background: var(--paper);
+  border-color: var(--border);
+  color: #e1ebde;
+}
+
+html[data-theme="dark"] .answer:hover:not(:disabled) {
+  background: var(--theme-raised);
+  border-color: #8ba67a;
+}
+
+html[data-theme="dark"] .answer:disabled {
+  color: #bcc8b6;
+}
+
+html[data-theme="dark"] :is(.answer-letter, .checkpoint-letter) {
+  color: inherit;
+  border-color: #6d805f;
+}
+
+html[data-theme="dark"] :is(.answer.correct, .checkpoint-options button.is-correct,
+  .selected-correct, .empty-errors, .feedback, .checkpoint-feedback) {
+  background: var(--theme-success-bg);
+  border-color: var(--theme-success-border);
+  color: var(--theme-success-ink);
+}
+
+html[data-theme="dark"] :is(.answer.wrong, .checkpoint-options button.is-wrong, .selected-error) {
+  background: var(--theme-error-bg);
+  border-color: var(--theme-error-border);
+  color: var(--theme-error-ink);
+}
+
+html[data-theme="dark"] .feedback.mistake {
+  background: var(--theme-warning-bg);
+  color: var(--theme-warning-ink);
+}
+
+/* Scientific marks retain their original palette on a light canvas. */
+html[data-theme="dark"] .lesson-figure {
+  background: var(--theme-surface);
+  border-color: var(--border);
+}
+
+html[data-theme="dark"] :is(.lesson-figure .figure-scroll, .data-plot .figure-scroll) {
+  background: #f3f7ed;
+  color: #31503b;
+}
+
+html[data-theme="dark"] .plot-legend {
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #f3f7ed;
+}
+
+html[data-theme="dark"] .plot-legend li {
+  color: #405a35;
+}
+
+html[data-theme="dark"] .illustration-enlarge {
+  border-color: #718668;
+  background: #fff;
+}
+
+html[data-theme="dark"] .figure-help {
+  color: var(--theme-soft-text);
+}
+
+@media (max-width: 740px) {
+  html[data-theme="dark"] :is(.professor-hero, .course-sidebar) {
+    background: var(--theme-surface);
+    border-color: var(--border);
+  }
+
+  .theme-toggle {
+    font-size: 11px;
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 520px) {
+  html .header-nav {
+    gap: 3px;
+  }
+
+  html .header-nav a {
+    min-width: 0;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .theme-toggle {
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 360px) {
+  .theme-toggle {
+    width: 44px;
+    padding: 8px;
+  }
+
+  .theme-toggle-label {
+    display: none;
+  }
+}
